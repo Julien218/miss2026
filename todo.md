@@ -3791,3 +3791,16 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Corriger les balises imbriquées — 25 occurrences corrigées via script automatisé (Link>a → Link avec className)
 - [x] Vérifier 0 erreur TypeScript après correction
 - [ ] Checkpoint et livraison
+
+
+## 📋 COPIE DES DONNÉES DEPUIS LE SITE PUBLIÉ (missdourweb-fqsyubas.manus.space)
+
+- [x] Explorer le site publié (missdourweb-fqsyubas.manus.space) — page blanche, ancien déploiement non fonctionnel
+- [x] Récupérer les données utilisateurs depuis le CSV (78 entrées, 30 utilisateurs réels filtrés)
+- [x] Mettre à jour le schéma DB users (ajout organizationId, permissionOverrides, enum rôles étendu 12 rôles)
+- [x] Importer 30 utilisateurs réels (1 super_admin, 2 admins, 19 candidats, 8 users)
+- [x] Corriger les rôles candidats (15 users → candidate)
+- [x] Créer 19 entrées candidates (12 Miss + 7 Mister) avec statut approved
+- [x] Mettre à jour le contest 1 en statut ongoing, supprimer le doublon contest 2
+- [x] Vérifier la cohérence users ↔ candidates ↔ contests
+- [ ] Checkpoint et livraison

@@ -1,0 +1,170 @@
+{
+  "query": "SELECT TABLE_NAME, TABLE_ROWS FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT TABLE_NAME, TABLE_ROWS FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "__drizzle_migrations",
+      "TABLE_ROWS": "4"
+    },
+    {
+      "TABLE_NAME": "articles",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "assets",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "badges",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "candidateApplications",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "candidate_analytics",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "candidate_comments",
+      "TABLE_ROWS": "3"
+    },
+    {
+      "TABLE_NAME": "candidates",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "comment_likes",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "contests",
+      "TABLE_ROWS": "2"
+    },
+    {
+      "TABLE_NAME": "evaluations",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "eventAttendees",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "event_config",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "event_participants",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "events",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "invitations",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "ip_tracking",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "knowledge_garden",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "media",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "media_jobs",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "messages",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "notificationSettings",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "notifications",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "notificationsLog",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "organization_settings",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "organizations",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "partner_benefits",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "partners",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "photos",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "professionals",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "profileEditTokens",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "social_scores",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "tracking_events",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "user_badges",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "users",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "voteSessions",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "votes",
+      "TABLE_ROWS": "0"
+    },
+    {
+      "TABLE_NAME": "whatsappLogs",
+      "TABLE_ROWS": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\tTABLE_ROWS\n__drizzle_migrations\t4\narticles\t0\nassets\t0\naudit_logs\t0\nbadges\t0\ncandidateApplications\t0\ncandidate_analytics\t0\ncandidate_comments\t3\ncandidates\t0\ncertificates\t0\ncomment_likes\t0\ncontests\t2\nevaluations\t0\neventAttendees\t0\nevent_config\t0\nevent_participants\t0\nevents\t0\ninvitations\t0\nip_tracking\t0\nknowledge_garden\t0\nmedia\t0\nmedia_jobs\t0\nmessages\t0\nnotificationSettings\t0\nnotifications\t0\nnotificationsLog\t0\norganization_settings\t0\norganizations\t0\npartner_benefits\t0\npartners\t0\nphotos\t0\nprofessionals\t0\nprofileEditTokens\t0\nsocial_scores\t0\ntracking_events\t0\nuser_badges\t0\nusers\t0\nvoteSessions\t0\nvotes\t0\nwhatsappLogs\t0\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}

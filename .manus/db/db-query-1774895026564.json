@@ -1,0 +1,181 @@
+{
+  "query": "SELECT c.id, c.firstName, c.lastName, c.category, c.status, u.email, u.role FROM candidates c JOIN users u ON c.userId = u.id ORDER BY c.category, c.firstName;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT c.id, c.firstName, c.lastName, c.category, c.status, u.email, u.role FROM candidates c JOIN users u ON c.userId = u.id ORDER BY c.category, c.firstName;",
+  "rows": [
+    {
+      "id": "10",
+      "firstName": "Alessia",
+      "lastName": "Jouffin",
+      "category": "miss",
+      "status": "approved",
+      "email": "alessia.jouffin@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "7",
+      "firstName": "Aliya",
+      "lastName": "Ammour",
+      "category": "miss",
+      "status": "approved",
+      "email": "aliya.ammour@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "3",
+      "firstName": "Anaïs",
+      "lastName": "Geronnez",
+      "category": "miss",
+      "status": "approved",
+      "email": "anais.geronnez@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "9",
+      "firstName": "Esmeralda",
+      "lastName": "Verminnen",
+      "category": "miss",
+      "status": "approved",
+      "email": "esmeralda.verminnen@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "11",
+      "firstName": "Giulia",
+      "lastName": "Leonetti",
+      "category": "miss",
+      "status": "approved",
+      "email": "giulia.leonetti@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "2",
+      "firstName": "Julie",
+      "lastName": "Geronnez",
+      "category": "miss",
+      "status": "approved",
+      "email": "julie.geronnez@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "4",
+      "firstName": "Lindsay",
+      "lastName": "Rulkin",
+      "category": "miss",
+      "status": "approved",
+      "email": "lindsay.rulkin@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "1",
+      "firstName": "Loriana",
+      "lastName": "Morelle",
+      "category": "miss",
+      "status": "approved",
+      "email": "loriana.morelle@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "6",
+      "firstName": "Manon",
+      "lastName": "Vaillant",
+      "category": "miss",
+      "status": "approved",
+      "email": "manon.vaillant@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "12",
+      "firstName": "Melina",
+      "lastName": "Delmotte",
+      "category": "miss",
+      "status": "approved",
+      "email": "melina.delmotte@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "8",
+      "firstName": "Nell",
+      "lastName": "Descamps",
+      "category": "miss",
+      "status": "approved",
+      "email": "nell.descamps@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "5",
+      "firstName": "Noëlline",
+      "lastName": "Zinszner",
+      "category": "miss",
+      "status": "approved",
+      "email": "noelline.zinszner@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "17",
+      "firstName": "Dawson",
+      "lastName": "Ostrowski",
+      "category": "mister",
+      "status": "approved",
+      "email": "dawson.ostrowski@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "15",
+      "firstName": "Hugo",
+      "lastName": "Puma",
+      "category": "mister",
+      "status": "approved",
+      "email": "hugo.puma@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "14",
+      "firstName": "Korentin",
+      "lastName": "Schooneyt",
+      "category": "mister",
+      "status": "approved",
+      "email": "korentin.schooneyt@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "16",
+      "firstName": "Kyllian",
+      "lastName": "Baton",
+      "category": "mister",
+      "status": "approved",
+      "email": "kyllian.baton@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "18",
+      "firstName": "Lylian",
+      "lastName": "Paternotre",
+      "category": "mister",
+      "status": "approved",
+      "email": "lylian.paternotre@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "13",
+      "firstName": "Noé",
+      "lastName": "Caudrelier",
+      "category": "mister",
+      "status": "approved",
+      "email": "noe.caudrelier@candidat.missetmisterdour.be",
+      "role": "candidate"
+    },
+    {
+      "id": "19",
+      "firstName": "Peyton",
+      "lastName": "Loicq",
+      "category": "mister",
+      "status": "approved",
+      "email": "peyton.loicq@candidat.missetmisterdour.be",
+      "role": "candidate"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfirstName\tlastName\tcategory\tstatus\temail\trole\n10\tAlessia\tJouffin\tmiss\tapproved\talessia.jouffin@candidat.missetmisterdour.be\tcandidate\n7\tAliya\tAmmour\tmiss\tapproved\taliya.ammour@candidat.missetmisterdour.be\tcandidate\n3\tAnaïs\tGeronnez\tmiss\tapproved\tanais.geronnez@candidat.missetmisterdour.be\tcandidate\n9\tEsmeralda\tVerminnen\tmiss\tapproved\tesmeralda.verminnen@candidat.missetmisterdour.be\tcandidate\n11\tGiulia\tLeonetti\tmiss\tapproved\tgiulia.leonetti@candidat.missetmisterdour.be\tcandidate\n2\tJulie\tGeronnez\tmiss\tapproved\tjulie.geronnez@candidat.missetmisterdour.be\tcandidate\n4\tLindsay\tRulkin\tmiss\tapproved\tlindsay.rulkin@candidat.missetmisterdour.be\tcandidate\n1\tLoriana\tMorelle\tmiss\tapproved\tloriana.morelle@candidat.missetmisterdour.be\tcandidate\n6\tManon\tVaillant\tmiss\tapproved\tmanon.vaillant@candidat.missetmisterdour.be\tcandidate\n12\tMelina\tDelmotte\tmiss\tapproved\tmelina.delmotte@candidat.missetmisterdour.be\tcandidate\n8\tNell\tDescamps\tmiss\tapproved\tnell.descamps@candidat.missetmisterdour.be\tcandidate\n5\tNoëlline\tZinszner\tmiss\tapproved\tnoelline.zinszner@candidat.missetmisterdour.be\tcandidate\n17\tDawson\tOstrowski\tmister\tapproved\tdawson.ostrowski@candidat.missetmisterdour.be\tcandidate\n15\tHugo\tPuma\tmister\tapproved\thugo.puma@candidat.missetmisterdour.be\tcandidate\n14\tKorentin\tSchooneyt\tmister\tapproved\tkorentin.schooneyt@candidat.missetmisterdour.be\tcandidate\n16\tKyllian\tBaton\tmister\tapproved\tkyllian.baton@candidat.missetmisterdour.be\tcandidate\n18\tLylian\tPaternotre\tmister\tapproved\tlylian.paternotre@candidat.missetmisterdour.be\tcandidate\n13\tNoé\tCaudrelier\tmister\tapproved\tnoe.caudrelier@candidat.missetmisterdour.be\tcandidate\n19\tPeyton\tLoicq\tmister\tapproved\tpeyton.loicq@candidat.missetmisterdour.be\tcandidate\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

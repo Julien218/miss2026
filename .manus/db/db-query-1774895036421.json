@@ -1,0 +1,30 @@
+{
+  "query": "SELECT 'users' as tbl, COUNT(*) as cnt FROM users UNION ALL SELECT 'candidates', COUNT(*) FROM candidates UNION ALL SELECT 'miss', COUNT(*) FROM candidates WHERE category='miss' UNION ALL SELECT 'mister', COUNT(*) FROM candidates WHERE category='mister' UNION ALL SELECT 'contests', COUNT(*) FROM contests;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT 'users' as tbl, COUNT(*) as cnt FROM users UNION ALL SELECT 'candidates', COUNT(*) FROM candidates UNION ALL SELECT 'miss', COUNT(*) FROM candidates WHERE category='miss' UNION ALL SELECT 'mister', COUNT(*) FROM candidates WHERE category='mister' UNION ALL SELECT 'contests', COUNT(*) FROM contests;",
+  "rows": [
+    {
+      "tbl": "miss",
+      "cnt": "12"
+    },
+    {
+      "tbl": "contests",
+      "cnt": "1"
+    },
+    {
+      "tbl": "users",
+      "cnt": "30"
+    },
+    {
+      "tbl": "mister",
+      "cnt": "7"
+    },
+    {
+      "tbl": "candidates",
+      "cnt": "19"
+    }
+  ],
+  "messages": [],
+  "stdout": "tbl\tcnt\nmiss\t12\ncontests\t1\nusers\t30\nmister\t7\ncandidates\t19\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}
