@@ -1,0 +1,16 @@
+{
+  "query": "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME LIKE '%setting%' ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME LIKE '%setting%' ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "notificationSettings"
+    },
+    {
+      "TABLE_NAME": "organization_settings"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\nnotificationSettings\norganization_settings\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

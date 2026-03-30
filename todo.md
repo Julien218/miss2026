@@ -3834,3 +3834,11 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Importer le badge pour userId 1 (Js-Innov.IA, super_admin) — FIRST_VOTE
 - [x] Note : userId 10740277 n'existe pas dans la nouvelle DB (ancien ID système) — ignoré
 - [x] Checkpoint et livraison
+
+
+## ⚙️ IMPORT DES PARAMÈTRES DU SITE DEPUIS LE CSV
+
+- [x] Analyser le CSV (4 paramètres : registration_open_at, registration_close_at, registration_enabled, registration_message)
+- [x] Créer la table siteSettings (n'existait pas en DB)
+- [x] Importer les 4 paramètres (inscriptions désactivées, message personnalisé)
+- [x] Checkpoint et livraison
