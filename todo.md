@@ -3852,3 +3852,13 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Analyser le CSV photos (298 photos : 100 portrait + 198 other, 8 photos de test exclues)
 - [x] Importer 289 photos (290 réelles - 1 doublon), total en DB : 308 photos (110 portrait + 198 other)
 - [x] Checkpoint et livraison
+
+
+## 👑 IMPORT DES CANDIDATS ET DU CONCOURS DEPUIS LES CSV
+
+- [x] Parser le CSV contests avec Python (champs multi-lignes avec virgules)
+- [x] Mettre à jour le contest 1 : titre, description, lieu (Centre Sportif d'Elouges), dates (18 avril 2026), status ongoing
+- [x] Ajouter 6 colonnes manquantes à candidates : pendingPhoto, photoStatus, photoRejectionReason, personalHashtag, officialHashtags, shareCaption
+- [x] Mettre à jour les 19 candidats avec données complètes : bios, motivations, expériences, réseaux sociaux, hashtags personnels/officiels, consentements, emails, photos de profil
+- [x] Stats finales : 12 Miss (11 avec bio, 12 avec hashtag, 11 avec Instagram) + 7 Mister (7 avec bio, 7 avec hashtag, 7 avec Instagram)
+- [x] Checkpoint et livraison

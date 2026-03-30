@@ -1,0 +1,73 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'candidates' AND ORDINAL_POSITION > 20 ORDER BY ORDINAL_POSITION;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'candidates' AND ORDINAL_POSITION > 20 ORDER BY ORDINAL_POSITION;",
+  "rows": [
+    {
+      "COLUMN_NAME": "tiktok"
+    },
+    {
+      "COLUMN_NAME": "linkedin"
+    },
+    {
+      "COLUMN_NAME": "acceptRules"
+    },
+    {
+      "COLUMN_NAME": "acceptMedia"
+    },
+    {
+      "COLUMN_NAME": "acceptNewsletter"
+    },
+    {
+      "COLUMN_NAME": "acceptCGU"
+    },
+    {
+      "COLUMN_NAME": "acceptCGUAt"
+    },
+    {
+      "COLUMN_NAME": "consentVersion"
+    },
+    {
+      "COLUMN_NAME": "accountEmail"
+    },
+    {
+      "COLUMN_NAME": "passwordHash"
+    },
+    {
+      "COLUMN_NAME": "accountCreatedAt"
+    },
+    {
+      "COLUMN_NAME": "voteCount"
+    },
+    {
+      "COLUMN_NAME": "shareCount"
+    },
+    {
+      "COLUMN_NAME": "status"
+    },
+    {
+      "COLUMN_NAME": "profileSubmittedAt"
+    },
+    {
+      "COLUMN_NAME": "profileReviewNote"
+    },
+    {
+      "COLUMN_NAME": "registrationDate"
+    },
+    {
+      "COLUMN_NAME": "validatedAt"
+    },
+    {
+      "COLUMN_NAME": "validatedBy"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\ntiktok\nlinkedin\nacceptRules\nacceptMedia\nacceptNewsletter\nacceptCGU\nacceptCGUAt\nconsentVersion\naccountEmail\npasswordHash\naccountCreatedAt\nvoteCount\nshareCount\nstatus\nprofileSubmittedAt\nprofileReviewNote\nregistrationDate\nvalidatedAt\nvalidatedBy\ncreatedAt\nupdatedAt\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}
