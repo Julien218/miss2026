@@ -3887,3 +3887,14 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Route /gallery et lien navigation ajoutés
 - [x] Tests visuels OK : cartes défilent, galerie affiche 19 candidats avec photos
 - [ ] Checkpoint et livraison
+
+
+## 🏷️ FILTRE PAR ÉVÉNEMENT DANS LA GALERIE ✅
+
+- [x] Analyser les catégories de photos en DB — 308 photos (110 portrait + 198 event)
+- [x] Reclasser les photos 'other' en catégories (portrait, event) via SQL
+- [x] Ajouter procédure photos.listPublic avec filtre par catégorie et candidateId
+- [x] Implémenter double système de filtres dans Gallery.tsx (Toutes/Portraits/Shooting + Tous/Miss/Mister)
+- [x] Corriger parsing tags JSON dans getPhotos et getPhotoById (erreur "[studio]" non-JSON)
+- [x] Tests vitest gallery-filters.test.ts : 11 tests passés (filtres catégorie, candidateId, all, listApproved)
+- [ ] Checkpoint et livraison

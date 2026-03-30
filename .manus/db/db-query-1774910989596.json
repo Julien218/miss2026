@@ -1,0 +1,39 @@
+{
+  "query": "SELECT category, COUNT(*) as count FROM photos GROUP BY category; SHOW COLUMNS FROM photos;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT category, COUNT(*) as count FROM photos GROUP BY category; SHOW COLUMNS FROM photos;",
+  "rows": [
+    {
+      "category": "portrait",
+      "count": "110"
+    },
+    {
+      "category": "other",
+      "count": "198"
+    }
+  ],
+  "messages": [
+    "Field\tType\tNull\tKey\tDefault\tExtra",
+    "id\tint\tNO\tPRI\tNULL\tauto_increment",
+    "url\tvarchar(512)\tNO\t\tNULL\t",
+    "thumbnail\tvarchar(512)\tYES\t\tNULL\t",
+    "title\tvarchar(255)\tNO\t\tNULL\t",
+    "description\ttext\tYES\t\tNULL\t",
+    "filename\tvarchar(255)\tYES\t\tNULL\t",
+    "mimeType\tvarchar(100)\tYES\t\tNULL\t",
+    "sizeBytes\tint\tYES\t\tNULL\t",
+    "width\tint\tYES\t\tNULL\t",
+    "height\tint\tYES\t\tNULL\t",
+    "category\tenum('portrait','event','backstage','performance','other')\tNO\tMUL\tother\t",
+    "tags\ttext\tYES\t\tNULL\t",
+    "candidateId\tint\tYES\tMUL\tNULL\t",
+    "uploadedBy\tint\tNO\t\tNULL\t",
+    "status\tenum('pending','approved','rejected')\tNO\tMUL\tpending\t",
+    "approvedBy\tint\tYES\t\tNULL\t",
+    "approvedAt\ttimestamp\tYES\t\tNULL\t",
+    "createdAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\t",
+    "updatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\tDEFAULT_GENERATED on update CURRENT_TIMESTAMP"
+  ],
+  "stdout": "category\tcount\nportrait\t110\nother\t198\nField\tType\tNull\tKey\tDefault\tExtra\nid\tint\tNO\tPRI\tNULL\tauto_increment\nurl\tvarchar(512)\tNO\t\tNULL\t\nthumbnail\tvarchar(512)\tYES\t\tNULL\t\ntitle\tvarchar(255)\tNO\t\tNULL\t\ndescription\ttext\tYES\t\tNULL\t\nfilename\tvarchar(255)\tYES\t\tNULL\t\nmimeType\tvarchar(100)\tYES\t\tNULL\t\nsizeBytes\tint\tYES\t\tNULL\t\nwidth\tint\tYES\t\tNULL\t\nheight\tint\tYES\t\tNULL\t\ncategory\tenum('portrait','event','backstage','performance','other')\tNO\tMUL\tother\t\ntags\ttext\tYES\t\tNULL\t\ncandidateId\tint\tYES\tMUL\tNULL\t\nuploadedBy\tint\tNO\t\tNULL\t\nstatus\tenum('pending','approved','rejected')\tNO\tMUL\tpending\t\napprovedBy\tint\tYES\t\tNULL\t\napprovedAt\ttimestamp\tYES\t\tNULL\t\ncreatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\t\nupdatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\tDEFAULT_GENERATED on update CURRENT_TIMESTAMP\n",
+  "stderr": "",
+  "execution_time_ms": 397
+}

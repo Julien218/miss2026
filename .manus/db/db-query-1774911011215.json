@@ -1,0 +1,46 @@
+{
+  "query": "SELECT DISTINCT title FROM photos WHERE category = 'other' LIMIT 20; SELECT DISTINCT title FROM photos WHERE category = 'portrait' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT DISTINCT title FROM photos WHERE category = 'other' LIMIT 20; SELECT DISTINCT title FROM photos WHERE category = 'portrait' LIMIT 10;",
+  "rows": [
+    {
+      "title": "shooting officiel du 07/03/2026"
+    },
+    {
+      "title": "title"
+    },
+    {
+      "title": "Esmeralda Verminnen — Miss Dour 2026"
+    },
+    {
+      "title": "Loriana Morelle — Miss Dour 2026"
+    },
+    {
+      "title": "Manon Vaillant — Miss Dour 2026"
+    },
+    {
+      "title": "Melina Delmotte — Miss Dour 2026"
+    },
+    {
+      "title": "Peyton Loicq — Miss Dour 2026"
+    },
+    {
+      "title": "Korentin Schooneyt — Mister Dour 2026"
+    },
+    {
+      "title": "Giulia Leonetti — Miss Dour 2026"
+    },
+    {
+      "title": "Julie Geronnez — Miss Dour 2026"
+    },
+    {
+      "title": "Dawson Ostrowski — Mister Dour 2026"
+    },
+    {
+      "title": "Alessia Jouffin — Miss Dour 2026"
+    }
+  ],
+  "messages": [],
+  "stdout": "title\nshooting officiel du 07/03/2026\ntitle\nEsmeralda Verminnen — Miss Dour 2026\nLoriana Morelle — Miss Dour 2026\nManon Vaillant — Miss Dour 2026\nMelina Delmotte — Miss Dour 2026\nPeyton Loicq — Miss Dour 2026\nKorentin Schooneyt — Mister Dour 2026\nGiulia Leonetti — Miss Dour 2026\nJulie Geronnez — Miss Dour 2026\nDawson Ostrowski — Mister Dour 2026\nAlessia Jouffin — Miss Dour 2026\n",
+  "stderr": "",
+  "execution_time_ms": 430
+}

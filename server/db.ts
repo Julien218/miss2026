@@ -2744,11 +2744,21 @@ export async function getPhotos(filters?: {
 
   const results = await query.orderBy(desc(photos.createdAt));
 
-  // Parse tags JSON
-  return results.map((photo) => ({
-    ...photo,
-    tags: photo.tags ? JSON.parse(photo.tags) : [],
-  }));
+  // Parse tags JSON (handle non-JSON values gracefully)
+  return results.map((photo) => {
+    let parsedTags: string[] = [];
+    if (photo.tags) {
+      try {
+        const parsed = JSON.parse(photo.tags);
+        parsedTags = Array.isArray(parsed) ? parsed : [String(parsed)];
+      } catch {
+        // Handle non-JSON tags like "[studio]" → extract as plain strings
+        const cleaned = photo.tags.replace(/^\[|\]$/g, '').trim();
+        parsedTags = cleaned ? cleaned.split(',').map((t: string) => t.trim()) : [];
+      }
+    }
+    return { ...photo, tags: parsedTags };
+  });
 }
 
 export async function getPhotoById(id: number) {
@@ -2760,10 +2770,17 @@ export async function getPhotoById(id: number) {
   if (result.length === 0) return undefined;
 
   const photo = result[0];
-  return {
-    ...photo,
-    tags: photo.tags ? JSON.parse(photo.tags) : [],
-  };
+  let parsedTags: string[] = [];
+  if (photo.tags) {
+    try {
+      const parsed = JSON.parse(photo.tags);
+      parsedTags = Array.isArray(parsed) ? parsed : [String(parsed)];
+    } catch {
+      const cleaned = photo.tags.replace(/^\[|\]$/g, '').trim();
+      parsedTags = cleaned ? cleaned.split(',').map((t: string) => t.trim()) : [];
+    }
+  }
+  return { ...photo, tags: parsedTags };
 }
 
 export async function updatePhotoStatus(

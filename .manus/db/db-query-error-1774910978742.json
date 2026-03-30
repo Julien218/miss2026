@@ -1,0 +1,13 @@
+{
+  "query": "SELECT category, COUNT(*) as count FROM photos GROUP BY category; SELECT DISTINCT status FROM photos; SELECT COUNT(*) as total FROM photos WHERE isPublic = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT category, COUNT(*) as count FROM photos GROUP BY category; SELECT DISTINCT status FROM photos; SELECT COUNT(*) as total FROM photos WHERE isPublic = 1;",
+  "returncode": 1,
+  "logs": [
+    "category\tcount",
+    "portrait\t110",
+    "other\t198",
+    "status",
+    "approved",
+    "ERROR 1054 (42S22) at line 1: Unknown column 'ispublic' in 'where clause'"
+  ]
+}

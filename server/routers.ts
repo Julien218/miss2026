@@ -1519,6 +1519,46 @@ export const appRouter = router({
         await db.deletePhoto(input.id);
         return { success: true };
       }),
+
+    // Public: list approved photos with optional category filter
+    listPublic: publicProcedure
+      .input(z.object({
+        category: z.enum(["portrait", "event", "backstage", "performance", "other", "all"]).optional(),
+        candidateId: z.number().optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const filters: any = { status: "approved" };
+        if (input?.category && input.category !== "all") filters.category = input.category;
+        if (input?.candidateId) filters.candidateId = input.candidateId;
+        const photosList = await db.getPhotos(filters);
+        // Join with candidate info
+        const photosWithCandidate = await Promise.all(
+          photosList.map(async (photo) => {
+            let candidateName = null;
+            let candidateCategory = null;
+            if (photo.candidateId) {
+              const candidate = await db.getCandidateById(photo.candidateId);
+              if (candidate) {
+                candidateName = `${candidate.firstName} ${candidate.lastName}`;
+                candidateCategory = candidate.category;
+              }
+            }
+            return {
+              id: photo.id,
+              url: photo.url,
+              thumbnail: photo.thumbnail,
+              title: photo.title,
+              description: photo.description,
+              category: photo.category,
+              candidateId: photo.candidateId,
+              candidateName,
+              candidateCategory,
+              createdAt: photo.createdAt,
+            };
+          })
+        );
+        return photosWithCandidate;
+      }),
   }),
 
   // ========== PERMISSIONS ==========

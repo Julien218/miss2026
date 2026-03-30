@@ -1,0 +1,17 @@
+{
+  "query": "SELECT status, COUNT(*) as count FROM photos GROUP BY status; SELECT category, candidateId, COUNT(*) as count FROM photos WHERE category = 'other' GROUP BY category, candidateId LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT status, COUNT(*) as count FROM photos GROUP BY status; SELECT category, candidateId, COUNT(*) as count FROM photos WHERE category = 'other' GROUP BY category, candidateId LIMIT 20;",
+  "rows": [
+    {
+      "status": "approved",
+      "count": "308"
+    }
+  ],
+  "messages": [
+    "category\tcandidateId\tcount",
+    "other\tNULL\t198"
+  ],
+  "stdout": "status\tcount\napproved\t308\ncategory\tcandidateId\tcount\nother\tNULL\t198\n",
+  "stderr": "",
+  "execution_time_ms": 428
+}
