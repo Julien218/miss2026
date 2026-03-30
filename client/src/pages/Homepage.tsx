@@ -1,11 +1,12 @@
 import { Link } from "wouter";
 import { useState as useMenuState } from "react";
-import { Crown, Calendar, Users, Award, Newspaper, Mail, ArrowRight, Sparkles, LogIn, Menu, X } from "lucide-react";
+import { Crown, Calendar, Users, Award, Newspaper, Mail, ArrowRight, Sparkles, LogIn, Menu, X, Heart, Camera } from "lucide-react";
 import { BRANDING } from "@/config/branding";
 import { useAuth } from "@/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { GagaNightCountdown } from "@/components/GagaNightCountdown";
 import { SEOHead } from "@/components/SEOHead";
+import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
 
 export default function Homepage() {
   const { isAuthenticated, user } = useAuth();
@@ -56,6 +57,7 @@ export default function Homepage() {
               <Link href="/about" className="text-gray-300 hover:text-gold transition-colors">À Propos</Link>
               <Link href="/candidates" className="text-gray-300 hover:text-gold transition-colors">Candidats</Link>
               <Link href="/ranking" className="text-gray-300 hover:text-gold transition-colors">Classement</Link>
+              <Link href="/gallery" className="text-gray-300 hover:text-gold transition-colors">Galerie</Link>
               <Link href="/sponsors" className="text-gray-300 hover:text-gold transition-colors">Sponsors</Link>
               <Link href="/press" className="text-gray-300 hover:text-gold transition-colors">Presse</Link>
               <Link href="/contact" className="px-4 py-2 bg-transparent border border-gold text-gold font-medium rounded-lg hover:bg-gold/10 transition-colors">Contact</Link>
@@ -86,6 +88,7 @@ export default function Homepage() {
               <Link href="/about" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>À Propos</Link>
               <Link href="/candidates" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Candidats</Link>
               <Link href="/ranking" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Classement</Link>
+              <Link href="/gallery" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Galerie</Link>
               <Link href="/sponsors" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Sponsors</Link>
               <Link href="/press" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Presse</Link>
               <Link href="/contact" className="block py-2 px-3 border border-gold text-gold rounded-lg hover:bg-gold/10 transition-colors text-center" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
@@ -105,32 +108,40 @@ export default function Homepage() {
         </div>
       </header>
 
-      {/* Section 1: Hero */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gold/20 via-transparent to-gold/20" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyMTIsIDE3NSwgNTUsIDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20" />
+      {/* Section 1: Hero avec cartes flottantes de candidats */}
+      <section className="relative py-20 md:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/10" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyMTIsIDE3NSwgNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
         <div className="container mx-auto px-4 text-center relative z-10">
-          <Crown className="w-20 h-20 mx-auto mb-8 text-gold animate-pulse" />
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent leading-tight">
+          <Crown className="w-16 h-16 mx-auto mb-6 text-gold animate-pulse" />
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent leading-tight">
             Miss & Mister Dour 2026
           </h1>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
             La soirée de prestige nationale belge qui célèbre l'élégance, le talent et le charisme
           </p>
-          <div className="flex items-center justify-center gap-3 text-gold text-xl mb-12">
-            <Calendar className="w-6 h-6" />
+          <div className="flex items-center justify-center gap-3 text-gold text-lg mb-8">
+            <Calendar className="w-5 h-5" />
             <span className="font-bold">19 Avril 2026</span>
-            <span className="text-gray-400">|</span>
-            <span>Centre Sportif d'Elouges, Belgique</span>
+            <span className="text-gray-500">|</span>
+            <span className="text-gray-300">Centre Sportif d'Elouges</span>
           </div>
+        </div>
+
+        {/* Cartes flottantes des candidats */}
+        <div className="relative z-10 mt-4">
+          <FloatingCandidateCards />
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10 mt-8">
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/inscription-candidat" className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105 flex items-center gap-2">
               Devenir Candidat
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/candidates" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all flex items-center gap-2">
-              Découvrir les Candidats
-              <Users className="w-5 h-5" />
+            <Link href="/voter" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all flex items-center gap-2">
+              Voter pour vos favoris
+              <Heart className="w-5 h-5" />
             </Link>
           </div>
         </div>
@@ -160,37 +171,40 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Section 3: Candidats (Aperçu) */}
+      {/* Section 3: Galerie & Candidats */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <Users className="w-12 h-12 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl md:text-5xl font-bold text-gold mb-4">Nos Candidats</h2>
+            <Camera className="w-12 h-12 mx-auto mb-6 text-gold" />
+            <h2 className="text-4xl md:text-5xl font-bold text-gold mb-4">Galerie & Candidats</h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Découvrez les candidats exceptionnels qui participent à l'édition 2026
+              Découvrez les candidats exceptionnels et les moments forts de l'édition 2026
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-gray-800/50 border border-gold/20 rounded-lg overflow-hidden hover:border-gold/40 transition-all group">
-                <div className="aspect-[3/4] bg-gradient-to-br from-gold/20 to-transparent flex items-center justify-center">
-                  <Crown className="w-16 h-16 text-gold/50 group-hover:scale-110 transition-transform" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Candidat {i}</h3>
-                  <p className="text-gray-400 text-sm mb-4">Catégorie • Ville</p>
-                  <Link href={`/candidate/${i}`} className="text-gold hover:text-gold/80 transition-colors font-medium flex items-center gap-2">
-                    Voir le profil
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+            <Link href="/candidates" className="group bg-gray-800/50 border border-gold/20 rounded-xl overflow-hidden hover:border-gold/50 transition-all">
+              <div className="aspect-video bg-gradient-to-br from-pink-500/20 via-gold/10 to-blue-500/20 flex items-center justify-center">
+                <Users className="w-16 h-16 text-gold/60 group-hover:scale-110 transition-transform" />
               </div>
-            ))}
-          </div>
-          <div className="text-center">
-            <Link href="/candidates" className="inline-flex items-center gap-2 px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
-              Voir tous les candidats
-              <ArrowRight className="w-5 h-5" />
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-gold transition-colors">Nos Candidats</h3>
+                <p className="text-gray-400 mb-4">12 Miss et 7 Mister en compétition pour le titre 2026</p>
+                <span className="text-gold font-medium flex items-center gap-2">
+                  Voir les profils <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Link>
+            <Link href="/gallery" className="group bg-gray-800/50 border border-gold/20 rounded-xl overflow-hidden hover:border-gold/50 transition-all">
+              <div className="aspect-video bg-gradient-to-br from-gold/20 via-copper/10 to-champagne/20 flex items-center justify-center">
+                <Camera className="w-16 h-16 text-gold/60 group-hover:scale-110 transition-transform" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-gold transition-colors">Galerie Photos</h3>
+                <p className="text-gray-400 mb-4">Shooting officiel, coulisses et moments de prestige</p>
+                <span className="text-gold font-medium flex items-center gap-2">
+                  Voir la galerie <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
             </Link>
           </div>
         </div>

@@ -1,0 +1,20 @@
+{
+  "query": "SELECT category, status, COUNT(*) as cnt FROM photos GROUP BY category, status ORDER BY cnt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT category, status, COUNT(*) as cnt FROM photos GROUP BY category, status ORDER BY cnt DESC;",
+  "rows": [
+    {
+      "category": "other",
+      "status": "approved",
+      "cnt": "198"
+    },
+    {
+      "category": "portrait",
+      "status": "approved",
+      "cnt": "110"
+    }
+  ],
+  "messages": [],
+  "stdout": "category\tstatus\tcnt\nother\tapproved\t198\nportrait\tapproved\t110\n",
+  "stderr": "",
+  "execution_time_ms": 363
+}

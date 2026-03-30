@@ -1,0 +1,18 @@
+{
+  "query": "SELECT COUNT(*) as total, isPublic, type FROM media GROUP BY isPublic, type; SELECT COUNT(*) as total_photos FROM photos;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT COUNT(*) as total, isPublic, type FROM media GROUP BY isPublic, type; SELECT COUNT(*) as total_photos FROM photos;",
+  "rows": [
+    {
+      "total": "19",
+      "isPublic": "1",
+      "type": "photo"
+    }
+  ],
+  "messages": [
+    "total_photos",
+    "308"
+  ],
+  "stdout": "total\tisPublic\ttype\n19\t1\tphoto\ntotal_photos\n308\n",
+  "stderr": "",
+  "execution_time_ms": 503
+}

@@ -296,6 +296,16 @@
   100% { transform: translateY(-80px) rotate(20deg); opacity: 0; }
 }
 
+@keyframes marqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeRight {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
 }
@@ -329,6 +339,16 @@
 
 .animate-sparkle {
   animation: sparkle 1.8s ease-in-out infinite;
+}
+
+.animate-marquee-left {
+  animation: marqueeLeft 30s linear infinite;
+  width: max-content;
+}
+
+.animate-marquee-right {
+  animation: marqueeRight 35s linear infinite;
+  width: max-content;
 }
 
 /* ── Particules scintillantes (décoration Lady Gaga) ── */

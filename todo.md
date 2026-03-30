@@ -3862,3 +3862,28 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Mettre à jour les 19 candidats avec données complètes : bios, motivations, expériences, réseaux sociaux, hashtags personnels/officiels, consentements, emails, photos de profil
 - [x] Stats finales : 12 Miss (11 avec bio, 12 avec hashtag, 11 avec Instagram) + 7 Mister (7 avec bio, 7 avec hashtag, 7 avec Instagram)
 - [x] Checkpoint et livraison
+
+
+## 📸 RUBRIQUE GALERIE PHOTO PUBLIQUE ✅
+
+- [x] Analyser le code existant (pages galerie, routes, router photos, schéma DB)
+- [x] Créer/compléter la page Galerie Photo publique avec filtres (Tous/Miss/Mister)
+- [x] Lightbox intégré pour visualiser les photos en plein écran
+- [x] Design premium cohérent (dark, gold, badges, compteurs votes)
+- [x] Route /gallery dans App.tsx
+- [x] Lien Galerie ajouté dans la navigation (desktop + mobile)
+- [x] Backend : procédures tRPC media.listPublic, media.listByCandidate, candidateProfile.listApproved
+- [x] Tests vitest gallery.test.ts : 10 tests passés
+- [ ] Checkpoint et livraison
+
+
+## 🃏 CARTES FLOTTANTES CANDIDATS HERO + GALERIE PHOTO ✅
+
+- [x] Analyser le hero section actuel de Homepage.tsx
+- [x] Créer composant FloatingCandidateCards avec animation marquee CSS infinie (2 rangées : Miss + Mister)
+- [x] Intégrer les cartes flottantes dans le hero section — défilement horizontal infini
+- [x] Charger les candidats via tRPC candidateProfile.listApproved (photos, noms, catégories, votes)
+- [x] Page Galerie Photo publique avec filtres Tous(19)/Miss(13)/Mister(6)
+- [x] Route /gallery et lien navigation ajoutés
+- [x] Tests visuels OK : cartes défilent, galerie affiche 19 candidats avec photos
+- [ ] Checkpoint et livraison

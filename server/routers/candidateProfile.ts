@@ -798,4 +798,32 @@ export const candidateProfileRouter = router({
         email: candidate?.accountEmail ?? null,
       };
     }),
+
+  // ─── PUBLIC : Lister tous les candidats approuvés (pour hero, galerie, etc.) ──
+  listApproved: publicProcedure
+    .input(z.object({ contestId: z.number().optional() }).optional())
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
+      const { eq: eqOp, and: andOp } = await import("drizzle-orm");
+      const conditions = [eqOp(candidates.status, "approved")];
+      if (input?.contestId) {
+        conditions.push(eqOp(candidates.contestId, input.contestId));
+      }
+      const result = await db
+        .select({
+          id: candidates.id,
+          firstName: candidates.firstName,
+          lastName: candidates.lastName,
+          category: candidates.category,
+          city: candidates.city,
+          profilePhoto: candidates.profilePhoto,
+          voteCount: candidates.voteCount,
+          shareCount: candidates.shareCount,
+          bio: candidates.bio,
+        })
+        .from(candidates)
+        .where(andOp(...conditions));
+      return result;
+    }),
 });
