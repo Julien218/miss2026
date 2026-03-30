@@ -3825,3 +3825,12 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Mettre à jour profilePhoto sur les 19 candidats (URLs watermarked CloudFront)
 - [x] Vérifier : 19/19 candidats ont une photo de profil
 - [x] Checkpoint et livraison
+
+
+## 🏅 IMPORT DES BADGES UTILISATEURS DEPUIS LE CSV
+
+- [x] Analyser le CSV (2 badges : userId 1 FIRST_VOTE, userId 10740277 FIRST_VOTE)
+- [x] Vérifier la table user_badges (existe, 6 colonnes)
+- [x] Importer le badge pour userId 1 (Js-Innov.IA, super_admin) — FIRST_VOTE
+- [x] Note : userId 10740277 n'existe pas dans la nouvelle DB (ancien ID système) — ignoré
+- [x] Checkpoint et livraison

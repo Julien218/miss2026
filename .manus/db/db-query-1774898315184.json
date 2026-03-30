@@ -1,0 +1,13 @@
+{
+  "query": "INSERT INTO user_badges (userId, badgeCode, earnedAt, isDisplayed, createdAt) VALUES (1, 'FIRST_VOTE', '2026-03-07 18:28:01', 1, '2026-03-07 18:28:01'); SELECT 'Badge 1 imported for userId 1 (Js-Innov.IA)' as result;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute INSERT INTO user_badges (userId, badgeCode, earnedAt, isDisplayed, createdAt) VALUES (1, 'FIRST_VOTE', '2026-03-07 18:28:01', 1, '2026-03-07 18:28:01'); SELECT 'Badge 1 imported for userId 1 (Js-Innov.IA)' as result;",
+  "rows": [
+    {
+      "result": "Badge 1 imported for userId 1 (Js-Innov.IA)"
+    }
+  ],
+  "messages": [],
+  "stdout": "result\nBadge 1 imported for userId 1 (Js-Innov.IA)\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}
