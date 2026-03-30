@@ -27,8 +27,8 @@ export function domainRedirectMiddleware(
   const isManusComputer = host.includes("manus.computer");
   const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
   
-  // Si on est sur manus.space ou manus.computer (mais pas localhost pour le dev)
-  if ((isManusSpace || isManusComputer) && !isLocalhost) {
+  // Si on est sur manus.space (mais pas localhost ou manus.computer pour le dev)
+  if (isManusSpace && !isLocalhost) {
     // Construire l'URL de redirection vers le domaine officiel
     const officialUrl = `https://${officialDomain}${req.originalUrl}`;
     

@@ -1118,3 +1118,37 @@ export const whatsappLogs = mysqlTable("whatsappLogs", {
 }));
 export type WhatsAppLog = typeof whatsappLogs.$inferSelect;
 export type InsertWhatsAppLog = typeof whatsappLogs.$inferInsert;
+
+
+// ─── Commentaires de soutien sur profils candidats ──────────────────────────
+export const candidateComments = mysqlTable("candidate_comments", {
+  id: int("id").autoincrement().primaryKey(),
+  candidateId: int("candidate_id").notNull(),
+  parentId: int("parent_id"),
+  authorName: varchar("author_name", { length: 100 }).notNull(),
+  authorEmail: varchar("author_email", { length: 320 }),
+  content: text("content").notNull(),
+  likes: int("likes").notNull().default(0),
+  status: mysqlEnum("status", ["pending", "approved", "rejected"]).notNull().default("approved"),
+  ipHash: varchar("ip_hash", { length: 64 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  candidateIdx: index("cc_candidate_idx").on(table.candidateId),
+  statusIdx: index("cc_status_idx").on(table.status),
+  parentIdx: index("cc_parent_idx").on(table.parentId),
+}));
+export type CandidateComment = typeof candidateComments.$inferSelect;
+export type InsertCandidateComment = typeof candidateComments.$inferInsert;
+
+export const commentLikes = mysqlTable("comment_likes", {
+  id: int("id").autoincrement().primaryKey(),
+  commentId: int("comment_id").notNull(),
+  ipHash: varchar("ip_hash", { length: 64 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  commentIdx: index("cl_comment_idx").on(table.commentId),
+  ipIdx: index("cl_ip_idx").on(table.ipHash),
+  uniqueLike: uniqueIndex("cl_unique_like").on(table.commentId, table.ipHash),
+}));
+export type CommentLike = typeof commentLikes.$inferSelect;
+export type InsertCommentLike = typeof commentLikes.$inferInsert;

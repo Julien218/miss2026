@@ -112,7 +112,7 @@ export const commentsRouter = router({
           if (!db2) return;
           // Nom du candidat
           const [candRows] = await db2.execute(sql`
-            SELECT CONCAT(first_name, ' ', last_name) AS fullName FROM candidates WHERE id = ${input.candidateId} LIMIT 1
+            SELECT CONCAT(firstName, ' ', lastName) AS fullName FROM candidates WHERE id = ${input.candidateId} LIMIT 1
           `) as any;
           const candidateName = (candRows as any[])[0]?.fullName ?? `Candidat #${input.candidateId}`;
           // Emails des admins
@@ -206,7 +206,7 @@ export const commentsRouter = router({
           c.likes,
           c.status,
           c.created_at AS createdAt,
-          CONCAT(ca.first_name, ' ', ca.last_name) AS candidateName,
+          CONCAT(ca.firstName, ' ', ca.lastName) AS candidateName,
           ca.category AS candidateCategory
         FROM candidate_comments c
         LEFT JOIN candidates ca ON ca.id = c.candidate_id

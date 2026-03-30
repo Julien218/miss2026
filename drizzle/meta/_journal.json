@@ -15,6 +15,13 @@
       "when": 1774876929874,
       "tag": "0001_bitter_ulik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1774881258737,
+      "tag": "0002_curved_cannonball",
+      "breakpoints": true
     }
   ]
 }

@@ -3769,3 +3769,17 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Écrire tests vitest platform.test.ts (12 tests : auth, RBAC, email, public endpoints, router structure)
 - [x] 0 erreur TypeScript, serveur fonctionnel
 - [x] Checkpoint et livraison
+
+
+## 💬 SECTION COMMENTAIRES DE SOUTIEN SUR PROFILS CANDIDATS
+
+- [x] Analyser le schéma DB existant (table messages/comments) — code déjà implémenté dans archive v19
+- [x] Créer/adapter table DB pour commentaires publics de soutien — tables candidate_comments + comment_likes créées
+- [x] Créer procédures tRPC (getByCandidate, add, like, listForModeration, moderate, getStats) — router comments.ts vérifié
+- [x] Créer composant frontend CommentsSection (affichage, formulaire, likes, réponses imbriquées) — CommentsSection.tsx vérifié
+- [x] Intégrer la section commentaires sur la page profil candidat — déjà intégré dans CandidatePublicProfile.tsx
+- [x] Modération admin (approuver/rejeter/supprimer les commentaires) — AdminComments.tsx + moderate procedure
+- [x] Corriger noms colonnes SQL (first_name → firstName, last_name → lastName) dans comments.ts
+- [x] Anti-spam : filtrage par IP (max 5/h) + mots interdits (URLs, spam, pub, promo)
+- [x] Tests vitest server/comments.test.ts : 23 tests passés (structure, getByCandidate, add, like, modération, stats, RBAC)
+- [ ] Checkpoint et livraison
