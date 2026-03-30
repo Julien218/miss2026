@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+import { injectOGMetaIntoHTML } from "./og-meta";
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -38,7 +39,13 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
       );
-      const page = await vite.transformIndexHtml(url, template);
+      let page = await vite.transformIndexHtml(url, template);
+      
+      // Injecter les meta OG si disponibles (définis par le middleware ogMetaMiddleware)
+      if (res.locals.ogMeta) {
+        page = injectOGMetaIntoHTML(page, res.locals.ogMeta, res.locals.pageTitle);
+      }
+      
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);

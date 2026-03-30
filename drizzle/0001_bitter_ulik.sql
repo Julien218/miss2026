@@ -1,0 +1,1 @@
+ALTER TABLE `notificationSettings` MODIFY COLUMN `adminRecipients` text;

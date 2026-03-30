@@ -112,3 +112,62 @@ export async function notifyOwner(
     return false;
   }
 }
+
+/**
+ * Envoie une notification à un candidat spécifique
+ * Utilise l'API Manus Notifications pour envoyer une notification push
+ * @param userId - ID de l'utilisateur candidat
+ * @param payload - Contenu de la notification (title, content)
+ * @returns true si la notification a été envoyée avec succès
+ */
+export async function sendCandidateNotification(
+  userId: string,
+  payload: NotificationPayload
+): Promise<boolean> {
+  const { title, content } = validatePayload(payload);
+
+  if (!ENV.forgeApiUrl) {
+    console.warn("[Notification] Forge API URL not configured");
+    return false;
+  }
+
+  if (!ENV.forgeApiKey) {
+    console.warn("[Notification] Forge API key not configured");
+    return false;
+  }
+
+  const endpoint = buildEndpointUrl(ENV.forgeApiUrl);
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${ENV.forgeApiKey}`,
+        "content-type": "application/json",
+        "connect-protocol-version": "1",
+      },
+      body: JSON.stringify({
+        title,
+        content,
+        userId, // Envoyer à un utilisateur spécifique
+      }),
+    });
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      console.warn(
+        `[Notification] Failed to notify candidate ${userId} (${response.status} ${response.statusText})${
+          detail ? `: ${detail}` : ""
+        }`
+      );
+      return false;
+    }
+
+    console.log(`[Notification] Successfully notified candidate ${userId}: ${title}`);
+    return true;
+  } catch (error) {
+    console.warn(`[Notification] Error notifying candidate ${userId}:`, error);
+    return false;
+  }
+}

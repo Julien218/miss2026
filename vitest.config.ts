@@ -14,6 +14,19 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["server/**/*.test.ts", "server/**/*.spec.ts"],
+    include: [
+      "server/**/*.test.ts",
+      "server/**/*.spec.ts",
+      "client/src/**/*.test.tsx",
+      "client/src/**/*.test.ts",
+    ],
+    globals: true,
+    environmentMatchGlobs: [
+      // Tests React utilisent jsdom
+      ["client/**/*.test.tsx", "jsdom"],
+      ["client/**/*.test.ts", "jsdom"],
+      // Tests serveur utilisent node
+      ["server/**/*.test.ts", "node"],
+    ],
   },
 });

@@ -1,0 +1,73 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME != '__drizzle_migrations' ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME != '__drizzle_migrations' ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "articles"
+    },
+    {
+      "TABLE_NAME": "assets"
+    },
+    {
+      "TABLE_NAME": "audit_logs"
+    },
+    {
+      "TABLE_NAME": "badges"
+    },
+    {
+      "TABLE_NAME": "candidateApplications"
+    },
+    {
+      "TABLE_NAME": "candidate_analytics"
+    },
+    {
+      "TABLE_NAME": "candidates"
+    },
+    {
+      "TABLE_NAME": "certificates"
+    },
+    {
+      "TABLE_NAME": "contests"
+    },
+    {
+      "TABLE_NAME": "evaluations"
+    },
+    {
+      "TABLE_NAME": "eventAttendees"
+    },
+    {
+      "TABLE_NAME": "event_config"
+    },
+    {
+      "TABLE_NAME": "event_participants"
+    },
+    {
+      "TABLE_NAME": "events"
+    },
+    {
+      "TABLE_NAME": "invitations"
+    },
+    {
+      "TABLE_NAME": "ip_tracking"
+    },
+    {
+      "TABLE_NAME": "knowledge_garden"
+    },
+    {
+      "TABLE_NAME": "media"
+    },
+    {
+      "TABLE_NAME": "media_jobs"
+    },
+    {
+      "TABLE_NAME": "messages"
+    },
+    {
+      "TABLE_NAME": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\narticles\nassets\naudit_logs\nbadges\ncandidateApplications\ncandidate_analytics\ncandidates\ncertificates\ncontests\nevaluations\neventAttendees\nevent_config\nevent_participants\nevents\ninvitations\nip_tracking\nknowledge_garden\nmedia\nmedia_jobs\nmessages\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

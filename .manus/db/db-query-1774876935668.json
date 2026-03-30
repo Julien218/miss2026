@@ -1,0 +1,76 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "articles"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "assets"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "audit_logs"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "badges"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "candidateApplications"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "candidate_analytics"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "candidates"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "certificates"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "contests"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "evaluations"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "eventAttendees"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "event_config"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "event_participants"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "events"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "invitations"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "ip_tracking"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "knowledge_garden"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "media"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "media_jobs"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "messages"
+    },
+    {
+      "Tables_in_ikVKix4dpn7zVKKnzoiv6V": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_ikVKix4dpn7zVKKnzoiv6V\n__drizzle_migrations\narticles\nassets\naudit_logs\nbadges\ncandidateApplications\ncandidate_analytics\ncandidates\ncertificates\ncontests\nevaluations\neventAttendees\nevent_config\nevent_participants\nevents\ninvitations\nip_tracking\nknowledge_garden\nmedia\nmedia_jobs\nmessages\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}
