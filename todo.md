@@ -3803,4 +3803,14 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Créer 19 entrées candidates (12 Miss + 7 Mister) avec statut approved
 - [x] Mettre à jour le contest 1 en statut ongoing, supprimer le doublon contest 2
 - [x] Vérifier la cohérence users ↔ candidates ↔ contests
-- [ ] Checkpoint et livraison
+- [x] Checkpoint et livraison (version 6ca9de10)
+
+
+## 🗳️ IMPORT DES VOTES DEPUIS LE CSV
+
+- [x] Analyser le CSV des votes (1197 votes, 17 candidats, 3 catégories: miss/mister/public_choice)
+- [x] Mapper les anciens candidateId (60001-60019) vers les nouveaux (1-19) — 100% mappés
+- [x] Importer 1197 votes en base de données (batch de 100) — 0 erreurs
+- [x] Mettre à jour les voteCount sur chaque candidat
+- [x] Vérifier le leaderboard (top: Esmeralda 440, Kyllian 236, Giulia 141)
+- [x] Checkpoint et livraison

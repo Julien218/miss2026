@@ -1,0 +1,175 @@
+{
+  "query": "SHOW COLUMNS FROM votes; SELECT id, firstName, lastName, category FROM candidates ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SHOW COLUMNS FROM votes; SELECT id, firstName, lastName, category FROM candidates ORDER BY id;",
+  "rows": [
+    {
+      "Field": "id",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "PRI",
+      "Default": "NULL",
+      "Extra": "auto_increment"
+    },
+    {
+      "Field": "contestId",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "candidateId",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "userId",
+      "Type": "int",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "voterIp",
+      "Type": "varchar(45)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "voterFingerprint",
+      "Type": "varchar(64)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "voterEmail",
+      "Type": "varchar(320)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "voteCategory",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "voteWeight",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "",
+      "Default": "1",
+      "Extra": ""
+    },
+    {
+      "Field": "isVerified",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "",
+      "Default": "0",
+      "Extra": ""
+    },
+    {
+      "Field": "verificationToken",
+      "Type": "varchar(64)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "verifiedAt",
+      "Type": "timestamp",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "userAgent",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "referrer",
+      "Type": "varchar(500)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "geoCountry",
+      "Type": "varchar(2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "geoCity",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "isFraudulent",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "",
+      "Default": "0",
+      "Extra": ""
+    },
+    {
+      "Field": "createdAt",
+      "Type": "timestamp",
+      "Null": "NO",
+      "Key": "",
+      "Default": "CURRENT_TIMESTAMP",
+      "Extra": ""
+    }
+  ],
+  "messages": [
+    "id\tfirstName\tlastName\tcategory",
+    "1\tLoriana\tMorelle\tmiss",
+    "2\tJulie\tGeronnez\tmiss",
+    "3\tAnaïs\tGeronnez\tmiss",
+    "4\tLindsay\tRulkin\tmiss",
+    "5\tNoëlline\tZinszner\tmiss",
+    "6\tManon\tVaillant\tmiss",
+    "7\tAliya\tAmmour\tmiss",
+    "8\tNell\tDescamps\tmiss",
+    "9\tEsmeralda\tVerminnen\tmiss",
+    "10\tAlessia\tJouffin\tmiss",
+    "11\tGiulia\tLeonetti\tmiss",
+    "12\tMelina\tDelmotte\tmiss",
+    "13\tNoé\tCaudrelier\tmister",
+    "14\tKorentin\tSchooneyt\tmister",
+    "15\tHugo\tPuma\tmister",
+    "16\tKyllian\tBaton\tmister",
+    "17\tDawson\tOstrowski\tmister",
+    "18\tLylian\tPaternotre\tmister",
+    "19\tPeyton\tLoicq\tmister"
+  ],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\nid\tint\tNO\tPRI\tNULL\tauto_increment\ncontestId\tint\tNO\t\tNULL\t\ncandidateId\tint\tNO\t\tNULL\t\nuserId\tint\tYES\t\tNULL\t\nvoterIp\tvarchar(45)\tYES\t\tNULL\t\nvoterFingerprint\tvarchar(64)\tYES\t\tNULL\t\nvoterEmail\tvarchar(320)\tYES\t\tNULL\t\nvoteCategory\tvarchar(100)\tYES\t\tNULL\t\nvoteWeight\tint\tNO\t\t1\t\nisVerified\tint\tNO\t\t0\t\nverificationToken\tvarchar(64)\tYES\t\tNULL\t\nverifiedAt\ttimestamp\tYES\t\tNULL\t\nuserAgent\ttext\tYES\t\tNULL\t\nreferrer\tvarchar(500)\tYES\t\tNULL\t\ngeoCountry\tvarchar(2)\tYES\t\tNULL\t\ngeoCity\tvarchar(100)\tYES\t\tNULL\t\nisFraudulent\tint\tNO\t\t0\t\ncreatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\t\nid\tfirstName\tlastName\tcategory\n1\tLoriana\tMorelle\tmiss\n2\tJulie\tGeronnez\tmiss\n3\tAnaïs\tGeronnez\tmiss\n4\tLindsay\tRulkin\tmiss\n5\tNoëlline\tZinszner\tmiss\n6\tManon\tVaillant\tmiss\n7\tAliya\tAmmour\tmiss\n8\tNell\tDescamps\tmiss\n9\tEsmeralda\tVerminnen\tmiss\n10\tAlessia\tJouffin\tmiss\n11\tGiulia\tLeonetti\tmiss\n12\tMelina\tDelmotte\tmiss\n13\tNoé\tCaudrelier\tmister\n14\tKorentin\tSchooneyt\tmister\n15\tHugo\tPuma\tmister\n16\tKyllian\tBaton\tmister\n17\tDawson\tOstrowski\tmister\n18\tLylian\tPaternotre\tmister\n19\tPeyton\tLoicq\tmister\n",
+  "stderr": "",
+  "execution_time_ms": 68
+}
