@@ -1,0 +1,19 @@
+{
+  "query": "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND (TABLE_NAME LIKE '%album%' OR TABLE_NAME LIKE '%photo%' OR TABLE_NAME LIKE '%media%') ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND (TABLE_NAME LIKE '%album%' OR TABLE_NAME LIKE '%photo%' OR TABLE_NAME LIKE '%media%') ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "media"
+    },
+    {
+      "TABLE_NAME": "media_jobs"
+    },
+    {
+      "TABLE_NAME": "photos"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\nmedia\nmedia_jobs\nphotos\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}

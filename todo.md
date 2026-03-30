@@ -3814,3 +3814,14 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Mettre à jour les voteCount sur chaque candidat
 - [x] Vérifier le leaderboard (top: Esmeralda 440, Kyllian 236, Giulia 141)
 - [x] Checkpoint et livraison
+
+
+## 📸 IMPORT DES PHOTOS D'ALBUM DEPUIS LE CSV
+
+- [x] Analyser le CSV (38 photos : 19 profils album 1 + 19 triage albums 2-3)
+- [x] Mapper les anciens candidateId (60001-60019) vers les nouveaux (1-19) — 100% mappés
+- [x] Importer 19 photos de profil dans la table `photos` (catégorie portrait, statut approved)
+- [x] Importer 19 entrées dans la table `media` (type photo, isPublic=1, contestId=1)
+- [x] Mettre à jour profilePhoto sur les 19 candidats (URLs watermarked CloudFront)
+- [x] Vérifier : 19/19 candidats ont une photo de profil
+- [x] Checkpoint et livraison
