@@ -39,21 +39,17 @@ export default function Contact() {
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/">
-            <a className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img
                 src={BRANDING.logoIdentity}
                 alt="Logo officiel Miss & Mister Dour 2026"
                 className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
                 loading="eager"
               />
-            </a>
-          </Link>
-          <Link href="/">
-            <a className="text-gold hover:text-gold/80 transition-colors font-medium">
+            </Link>
+          <Link href="/" className="text-gold hover:text-gold/80 transition-colors font-medium">
               Retour à l'accueil
-            </a>
-          </Link>
+            </Link>
         </div>
       </header>
 
@@ -231,7 +227,7 @@ export default function Contact() {
                   Comment devenir candidat(e) ?
                 </summary>
                 <p className="text-gray-300 mt-4 leading-relaxed">
-                  Rendez-vous sur notre <Link href="/inscription-candidat"><a className="text-gold hover:text-gold/80">page d'inscription</a></Link> 
+                  Rendez-vous sur notre <Link href="/inscription-candidat" className="text-gold hover:text-gold/80">page d'inscription</Link> 
                   pour soumettre votre candidature. Les inscriptions sont ouvertes jusqu'au 1er mars 2026.
                 </p>
               </details>
@@ -240,7 +236,7 @@ export default function Contact() {
                   Comment devenir sponsor ?
                 </summary>
                 <p className="text-gray-300 mt-4 leading-relaxed">
-                  Consultez notre <Link href="/sponsors"><a className="text-gold hover:text-gold/80">page sponsors</a></Link> 
+                  Consultez notre <Link href="/sponsors" className="text-gold hover:text-gold/80">page sponsors</Link> 
                   pour découvrir les différents packages disponibles, puis contactez-nous via ce formulaire.
                 </p>
               </details>

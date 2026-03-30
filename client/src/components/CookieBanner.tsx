@@ -163,11 +163,9 @@ export default function CookieBanner() {
                   techniques nécessaires au fonctionnement du site (authentification, session, préférences d'affichage).
                   Ces cookies ne collectent aucune donnée à des fins publicitaires ou de traçage commercial.
                   Conformément à la directive ePrivacy et au RGPD, votre choix est mémorisé.{" "}
-                  <Link href="/legal/privacy">
-                    <a className="underline" style={{ color: "#C87941", textUnderlineOffset: "2px" }}>
+                  <Link href="/legal/privacy" className="underline" style={{ color: "#C87941", textUnderlineOffset: "2px" }}>
                       Politique de confidentialité
-                    </a>
-                  </Link>
+                    </Link>
                 </p>
               </div>
             </div>
@@ -291,15 +289,9 @@ export default function CookieBanner() {
               JS-Innov.IA · BE0877926214 · Dour, Belgique
             </p>
             <div className="flex gap-3">
-              <Link href="/legal/privacy">
-                <a className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Confidentialité</a>
-              </Link>
-              <Link href="/legal/cookies">
-                <a className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Cookies</a>
-              </Link>
-              <Link href="/mentions-legales">
-                <a className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Mentions légales</a>
-              </Link>
+              <Link href="/legal/privacy" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Confidentialité</Link>
+              <Link href="/legal/cookies" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Cookies</Link>
+              <Link href="/mentions-legales" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Mentions légales</Link>
             </div>
           </div>
         </div>

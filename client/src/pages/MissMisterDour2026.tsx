@@ -376,24 +376,18 @@ export default function MissMisterDour2026() {
                     <Heart className="w-5 h-5 text-[#D4AF37] group-hover:text-[#E8C547] transition-colors" />
                     <span className="text-white font-semibold">Voter</span>
                   </a>
-                  <Link href="/liligaga">
-                    <a
-                      onClick={() => setMobileMenuOpen(false)}
+                  <Link href="/liligaga" onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
                     >
                       <Sparkles className="w-5 h-5 text-[#7C3AED] group-hover:text-[#A855F7] transition-colors" />
                       <span className="text-white font-semibold">Liligaga Mirror</span>
-                    </a>
-                  </Link>
-                  <Link href="/js-innov">
-                    <a
-                      onClick={() => setMobileMenuOpen(false)}
+                    </Link>
+                  <Link href="/js-innov" onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
                     >
                       <Sparkles className="w-5 h-5 text-[#06B6D4] group-hover:text-[#22D3EE] transition-colors" />
                       <span className="text-white font-semibold">JS-Innov.IA</span>
-                    </a>
-                  </Link>
+                    </Link>
                 </nav>
 
                 {/* CTA Button */}

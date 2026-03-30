@@ -556,12 +556,10 @@ export default function LegalCGU() {
       {/* En-tête */}
       <div className="border-b border-gray-800" style={{ background: "rgba(200,121,65,0.05)" }}>
         <div className="max-w-4xl mx-auto px-6 py-8">
-          <Link href="/">
-            <a className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
               <ArrowLeft className="w-4 h-4" />
               Retour au site
-            </a>
-          </Link>
+            </Link>
           <div className="flex items-start gap-4">
             {/* Logo */}
             <img
@@ -680,15 +678,11 @@ export default function LegalCGU() {
               { href: "/legal/privacy", label: "Politique de confidentialité", desc: "RGPD, données personnelles" },
               { href: "/legal/cookies", label: "Politique cookies", desc: "Cookies techniques" },
             ].map(({ href, label, desc }) => (
-              <Link key={href} href={href}>
-                <a
-                  className="block p-4 rounded-xl border transition-all hover:border-opacity-60"
-                  style={{ borderColor: "rgba(200,121,65,0.2)", background: "rgba(255,255,255,0.02)" }}
-                >
+              <Link key={href} href={href} className="block p-4 rounded-xl border transition-all hover:border-opacity-60"
+                  style={{ borderColor: "rgba(200,121,65,0.2)", background: "rgba(255,255,255,0.02)" }}>
                   <p className="text-sm font-medium text-white">{label}</p>
                   <p className="text-xs text-gray-500 mt-1">{desc}</p>
-                </a>
-              </Link>
+                </Link>
             ))}
           </div>
         </div>

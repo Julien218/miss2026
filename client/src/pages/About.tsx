@@ -46,21 +46,17 @@ export default function About() {
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/">
-            <a className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img
                 src={BRANDING.logoIdentity}
                 alt="Logo officiel Miss & Mister Dour 2026"
                 className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
                 loading="eager"
               />
-            </a>
-          </Link>
-          <Link href="/">
-            <a className="text-gold hover:text-gold/80 transition-colors font-medium">
+            </Link>
+          <Link href="/" className="text-gold hover:text-gold/80 transition-colors font-medium">
               Retour à l'accueil
-            </a>
-          </Link>
+            </Link>
         </div>
       </header>
 
@@ -350,16 +346,12 @@ export default function About() {
             il y a une place pour vous dans l'univers Miss & Mister Dour.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/inscription-candidat">
-              <a className="px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
+            <Link href="/inscription-candidat" className="px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
                 Devenir Candidat
-              </a>
-            </Link>
-            <Link href="/contact">
-              <a className="px-8 py-3 bg-transparent border-2 border-gold text-gold font-bold rounded-lg hover:bg-gold/10 transition-colors">
+              </Link>
+            <Link href="/contact" className="px-8 py-3 bg-transparent border-2 border-gold text-gold font-bold rounded-lg hover:bg-gold/10 transition-colors">
                 Nous Contacter
-              </a>
-            </Link>
+              </Link>
           </div>
         </div>
       </section>

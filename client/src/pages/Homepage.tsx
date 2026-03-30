@@ -43,30 +43,26 @@ export default function Homepage() {
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/">
-              <a className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <img
-                  src={BRANDING.logoIdentity}
-                  alt="Logo officiel Miss & Mister Dour 2026"
-                  className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                  loading="eager"
-                />
-              </a>
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <img
+                src={BRANDING.logoIdentity}
+                alt="Logo officiel Miss & Mister Dour 2026"
+                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+                loading="eager"
+              />
             </Link>
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/about"><a className="text-gray-300 hover:text-gold transition-colors">À Propos</a></Link>
-              <Link href="/candidates"><a className="text-gray-300 hover:text-gold transition-colors">Candidats</a></Link>
-              <Link href="/ranking"><a className="text-gray-300 hover:text-gold transition-colors">Classement</a></Link>
-              <Link href="/sponsors"><a className="text-gray-300 hover:text-gold transition-colors">Sponsors</a></Link>
-              <Link href="/press"><a className="text-gray-300 hover:text-gold transition-colors">Presse</a></Link>
-              <Link href="/contact"><a className="px-4 py-2 bg-transparent border border-gold text-gold font-medium rounded-lg hover:bg-gold/10 transition-colors">Contact</a></Link>
+              <Link href="/about" className="text-gray-300 hover:text-gold transition-colors">À Propos</Link>
+              <Link href="/candidates" className="text-gray-300 hover:text-gold transition-colors">Candidats</Link>
+              <Link href="/ranking" className="text-gray-300 hover:text-gold transition-colors">Classement</Link>
+              <Link href="/sponsors" className="text-gray-300 hover:text-gold transition-colors">Sponsors</Link>
+              <Link href="/press" className="text-gray-300 hover:text-gold transition-colors">Presse</Link>
+              <Link href="/contact" className="px-4 py-2 bg-transparent border border-gold text-gold font-medium rounded-lg hover:bg-gold/10 transition-colors">Contact</Link>
               {isAuthenticated ? (
-                <Link href={getDashboardUrl()}>
-                  <a className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
-                    <Crown className="w-4 h-4" />
-                    {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
-                  </a>
+                <Link href={getDashboardUrl()} className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
+                  <Crown className="w-4 h-4" />
+                  {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
                 </Link>
               ) : (
                 <a href={getLoginUrl()} className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
@@ -87,18 +83,16 @@ export default function Homepage() {
           {/* Mobile menu dropdown */}
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 border-t border-gold/20 flex flex-col gap-3">
-              <Link href="/about"><a className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>À Propos</a></Link>
-              <Link href="/candidates"><a className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Candidats</a></Link>
-              <Link href="/ranking"><a className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Classement</a></Link>
-              <Link href="/sponsors"><a className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Sponsors</a></Link>
-              <Link href="/press"><a className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Presse</a></Link>
-              <Link href="/contact"><a className="block py-2 px-3 border border-gold text-gold rounded-lg hover:bg-gold/10 transition-colors text-center" onClick={() => setMobileMenuOpen(false)}>Contact</a></Link>
+              <Link href="/about" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>À Propos</Link>
+              <Link href="/candidates" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Candidats</Link>
+              <Link href="/ranking" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Classement</Link>
+              <Link href="/sponsors" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Sponsors</Link>
+              <Link href="/press" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Presse</Link>
+              <Link href="/contact" className="block py-2 px-3 border border-gold text-gold rounded-lg hover:bg-gold/10 transition-colors text-center" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
               {isAuthenticated ? (
-                <Link href={getDashboardUrl()}>
-                  <a className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                    <Crown className="w-4 h-4" />
-                    {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
-                  </a>
+                <Link href={getDashboardUrl()} className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  <Crown className="w-4 h-4" />
+                  {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
                 </Link>
               ) : (
                 <a href={getLoginUrl()} className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
@@ -130,17 +124,13 @@ export default function Homepage() {
             <span>Centre Sportif d'Elouges, Belgique</span>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/inscription-candidat">
-              <a className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105 flex items-center gap-2">
-                Devenir Candidat
-                <ArrowRight className="w-5 h-5" />
-              </a>
+            <Link href="/inscription-candidat" className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105 flex items-center gap-2">
+              Devenir Candidat
+              <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/admin/candidates">
-              <a className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all flex items-center gap-2">
-                Découvrir les Candidats
-                <Users className="w-5 h-5" />
-              </a>
+            <Link href="/candidates" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all flex items-center gap-2">
+              Découvrir les Candidats
+              <Users className="w-5 h-5" />
             </Link>
           </div>
         </div>
@@ -162,11 +152,9 @@ export default function Homepage() {
               nous offrons une expérience immersive unique : votes en temps réel, génération de contenu vidéo par IA, 
               certificats blockchain, et bien plus encore.
             </p>
-            <Link href="/about">
-              <a className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium text-lg">
-                En savoir plus sur notre concept
-                <ArrowRight className="w-5 h-5" />
-              </a>
+            <Link href="/about" className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium text-lg">
+              En savoir plus sur notre concept
+              <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
         </div>
@@ -191,22 +179,18 @@ export default function Homepage() {
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-white mb-2">Candidat {i}</h3>
                   <p className="text-gray-400 text-sm mb-4">Catégorie • Ville</p>
-                  <Link href={`/candidate/${i}`}>
-                    <a className="text-gold hover:text-gold/80 transition-colors font-medium flex items-center gap-2">
-                      Voir le profil
-                      <ArrowRight className="w-4 h-4" />
-                    </a>
+                  <Link href={`/candidate/${i}`} className="text-gold hover:text-gold/80 transition-colors font-medium flex items-center gap-2">
+                    Voir le profil
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
             ))}
           </div>
           <div className="text-center">
-            <Link href="/candidates">
-              <a className="inline-flex items-center gap-2 px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
-                Voir tous les candidats
-                <ArrowRight className="w-5 h-5" />
-              </a>
+            <Link href="/candidates" className="inline-flex items-center gap-2 px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
+              Voir tous les candidats
+              <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
         </div>
@@ -280,11 +264,9 @@ export default function Homepage() {
             </div>
           </div>
           <div className="text-center">
-            <Link href="/sponsors">
-              <a className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium text-lg">
-                Découvrir tous nos sponsors
-                <ArrowRight className="w-5 h-5" />
-              </a>
+            <Link href="/sponsors" className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium text-lg">
+              Découvrir tous nos sponsors
+              <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
         </div>
@@ -325,11 +307,9 @@ export default function Homepage() {
               </div>
             </div>
             <div className="text-center">
-              <Link href="/press">
-                <a className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
-                  Accéder à l'espace presse
-                  <ArrowRight className="w-5 h-5" />
-                </a>
+              <Link href="/press" className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
+                Accéder à l'espace presse
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </div>
@@ -347,20 +327,14 @@ export default function Homepage() {
               il y a une place pour vous dans l'univers Miss & Mister Dour 2026.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/inscription-candidat">
-                <a className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105">
-                  Devenir Candidat
-                </a>
+              <Link href="/inscription-candidat" className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105">
+                Devenir Candidat
               </Link>
-              <Link href="/sponsors">
-                <a className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all">
-                  Devenir Sponsor
-                </a>
+              <Link href="/sponsors" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all">
+                Devenir Sponsor
               </Link>
-              <Link href="/contact">
-                <a className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all">
-                  Nous Contacter
-                </a>
+              <Link href="/contact" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all">
+                Nous Contacter
               </Link>
             </div>
           </div>

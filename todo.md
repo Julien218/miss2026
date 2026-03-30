@@ -3783,3 +3783,11 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Anti-spam : filtrage par IP (max 5/h) + mots interdits (URLs, spam, pub, promo)
 - [x] Tests vitest server/comments.test.ts : 23 tests passés (structure, getByCandidate, add, like, modération, stats, RBAC)
 - [ ] Checkpoint et livraison
+
+
+## 🐛 FIX: Balises <a> imbriquées sur la page d'accueil
+
+- [x] Identifier les composants avec <Link> ou <a> imbriqués — 10 fichiers trouvés (Homepage, About, Contact, Press, Sponsors, CookieBanner, LegalCGU, LegalCookies, LegalNotice, LegalPrivacy, MissMisterDour2026)
+- [x] Corriger les balises imbriquées — 25 occurrences corrigées via script automatisé (Link>a → Link avec className)
+- [x] Vérifier 0 erreur TypeScript après correction
+- [ ] Checkpoint et livraison

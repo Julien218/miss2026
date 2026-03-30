@@ -398,12 +398,10 @@ export default function LegalNotice() {
       {/* En-tête */}
       <div className="border-b border-gray-800" style={{ background: "rgba(200,121,65,0.05)" }}>
         <div className="max-w-4xl mx-auto px-6 py-8">
-          <Link href="/">
-            <a className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
               <ArrowLeft className="w-4 h-4" />
               Retour au site
-            </a>
-          </Link>
+            </Link>
           <div className="flex items-start gap-4">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -506,9 +504,7 @@ export default function LegalNotice() {
             Plateforme développée par JS-Innov.IA · Événement organisé en collaboration avec STARLIGHT ASBL
           </p>
           <div className="flex items-center justify-center gap-4 mt-4">
-            <Link href="/">
-              <a className="text-xs text-gray-500 hover:text-white transition-colors">Accueil</a>
-            </Link>
+            <Link href="/" className="text-xs text-gray-500 hover:text-white transition-colors">Accueil</Link>
             <span className="text-gray-700">·</span>
             <a href="mailto:info@jsinnovia.com" className="text-xs text-gray-500 hover:text-white transition-colors">
               Contact

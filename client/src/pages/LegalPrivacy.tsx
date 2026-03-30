@@ -187,11 +187,9 @@ export default function LegalPrivacy() {
       {/* En-tête */}
       <div className="border-b border-gray-800" style={{ background: "rgba(200,121,65,.04)" }}>
         <div className="max-w-5xl mx-auto px-6 py-8">
-          <Link href="/">
-            <a className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
               <ArrowLeft className="w-4 h-4" /> Retour au site
-            </a>
-          </Link>
+            </Link>
           <div className="flex items-start gap-4">
             <img src={BRANDING.logoIdentity} alt="Miss & Mister Dour 2026" className="h-16 w-auto object-contain flex-shrink-0" />
             <div>
@@ -475,12 +473,10 @@ export default function LegalPrivacy() {
               { href: "/legal/cgu", label: "CGU & Règlement du concours", desc: "Critères, vote, titres" },
               { href: "/legal/cookies", label: "Politique cookies", desc: "Cookies techniques" },
             ].map(({ href, label, desc }) => (
-              <Link key={href} href={href}>
-                <a className="block p-4 rounded-xl border transition-all" style={{ borderColor: "rgba(200,121,65,.2)", background: "rgba(255,255,255,.02)" }}>
+              <Link key={href} href={href} className="block p-4 rounded-xl border transition-all" style={{ borderColor: "rgba(200,121,65,.2)", background: "rgba(255,255,255,.02)" }}>
                   <p className="text-sm font-medium text-white">{label}</p>
                   <p className="text-xs text-gray-500 mt-1">{desc}</p>
-                </a>
-              </Link>
+                </Link>
             ))}
           </div>
         </div>
