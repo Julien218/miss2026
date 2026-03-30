@@ -3842,3 +3842,13 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Créer la table siteSettings (n'existait pas en DB)
 - [x] Importer les 4 paramètres (inscriptions désactivées, message personnalisé)
 - [x] Checkpoint et livraison
+
+
+## 🔑 IMPORT DES TOKENS D'ÉDITION DE PROFIL ET PHOTOS DEPUIS LES CSV
+
+- [x] Analyser le CSV profileEditTokens (25 tokens pour 19 candidats + 1 candidat inconnu 120001)
+- [x] Créer la table profileEditTokens (n'existait pas en DB)
+- [x] Importer 24 tokens (1 ignoré : candidateId 120001 non mappé), mapping 60001-60019 → 1-19
+- [x] Analyser le CSV photos (298 photos : 100 portrait + 198 other, 8 photos de test exclues)
+- [x] Importer 289 photos (290 réelles - 1 doublon), total en DB : 308 photos (110 portrait + 198 other)
+- [x] Checkpoint et livraison
