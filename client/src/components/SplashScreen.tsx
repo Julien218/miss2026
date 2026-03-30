@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BRANDING } from "@/config/branding";
 
-const LOGO_HQ = "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/logo-miss-mister-dour-2026-hq-2gtoh5LopEbENhJ8JNHJ2c.png";
+const LOGO_HQ = "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png";
 
 // Particules dorées flottantes
 function GoldenParticles({ count = 30 }: { count?: number }) {

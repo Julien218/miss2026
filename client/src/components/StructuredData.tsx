@@ -112,7 +112,7 @@ export function createEventSchema(baseUrl: string): EventSchema {
     },
     description:
       "Finale de l'élection Miss & Mister Dour 2026. Un miroir ne reflète pas seulement l'image… Il révèle l'essence. Découvrez les candidats et votez pour votre favori(te).",
-    image: "https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
     organizer: organizationSchema,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -125,7 +125,7 @@ export function createOrganizationSchema(baseUrl: string): OrganizationSchema {
     "@type": "Organization",
     name: "Miss & Mister Dour",
     url: baseUrl,
-    logo: "https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png",
+    logo: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
     description:
       "Organisation de l'élection Miss & Mister Dour 2026. Un événement prestigieux célébrant l'élégance, le talent et l'engagement communautaire à Dour, Belgique.",
     foundingDate: "2026",

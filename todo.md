@@ -3897,4 +3897,26 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Implémenter double système de filtres dans Gallery.tsx (Toutes/Portraits/Shooting + Tous/Miss/Mister)
 - [x] Corriger parsing tags JSON dans getPhotos et getPhotoById (erreur "[studio]" non-JSON)
 - [x] Tests vitest gallery-filters.test.ts : 11 tests passés (filtres catégorie, candidateId, all, listApproved)
+- [x] Checkpoint 3228e7b3 et livraison
+
+
+## 🎨 REMPLACEMENT LOGO MISS & MISTER DOUR (NOUVELLE VERSION)
+
+- [x] Supprimer le fond noir du logo fourni pour obtenir un PNG transparent
+- [x] Uploader le logo transparent sur le CDN via manus-upload-file
+- [x] Identifier tous les emplacements du logo actuel dans le code source
+- [x] Remplacer l'URL du logo sur toutes les pages (branding.ts, SplashScreen, StructuredData, Homepage)
+- [ ] Mettre à jour VITE_APP_LOGO avec la nouvelle URL (secret built-in, non modifiable par code)
+- [x] Vérifier visuellement le rendu sur toutes les pages
+- [ ] Checkpoint et livraison
+
+
+## 🌑 CHANGEMENT FOND DE PAGE GLOBAL + FOOTER
+
+- [x] Analyser le fond de page actuel (CSS global) et le footer existant
+- [x] Remplacer le fond noir uni par un fond sombre texturé avec gradient radial subtil
+- [x] Ajouter des particules dorées flottantes en arrière-plan global (footer)
+- [x] Mettre à jour le footer avec le design JS-Innov.IA (Tech Ecosystem, mentions légales regroupées)
+- [x] Appliquer le nouveau fond sur toutes les pages (via CSS global .dark body)
+- [x] Vérifier la cohérence visuelle sur homepage
 - [ ] Checkpoint et livraison

@@ -257,7 +257,7 @@ export default function Homepage() {
             <div className="bg-gray-800/50 border border-gold/30 rounded-lg p-8 text-center flex flex-col items-center justify-center">
               <div className="bg-black rounded-xl p-4 mb-4 h-32 flex items-center justify-center border border-white/10">
                 <img
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/logo-miss-mister-dour-2026-hq-Adp7ZVWHkGZq6PXgB37nFv.webp"
+                  src={BRANDING.logoIdentity}
                   alt="Miss & Mister Dour 2026"
                   className="h-20 w-auto object-contain"
                 />

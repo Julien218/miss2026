@@ -7,8 +7,8 @@
 export const BRANDING = {
   // Logos officiels
   logoHologram: "https://files.manuscdn.com/user_upload_by_module/session_file/87304619/QqoPYFovLiObmUny.png",
-  logoIdentity: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/logo-miss-mister-dour-2026-hq-2gtoh5LopEbENhJ8JNHJ2c.png",
-  logoIdentityCompressed: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/logo-miss-mister-dour-2026-hq-Adp7ZVWHkGZq6PXgB37nFv.webp",
+  logoIdentity: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
+  logoIdentityCompressed: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
   
   // Informations de copyright
   creator: "JS-Innov.IA",
