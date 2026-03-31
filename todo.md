@@ -4011,4 +4011,13 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Identifier les protections : DashboardLayout + candidates.search (protectedProcedure)
 - [x] Rendre la page candidats publique : utilise candidateProfile.listApproved (publicProcedure), layout autonome
 - [x] Vérifier visuellement : 19 candidats affichés, filtres Tous/Miss/Mister, recherche, profils accessibles
+- [x] Checkpoint d812aa0b et livraison
+
+
+## 🔓 GALERIE PUBLIQUE — Retirer obligation connexion
+
+- [x] Retirer le RoleGuard sur la route /gallery dans App.tsx
+- [x] Gallery.tsx déjà autonome (pas de DashboardLayout, layout intégré)
+- [x] photos.listPublic est bien une publicProcedure (vérifié)
+- [x] candidateProfile.listApproved est bien publique (vérifié)
 - [ ] Checkpoint et livraison

@@ -260,9 +260,7 @@ function Router() {
         </RoleGuard>
       </Route>
       <Route path={"/gallery"}>
-        <RoleGuard requiredRole="candidate">
-          <Gallery />
-        </RoleGuard>
+        <Gallery />
       </Route>
       <Route path={"/candidates"}>
         <Candidates />
