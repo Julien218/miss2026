@@ -1,0 +1,22 @@
+{
+  "query": "SELECT category, COUNT(*) as total, SUM(CASE WHEN candidateId IS NOT NULL THEN 1 ELSE 0 END) as with_candidate, SUM(CASE WHEN candidateId IS NULL THEN 1 ELSE 0 END) as without_candidate FROM photos WHERE status = 'approved' GROUP BY category;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT category, COUNT(*) as total, SUM(CASE WHEN candidateId IS NOT NULL THEN 1 ELSE 0 END) as with_candidate, SUM(CASE WHEN candidateId IS NULL THEN 1 ELSE 0 END) as without_candidate FROM photos WHERE status = 'approved' GROUP BY category;",
+  "rows": [
+    {
+      "category": "portrait",
+      "total": "110",
+      "with_candidate": "19",
+      "without_candidate": "91"
+    },
+    {
+      "category": "event",
+      "total": "198",
+      "with_candidate": "0",
+      "without_candidate": "198"
+    }
+  ],
+  "messages": [],
+  "stdout": "category\ttotal\twith_candidate\twithout_candidate\nportrait\t110\t19\t91\nevent\t198\t0\t198\n",
+  "stderr": "",
+  "execution_time_ms": 362
+}

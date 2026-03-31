@@ -3977,4 +3977,22 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Ajouter orderBy(candidates.id) dans getCandidatesByContest, searchCandidates et listApproved
 - [x] Vérifier visuellement la homepage : ordre correct, Peyton en position 13
 - [x] Corriger compteur "12 Miss et 7 Mister" → "13 Miss et 6 Mister"
+- [x] Checkpoint d6c43c0d et livraison
+
+
+## 📸 ASSOCIATION PHOTOS SHOOTING → CANDIDATS
+
+- [ ] Analyser la structure des photos en DB (table photos, champs candidateId, category)
+- [ ] Lister les photos du shooting sans candidateId
+- [ ] Identifier les candidats à partir des noms de fichiers ou URLs des photos
+- [ ] Associer chaque photo de shooting au bon candidat via SQL
+- [ ] Vérifier que les filtres Miss/Mister fonctionnent dans la galerie
 - [ ] Checkpoint et livraison
+
+
+## 🐛 BUG — Connexion super_admin ne fonctionne pas
+
+- [x] Diagnostiquer le problème : compte Js-Innov.IA (id=270073) avait rôle admin au lieu de super_admin
+- [x] Corriger en DB : UPDATE users SET role = 'super_admin' WHERE id = 270073
+- [x] Corriger le code db.ts : OWNER_OPEN_ID attribue désormais super_admin au lieu de admin
+- [ ] Vérifier la connexion (utilisateur doit se déconnecter et se reconnecter)

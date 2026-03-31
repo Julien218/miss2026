@@ -1,0 +1,124 @@
+{
+  "query": "SELECT id, firstName, lastName, category FROM candidates WHERE status = 'approved' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, firstName, lastName, category FROM candidates WHERE status = 'approved' ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "firstName": "Loriana",
+      "lastName": "Morelle",
+      "category": "miss"
+    },
+    {
+      "id": "2",
+      "firstName": "Julie",
+      "lastName": "Geronnez",
+      "category": "miss"
+    },
+    {
+      "id": "3",
+      "firstName": "Anaïs",
+      "lastName": "Geronnez",
+      "category": "miss"
+    },
+    {
+      "id": "4",
+      "firstName": "Lindsay",
+      "lastName": "Rulkin",
+      "category": "miss"
+    },
+    {
+      "id": "5",
+      "firstName": "Noëlline",
+      "lastName": "Zinszner",
+      "category": "miss"
+    },
+    {
+      "id": "6",
+      "firstName": "Manon",
+      "lastName": "Vaillant",
+      "category": "miss"
+    },
+    {
+      "id": "7",
+      "firstName": "Aliya",
+      "lastName": "Ammour",
+      "category": "miss"
+    },
+    {
+      "id": "8",
+      "firstName": "Nell",
+      "lastName": "Descamps",
+      "category": "miss"
+    },
+    {
+      "id": "9",
+      "firstName": "Esmeralda",
+      "lastName": "Verminnen",
+      "category": "miss"
+    },
+    {
+      "id": "10",
+      "firstName": "Alessia",
+      "lastName": "Jouffin",
+      "category": "miss"
+    },
+    {
+      "id": "11",
+      "firstName": "Giulia",
+      "lastName": "Leonetti",
+      "category": "miss"
+    },
+    {
+      "id": "12",
+      "firstName": "Melina",
+      "lastName": "Delmotte",
+      "category": "miss"
+    },
+    {
+      "id": "13",
+      "firstName": "Peyton",
+      "lastName": "Loicq",
+      "category": "miss"
+    },
+    {
+      "id": "14",
+      "firstName": "Noé",
+      "lastName": "Caudrelier",
+      "category": "mister"
+    },
+    {
+      "id": "15",
+      "firstName": "Korentin",
+      "lastName": "Schooneyt",
+      "category": "mister"
+    },
+    {
+      "id": "16",
+      "firstName": "Hugo",
+      "lastName": "Puma",
+      "category": "mister"
+    },
+    {
+      "id": "17",
+      "firstName": "Kyllian",
+      "lastName": "Baton",
+      "category": "mister"
+    },
+    {
+      "id": "18",
+      "firstName": "Dawson",
+      "lastName": "Ostrowski",
+      "category": "mister"
+    },
+    {
+      "id": "19",
+      "firstName": "Lylian",
+      "lastName": "Paternottre",
+      "category": "mister"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfirstName\tlastName\tcategory\n1\tLoriana\tMorelle\tmiss\n2\tJulie\tGeronnez\tmiss\n3\tAnaïs\tGeronnez\tmiss\n4\tLindsay\tRulkin\tmiss\n5\tNoëlline\tZinszner\tmiss\n6\tManon\tVaillant\tmiss\n7\tAliya\tAmmour\tmiss\n8\tNell\tDescamps\tmiss\n9\tEsmeralda\tVerminnen\tmiss\n10\tAlessia\tJouffin\tmiss\n11\tGiulia\tLeonetti\tmiss\n12\tMelina\tDelmotte\tmiss\n13\tPeyton\tLoicq\tmiss\n14\tNoé\tCaudrelier\tmister\n15\tKorentin\tSchooneyt\tmister\n16\tHugo\tPuma\tmister\n17\tKyllian\tBaton\tmister\n18\tDawson\tOstrowski\tmister\n19\tLylian\tPaternottre\tmister\n",
+  "stderr": "",
+  "execution_time_ms": 372
+}

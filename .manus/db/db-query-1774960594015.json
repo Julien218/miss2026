@@ -1,0 +1,34 @@
+{
+  "query": "SELECT id, name, role, openId FROM users WHERE role IN ('super_admin', 'admin') ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, name, role, openId FROM users WHERE role IN ('super_admin', 'admin') ORDER BY id;",
+  "rows": [
+    {
+      "id": "2",
+      "name": "directeur admin",
+      "role": "admin",
+      "openId": "$lkjhugjfcytgufcviklhhboutfè§urfgoihyboy"
+    },
+    {
+      "id": "22",
+      "name": "Olivier Trevis",
+      "role": "admin",
+      "openId": "EkTr9fF5MnT5FHta9UMr47"
+    },
+    {
+      "id": "270073",
+      "name": "Js-Innov.IA",
+      "role": "admin",
+      "openId": "aENpQeNqHUzehqxbAp7XUU"
+    },
+    {
+      "id": "270131",
+      "name": "Olivier Trevis",
+      "role": "admin",
+      "openId": "ECaFBnhLAmetaoQ3kRr5Ef"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\trole\topenId\n2\tdirecteur admin\tadmin\t$lkjhugjfcytgufcviklhhboutfè§urfgoihyboy\n22\tOlivier Trevis\tadmin\tEkTr9fF5MnT5FHta9UMr47\n270073\tJs-Innov.IA\tadmin\taENpQeNqHUzehqxbAp7XUU\n270131\tOlivier Trevis\tadmin\tECaFBnhLAmetaoQ3kRr5Ef\n",
+  "stderr": "",
+  "execution_time_ms": 343
+}

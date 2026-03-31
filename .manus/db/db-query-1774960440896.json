@@ -1,0 +1,110 @@
+{
+  "query": "SELECT id, filename, CAST(REGEXP_SUBSTR(filename, '[0-9]+') AS UNSIGNED) as file_num FROM photos WHERE category = 'event' AND filename LIKE 'tenue officielle%' AND status = 'approved' ORDER BY CAST(REGEXP_SUBSTR(filename, '[0-9]+') AS UNSIGNED) LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, filename, CAST(REGEXP_SUBSTR(filename, '[0-9]+') AS UNSIGNED) as file_num FROM photos WHERE category = 'event' AND filename LIKE 'tenue officielle%' AND status = 'approved' ORDER BY CAST(REGEXP_SUBSTR(filename, '[0-9]+') AS UNSIGNED) LIMIT 20;",
+  "rows": [
+    {
+      "id": "20",
+      "filename": "tenue officielle-1.jpg",
+      "file_num": "1"
+    },
+    {
+      "id": "21",
+      "filename": "tenue officielle-3.jpg",
+      "file_num": "3"
+    },
+    {
+      "id": "22",
+      "filename": "tenue officielle-9.jpg",
+      "file_num": "9"
+    },
+    {
+      "id": "23",
+      "filename": "tenue officielle-11.jpg",
+      "file_num": "11"
+    },
+    {
+      "id": "24",
+      "filename": "tenue officielle-13.jpg",
+      "file_num": "13"
+    },
+    {
+      "id": "25",
+      "filename": "tenue officielle-16.jpg",
+      "file_num": "16"
+    },
+    {
+      "id": "26",
+      "filename": "tenue officielle-21.jpg",
+      "file_num": "21"
+    },
+    {
+      "id": "27",
+      "filename": "tenue officielle-22.jpg",
+      "file_num": "22"
+    },
+    {
+      "id": "28",
+      "filename": "tenue officielle-23.jpg",
+      "file_num": "23"
+    },
+    {
+      "id": "29",
+      "filename": "tenue officielle-24.jpg",
+      "file_num": "24"
+    },
+    {
+      "id": "30",
+      "filename": "tenue officielle-25.jpg",
+      "file_num": "25"
+    },
+    {
+      "id": "31",
+      "filename": "tenue officielle-26.jpg",
+      "file_num": "26"
+    },
+    {
+      "id": "32",
+      "filename": "tenue officielle-28.jpg",
+      "file_num": "28"
+    },
+    {
+      "id": "33",
+      "filename": "tenue officielle-30.jpg",
+      "file_num": "30"
+    },
+    {
+      "id": "34",
+      "filename": "tenue officielle-31.jpg",
+      "file_num": "31"
+    },
+    {
+      "id": "35",
+      "filename": "tenue officielle-33.jpg",
+      "file_num": "33"
+    },
+    {
+      "id": "36",
+      "filename": "tenue officielle-34.jpg",
+      "file_num": "34"
+    },
+    {
+      "id": "37",
+      "filename": "tenue officielle-35.jpg",
+      "file_num": "35"
+    },
+    {
+      "id": "38",
+      "filename": "tenue officielle-37.jpg",
+      "file_num": "37"
+    },
+    {
+      "id": "39",
+      "filename": "tenue officielle-39.jpg",
+      "file_num": "39"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfilename\tfile_num\n20\ttenue officielle-1.jpg\t1\n21\ttenue officielle-3.jpg\t3\n22\ttenue officielle-9.jpg\t9\n23\ttenue officielle-11.jpg\t11\n24\ttenue officielle-13.jpg\t13\n25\ttenue officielle-16.jpg\t16\n26\ttenue officielle-21.jpg\t21\n27\ttenue officielle-22.jpg\t22\n28\ttenue officielle-23.jpg\t23\n29\ttenue officielle-24.jpg\t24\n30\ttenue officielle-25.jpg\t25\n31\ttenue officielle-26.jpg\t26\n32\ttenue officielle-28.jpg\t28\n33\ttenue officielle-30.jpg\t30\n34\ttenue officielle-31.jpg\t31\n35\ttenue officielle-33.jpg\t33\n36\ttenue officielle-34.jpg\t34\n37\ttenue officielle-35.jpg\t35\n38\ttenue officielle-37.jpg\t37\n39\ttenue officielle-39.jpg\t39\n",
+  "stderr": "",
+  "execution_time_ms": 363
+}

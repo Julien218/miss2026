@@ -1,0 +1,86 @@
+{
+  "query": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'photos' ORDER BY ordinal_position;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'photos' ORDER BY ordinal_position;",
+  "rows": [
+    {
+      "column_name": "id",
+      "data_type": "int"
+    },
+    {
+      "column_name": "url",
+      "data_type": "varchar"
+    },
+    {
+      "column_name": "thumbnail",
+      "data_type": "varchar"
+    },
+    {
+      "column_name": "title",
+      "data_type": "varchar"
+    },
+    {
+      "column_name": "description",
+      "data_type": "text"
+    },
+    {
+      "column_name": "filename",
+      "data_type": "varchar"
+    },
+    {
+      "column_name": "mimeType",
+      "data_type": "varchar"
+    },
+    {
+      "column_name": "sizeBytes",
+      "data_type": "int"
+    },
+    {
+      "column_name": "width",
+      "data_type": "int"
+    },
+    {
+      "column_name": "height",
+      "data_type": "int"
+    },
+    {
+      "column_name": "category",
+      "data_type": "enum"
+    },
+    {
+      "column_name": "tags",
+      "data_type": "text"
+    },
+    {
+      "column_name": "candidateId",
+      "data_type": "int"
+    },
+    {
+      "column_name": "uploadedBy",
+      "data_type": "int"
+    },
+    {
+      "column_name": "status",
+      "data_type": "enum"
+    },
+    {
+      "column_name": "approvedBy",
+      "data_type": "int"
+    },
+    {
+      "column_name": "approvedAt",
+      "data_type": "timestamp"
+    },
+    {
+      "column_name": "createdAt",
+      "data_type": "timestamp"
+    },
+    {
+      "column_name": "updatedAt",
+      "data_type": "timestamp"
+    }
+  ],
+  "messages": [],
+  "stdout": "column_name\tdata_type\nid\tint\nurl\tvarchar\nthumbnail\tvarchar\ntitle\tvarchar\ndescription\ttext\nfilename\tvarchar\nmimeType\tvarchar\nsizeBytes\tint\nwidth\tint\nheight\tint\ncategory\tenum\ntags\ttext\ncandidateId\tint\nuploadedBy\tint\nstatus\tenum\napprovedBy\tint\napprovedAt\ttimestamp\ncreatedAt\ttimestamp\nupdatedAt\ttimestamp\n",
+  "stderr": "",
+  "execution_time_ms": 417
+}

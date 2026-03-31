@@ -1,0 +1,105 @@
+{
+  "query": "SELECT id, candidateId, filename FROM photos WHERE category = 'portrait' AND candidateId IS NOT NULL ORDER BY candidateId LIMIT 19;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, candidateId, filename FROM photos WHERE category = 'portrait' AND candidateId IS NOT NULL ORDER BY candidateId LIMIT 19;",
+  "rows": [
+    {
+      "id": "8",
+      "candidateId": "1",
+      "filename": "profile-photos/candidate-60001-89c875ec53b415aa.jpg"
+    },
+    {
+      "id": "6",
+      "candidateId": "2",
+      "filename": "profile-photos/candidate-60002-78bdf23427befbd0.png"
+    },
+    {
+      "id": "3",
+      "candidateId": "3",
+      "filename": "profile-photos/candidate-60003-28a0c9e5c3ef6934.jpg"
+    },
+    {
+      "id": "7",
+      "candidateId": "4",
+      "filename": "profile-photos/candidate-60004-ee3717d5780d8583.jpg"
+    },
+    {
+      "id": "12",
+      "candidateId": "5",
+      "filename": "profile-photos/candidate-60005-3f101cab8abb43c5.jpg"
+    },
+    {
+      "id": "9",
+      "candidateId": "6",
+      "filename": "profile-photos/candidate-60006-57d54f44b6008e48.jpg"
+    },
+    {
+      "id": "2",
+      "candidateId": "7",
+      "filename": "profile-photos/candidate-60007-33cfa14abe5eafe8.png"
+    },
+    {
+      "id": "11",
+      "candidateId": "8",
+      "filename": "profile-photos/candidate-60008-093b67b1d774560c.jpg"
+    },
+    {
+      "id": "4",
+      "candidateId": "9",
+      "filename": "profile-photos/candidate-60009-71df31af44213865.jpg"
+    },
+    {
+      "id": "1",
+      "candidateId": "10",
+      "filename": "profile-photos/candidate-60010-1c8806c7378181b9.jpg"
+    },
+    {
+      "id": "5",
+      "candidateId": "11",
+      "filename": "profile-photos/candidate-60011-e58be94814fa5f5c.jpg"
+    },
+    {
+      "id": "10",
+      "candidateId": "12",
+      "filename": "profile-photos/candidate-60012-0d21f26f9afd0786.jpg"
+    },
+    {
+      "id": "19",
+      "candidateId": "13",
+      "filename": "profile-photos/candidate-60019-aa7b4bd0f08a814b.jpg"
+    },
+    {
+      "id": "13",
+      "candidateId": "14",
+      "filename": "profile-photos/candidate-60013-2426bcffa5f9591e.jpg"
+    },
+    {
+      "id": "17",
+      "candidateId": "15",
+      "filename": "profile-photos/candidate-60014-9453f1020951b3d5.jpg"
+    },
+    {
+      "id": "16",
+      "candidateId": "16",
+      "filename": "profile-photos/candidate-60015-996ad0ae8dd24450.jpg"
+    },
+    {
+      "id": "15",
+      "candidateId": "17",
+      "filename": "profile-photos/candidate-60016-5401d2b4bd530893.jpg"
+    },
+    {
+      "id": "18",
+      "candidateId": "18",
+      "filename": "profile-photos/pending/candidate-60017-98838e229dfa388a.jpg"
+    },
+    {
+      "id": "14",
+      "candidateId": "19",
+      "filename": "profile-photos/candidate-60018-b9c5e56935040bd7.png"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcandidateId\tfilename\n8\t1\tprofile-photos/candidate-60001-89c875ec53b415aa.jpg\n6\t2\tprofile-photos/candidate-60002-78bdf23427befbd0.png\n3\t3\tprofile-photos/candidate-60003-28a0c9e5c3ef6934.jpg\n7\t4\tprofile-photos/candidate-60004-ee3717d5780d8583.jpg\n12\t5\tprofile-photos/candidate-60005-3f101cab8abb43c5.jpg\n9\t6\tprofile-photos/candidate-60006-57d54f44b6008e48.jpg\n2\t7\tprofile-photos/candidate-60007-33cfa14abe5eafe8.png\n11\t8\tprofile-photos/candidate-60008-093b67b1d774560c.jpg\n4\t9\tprofile-photos/candidate-60009-71df31af44213865.jpg\n1\t10\tprofile-photos/candidate-60010-1c8806c7378181b9.jpg\n5\t11\tprofile-photos/candidate-60011-e58be94814fa5f5c.jpg\n10\t12\tprofile-photos/candidate-60012-0d21f26f9afd0786.jpg\n19\t13\tprofile-photos/candidate-60019-aa7b4bd0f08a814b.jpg\n13\t14\tprofile-photos/candidate-60013-2426bcffa5f9591e.jpg\n17\t15\tprofile-photos/candidate-60014-9453f1020951b3d5.jpg\n16\t16\tprofile-photos/candidate-60015-996ad0ae8dd24450.jpg\n15\t17\tprofile-photos/candidate-60016-5401d2b4bd530893.jpg\n18\t18\tprofile-photos/pending/candidate-60017-98838e229dfa388a.jpg\n14\t19\tprofile-photos/candidate-60018-b9c5e56935040bd7.png\n",
+  "stderr": "",
+  "execution_time_ms": 361
+}

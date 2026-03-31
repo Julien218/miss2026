@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, role, openId FROM users WHERE id = 270073;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, name, role, openId FROM users WHERE id = 270073;",
+  "rows": [
+    {
+      "id": "270073",
+      "name": "Js-Innov.IA",
+      "role": "super_admin",
+      "openId": "aENpQeNqHUzehqxbAp7XUU"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\trole\topenId\n270073\tJs-Innov.IA\tsuper_admin\taENpQeNqHUzehqxbAp7XUU\n",
+  "stderr": "",
+  "execution_time_ms": 385
+}

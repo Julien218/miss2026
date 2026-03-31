@@ -1,0 +1,190 @@
+{
+  "query": "SELECT id, filename, title, url FROM photos WHERE category = 'event' AND status = 'approved' ORDER BY id LIMIT 30;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, filename, title, url FROM photos WHERE category = 'event' AND status = 'approved' ORDER BY id LIMIT 30;",
+  "rows": [
+    {
+      "id": "20",
+      "filename": "tenue officielle-1.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698236405-55kd2e.jpg"
+    },
+    {
+      "id": "21",
+      "filename": "tenue officielle-3.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698236643-k9b8f.jpg"
+    },
+    {
+      "id": "22",
+      "filename": "tenue officielle-9.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698236848-moofp8.jpg"
+    },
+    {
+      "id": "23",
+      "filename": "tenue officielle-11.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237111-3ag0ao.jpg"
+    },
+    {
+      "id": "24",
+      "filename": "tenue officielle-13.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237331-0bkvpi.jpg"
+    },
+    {
+      "id": "25",
+      "filename": "tenue officielle-16.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237554-1t9d0v.jpg"
+    },
+    {
+      "id": "26",
+      "filename": "tenue officielle-21.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237796-yanvf.jpg"
+    },
+    {
+      "id": "27",
+      "filename": "tenue officielle-22.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237939-syrozd.jpg"
+    },
+    {
+      "id": "28",
+      "filename": "tenue officielle-23.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238173-tvs5or.jpg"
+    },
+    {
+      "id": "29",
+      "filename": "tenue officielle-24.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238359-03t50m.jpg"
+    },
+    {
+      "id": "30",
+      "filename": "tenue officielle-25.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238474-i9phkh.jpg"
+    },
+    {
+      "id": "31",
+      "filename": "tenue officielle-26.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238645-vh4gh3k.jpg"
+    },
+    {
+      "id": "32",
+      "filename": "tenue officielle-28.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238826-p862dl.jpg"
+    },
+    {
+      "id": "33",
+      "filename": "tenue officielle-30.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239010-xospu.jpg"
+    },
+    {
+      "id": "34",
+      "filename": "tenue officielle-31.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239154-6lju2j.jpg"
+    },
+    {
+      "id": "35",
+      "filename": "tenue officielle-33.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239291-z602r.jpg"
+    },
+    {
+      "id": "36",
+      "filename": "tenue officielle-34.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239420-erqe1n.jpg"
+    },
+    {
+      "id": "37",
+      "filename": "tenue officielle-35.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239654-e8tzo.jpg"
+    },
+    {
+      "id": "38",
+      "filename": "tenue officielle-37.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239798-4uwqr.jpg"
+    },
+    {
+      "id": "39",
+      "filename": "tenue officielle-39.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240009-nm5c8h.jpg"
+    },
+    {
+      "id": "40",
+      "filename": "tenue officielle-41.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240202-g53ult.jpg"
+    },
+    {
+      "id": "41",
+      "filename": "tenue officielle-42.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240333-b2jmkl.jpg"
+    },
+    {
+      "id": "42",
+      "filename": "tenue officielle-43.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240472-yhoo4.jpg"
+    },
+    {
+      "id": "43",
+      "filename": "tenue officielle-44.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240644-w5ad6c.jpg"
+    },
+    {
+      "id": "44",
+      "filename": "tenue officielle-46.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240847-c35l0f.jpg"
+    },
+    {
+      "id": "45",
+      "filename": "tenue officielle-47.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240966-awtgyl.jpg"
+    },
+    {
+      "id": "46",
+      "filename": "tenue officielle-48.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241322-fgpbwp.jpg"
+    },
+    {
+      "id": "47",
+      "filename": "tenue officielle-49.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241458-k8rf9g.jpg"
+    },
+    {
+      "id": "48",
+      "filename": "tenue officielle-50.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241586-x6y4g.jpg"
+    },
+    {
+      "id": "49",
+      "filename": "tenue officielle-51.jpg",
+      "title": "shooting officiel du 07/03/2026",
+      "url": "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241814-crlwwn.jpg"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfilename\ttitle\turl\n20\ttenue officielle-1.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698236405-55kd2e.jpg\n21\ttenue officielle-3.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698236643-k9b8f.jpg\n22\ttenue officielle-9.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698236848-moofp8.jpg\n23\ttenue officielle-11.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237111-3ag0ao.jpg\n24\ttenue officielle-13.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237331-0bkvpi.jpg\n25\ttenue officielle-16.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237554-1t9d0v.jpg\n26\ttenue officielle-21.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237796-yanvf.jpg\n27\ttenue officielle-22.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698237939-syrozd.jpg\n28\ttenue officielle-23.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238173-tvs5or.jpg\n29\ttenue officielle-24.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238359-03t50m.jpg\n30\ttenue officielle-25.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238474-i9phkh.jpg\n31\ttenue officielle-26.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238645-vh4gh3k.jpg\n32\ttenue officielle-28.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698238826-p862dl.jpg\n33\ttenue officielle-30.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239010-xospu.jpg\n34\ttenue officielle-31.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239154-6lju2j.jpg\n35\ttenue officielle-33.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239291-z602r.jpg\n36\ttenue officielle-34.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239420-erqe1n.jpg\n37\ttenue officielle-35.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239654-e8tzo.jpg\n38\ttenue officielle-37.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698239798-4uwqr.jpg\n39\ttenue officielle-39.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240009-nm5c8h.jpg\n40\ttenue officielle-41.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240202-g53ult.jpg\n41\ttenue officielle-42.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240333-b2jmkl.jpg\n42\ttenue officielle-43.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240472-yhoo4.jpg\n43\ttenue officielle-44.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240644-w5ad6c.jpg\n44\ttenue officielle-46.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240847-c35l0f.jpg\n45\ttenue officielle-47.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698240966-awtgyl.jpg\n46\ttenue officielle-48.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241322-fgpbwp.jpg\n47\ttenue officielle-49.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241458-k8rf9g.jpg\n48\ttenue officielle-50.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241586-x6y4g.jpg\n49\ttenue officielle-51.jpg\tshooting officiel du 07/03/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/photos/3630123/1773698241814-crlwwn.jpg\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}
