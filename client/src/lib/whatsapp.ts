@@ -44,7 +44,7 @@ export interface WhatsAppMessage {
 const SIGNATURE = `\n\n---\n✨ *Julien P.*\n_By Js-Innov.IA_`;
 
 const EVENT_DATE = BRANDING.closingNight?.dateDisplay ?? "19 Avril 2026";
-const EVENT_LABEL = BRANDING.closingNight?.label ?? "Lady Gaga Night";
+const EVENT_LABEL = BRANDING.closingNight?.label ?? "Born to Dance";
 const EVENT_VENUE = BRANDING.closingNight?.venue ?? "Dour, Belgique";
 
 // ─── Templates officiels ──────────────────────────────────────────────────────
@@ -89,7 +89,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     type: "rappel_soiree",
     label: `Rappel soirée ${EVENT_LABEL}`,
     emoji: "🎤",
-    description: "Rappel de la soirée de clôture Lady Gaga Night",
+    description: "Rappel de la soirée de clôture Born to Dance",
     generate: (c) =>
       `🎤 *${EVENT_LABEL} — Rappel soirée de clôture*\n\nBonjour ${c.firstName},\n\nNous vous rappelons que la grande soirée de clôture *Miss & Mister Dour 2026* aura lieu le :\n\n📅 *${EVENT_DATE}*\n📍 *${EVENT_VENUE}*\n\nVeuillez vous assurer d'être présent(e) à l'heure. Tenue de soirée exigée.\n\nNous avons hâte de vous retrouver pour cette nuit exceptionnelle ! ✨${SIGNATURE}`,
   },

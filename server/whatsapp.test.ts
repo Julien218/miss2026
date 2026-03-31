@@ -77,12 +77,12 @@ describe("OFFICIAL_MESSAGE_TEMPLATES", () => {
   it("event_reminder contient l'événement, la date et le lieu", () => {
     const msg = OFFICIAL_MESSAGE_TEMPLATES.event_reminder(
       "Lucas",
-      "Lady Gaga Night",
+      "Born to Dance",
       "19 avril 2026 à 20h00",
       "Salle des Fêtes de Dour"
     );
     expect(msg).toContain("Lucas");
-    expect(msg).toContain("Lady Gaga Night");
+    expect(msg).toContain("Born to Dance");
     expect(msg).toContain("19 avril 2026");
     expect(msg).toContain("Salle des Fêtes de Dour");
     expect(msg).toContain("Julien P.");

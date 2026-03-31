@@ -1,16 +1,16 @@
 /**
  * GagaNightCountdown.tsx
- * Badge "Lady Gaga Night" avec compte à rebours animé
+ * Badge "Born to Dance" avec compte à rebours animé
  * Soirée de clôture Miss & Mister Dour 2026 — 19 Avril 2026
  *
  * Palette : noir obsidian, cuivre #C87941, champagne #E8D5B7,
- *           or #D4AF37, rose Gaga #C45E6A
+ *           or #D4AF37, rose accent #C45E6A
  */
 import { useEffect, useState } from "react";
 import { BRANDING } from "@/config/branding";
 
 // ── Date cible lue depuis la variable centrale BRANDING.closingNight ─────────
-const GAGA_NIGHT = new Date(BRANDING.closingNight.dateISO);
+const EVENT_NIGHT = new Date(BRANDING.closingNight.dateISO);
 
 interface TimeLeft {
   days: number;
@@ -21,7 +21,7 @@ interface TimeLeft {
 }
 
 function calcTimeLeft(): TimeLeft {
-  const diff = GAGA_NIGHT.getTime() - Date.now();
+  const diff = EVENT_NIGHT.getTime() - Date.now();
   if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, total: 0 };
   return {
     total: diff,
@@ -114,7 +114,7 @@ export function GagaNightCountdown() {
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
 
-        {/* ── Badge Lady Gaga Night ── */}
+        {/* ── Badge Born to Dance ── */}
         <div className="flex justify-center mb-8">
           <div
             className="relative inline-flex items-center gap-3 px-6 py-3 rounded-full"

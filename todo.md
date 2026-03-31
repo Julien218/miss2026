@@ -3908,7 +3908,7 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Remplacer l'URL du logo sur toutes les pages (branding.ts, SplashScreen, StructuredData, Homepage)
 - [ ] Mettre à jour VITE_APP_LOGO avec la nouvelle URL (secret built-in, non modifiable par code)
 - [x] Vérifier visuellement le rendu sur toutes les pages
-- [ ] Checkpoint et livraison
+- [x] Checkpoint 57cddf77 et livraison
 
 
 ## 🌑 CHANGEMENT FOND DE PAGE GLOBAL + FOOTER
@@ -3919,4 +3919,12 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Mettre à jour le footer avec le design JS-Innov.IA (Tech Ecosystem, mentions légales regroupées)
 - [x] Appliquer le nouveau fond sur toutes les pages (via CSS global .dark body)
 - [x] Vérifier la cohérence visuelle sur homepage
+- [x] Checkpoint 57cddf77 et livraison
+
+
+## 🎶 RENOMMAGE SOIRÉE : Lady Gaga Night → Born to Dance
+
+- [x] Identifier toutes les occurrences de "Lady Gaga Night" dans le code (10 fichiers)
+- [x] Remplacer par "Born to Dance" partout (branding.ts, GagaNightCountdown, SplashScreen, whatsapp.ts, assistant.ts, videoGenerator.ts, tests)
+- [x] Vérifier visuellement (0 erreurs TypeScript, mêmes 5 fichiers de tests pré-existants en échec)
 - [ ] Checkpoint et livraison

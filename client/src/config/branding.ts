@@ -86,7 +86,7 @@ export const BRANDING = {
     dateISO: "2026-04-19T20:00:00+02:00",   // ← MODIFIER ICI pour changer la date
     dateDisplay: "19 Avril 2026",             // ← Texte court affiché dans l'UI
     timeDisplay: "20h00",                     // ← Heure affichée
-    label: "Lady Gaga Night",                 // ← Nom de la soirée
+    label: "Born to Dance",                  // ← Nom de la soirée
     theme: "Soirée de Clôture",              // ← Sous-titre
     location: "Dour, Belgique",               // ← Lieu
     venue: "Centre Sportif d'Elouges",        // ← Salle

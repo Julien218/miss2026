@@ -1,6 +1,6 @@
 /**
  * SplashScreen - Animation d'intro Miss & Mister Dour 2026
- * Thème Lady Gaga Night : noir, cuivre, champagne, particules dorées
+ * Thème Born to Dance : noir, cuivre, champagne, particules dorées
  * Affiché uniquement à la première visite (sessionStorage)
  */
 
@@ -174,7 +174,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#D4AF37]" />
             </motion.div>
 
-            {/* Texte "Lady Gaga Night" */}
+            {/* Texte "Born to Dance" */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={phase === "show" ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}

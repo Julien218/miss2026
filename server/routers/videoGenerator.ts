@@ -76,7 +76,7 @@ ${input.sponsorName ? `- Sponsor : ${input.sponsorName}` : ''}
 ${input.eventDate ? `- Date événement : ${input.eventDate}` : '- Date événement : 19 avril 2026'}
 ${input.customInstructions ? `- Instructions spéciales : ${input.customInstructions}` : ''}
 
-Contexte : Miss & Mister Dour 2026 — Soirée de gala au Centre Sportif d'Elouges, Belgique. Thème Lady Gaga Night.
+Contexte : Miss & Mister Dour 2026 — Soirée de gala au Centre Sportif d'Elouges, Belgique. Thème Born to Dance.
 
 Génère un script JSON avec cette structure exacte :
 {

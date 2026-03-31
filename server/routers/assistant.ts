@@ -277,7 +277,7 @@ Lien du profil : ${profileUrl}
 ${input.channel === "whatsapp" ? "Format WhatsApp : court, avec emojis." : "Format email : plus formel."}`,
 
         event_reminder: `Génère un rappel d'événement pour le candidat ${candidate.firstName} ${candidate.lastName}.
-${input.customContext ? `Contexte de l'événement : ${input.customContext}` : "Événement : soirée de clôture Lady Gaga Night, 19 avril 2026, Dour."}
+${input.customContext ? `Contexte de l'événement : ${input.customContext}` : "Événement : soirée de clôture Born to Dance, 19 avril 2026, Dour."}
 ${input.channel === "whatsapp" ? "Format WhatsApp : court, avec emojis." : "Format email : formel."}`,
 
         congratulations: `Génère un message de félicitations officiel pour ${candidate.firstName} ${candidate.lastName}.
@@ -350,7 +350,7 @@ ${input.channel === "whatsapp" ? "Format WhatsApp : concis, avec emojis appropri
 
         vote_call: `Bonjour ${candidate.firstName} 👑\n\nLes votes sont ouverts ! Vous avez actuellement ${candidate.voteCount} vote(s).\n\nPartagez votre lien personnel pour mobiliser vos proches :\n🔗 ${profileUrl}\n\nChaque vote compte ! Bonne chance 🌟\n\nJulien P.\nBy Js-Innov.IA`,
 
-        event_info: `Bonjour ${candidate.firstName} 👑\n\nRappel important : la soirée de clôture Lady Gaga Night se déroulera le 19 avril 2026 à Dour, Belgique.\n\nPréparez-vous pour cette soirée exceptionnelle !\n\n🔗 Votre profil : ${profileUrl}\n\nJulien P.\nBy Js-Innov.IA`,
+        event_info: `Bonjour ${candidate.firstName} 👑\n\nRappel important : la soirée de clôture Born to Dance se déroulera le 19 avril 2026 à Dour, Belgique.\n\nPréparez-vous pour cette soirée exceptionnelle !\n\n🔗 Votre profil : ${profileUrl}\n\nJulien P.\nBy Js-Innov.IA`,
 
         welcome: `Bienvenue ${candidate.firstName} 👑\n\nNous sommes ravis de vous accueillir parmi les candidats de Miss & Mister Dour 2026 !\n\nCommencez par compléter votre profil :\n🔗 ${profileUrl}\n\nL'équipe organisatrice est à votre disposition.\n\nJulien P.\nBy Js-Innov.IA`,
       };
@@ -514,7 +514,7 @@ ${input.channel === "whatsapp" ? "Format WhatsApp : concis, avec emojis appropri
               message = `Bonjour ${candidate.firstName} 👑\n\nLes votes sont ouverts ! Mobilisez vos proches en partageant votre lien personnel :\n🔗 ${profileUrl}\n\nChaque vote compte pour votre sélection 🌟\n\nJulien P.\nBy Js-Innov.IA`;
               break;
             case "event_info":
-              message = `Bonjour ${candidate.firstName} 👑\n\nRappel important : la soirée de clôture Lady Gaga Night se déroulera le 19 avril 2026 à Dour, Belgique.\n\nVotre présence est attendue. Préparez-vous pour cette soirée exceptionnelle !\n\n🔗 Votre profil : ${profileUrl}\n\nJulien P.\nBy Js-Innov.IA`;
+              message = `Bonjour ${candidate.firstName} 👑\n\nRappel important : la soirée de clôture Born to Dance se déroulera le 19 avril 2026 à Dour, Belgique.\n\nVotre présence est attendue. Préparez-vous pour cette soirée exceptionnelle !\n\n🔗 Votre profil : ${profileUrl}\n\nJulien P.\nBy Js-Innov.IA`;
               break;
             case "welcome":
               message = `Bienvenue ${candidate.firstName} 👑\n\nNous sommes ravis de vous accueillir parmi les candidats de Miss & Mister Dour 2026 !\n\nCommencez par compléter votre profil pour être visible :\n🔗 ${profileUrl}\n\nL'équipe organisatrice est à votre disposition.\n\nJulien P.\nBy Js-Innov.IA`;

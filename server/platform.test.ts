@@ -107,7 +107,7 @@ describe("RBAC - Role-based access control", () => {
       await caller.contests.create({
         title: "Miss & Mister Dour 2026",
         year: 2026,
-        description: "Lady Gaga Night - 19 avril 2026",
+        description: "Born to Dance - 19 avril 2026",
       });
     } catch (error: any) {
       // DB errors are expected in test env, but FORBIDDEN should not happen
