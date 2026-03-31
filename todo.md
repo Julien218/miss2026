@@ -3927,4 +3927,14 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Identifier toutes les occurrences de "Lady Gaga Night" dans le code (10 fichiers)
 - [x] Remplacer par "Born to Dance" partout (branding.ts, GagaNightCountdown, SplashScreen, whatsapp.ts, assistant.ts, videoGenerator.ts, tests)
 - [x] Vérifier visuellement (0 erreurs TypeScript, mêmes 5 fichiers de tests pré-existants en échec)
+- [x] Checkpoint 85285d41 et livraison
+
+
+## 💃 VISUEL BORN TO DANCE — Badge Compte à Rebours
+
+- [x] Analyser le composant GagaNightCountdown actuel
+- [x] Créer une icône SVG de danse élégante (silhouette danseuse en arabesque, gradients or/cuivre/rose)
+- [x] Redesigner le badge avec le nouveau visuel Born to Dance (gradient text, double danseuse, fond semi-transparent)
+- [x] Ajouter des animations fluides (dance-sway, dance-sway-reverse, dance-note, dance-badge-pulse, dance-float)
+- [x] Vérifier visuellement le rendu (badge visible, animations fluides, 0 erreur TS)
 - [ ] Checkpoint et livraison
