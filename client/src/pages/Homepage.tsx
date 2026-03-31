@@ -108,28 +108,12 @@ export default function Homepage() {
         </div>
       </header>
 
-      {/* Section 1: Hero avec cartes flottantes de candidats */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
+      {/* Section 1: Candidats directement visibles */}
+      <section className="relative pt-8 pb-12 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/10" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyMTIsIDE3NSwgNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <Crown className="w-16 h-16 mx-auto mb-6 text-gold animate-pulse" />
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent leading-tight">
-            Miss & Mister Dour 2026
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
-            La soirée de prestige nationale belge qui célèbre l'élégance, le talent et le charisme
-          </p>
-          <div className="flex items-center justify-center gap-3 text-gold text-lg mb-8">
-            <Calendar className="w-5 h-5" />
-            <span className="font-bold">19 Avril 2026</span>
-            <span className="text-gray-500">|</span>
-            <span className="text-gray-300">Centre Sportif d'Elouges</span>
-          </div>
-        </div>
 
         {/* Cartes flottantes des candidats */}
-        <div className="relative z-10 mt-4">
+        <div className="relative z-10">
           <FloatingCandidateCards />
         </div>
 

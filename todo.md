@@ -3996,3 +3996,11 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Corriger en DB : UPDATE users SET role = 'super_admin' WHERE id = 270073
 - [x] Corriger le code db.ts : OWNER_OPEN_ID attribue désormais super_admin au lieu de admin
 - [ ] Vérifier la connexion (utilisateur doit se déconnecter et se reconnecter)
+
+
+## 🏠 RETRAIT SECTION HERO HOMEPAGE
+
+- [x] Retirer la section hero (couronne, titre, sous-titre, date) de la homepage
+- [x] Décaler les candidats vers le haut (directement sous la navigation)
+- [x] Vérifier visuellement (0 erreur TS, candidats visibles immédiatement)
+- [ ] Checkpoint et livraison
