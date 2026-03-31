@@ -1,21 +1,21 @@
 /**
  * Candidates.tsx
  * Galerie premium des candidats Miss & Mister Dour 2026
- * Design noir et doré avec vraies photos de profil
+ * Accessible sans connexion — utilise la route publique listApproved
+ * Les admins connectés ont accès aux fonctions de gestion de statut
  */
 
 import { useAuth } from "@/_core/hooks/useAuth";
-import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
-import { Search, Crown, Check, X, Trophy, MapPin, Heart, ExternalLink, Star } from "lucide-react";
+import { Search, Crown, Check, X, Trophy, MapPin, Heart, ExternalLink, Star, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
+import { BRANDING } from "@/config/branding";
+import { SEOHead } from "@/components/SEOHead";
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
 const CATEGORY_LABELS: Record<string, string> = {
@@ -30,14 +30,6 @@ const CATEGORY_COLORS: Record<string, string> = {
   mister: "from-blue-500 to-indigo-600",
   teen_miss: "from-purple-500 to-pink-500",
   teen_mister: "from-cyan-500 to-blue-500",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "En attente",
-  approved: "Approuvé",
-  rejected: "Rejeté",
-  finalist: "Finaliste",
-  winner: "Gagnant",
 };
 
 // ─── Composant Card Candidat ──────────────────────────────────────────────────
@@ -63,6 +55,7 @@ function CandidateCard({ candidate, isAdmin, onStatusClick, onViewProfile }: Can
             alt={`${candidate.firstName} ${candidate.lastName}`}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setImgError(true)}
+            loading="lazy"
           />
         ) : (
           <div className={`flex h-full items-center justify-center bg-gradient-to-br ${categoryGradient} opacity-20`}>
@@ -81,20 +74,6 @@ function CandidateCard({ candidate, isAdmin, onStatusClick, onViewProfile }: Can
 
         {/* Overlay dégradé bas */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-        {/* Badge statut (coin haut droit) */}
-        {candidate.status === "finalist" && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 bg-gold text-black text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
-            <Star className="w-3 h-3" />
-            Finaliste
-          </div>
-        )}
-        {candidate.status === "winner" && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
-            <Crown className="w-3 h-3" />
-            Gagnant
-          </div>
-        )}
 
         {/* Badge catégorie (coin haut gauche) */}
         <div className={`absolute top-3 left-3 px-2.5 py-1 bg-gradient-to-r ${categoryGradient} rounded-full text-white text-xs font-bold shadow-lg`}>
@@ -154,38 +133,35 @@ function CandidateCard({ candidate, isAdmin, onStatusClick, onViewProfile }: Can
   );
 }
 
-// ─── Page principale ──────────────────────────────────────────────────────────
+// ─── Page principale (publique) ──────────────────────────────────────────────
 export default function Candidates() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedContest, setSelectedContest] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
 
-  const { data: contests } = trpc.contests.list.useQuery();
-  const activeContest = selectedContest === "all"
-    ? contests?.find(c => c.status !== "completed")
-    : contests?.find(c => c.id === parseInt(selectedContest));
+  // Route publique : pas besoin de connexion
+  const { data: allCandidates, refetch } = trpc.candidateProfile.listApproved.useQuery();
 
-  const { data: allCandidates, refetch } = trpc.candidates.search.useQuery({
-    contestId: activeContest?.id || 0,
-    search: searchTerm || undefined,
-  }, { enabled: !!activeContest });
+  // Filtrage par catégorie et recherche côté client
+  const candidates = allCandidates?.filter(c => {
+    const matchCategory = selectedCategory === "all" || c.category === selectedCategory;
+    const matchSearch = !searchTerm || 
+      `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.city && c.city.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchCategory && matchSearch;
+  });
 
-  // Filtrage par catégorie côté client
-  const candidates = selectedCategory === "all"
-    ? allCandidates
-    : allCandidates?.filter(c => c.category === selectedCategory);
-
+  // Mutation admin (uniquement si connecté en admin)
   const updateStatusMutation = trpc.candidates.updateStatus.useMutation({
     onSuccess: () => {
       toast.success("Statut mis à jour");
       setIsStatusDialogOpen(false);
       refetch();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error("Erreur : " + error.message);
     },
   });
@@ -198,7 +174,7 @@ export default function Candidates() {
     setLocation(`/candidat/${id}`);
   };
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
 
   // Compteurs par catégorie
   const counts = {
@@ -210,78 +186,79 @@ export default function Candidates() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="container py-8">
-        {/* En-tête */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Crown className="w-8 h-8 text-gold" />
-            <h1 className="text-3xl font-bold text-white">Candidats 2026</h1>
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
+      <SEOHead
+        title="Nos Candidats — Miss & Mister Dour 2026"
+        description="Découvrez les 19 candidats en lice pour le titre Miss & Mister Dour 2026. Votez pour vos favoris !"
+        url="https://missetmisterdour.be/candidates"
+        tags={["Miss Dour", "Mister Dour", "candidats", "concours beauté Belgique"]}
+      />
+
+      {/* Header simplifié */}
+      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <img
+                src={BRANDING.logoIdentity}
+                alt="Logo officiel Miss & Mister Dour 2026"
+                className="h-12 max-[640px]:h-9 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+                loading="eager"
+              />
+            </Link>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="/" className="text-gray-300 hover:text-gold transition-colors">Accueil</Link>
+              <Link href="/about" className="text-gray-300 hover:text-gold transition-colors">À Propos</Link>
+              <Link href="/candidates" className="text-gold font-bold">Candidats</Link>
+              <Link href="/ranking" className="text-gray-300 hover:text-gold transition-colors">Classement</Link>
+              <Link href="/gallery" className="text-gray-300 hover:text-gold transition-colors">Galerie</Link>
+              <Link href="/sponsors" className="text-gray-300 hover:text-gold transition-colors">Sponsors</Link>
+              <Link href="/contact" className="px-4 py-2 bg-transparent border border-gold text-gold font-medium rounded-lg hover:bg-gold/10 transition-colors">Contact</Link>
+            </nav>
+            <Link href="/" className="md:hidden flex items-center gap-2 text-gold hover:text-gold/80 transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+              Retour
+            </Link>
           </div>
-          <p className="text-gray-400">
-            {isAdmin
-              ? `${counts.all} candidat${counts.all > 1 ? "s" : ""} inscrit${counts.all > 1 ? "s" : ""} — gérez et évaluez les profils`
-              : `Découvrez les ${counts.all} candidat${counts.all > 1 ? "s" : ""} en lice pour Miss & Mister Dour 2026`}
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* En-tête */}
+        <div className="mb-8 text-center">
+          <Crown className="w-12 h-12 mx-auto mb-4 text-gold" />
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent mb-3">
+            Nos Candidats 2026
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Découvrez les {counts.all} candidat{counts.all > 1 ? "s" : ""} en lice pour Miss & Mister Dour 2026
           </p>
         </div>
 
         {/* Filtres */}
-        <div className="bg-gray-900 border border-gold/20 rounded-xl p-5 mb-8 space-y-4">
-          <div className="grid gap-4 md:grid-cols-3">
-            {/* Recherche */}
-            <div className="relative md:col-span-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input
-                placeholder="Rechercher un candidat..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:border-gold"
-              />
-            </div>
-
-            {/* Concours */}
-            <Select value={selectedContest} onValueChange={setSelectedContest}>
-              <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                <SelectValue placeholder="Sélectionner un concours" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
-                <SelectItem value="all" className="text-white">Concours actif</SelectItem>
-                {contests?.map((contest) => (
-                  <SelectItem key={contest.id} value={contest.id.toString()} className="text-white">
-                    {contest.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Catégorie */}
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                <SelectValue placeholder="Toutes les catégories" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
-                <SelectItem value="all" className="text-white">Toutes ({counts.all})</SelectItem>
-                <SelectItem value="miss" className="text-white">Miss ({counts.miss})</SelectItem>
-                <SelectItem value="mister" className="text-white">Mister ({counts.mister})</SelectItem>
-                <SelectItem value="teen_miss" className="text-white">Teen Miss ({counts.teen_miss})</SelectItem>
-                <SelectItem value="teen_mister" className="text-white">Teen Mister ({counts.teen_mister})</SelectItem>
-              </SelectContent>
-            </Select>
+        <div className="bg-gray-900/80 border border-gold/20 rounded-xl p-5 mb-8 space-y-4">
+          {/* Recherche */}
+          <div className="relative max-w-md mx-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Rechercher un candidat..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:border-gold"
+            />
           </div>
 
           {/* Filtres rapides catégorie */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 justify-center">
             {[
               { key: "all", label: "Tous", count: counts.all },
               { key: "miss", label: "Miss", count: counts.miss, gradient: "from-pink-500 to-rose-600" },
               { key: "mister", label: "Mister", count: counts.mister, gradient: "from-blue-500 to-indigo-600" },
-              { key: "teen_miss", label: "Teen Miss", count: counts.teen_miss, gradient: "from-purple-500 to-pink-500" },
-              { key: "teen_mister", label: "Teen Mister", count: counts.teen_mister, gradient: "from-cyan-500 to-blue-500" },
-            ].map(({ key, label, count, gradient }) => (
+            ].filter(({ count }) => count > 0 || true).map(({ key, label, count, gradient }) => (
               <button
                 key={key}
                 onClick={() => setSelectedCategory(key)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
                   selectedCategory === key
                     ? gradient
                       ? `bg-gradient-to-r ${gradient} text-white shadow-lg`
@@ -322,63 +299,65 @@ export default function Candidates() {
           </div>
         )}
 
-        {/* Dialog modification statut (admin) */}
-        <Dialog open={isStatusDialogOpen} onOpenChange={setIsStatusDialogOpen}>
-          <DialogContent className="bg-gray-900 border border-gold/30 text-white">
-            <DialogHeader>
-              <DialogTitle className="text-gold">Modifier le statut</DialogTitle>
-              <DialogDescription className="text-gray-400">
-                Changez le statut de {selectedCandidate?.firstName} {selectedCandidate?.lastName}
-              </DialogDescription>
-            </DialogHeader>
+        {/* Dialog modification statut (admin uniquement) */}
+        {isAdmin && (
+          <Dialog open={isStatusDialogOpen} onOpenChange={setIsStatusDialogOpen}>
+            <DialogContent className="bg-gray-900 border border-gold/30 text-white">
+              <DialogHeader>
+                <DialogTitle className="text-gold">Modifier le statut</DialogTitle>
+                <DialogDescription className="text-gray-400">
+                  Changez le statut de {selectedCandidate?.firstName} {selectedCandidate?.lastName}
+                </DialogDescription>
+              </DialogHeader>
 
-            <div className="grid gap-3 py-4">
-              <Button
-                variant="outline"
-                className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                onClick={() => handleStatusChange(selectedCandidate?.id, "approved")}
-              >
-                <Check className="mr-2 h-4 w-4 text-green-400" />
-                Approuver
-              </Button>
-              <Button
-                variant="outline"
-                className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                onClick={() => handleStatusChange(selectedCandidate?.id, "rejected")}
-              >
-                <X className="mr-2 h-4 w-4 text-red-400" />
-                Rejeter
-              </Button>
-              <Button
-                variant="outline"
-                className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                onClick={() => handleStatusChange(selectedCandidate?.id, "finalist")}
-              >
-                <Star className="mr-2 h-4 w-4 text-gold" />
-                Marquer comme Finaliste
-              </Button>
-              <Button
-                variant="outline"
-                className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                onClick={() => handleStatusChange(selectedCandidate?.id, "winner")}
-              >
-                <Crown className="mr-2 h-4 w-4 text-yellow-400" />
-                Marquer comme Gagnant
-              </Button>
-            </div>
+              <div className="grid gap-3 py-4">
+                <Button
+                  variant="outline"
+                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
+                  onClick={() => handleStatusChange(selectedCandidate?.id, "approved")}
+                >
+                  <Check className="mr-2 h-4 w-4 text-green-400" />
+                  Approuver
+                </Button>
+                <Button
+                  variant="outline"
+                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
+                  onClick={() => handleStatusChange(selectedCandidate?.id, "rejected")}
+                >
+                  <X className="mr-2 h-4 w-4 text-red-400" />
+                  Rejeter
+                </Button>
+                <Button
+                  variant="outline"
+                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
+                  onClick={() => handleStatusChange(selectedCandidate?.id, "finalist")}
+                >
+                  <Star className="mr-2 h-4 w-4 text-gold" />
+                  Marquer comme Finaliste
+                </Button>
+                <Button
+                  variant="outline"
+                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
+                  onClick={() => handleStatusChange(selectedCandidate?.id, "winner")}
+                >
+                  <Crown className="mr-2 h-4 w-4 text-yellow-400" />
+                  Marquer comme Gagnant
+                </Button>
+              </div>
 
-            <DialogFooter>
-              <Button
-                variant="outline"
-                className="border-gray-700 text-white hover:bg-gray-800"
-                onClick={() => setIsStatusDialogOpen(false)}
-              >
-                Annuler
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  className="border-gray-700 text-white hover:bg-gray-800"
+                  onClick={() => setIsStatusDialogOpen(false)}
+                >
+                  Annuler
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

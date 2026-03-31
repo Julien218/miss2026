@@ -4003,4 +4003,12 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Retirer la section hero (couronne, titre, sous-titre, date) de la homepage
 - [x] Décaler les candidats vers le haut (directement sous la navigation)
 - [x] Vérifier visuellement (0 erreur TS, candidats visibles immédiatement)
+- [x] Checkpoint 28c3a801 et livraison
+
+
+## 🔓 RETRAIT OBLIGATION CONNEXION — Page Candidats
+
+- [x] Identifier les protections : DashboardLayout + candidates.search (protectedProcedure)
+- [x] Rendre la page candidats publique : utilise candidateProfile.listApproved (publicProcedure), layout autonome
+- [x] Vérifier visuellement : 19 candidats affichés, filtres Tous/Miss/Mister, recherche, profils accessibles
 - [ ] Checkpoint et livraison
