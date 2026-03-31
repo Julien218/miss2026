@@ -1,0 +1,94 @@
+{
+  "query": "SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME LIKE '%candidate%' AND TABLE_SCHEMA = DATABASE();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME LIKE '%candidate%' AND TABLE_SCHEMA = DATABASE();",
+  "rows": [
+    {
+      "TABLE_NAME": "votes",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "social_scores",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "invitations",
+      "COLUMN_NAME": "candidate_application_id"
+    },
+    {
+      "TABLE_NAME": "media_jobs",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "organizations",
+      "COLUMN_NAME": "maxCandidates"
+    },
+    {
+      "TABLE_NAME": "assets",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "candidate_comments",
+      "COLUMN_NAME": "candidate_id"
+    },
+    {
+      "TABLE_NAME": "candidate_analytics",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "candidateApplications",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "eventAttendees",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "ip_tracking",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "photos",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "articles",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "profileEditTokens",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "whatsappLogs",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "whatsappLogs",
+      "COLUMN_NAME": "candidateName"
+    },
+    {
+      "TABLE_NAME": "media",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "event_participants",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "evaluations",
+      "COLUMN_NAME": "candidateId"
+    },
+    {
+      "TABLE_NAME": "tracking_events",
+      "COLUMN_NAME": "candidateId"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\tCOLUMN_NAME\nvotes\tcandidateId\nsocial_scores\tcandidateId\ninvitations\tcandidate_application_id\nmedia_jobs\tcandidateId\norganizations\tmaxCandidates\nassets\tcandidateId\ncandidate_comments\tcandidate_id\ncandidate_analytics\tcandidateId\ncandidateApplications\tcandidateId\neventAttendees\tcandidateId\nip_tracking\tcandidateId\nphotos\tcandidateId\narticles\tcandidateId\nprofileEditTokens\tcandidateId\nwhatsappLogs\tcandidateId\nwhatsappLogs\tcandidateName\nmedia\tcandidateId\ncertificates\tcandidateId\nevent_participants\tcandidateId\nevaluations\tcandidateId\ntracking_events\tcandidateId\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

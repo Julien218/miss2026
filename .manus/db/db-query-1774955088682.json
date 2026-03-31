@@ -1,0 +1,200 @@
+{
+  "query": "SELECT id, firstName, lastName, category, voteCount, shareCount, city, status FROM candidates ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, firstName, lastName, category, voteCount, shareCount, city, status FROM candidates ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "firstName": "Loriana",
+      "lastName": "Morelle",
+      "category": "miss",
+      "voteCount": "83",
+      "shareCount": "43",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "2",
+      "firstName": "Julie",
+      "lastName": "Geronnez",
+      "category": "miss",
+      "voteCount": "4",
+      "shareCount": "11",
+      "city": "Hornu",
+      "status": "approved"
+    },
+    {
+      "id": "3",
+      "firstName": "Anaïs",
+      "lastName": "Geronnez",
+      "category": "miss",
+      "voteCount": "0",
+      "shareCount": "4",
+      "city": "NULL",
+      "status": "approved"
+    },
+    {
+      "id": "4",
+      "firstName": "Lindsay",
+      "lastName": "Rulkin",
+      "category": "miss",
+      "voteCount": "2",
+      "shareCount": "5",
+      "city": "Boussu",
+      "status": "approved"
+    },
+    {
+      "id": "5",
+      "firstName": "Noëlline",
+      "lastName": "Zinszner",
+      "category": "miss",
+      "voteCount": "25",
+      "shareCount": "11",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "6",
+      "firstName": "Manon",
+      "lastName": "Vaillant",
+      "category": "miss",
+      "voteCount": "15",
+      "shareCount": "2",
+      "city": "Montignies-Sur-Roc",
+      "status": "approved"
+    },
+    {
+      "id": "7",
+      "firstName": "Aliya",
+      "lastName": "Ammour",
+      "category": "miss",
+      "voteCount": "9",
+      "shareCount": "4",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "8",
+      "firstName": "Nell",
+      "lastName": "Descamps",
+      "category": "miss",
+      "voteCount": "49",
+      "shareCount": "2",
+      "city": "Elouges",
+      "status": "approved"
+    },
+    {
+      "id": "9",
+      "firstName": "Esmeralda",
+      "lastName": "Verminnen",
+      "category": "miss",
+      "voteCount": "440",
+      "shareCount": "148",
+      "city": "Elouges",
+      "status": "approved"
+    },
+    {
+      "id": "10",
+      "firstName": "Alessia",
+      "lastName": "Jouffin",
+      "category": "miss",
+      "voteCount": "6",
+      "shareCount": "1",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "11",
+      "firstName": "Giulia",
+      "lastName": "Leonetti",
+      "category": "miss",
+      "voteCount": "141",
+      "shareCount": "3",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "12",
+      "firstName": "Melina",
+      "lastName": "Delmotte",
+      "category": "miss",
+      "voteCount": "10",
+      "shareCount": "11",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "13",
+      "firstName": "Noé",
+      "lastName": "Caudrelier",
+      "category": "mister",
+      "voteCount": "0",
+      "shareCount": "2",
+      "city": "Mons",
+      "status": "approved"
+    },
+    {
+      "id": "14",
+      "firstName": "Korentin",
+      "lastName": "Schooneyt",
+      "category": "mister",
+      "voteCount": "108",
+      "shareCount": "6",
+      "city": "Colfontaine",
+      "status": "approved"
+    },
+    {
+      "id": "15",
+      "firstName": "Hugo",
+      "lastName": "Puma",
+      "category": "mister",
+      "voteCount": "5",
+      "shareCount": "1",
+      "city": "Thulin",
+      "status": "approved"
+    },
+    {
+      "id": "16",
+      "firstName": "Kyllian",
+      "lastName": "Baton",
+      "category": "mister",
+      "voteCount": "236",
+      "shareCount": "15",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "17",
+      "firstName": "Dawson",
+      "lastName": "Ostrowski",
+      "category": "mister",
+      "voteCount": "66",
+      "shareCount": "1",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "18",
+      "firstName": "Lylian",
+      "lastName": "Paternotre",
+      "category": "mister",
+      "voteCount": "4",
+      "shareCount": "0",
+      "city": "Dour",
+      "status": "approved"
+    },
+    {
+      "id": "19",
+      "firstName": "Peyton",
+      "lastName": "Loicq",
+      "category": "miss",
+      "voteCount": "2",
+      "shareCount": "0",
+      "city": "DOUR",
+      "status": "approved"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfirstName\tlastName\tcategory\tvoteCount\tshareCount\tcity\tstatus\n1\tLoriana\tMorelle\tmiss\t83\t43\tDour\tapproved\n2\tJulie\tGeronnez\tmiss\t4\t11\tHornu\tapproved\n3\tAnaïs\tGeronnez\tmiss\t0\t4\tNULL\tapproved\n4\tLindsay\tRulkin\tmiss\t2\t5\tBoussu\tapproved\n5\tNoëlline\tZinszner\tmiss\t25\t11\tDour\tapproved\n6\tManon\tVaillant\tmiss\t15\t2\tMontignies-Sur-Roc\tapproved\n7\tAliya\tAmmour\tmiss\t9\t4\tDour\tapproved\n8\tNell\tDescamps\tmiss\t49\t2\tElouges\tapproved\n9\tEsmeralda\tVerminnen\tmiss\t440\t148\tElouges\tapproved\n10\tAlessia\tJouffin\tmiss\t6\t1\tDour\tapproved\n11\tGiulia\tLeonetti\tmiss\t141\t3\tDour\tapproved\n12\tMelina\tDelmotte\tmiss\t10\t11\tDour\tapproved\n13\tNoé\tCaudrelier\tmister\t0\t2\tMons\tapproved\n14\tKorentin\tSchooneyt\tmister\t108\t6\tColfontaine\tapproved\n15\tHugo\tPuma\tmister\t5\t1\tThulin\tapproved\n16\tKyllian\tBaton\tmister\t236\t15\tDour\tapproved\n17\tDawson\tOstrowski\tmister\t66\t1\tDour\tapproved\n18\tLylian\tPaternotre\tmister\t4\t0\tDour\tapproved\n19\tPeyton\tLoicq\tmiss\t2\t0\tDOUR\tapproved\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

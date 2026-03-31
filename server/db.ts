@@ -154,7 +154,7 @@ export async function deleteContest(id: number) {
 export async function getCandidatesByContest(contestId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(candidates).where(eq(candidates.contestId, contestId));
+  return db.select().from(candidates).where(eq(candidates.contestId, contestId)).orderBy(candidates.id);
 }
 
 export async function getCandidateById(id: number) {
@@ -209,7 +209,7 @@ export async function searchCandidates(contestId: number, search?: string, categ
     conditions.push(eq(candidates.status, status as any));
   }
   
-  return db.select().from(candidates).where(and(...conditions));
+  return db.select().from(candidates).where(and(...conditions)).orderBy(candidates.id);
 }
 
 // ========== MEDIA ==========

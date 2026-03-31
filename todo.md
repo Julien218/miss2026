@@ -3937,4 +3937,44 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Redesigner le badge avec le nouveau visuel Born to Dance (gradient text, double danseuse, fond semi-transparent)
 - [x] Ajouter des animations fluides (dance-sway, dance-sway-reverse, dance-note, dance-badge-pulse, dance-float)
 - [x] Vérifier visuellement le rendu (badge visible, animations fluides, 0 erreur TS)
+- [x] Checkpoint 67532819 et livraison
+
+
+## 🔧 CORRECTION DB — Alignement CSV Candidats
+
+- [x] Corriger Noé Caudrelier : ville Colfontaine, votes 108, shares 6
+- [x] Corriger Korentin Schooneyt : ville Thulin, votes 5, shares 1
+- [x] Corriger Hugo Puma : ville Dour, votes 236, shares 15
+- [x] Corriger Kyllian Baton : votes 66, shares 1
+- [x] Corriger Dawson Ostrowski : votes 4, shares 0
+- [x] Corriger Lylian Paternotre → Paternottre (2 t)
+- [x] Corriger Peyton Loicq : ville Mons, votes 0, shares 2
+- [x] Corriger Loriana Morelle : votes 75, shares 44
+- [x] Vérifier les corrections (19/19 candidats alignés)
+
+
+## 👤 CORRECTION DB — Utilisateurs (alignement CSV)
+
+- [ ] Corriger nom super_admin (id=1) : "super admin" → "Js-Innov.IA"
+- [ ] Corriger nom admin (id=2) : "admin" → "directeur admin"
+- [ ] Aligner rôles candidats sur CSV (certains user → candidate reste, d'autres candidate → user)
+- [ ] Supprimer doublons (id=31 Js-Innov.IA doublon, id=30101 Olivier Trevis doublon)
+- [ ] Nettoyer les 35 utilisateurs de test
+- [ ] Vérifier les corrections
+
+
+## 🔢 RÉORGANISATION IDs CANDIDATS
+
+- [x] Déplacer Peyton Loicq de id=19 vers id=13 (via id temporaire 999)
+- [x] Décaler les Misters : Noé 13→14, Korentin 14→15, Hugo 15→16, Kyllian 16→17, Dawson 17→18, Lylian 18→19
+- [x] Mettre à jour les références (votes + photos décalés en cascade)
+- [x] Vérifier l'ordre final (19/19 candidats dans l'ordre correct)
+
+
+## 🔄 MISE À JOUR SITE — Nouvel ordre candidats + votes
+
+- [x] Vérifier le code source pour hardcoding d'IDs ou d'ordre des candidats
+- [x] Ajouter orderBy(candidates.id) dans getCandidatesByContest, searchCandidates et listApproved
+- [x] Vérifier visuellement la homepage : ordre correct, Peyton en position 13
+- [x] Corriger compteur "12 Miss et 7 Mister" → "13 Miss et 6 Mister"
 - [ ] Checkpoint et livraison

@@ -188,7 +188,7 @@ export default function Homepage() {
               </div>
               <div className="p-6">
                 <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-gold transition-colors">Nos Candidats</h3>
-                <p className="text-gray-400 mb-4">12 Miss et 7 Mister en compétition pour le titre 2026</p>
+                <p className="text-gray-400 mb-4">13 Miss et 6 Mister en compétition pour le titre 2026</p>
                 <span className="text-gold font-medium flex items-center gap-2">
                   Voir les profils <ArrowRight className="w-4 h-4" />
                 </span>

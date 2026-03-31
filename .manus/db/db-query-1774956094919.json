@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM users WHERE email LIKE 'test-%' OR (email LIKE '%example.com' AND name IN ('Test List User', 'Test Read User', 'Test All User', 'Test Create User', 'Jean Dupont'));",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute DELETE FROM users WHERE email LIKE 'test-%' OR (email LIKE '%example.com' AND name IN ('Test List User', 'Test Read User', 'Test All User', 'Test Create User', 'Jean Dupont'));",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 374
+}

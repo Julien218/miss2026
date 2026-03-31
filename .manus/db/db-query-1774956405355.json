@@ -1,0 +1,9 @@
+{
+  "query": "SELECT 'media_jobs' as tbl, candidateId, COUNT(*) as cnt FROM media_jobs WHERE candidateId BETWEEN 13 AND 19 GROUP BY candidateId UNION ALL SELECT 'whatsappLogs', candidateId, COUNT(*) FROM whatsappLogs WHERE candidateId BETWEEN 13 AND 19 GROUP BY candidateId UNION ALL SELECT 'ip_tracking', candidateId, COUNT(*) FROM ip_tracking WHERE candidateId BETWEEN 13 AND 19 GROUP BY candidateId;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT 'media_jobs' as tbl, candidateId, COUNT(*) as cnt FROM media_jobs WHERE candidateId BETWEEN 13 AND 19 GROUP BY candidateId UNION ALL SELECT 'whatsappLogs', candidateId, COUNT(*) FROM whatsappLogs WHERE candidateId BETWEEN 13 AND 19 GROUP BY candidateId UNION ALL SELECT 'ip_tracking', candidateId, COUNT(*) FROM ip_tracking WHERE candidateId BETWEEN 13 AND 19 GROUP BY candidateId;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 363
+}

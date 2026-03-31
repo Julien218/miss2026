@@ -1,0 +1,38 @@
+{
+  "query": "SELECT 'votes' as tbl, COUNT(*) as cnt FROM votes WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'photos', COUNT(*) FROM photos WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'articles', COUNT(*) FROM articles WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'candidate_comments', COUNT(*) FROM candidate_comments WHERE candidate_id BETWEEN 13 AND 19 UNION ALL SELECT 'social_scores', COUNT(*) FROM social_scores WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'candidate_analytics', COUNT(*) FROM candidate_analytics WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'assets', COUNT(*) FROM assets WHERE candidateId BETWEEN 13 AND 19;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT 'votes' as tbl, COUNT(*) as cnt FROM votes WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'photos', COUNT(*) FROM photos WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'articles', COUNT(*) FROM articles WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'candidate_comments', COUNT(*) FROM candidate_comments WHERE candidate_id BETWEEN 13 AND 19 UNION ALL SELECT 'social_scores', COUNT(*) FROM social_scores WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'candidate_analytics', COUNT(*) FROM candidate_analytics WHERE candidateId BETWEEN 13 AND 19 UNION ALL SELECT 'assets', COUNT(*) FROM assets WHERE candidateId BETWEEN 13 AND 19;",
+  "rows": [
+    {
+      "tbl": "candidate_comments",
+      "cnt": "0"
+    },
+    {
+      "tbl": "social_scores",
+      "cnt": "0"
+    },
+    {
+      "tbl": "articles",
+      "cnt": "0"
+    },
+    {
+      "tbl": "photos",
+      "cnt": "7"
+    },
+    {
+      "tbl": "candidate_analytics",
+      "cnt": "0"
+    },
+    {
+      "tbl": "assets",
+      "cnt": "0"
+    },
+    {
+      "tbl": "votes",
+      "cnt": "421"
+    }
+  ],
+  "messages": [],
+  "stdout": "tbl\tcnt\ncandidate_comments\t0\nsocial_scores\t0\narticles\t0\nphotos\t7\ncandidate_analytics\t0\nassets\t0\nvotes\t421\n",
+  "stderr": "",
+  "execution_time_ms": 379
+}

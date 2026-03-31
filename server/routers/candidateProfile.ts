@@ -823,7 +823,8 @@ export const candidateProfileRouter = router({
           bio: candidates.bio,
         })
         .from(candidates)
-        .where(andOp(...conditions));
+        .where(andOp(...conditions))
+        .orderBy(candidates.id);
       return result;
     }),
 });

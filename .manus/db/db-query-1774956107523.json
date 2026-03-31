@@ -1,0 +1,213 @@
+{
+  "query": "SELECT id, name, email, role, loginMethod FROM users ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, name, email, role, loginMethod FROM users ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Js-Innov.IA",
+      "email": "julien.pagin.pv@gmail.com",
+      "role": "super_admin",
+      "loginMethod": "google"
+    },
+    {
+      "id": "2",
+      "name": "directeur admin",
+      "email": "oliver.trevis@outlook.be",
+      "role": "admin",
+      "loginMethod": "oliverA1$"
+    },
+    {
+      "id": "3",
+      "name": "Loriana Morelle",
+      "email": "loriana.morelle@candidat.missetmisterdour.be",
+      "role": "candidate",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "4",
+      "name": "Julie Geronnez",
+      "email": "julie.geronnez@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "5",
+      "name": "Anaïs Geronnez",
+      "email": "anais.geronnez@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "6",
+      "name": "Lindsay Rulkin",
+      "email": "lindsay.rulkin@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "7",
+      "name": "Noëlline Zinszner",
+      "email": "noelline.zinszner@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "8",
+      "name": "Manon Vaillant",
+      "email": "manon.vaillant@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "9",
+      "name": "Aliya Ammour",
+      "email": "aliya.ammour@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "10",
+      "name": "Nell Descamps",
+      "email": "nell.descamps@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "11",
+      "name": "Esmeralda Verminnen",
+      "email": "esmeralda.verminnen@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "12",
+      "name": "Alessia Jouffin",
+      "email": "alessia.jouffin@candidat.missetmisterdour.be",
+      "role": "candidate",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "13",
+      "name": "Giulia Leonetti",
+      "email": "giulia.leonetti@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "14",
+      "name": "Melina Delmotte",
+      "email": "melina.delmotte@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "15",
+      "name": "Peyton Loicq",
+      "email": "peyton.loicq@candidat.missetmisterdour.be",
+      "role": "candidate",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "16",
+      "name": "Noé Caudrelier",
+      "email": "noe.caudrelier@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "17",
+      "name": "Korentin Schooneyt",
+      "email": "korentin.schooneyt@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "18",
+      "name": "Hugo Puma",
+      "email": "hugo.puma@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "19",
+      "name": "Kyllian Baton",
+      "email": "kyllian.baton@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "20",
+      "name": "Dawson Ostrowski",
+      "email": "dawson.ostrowski@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "21",
+      "name": "Lylian Paternotre",
+      "email": "lylian.paternotre@candidat.missetmisterdour.be",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "22",
+      "name": "Olivier Trevis",
+      "email": "olivier.trevis@outlook.be",
+      "role": "admin",
+      "loginMethod": "google"
+    },
+    {
+      "id": "23",
+      "name": "Noé Caudrelier",
+      "email": "caudreliernoe044@gmail.com",
+      "role": "user",
+      "loginMethod": "google"
+    },
+    {
+      "id": "24",
+      "name": "Lylian Paternottre",
+      "email": "lylian.paternottre@gmail.com",
+      "role": "user",
+      "loginMethod": "google"
+    },
+    {
+      "id": "26",
+      "name": "Cath Cath",
+      "email": "catherinecapiau6@gmail.com",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "27",
+      "name": "Steph Picsandprod",
+      "email": "steph.picsandprod@gmail.com",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "28",
+      "name": "kimberley19",
+      "email": "kimberley19@hotmail.be",
+      "role": "user",
+      "loginMethod": "email"
+    },
+    {
+      "id": "29",
+      "name": "Antoine Audrey Démon",
+      "email": "antoine.denau71@gmail.com",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "30",
+      "name": "Justin Blomme",
+      "email": "just1.blomme@gmail.com",
+      "role": "user",
+      "loginMethod": "apple"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tloginMethod\n1\tJs-Innov.IA\tjulien.pagin.pv@gmail.com\tsuper_admin\tgoogle\n2\tdirecteur admin\toliver.trevis@outlook.be\tadmin\toliverA1$\n3\tLoriana Morelle\tloriana.morelle@candidat.missetmisterdour.be\tcandidate\tNULL\n4\tJulie Geronnez\tjulie.geronnez@candidat.missetmisterdour.be\tuser\tNULL\n5\tAnaïs Geronnez\tanais.geronnez@candidat.missetmisterdour.be\tuser\tNULL\n6\tLindsay Rulkin\tlindsay.rulkin@candidat.missetmisterdour.be\tuser\tNULL\n7\tNoëlline Zinszner\tnoelline.zinszner@candidat.missetmisterdour.be\tuser\tNULL\n8\tManon Vaillant\tmanon.vaillant@candidat.missetmisterdour.be\tuser\tNULL\n9\tAliya Ammour\taliya.ammour@candidat.missetmisterdour.be\tuser\tNULL\n10\tNell Descamps\tnell.descamps@candidat.missetmisterdour.be\tuser\tNULL\n11\tEsmeralda Verminnen\tesmeralda.verminnen@candidat.missetmisterdour.be\tuser\tNULL\n12\tAlessia Jouffin\talessia.jouffin@candidat.missetmisterdour.be\tcandidate\tNULL\n13\tGiulia Leonetti\tgiulia.leonetti@candidat.missetmisterdour.be\tuser\tNULL\n14\tMelina Delmotte\tmelina.delmotte@candidat.missetmisterdour.be\tuser\tNULL\n15\tPeyton Loicq\tpeyton.loicq@candidat.missetmisterdour.be\tcandidate\tNULL\n16\tNoé Caudrelier\tnoe.caudrelier@candidat.missetmisterdour.be\tuser\tNULL\n17\tKorentin Schooneyt\tkorentin.schooneyt@candidat.missetmisterdour.be\tuser\tNULL\n18\tHugo Puma\thugo.puma@candidat.missetmisterdour.be\tuser\tNULL\n19\tKyllian Baton\tkyllian.baton@candidat.missetmisterdour.be\tuser\tNULL\n20\tDawson Ostrowski\tdawson.ostrowski@candidat.missetmisterdour.be\tuser\tNULL\n21\tLylian Paternotre\tlylian.paternotre@candidat.missetmisterdour.be\tuser\tNULL\n22\tOlivier Trevis\tolivier.trevis@outlook.be\tadmin\tgoogle\n23\tNoé Caudrelier\tcaudreliernoe044@gmail.com\tuser\tgoogle\n24\tLylian Paternottre\tlylian.paternottre@gmail.com\tuser\tgoogle\n26\tCath Cath\tcatherinecapiau6@gmail.com\tuser\tNULL\n27\tSteph Picsandprod\tsteph.picsandprod@gmail.com\tuser\tNULL\n28\tkimberley19\tkimberley19@hotmail.be\tuser\temail\n29\tAntoine Audrey Démon\tantoine.denau71@gmail.com\tuser\tNULL\n30\tJustin Blomme\tjust1.blomme@gmail.com\tuser\tapple\n",
+  "stderr": "",
+  "execution_time_ms": 376
+}

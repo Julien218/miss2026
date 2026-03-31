@@ -1,0 +1,98 @@
+{
+  "query": "SELECT id, openId, name, email, role, loginMethod FROM users WHERE email NOT LIKE 'test-%' AND email NOT LIKE '%example.com' AND id > 20 ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.45ee0638b595 --database ikVKix4dpn7zVKKnzoiv6V --execute SELECT id, openId, name, email, role, loginMethod FROM users WHERE email NOT LIKE 'test-%' AND email NOT LIKE '%example.com' AND id > 20 ORDER BY id;",
+  "rows": [
+    {
+      "id": "21",
+      "openId": "candidate-mister-06-2026",
+      "name": "Lylian Paternotre",
+      "email": "lylian.paternotre@candidat.missetmisterdour.be",
+      "role": "candidate",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "22",
+      "openId": "EkTr9fF5MnT5FHta9UMr47",
+      "name": "Olivier Trevis",
+      "email": "olivier.trevis@outlook.be",
+      "role": "admin",
+      "loginMethod": "google"
+    },
+    {
+      "id": "23",
+      "openId": "NzsuKSH7UejUmXdfhfX4T6",
+      "name": "Noé Caudrelier",
+      "email": "caudreliernoe044@gmail.com",
+      "role": "user",
+      "loginMethod": "google"
+    },
+    {
+      "id": "24",
+      "openId": "dT45JJiBdRUGLtNWKxbLv3",
+      "name": "Lylian Paternottre",
+      "email": "lylian.paternottre@gmail.com",
+      "role": "user",
+      "loginMethod": "google"
+    },
+    {
+      "id": "26",
+      "openId": "BpRepSHRBbwQh6LGKC8nNs",
+      "name": "Cath Cath",
+      "email": "catherinecapiau6@gmail.com",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "27",
+      "openId": "3Mqph5WQtezy53LySQHufc",
+      "name": "Steph Picsandprod",
+      "email": "steph.picsandprod@gmail.com",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "28",
+      "openId": "DTeUUXU5WiuyzcygKc7VY4",
+      "name": "kimberley19",
+      "email": "kimberley19@hotmail.be",
+      "role": "user",
+      "loginMethod": "email"
+    },
+    {
+      "id": "29",
+      "openId": "h3YVamVqzp5SKkVKPJuVrs",
+      "name": "Antoine Audrey Démon",
+      "email": "antoine.denau71@gmail.com",
+      "role": "user",
+      "loginMethod": "NULL"
+    },
+    {
+      "id": "30",
+      "openId": "VK5enND6kDXTD5shLUbKWK",
+      "name": "Justin Blomme",
+      "email": "just1.blomme@gmail.com",
+      "role": "user",
+      "loginMethod": "apple"
+    },
+    {
+      "id": "31",
+      "openId": "aENpQeNqHUzehqxbAp7XUU",
+      "name": "Js-Innov.IA",
+      "email": "julien.pagin.pv@gmail.com",
+      "role": "admin",
+      "loginMethod": "google"
+    },
+    {
+      "id": "30101",
+      "openId": "ECaFBnhLAmetaoQ3kRr5Ef",
+      "name": "Olivier Trevis",
+      "email": "olivier.trevis@outlook.be",
+      "role": "admin",
+      "loginMethod": "google"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\trole\tloginMethod\n21\tcandidate-mister-06-2026\tLylian Paternotre\tlylian.paternotre@candidat.missetmisterdour.be\tcandidate\tNULL\n22\tEkTr9fF5MnT5FHta9UMr47\tOlivier Trevis\tolivier.trevis@outlook.be\tadmin\tgoogle\n23\tNzsuKSH7UejUmXdfhfX4T6\tNoé Caudrelier\tcaudreliernoe044@gmail.com\tuser\tgoogle\n24\tdT45JJiBdRUGLtNWKxbLv3\tLylian Paternottre\tlylian.paternottre@gmail.com\tuser\tgoogle\n26\tBpRepSHRBbwQh6LGKC8nNs\tCath Cath\tcatherinecapiau6@gmail.com\tuser\tNULL\n27\t3Mqph5WQtezy53LySQHufc\tSteph Picsandprod\tsteph.picsandprod@gmail.com\tuser\tNULL\n28\tDTeUUXU5WiuyzcygKc7VY4\tkimberley19\tkimberley19@hotmail.be\tuser\temail\n29\th3YVamVqzp5SKkVKPJuVrs\tAntoine Audrey Démon\tantoine.denau71@gmail.com\tuser\tNULL\n30\tVK5enND6kDXTD5shLUbKWK\tJustin Blomme\tjust1.blomme@gmail.com\tuser\tapple\n31\taENpQeNqHUzehqxbAp7XUU\tJs-Innov.IA\tjulien.pagin.pv@gmail.com\tadmin\tgoogle\n30101\tECaFBnhLAmetaoQ3kRr5Ef\tOlivier Trevis\tolivier.trevis@outlook.be\tadmin\tgoogle\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}
