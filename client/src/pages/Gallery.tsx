@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type EventFilter = "all" | "portrait" | "event" | "backstage" | "performance";
+type EventFilter = "all" | "portrait" | "event" | "backstage" | "performance" | "other";
 type CandidateFilter = "all" | "miss" | "mister";
 
 const EVENT_LABELS: Record<EventFilter, string> = {
@@ -16,6 +16,7 @@ const EVENT_LABELS: Record<EventFilter, string> = {
   event: "Shooting officiel",
   backstage: "Coulisses",
   performance: "Performances",
+  other: "Autres",
 };
 
 const EVENT_ICONS: Record<EventFilter, string> = {
@@ -24,6 +25,7 @@ const EVENT_ICONS: Record<EventFilter, string> = {
   event: "🎬",
   backstage: "🎭",
   performance: "⭐",
+  other: "✨",
 };
 
 export default function Gallery() {
@@ -49,7 +51,7 @@ export default function Gallery() {
 
   // Compteurs par catégorie d'événement
   const eventCounts = useMemo(() => {
-    if (!photos) return { all: 0, portrait: 0, event: 0, backstage: 0, performance: 0 };
+    if (!photos) return { all: 0, portrait: 0, event: 0, backstage: 0, performance: 0, other: 0 };
     // Pour "all", on utilise le total non filtré par candidat
     const allPhotos = photos;
     return {
@@ -58,6 +60,7 @@ export default function Gallery() {
       event: allPhotos.filter((p) => p.category === "event").length,
       backstage: allPhotos.filter((p) => p.category === "backstage").length,
       performance: allPhotos.filter((p) => p.category === "performance").length,
+      other: allPhotos.filter((p) => p.category === "other").length,
     };
   }, [photos]);
 
@@ -306,7 +309,8 @@ export default function Gallery() {
                           {photo.category === "portrait" ? "Portrait" :
                            photo.category === "event" ? "Shooting" :
                            photo.category === "backstage" ? "Coulisses" :
-                           photo.category === "performance" ? "Performance" : photo.category}
+                           photo.category === "performance" ? "Performance" :
+                           photo.category === "other" ? "Autre" : photo.category}
                         </span>
                       </div>
 
@@ -437,7 +441,8 @@ export default function Gallery() {
                       {currentPhoto.category === "portrait" ? "Portrait" :
                        currentPhoto.category === "event" ? "Shooting" :
                        currentPhoto.category === "backstage" ? "Coulisses" :
-                       currentPhoto.category === "performance" ? "Performance" : currentPhoto.category}
+                       currentPhoto.category === "performance" ? "Performance" :
+                       currentPhoto.category === "other" ? "Autre" : currentPhoto.category}
                     </span>
                     {/* Badge Miss/Mister */}
                     {currentPhoto.candidateCategory && (
