@@ -1,0 +1,17 @@
+{
+  "query": "-- Créer l'organisation Miss & Mister Dour\nINSERT INTO organizations (name, slug, ownerUserId, plan, status, maxEvents, maxCandidates, maxVotes)\nVALUES ('Miss & Mister Dour', 'miss-mister-dour', 1, 'founder', 'active', 999, 9999, 999999);\n\n-- Récupérer l'ID de l'organisation créée\nSELECT id, name, slug, plan, status FROM organizations WHERE slug = 'miss-mister-dour';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.77910f6c2bd1 --database fqSYuBaSqJ2z2N7q3F6MzD --execute -- Créer l'organisation Miss & Mister Dour\nINSERT INTO organizations (name, slug, ownerUserId, plan, status, maxEvents, maxCandidates, maxVotes)\nVALUES ('Miss & Mister Dour', 'miss-mister-dour', 1, 'founder', 'active', 999, 9999, 999999);\n\n-- Récupérer l'ID de l'organisation créée\nSELECT id, name, slug, plan, status FROM organizations WHERE slug = 'miss-mister-dour';",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Miss & Mister Dour",
+      "slug": "miss-mister-dour",
+      "plan": "founder",
+      "status": "active"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tslug\tplan\tstatus\n1\tMiss & Mister Dour\tmiss-mister-dour\tfounder\tactive\n",
+  "stderr": "",
+  "execution_time_ms": 100
+}
