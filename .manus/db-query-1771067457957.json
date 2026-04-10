@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO candidates (userId, contestId, firstName, lastName, category, city, profilePhoto, bio, status, createdAt)\nVALUES\n  (1, 1, 'Sophie', 'Laurent', 'miss', 'Dour', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', 'Candidate passionnée par la mode et l''art.', 'approved', NOW()),\n  (1, 1, 'Emma', 'Dubois', 'miss', 'Mons', 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop', 'Étudiante en communication avec un grand sourire.', 'approved', NOW()),\n  (1, 1, 'Léa', 'Martin', 'miss', 'Tournai', 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop', 'Artiste et créatrice de contenu.', 'approved', NOW());\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.77910f6c2bd1 --database fqSYuBaSqJ2z2N7q3F6MzD --execute \nINSERT INTO candidates (userId, contestId, firstName, lastName, category, city, profilePhoto, bio, status, createdAt)\nVALUES\n  (1, 1, 'Sophie', 'Laurent', 'miss', 'Dour', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', 'Candidate passionnée par la mode et l''art.', 'approved', NOW()),\n  (1, 1, 'Emma', 'Dubois', 'miss', 'Mons', 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop', 'Étudiante en communication avec un grand sourire.', 'approved', NOW()),\n  (1, 1, 'Léa', 'Martin', 'miss', 'Tournai', 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop', 'Artiste et créatrice de contenu.', 'approved', NOW());\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 70
+}

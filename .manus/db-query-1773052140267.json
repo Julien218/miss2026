@@ -1,0 +1,13 @@
+{
+  "query": "SHOW TABLES LIKE 'whatsappLogs';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.77910f6c2bd1 --database fqSYuBaSqJ2z2N7q3F6MzD --execute SHOW TABLES LIKE 'whatsappLogs';",
+  "rows": [
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD (whatsappLogs)": "whatsappLogs"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD (whatsappLogs)\nwhatsappLogs\n",
+  "stderr": "",
+  "execution_time_ms": 360
+}

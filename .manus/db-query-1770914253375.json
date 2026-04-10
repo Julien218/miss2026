@@ -1,0 +1,31 @@
+{
+  "query": "-- Créer les settings pour l'organisation Miss & Mister Dour\nINSERT INTO organization_settings (\n  organizationId, \n  primaryColor, \n  secondaryColor, \n  logoUrl,\n  certificateStyle,\n  verifyPageStyle,\n  blockchainEnabled,\n  socialScoringEnabled,\n  voteAntifraudEnabled,\n  auditLogsEnabled\n)\nVALUES (\n  1,\n  '#D4AF37',\n  '#B8941E',\n  'https://d3hk78fplavsbl.cloudfront.net/2tvrCaJBV8I6gabDLa4YCL-Captured''écran2026-01-29023306.png',\n  'gold',\n  'premium',\n  1,\n  1,\n  1,\n  1\n);\n\n-- Vérifier les settings créés\nSELECT * FROM organization_settings WHERE organizationId = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.77910f6c2bd1 --database fqSYuBaSqJ2z2N7q3F6MzD --execute -- Créer les settings pour l'organisation Miss & Mister Dour\nINSERT INTO organization_settings (\n  organizationId, \n  primaryColor, \n  secondaryColor, \n  logoUrl,\n  certificateStyle,\n  verifyPageStyle,\n  blockchainEnabled,\n  socialScoringEnabled,\n  voteAntifraudEnabled,\n  auditLogsEnabled\n)\nVALUES (\n  1,\n  '#D4AF37',\n  '#B8941E',\n  'https://d3hk78fplavsbl.cloudfront.net/2tvrCaJBV8I6gabDLa4YCL-Captured''écran2026-01-29023306.png',\n  'gold',\n  'premium',\n  1,\n  1,\n  1,\n  1\n);\n\n-- Vérifier les settings créés\nSELECT * FROM organization_settings WHERE organizationId = 1;",
+  "rows": [
+    {
+      "id": "1",
+      "organizationId": "1",
+      "primaryColor": "#D4AF37",
+      "secondaryColor": "#B8941E",
+      "logoUrl": "https://d3hk78fplavsbl.cloudfront.net/2tvrCaJBV8I6gabDLa4YCL-Captured'écran2026-01-29023306.png",
+      "faviconUrl": "NULL",
+      "certificateStyle": "gold",
+      "certificateLogoUrl": "NULL",
+      "certificateSignature": "NULL",
+      "verifyPageStyle": "premium",
+      "verifyPageBanner": "NULL",
+      "blockchainEnabled": "1",
+      "socialScoringEnabled": "1",
+      "voteAntifraudEnabled": "1",
+      "auditLogsEnabled": "1",
+      "customDomain": "NULL",
+      "customDomainVerified": "0",
+      "createdAt": "2026-02-12 16:37:33",
+      "updatedAt": "2026-02-12 16:37:33"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\torganizationId\tprimaryColor\tsecondaryColor\tlogoUrl\tfaviconUrl\tcertificateStyle\tcertificateLogoUrl\tcertificateSignature\tverifyPageStyle\tverifyPageBanner\tblockchainEnabled\tsocialScoringEnabled\tvoteAntifraudEnabled\tauditLogsEnabled\tcustomDomain\tcustomDomainVerified\tcreatedAt\tupdatedAt\n1\t1\t#D4AF37\t#B8941E\thttps://d3hk78fplavsbl.cloudfront.net/2tvrCaJBV8I6gabDLa4YCL-Captured'écran2026-01-29023306.png\tNULL\tgold\tNULL\tNULL\tpremium\tNULL\t1\t1\t1\t1\tNULL\t0\t2026-02-12 16:37:33\t2026-02-12 16:37:33\n",
+  "stderr": "",
+  "execution_time_ms": 96
+}

@@ -1,0 +1,115 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.77910f6c2bd1 --database fqSYuBaSqJ2z2N7q3F6MzD --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "articles"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "assets"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "audit_logs"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "badges"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "candidateApplications"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "candidate_analytics"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "candidates"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "certificates"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "contests"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "evaluations"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "eventAttendees"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "event_config"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "event_participants"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "events"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "invitations"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "ip_tracking"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "knowledge_garden"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "media"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "media_jobs"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "messages"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "notifications"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "organization_settings"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "organizations"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "partner_benefits"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "partners"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "photos"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "professionals"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "profileEditTokens"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "social_scores"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "tracking_events"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "user_badges"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "users"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "voteSessions"
+    },
+    {
+      "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD": "votes"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_fqSYuBaSqJ2z2N7q3F6MzD\n__drizzle_migrations\narticles\nassets\naudit_logs\nbadges\ncandidateApplications\ncandidate_analytics\ncandidates\ncertificates\ncontests\nevaluations\neventAttendees\nevent_config\nevent_participants\nevents\ninvitations\nip_tracking\nknowledge_garden\nmedia\nmedia_jobs\nmessages\nnotifications\norganization_settings\norganizations\npartner_benefits\npartners\nphotos\nprofessionals\nprofileEditTokens\nsocial_scores\ntracking_events\nuser_badges\nusers\nvoteSessions\nvotes\n",
+  "stderr": "",
+  "execution_time_ms": 342
+}

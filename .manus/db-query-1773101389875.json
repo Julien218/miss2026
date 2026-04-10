@@ -1,0 +1,24 @@
+{
+  "query": "SELECT id, name, email, role, createdAt FROM users WHERE email = 'olivier.trevis@outlook.be' OR email = 'oliver.trevis@outlook.be' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3JPXe8dTjuovWMD.77910f6c2bd1 --database fqSYuBaSqJ2z2N7q3F6MzD --execute SELECT id, name, email, role, createdAt FROM users WHERE email = 'olivier.trevis@outlook.be' OR email = 'oliver.trevis@outlook.be' LIMIT 5;",
+  "rows": [
+    {
+      "id": "1980006",
+      "name": "admin",
+      "email": "oliver.trevis@outlook.be",
+      "role": "admin",
+      "createdAt": "2026-02-15 13:31:08"
+    },
+    {
+      "id": "3630123",
+      "name": "Olivier Trevis",
+      "email": "olivier.trevis@Outlook.be",
+      "role": "user",
+      "createdAt": "2026-03-08 20:32:57"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tcreatedAt\n1980006\tadmin\toliver.trevis@outlook.be\tadmin\t2026-02-15 13:31:08\n3630123\tOlivier Trevis\tolivier.trevis@Outlook.be\tuser\t2026-03-08 20:32:57\n",
+  "stderr": "",
+  "execution_time_ms": 358
+}
