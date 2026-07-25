@@ -1,0 +1,45 @@
+# robots.txt — Miss & Mister Dour 2026
+# Généré par JS-Innov.IA — STARLIGHT ASBL
+
+User-agent: *
+Allow: /
+Allow: /miss-mister
+Allow: /miss-mister-dour-2026
+Allow: /candidat/
+Allow: /candidates/
+Allow: /vote
+Allow: /inscription-candidat
+Allow: /about
+Allow: /contact
+Allow: /sponsors
+Allow: /press
+Allow: /public
+Allow: /article/
+Allow: /ranking
+Allow: /verify/
+
+# Bloquer les zones privées et admin
+Disallow: /admin/
+Disallow: /admin
+Disallow: /profile/edit/
+Disallow: /onboarding/
+Disallow: /invite/
+Disallow: /invitation/
+Disallow: /api/
+Disallow: /js-innov
+Disallow: /liligaga
+Disallow: /video-factory
+Disallow: /inscription-merci
+
+# Crawl-delay pour les bots moins prioritaires
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+# Sitemap
+Sitemap: https://missetmisterdour.be/sitemap.xml
