@@ -3753,3 +3753,271 @@ Créer versions à fond transparent des logos Starlight et Miss & Mister Dour po
 - [x] Horodatage automatique acceptCGUAt + consentVersion v1.0 côté serveur
 - [x] 19 tests vitest passés (buildConsentFields, validateConsents, isCompliant)
 - [x] 0 erreur TypeScript
+
+
+## 🚀 MIGRATION VERS PLATEFORME MANUS (Session 30 Mars 2026)
+
+- [x] Initialiser projet web-db-user sur Manus
+- [x] Importer code existant (archive v19) vers le projet initialisé
+- [x] Installer dépendances supplémentaires (sharp, canvas-confetti, qrcode, pdfkit, etc.)
+- [x] Créer module email helper manquant (server/helpers/email.ts)
+- [x] Corriger erreurs TypeScript dans comments.ts
+- [x] Corriger schéma notificationSettings (default JSON incompatible TiDB)
+- [x] Appliquer migrations DB (37 tables créées avec succès)
+- [x] Résoudre migration partielle (tables manquantes créées manuellement)
+- [x] Installer sharp pour og-countdown.ts
+- [x] Écrire tests vitest platform.test.ts (12 tests : auth, RBAC, email, public endpoints, router structure)
+- [x] 0 erreur TypeScript, serveur fonctionnel
+- [x] Checkpoint et livraison
+
+
+## 💬 SECTION COMMENTAIRES DE SOUTIEN SUR PROFILS CANDIDATS
+
+- [x] Analyser le schéma DB existant (table messages/comments) — code déjà implémenté dans archive v19
+- [x] Créer/adapter table DB pour commentaires publics de soutien — tables candidate_comments + comment_likes créées
+- [x] Créer procédures tRPC (getByCandidate, add, like, listForModeration, moderate, getStats) — router comments.ts vérifié
+- [x] Créer composant frontend CommentsSection (affichage, formulaire, likes, réponses imbriquées) — CommentsSection.tsx vérifié
+- [x] Intégrer la section commentaires sur la page profil candidat — déjà intégré dans CandidatePublicProfile.tsx
+- [x] Modération admin (approuver/rejeter/supprimer les commentaires) — AdminComments.tsx + moderate procedure
+- [x] Corriger noms colonnes SQL (first_name → firstName, last_name → lastName) dans comments.ts
+- [x] Anti-spam : filtrage par IP (max 5/h) + mots interdits (URLs, spam, pub, promo)
+- [x] Tests vitest server/comments.test.ts : 23 tests passés (structure, getByCandidate, add, like, modération, stats, RBAC)
+- [ ] Checkpoint et livraison
+
+
+## 🐛 FIX: Balises <a> imbriquées sur la page d'accueil
+
+- [x] Identifier les composants avec <Link> ou <a> imbriqués — 10 fichiers trouvés (Homepage, About, Contact, Press, Sponsors, CookieBanner, LegalCGU, LegalCookies, LegalNotice, LegalPrivacy, MissMisterDour2026)
+- [x] Corriger les balises imbriquées — 25 occurrences corrigées via script automatisé (Link>a → Link avec className)
+- [x] Vérifier 0 erreur TypeScript après correction
+- [ ] Checkpoint et livraison
+
+
+## 📋 COPIE DES DONNÉES DEPUIS LE SITE PUBLIÉ (missdourweb-fqsyubas.manus.space)
+
+- [x] Explorer le site publié (missdourweb-fqsyubas.manus.space) — page blanche, ancien déploiement non fonctionnel
+- [x] Récupérer les données utilisateurs depuis le CSV (78 entrées, 30 utilisateurs réels filtrés)
+- [x] Mettre à jour le schéma DB users (ajout organizationId, permissionOverrides, enum rôles étendu 12 rôles)
+- [x] Importer 30 utilisateurs réels (1 super_admin, 2 admins, 19 candidats, 8 users)
+- [x] Corriger les rôles candidats (15 users → candidate)
+- [x] Créer 19 entrées candidates (12 Miss + 7 Mister) avec statut approved
+- [x] Mettre à jour le contest 1 en statut ongoing, supprimer le doublon contest 2
+- [x] Vérifier la cohérence users ↔ candidates ↔ contests
+- [x] Checkpoint et livraison (version 6ca9de10)
+
+
+## 🗳️ IMPORT DES VOTES DEPUIS LE CSV
+
+- [x] Analyser le CSV des votes (1197 votes, 17 candidats, 3 catégories: miss/mister/public_choice)
+- [x] Mapper les anciens candidateId (60001-60019) vers les nouveaux (1-19) — 100% mappés
+- [x] Importer 1197 votes en base de données (batch de 100) — 0 erreurs
+- [x] Mettre à jour les voteCount sur chaque candidat
+- [x] Vérifier le leaderboard (top: Esmeralda 440, Kyllian 236, Giulia 141)
+- [x] Checkpoint et livraison
+
+
+## 📸 IMPORT DES PHOTOS D'ALBUM DEPUIS LE CSV
+
+- [x] Analyser le CSV (38 photos : 19 profils album 1 + 19 triage albums 2-3)
+- [x] Mapper les anciens candidateId (60001-60019) vers les nouveaux (1-19) — 100% mappés
+- [x] Importer 19 photos de profil dans la table `photos` (catégorie portrait, statut approved)
+- [x] Importer 19 entrées dans la table `media` (type photo, isPublic=1, contestId=1)
+- [x] Mettre à jour profilePhoto sur les 19 candidats (URLs watermarked CloudFront)
+- [x] Vérifier : 19/19 candidats ont une photo de profil
+- [x] Checkpoint et livraison
+
+
+## 🏅 IMPORT DES BADGES UTILISATEURS DEPUIS LE CSV
+
+- [x] Analyser le CSV (2 badges : userId 1 FIRST_VOTE, userId 10740277 FIRST_VOTE)
+- [x] Vérifier la table user_badges (existe, 6 colonnes)
+- [x] Importer le badge pour userId 1 (Js-Innov.IA, super_admin) — FIRST_VOTE
+- [x] Note : userId 10740277 n'existe pas dans la nouvelle DB (ancien ID système) — ignoré
+- [x] Checkpoint et livraison
+
+
+## ⚙️ IMPORT DES PARAMÈTRES DU SITE DEPUIS LE CSV
+
+- [x] Analyser le CSV (4 paramètres : registration_open_at, registration_close_at, registration_enabled, registration_message)
+- [x] Créer la table siteSettings (n'existait pas en DB)
+- [x] Importer les 4 paramètres (inscriptions désactivées, message personnalisé)
+- [x] Checkpoint et livraison
+
+
+## 🔑 IMPORT DES TOKENS D'ÉDITION DE PROFIL ET PHOTOS DEPUIS LES CSV
+
+- [x] Analyser le CSV profileEditTokens (25 tokens pour 19 candidats + 1 candidat inconnu 120001)
+- [x] Créer la table profileEditTokens (n'existait pas en DB)
+- [x] Importer 24 tokens (1 ignoré : candidateId 120001 non mappé), mapping 60001-60019 → 1-19
+- [x] Analyser le CSV photos (298 photos : 100 portrait + 198 other, 8 photos de test exclues)
+- [x] Importer 289 photos (290 réelles - 1 doublon), total en DB : 308 photos (110 portrait + 198 other)
+- [x] Checkpoint et livraison
+
+
+## 👑 IMPORT DES CANDIDATS ET DU CONCOURS DEPUIS LES CSV
+
+- [x] Parser le CSV contests avec Python (champs multi-lignes avec virgules)
+- [x] Mettre à jour le contest 1 : titre, description, lieu (Centre Sportif d'Elouges), dates (18 avril 2026), status ongoing
+- [x] Ajouter 6 colonnes manquantes à candidates : pendingPhoto, photoStatus, photoRejectionReason, personalHashtag, officialHashtags, shareCaption
+- [x] Mettre à jour les 19 candidats avec données complètes : bios, motivations, expériences, réseaux sociaux, hashtags personnels/officiels, consentements, emails, photos de profil
+- [x] Stats finales : 12 Miss (11 avec bio, 12 avec hashtag, 11 avec Instagram) + 7 Mister (7 avec bio, 7 avec hashtag, 7 avec Instagram)
+- [x] Checkpoint et livraison
+
+
+## 📸 RUBRIQUE GALERIE PHOTO PUBLIQUE ✅
+
+- [x] Analyser le code existant (pages galerie, routes, router photos, schéma DB)
+- [x] Créer/compléter la page Galerie Photo publique avec filtres (Tous/Miss/Mister)
+- [x] Lightbox intégré pour visualiser les photos en plein écran
+- [x] Design premium cohérent (dark, gold, badges, compteurs votes)
+- [x] Route /gallery dans App.tsx
+- [x] Lien Galerie ajouté dans la navigation (desktop + mobile)
+- [x] Backend : procédures tRPC media.listPublic, media.listByCandidate, candidateProfile.listApproved
+- [x] Tests vitest gallery.test.ts : 10 tests passés
+- [ ] Checkpoint et livraison
+
+
+## 🃏 CARTES FLOTTANTES CANDIDATS HERO + GALERIE PHOTO ✅
+
+- [x] Analyser le hero section actuel de Homepage.tsx
+- [x] Créer composant FloatingCandidateCards avec animation marquee CSS infinie (2 rangées : Miss + Mister)
+- [x] Intégrer les cartes flottantes dans le hero section — défilement horizontal infini
+- [x] Charger les candidats via tRPC candidateProfile.listApproved (photos, noms, catégories, votes)
+- [x] Page Galerie Photo publique avec filtres Tous(19)/Miss(13)/Mister(6)
+- [x] Route /gallery et lien navigation ajoutés
+- [x] Tests visuels OK : cartes défilent, galerie affiche 19 candidats avec photos
+- [ ] Checkpoint et livraison
+
+
+## 🏷️ FILTRE PAR ÉVÉNEMENT DANS LA GALERIE ✅
+
+- [x] Analyser les catégories de photos en DB — 308 photos (110 portrait + 198 event)
+- [x] Reclasser les photos 'other' en catégories (portrait, event) via SQL
+- [x] Ajouter procédure photos.listPublic avec filtre par catégorie et candidateId
+- [x] Implémenter double système de filtres dans Gallery.tsx (Toutes/Portraits/Shooting + Tous/Miss/Mister)
+- [x] Corriger parsing tags JSON dans getPhotos et getPhotoById (erreur "[studio]" non-JSON)
+- [x] Tests vitest gallery-filters.test.ts : 11 tests passés (filtres catégorie, candidateId, all, listApproved)
+- [x] Checkpoint 3228e7b3 et livraison
+
+
+## 🎨 REMPLACEMENT LOGO MISS & MISTER DOUR (NOUVELLE VERSION)
+
+- [x] Supprimer le fond noir du logo fourni pour obtenir un PNG transparent
+- [x] Uploader le logo transparent sur le CDN via manus-upload-file
+- [x] Identifier tous les emplacements du logo actuel dans le code source
+- [x] Remplacer l'URL du logo sur toutes les pages (branding.ts, SplashScreen, StructuredData, Homepage)
+- [ ] Mettre à jour VITE_APP_LOGO avec la nouvelle URL (secret built-in, non modifiable par code)
+- [x] Vérifier visuellement le rendu sur toutes les pages
+- [x] Checkpoint 57cddf77 et livraison
+
+
+## 🌑 CHANGEMENT FOND DE PAGE GLOBAL + FOOTER
+
+- [x] Analyser le fond de page actuel (CSS global) et le footer existant
+- [x] Remplacer le fond noir uni par un fond sombre texturé avec gradient radial subtil
+- [x] Ajouter des particules dorées flottantes en arrière-plan global (footer)
+- [x] Mettre à jour le footer avec le design JS-Innov.IA (Tech Ecosystem, mentions légales regroupées)
+- [x] Appliquer le nouveau fond sur toutes les pages (via CSS global .dark body)
+- [x] Vérifier la cohérence visuelle sur homepage
+- [x] Checkpoint 57cddf77 et livraison
+
+
+## 🎶 RENOMMAGE SOIRÉE : Lady Gaga Night → Born to Dance
+
+- [x] Identifier toutes les occurrences de "Lady Gaga Night" dans le code (10 fichiers)
+- [x] Remplacer par "Born to Dance" partout (branding.ts, GagaNightCountdown, SplashScreen, whatsapp.ts, assistant.ts, videoGenerator.ts, tests)
+- [x] Vérifier visuellement (0 erreurs TypeScript, mêmes 5 fichiers de tests pré-existants en échec)
+- [x] Checkpoint 85285d41 et livraison
+
+
+## 💃 VISUEL BORN TO DANCE — Badge Compte à Rebours
+
+- [x] Analyser le composant GagaNightCountdown actuel
+- [x] Créer une icône SVG de danse élégante (silhouette danseuse en arabesque, gradients or/cuivre/rose)
+- [x] Redesigner le badge avec le nouveau visuel Born to Dance (gradient text, double danseuse, fond semi-transparent)
+- [x] Ajouter des animations fluides (dance-sway, dance-sway-reverse, dance-note, dance-badge-pulse, dance-float)
+- [x] Vérifier visuellement le rendu (badge visible, animations fluides, 0 erreur TS)
+- [x] Checkpoint 67532819 et livraison
+
+
+## 🔧 CORRECTION DB — Alignement CSV Candidats
+
+- [x] Corriger Noé Caudrelier : ville Colfontaine, votes 108, shares 6
+- [x] Corriger Korentin Schooneyt : ville Thulin, votes 5, shares 1
+- [x] Corriger Hugo Puma : ville Dour, votes 236, shares 15
+- [x] Corriger Kyllian Baton : votes 66, shares 1
+- [x] Corriger Dawson Ostrowski : votes 4, shares 0
+- [x] Corriger Lylian Paternotre → Paternottre (2 t)
+- [x] Corriger Peyton Loicq : ville Mons, votes 0, shares 2
+- [x] Corriger Loriana Morelle : votes 75, shares 44
+- [x] Vérifier les corrections (19/19 candidats alignés)
+
+
+## 👤 CORRECTION DB — Utilisateurs (alignement CSV)
+
+- [ ] Corriger nom super_admin (id=1) : "super admin" → "Js-Innov.IA"
+- [ ] Corriger nom admin (id=2) : "admin" → "directeur admin"
+- [ ] Aligner rôles candidats sur CSV (certains user → candidate reste, d'autres candidate → user)
+- [ ] Supprimer doublons (id=31 Js-Innov.IA doublon, id=30101 Olivier Trevis doublon)
+- [ ] Nettoyer les 35 utilisateurs de test
+- [ ] Vérifier les corrections
+
+
+## 🔢 RÉORGANISATION IDs CANDIDATS
+
+- [x] Déplacer Peyton Loicq de id=19 vers id=13 (via id temporaire 999)
+- [x] Décaler les Misters : Noé 13→14, Korentin 14→15, Hugo 15→16, Kyllian 16→17, Dawson 17→18, Lylian 18→19
+- [x] Mettre à jour les références (votes + photos décalés en cascade)
+- [x] Vérifier l'ordre final (19/19 candidats dans l'ordre correct)
+
+
+## 🔄 MISE À JOUR SITE — Nouvel ordre candidats + votes
+
+- [x] Vérifier le code source pour hardcoding d'IDs ou d'ordre des candidats
+- [x] Ajouter orderBy(candidates.id) dans getCandidatesByContest, searchCandidates et listApproved
+- [x] Vérifier visuellement la homepage : ordre correct, Peyton en position 13
+- [x] Corriger compteur "12 Miss et 7 Mister" → "13 Miss et 6 Mister"
+- [x] Checkpoint d6c43c0d et livraison
+
+
+## 📸 ASSOCIATION PHOTOS SHOOTING → CANDIDATS
+
+- [ ] Analyser la structure des photos en DB (table photos, champs candidateId, category)
+- [ ] Lister les photos du shooting sans candidateId
+- [ ] Identifier les candidats à partir des noms de fichiers ou URLs des photos
+- [ ] Associer chaque photo de shooting au bon candidat via SQL
+- [ ] Vérifier que les filtres Miss/Mister fonctionnent dans la galerie
+- [ ] Checkpoint et livraison
+
+
+## 🐛 BUG — Connexion super_admin ne fonctionne pas
+
+- [x] Diagnostiquer le problème : compte Js-Innov.IA (id=270073) avait rôle admin au lieu de super_admin
+- [x] Corriger en DB : UPDATE users SET role = 'super_admin' WHERE id = 270073
+- [x] Corriger le code db.ts : OWNER_OPEN_ID attribue désormais super_admin au lieu de admin
+- [ ] Vérifier la connexion (utilisateur doit se déconnecter et se reconnecter)
+
+
+## 🏠 RETRAIT SECTION HERO HOMEPAGE
+
+- [x] Retirer la section hero (couronne, titre, sous-titre, date) de la homepage
+- [x] Décaler les candidats vers le haut (directement sous la navigation)
+- [x] Vérifier visuellement (0 erreur TS, candidats visibles immédiatement)
+- [x] Checkpoint 28c3a801 et livraison
+
+
+## 🔓 RETRAIT OBLIGATION CONNEXION — Page Candidats
+
+- [x] Identifier les protections : DashboardLayout + candidates.search (protectedProcedure)
+- [x] Rendre la page candidats publique : utilise candidateProfile.listApproved (publicProcedure), layout autonome
+- [x] Vérifier visuellement : 19 candidats affichés, filtres Tous/Miss/Mister, recherche, profils accessibles
+- [x] Checkpoint d812aa0b et livraison
+
+
+## 🔓 GALERIE PUBLIQUE — Retirer obligation connexion
+
+- [x] Retirer le RoleGuard sur la route /gallery dans App.tsx
+- [x] Gallery.tsx déjà autonome (pas de DashboardLayout, layout intégré)
+- [x] photos.listPublic est bien une publicProcedure (vérifié)
+- [x] candidateProfile.listApproved est bien publique (vérifié)
+- [ ] Checkpoint et livraison
