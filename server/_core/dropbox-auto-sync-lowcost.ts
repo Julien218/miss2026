@@ -1,52 +1,56 @@
 import { syncDropboxMedia } from "./dropbox-sync";
 
 let timerStarted = false;
-let intervalHandle: NodeJS.Timeout | null = null;
-let initialHandle: NodeJS.Timeout | null = null;
+let weeklyHandle: NodeJS.Timeout | null = null;
 
-function positiveNumber(value: string | undefined, fallback: number) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+function nextWednesdayEvening(now = new Date()) {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Brussels", year: "numeric", month: "2-digit", day: "2-digit",
+    weekday: "short", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  });
+  const parts = Object.fromEntries(formatter.formatToParts(now).filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const currentDay = weekdays.indexOf(parts.weekday);
+  const currentMinutes = Number(parts.hour) * 60 + Number(parts.minute);
+  let daysAhead = (3 - currentDay + 7) % 7;
+  if (daysAhead === 0 && currentMinutes >= 20 * 60) daysAhead = 7;
+
+  const baseUtc = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day) + daysAhead, 20, 0, 0));
+  const probeFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Brussels", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  });
+  const probe = Object.fromEntries(probeFormatter.formatToParts(baseUtc).filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+  const representedUtc = Date.UTC(Number(probe.year), Number(probe.month) - 1, Number(probe.day), Number(probe.hour), Number(probe.minute), Number(probe.second));
+  return new Date(baseUtc.getTime() - (representedUtc - baseUtc.getTime()));
 }
 
 export function startDropboxLowCostAutoSync() {
   if (process.env.DROPBOX_SYNC_ENABLED !== "true") return;
   if (timerStarted || process.env.NODE_ENV !== "production") return;
-
   timerStarted = true;
 
-  // Shared-link scans are relatively expensive because Dropbox requires walking
-  // the folder tree. Default to one scan per hour instead of every 10 minutes.
-  // Both values remain configurable from Railway without another deployment.
-  const intervalMinutes = Math.max(
-    15,
-    positiveNumber(process.env.DROPBOX_SYNC_INTERVAL_MINUTES, 60)
-  );
-  const initialDelaySeconds = Math.max(
-    30,
-    positiveNumber(process.env.DROPBOX_SYNC_INITIAL_DELAY_SECONDS, 120)
-  );
+  const scheduleNext = () => {
+    if (!timerStarted) return;
+    const target = nextWednesdayEvening();
+    const delay = Math.max(1_000, target.getTime() - Date.now());
+    console.info(`[Dropbox Sync] scheduler économique actif · prochain passage mercredi 20:00 Europe/Brussels · ${target.toISOString()}`);
+    weeklyHandle = setTimeout(async () => {
+      try {
+        await syncDropboxMedia();
+      } catch (error) {
+        console.warn("[Dropbox Sync]", error instanceof Error ? error.message : String(error));
+      } finally {
+        scheduleNext();
+      }
+    }, delay);
+  };
 
-  const run = () =>
-    syncDropboxMedia().catch(error =>
-      console.warn(
-        "[Dropbox Sync]",
-        error instanceof Error ? error.message : String(error)
-      )
-    );
-
-  console.info(
-    `[Dropbox Sync] low-cost scheduler actif · toutes les ${intervalMinutes} min · premier passage dans ${initialDelaySeconds}s`
-  );
-
-  initialHandle = setTimeout(run, initialDelaySeconds * 1_000);
-  intervalHandle = setInterval(run, intervalMinutes * 60_000);
+  scheduleNext();
 }
 
 export function stopDropboxLowCostAutoSync() {
-  if (initialHandle) clearTimeout(initialHandle);
-  if (intervalHandle) clearInterval(intervalHandle);
-  initialHandle = null;
-  intervalHandle = null;
+  if (weeklyHandle) clearTimeout(weeklyHandle);
+  weeklyHandle = null;
   timerStarted = false;
 }
