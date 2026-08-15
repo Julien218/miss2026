@@ -3,6 +3,7 @@ import crypto from "crypto";
 import mysql from "mysql2/promise";
 import { SignJWT, jwtVerify } from "jose";
 import { sdk } from "./sdk";
+import { syncDropboxMedia } from "./dropbox-sync";
 
 const ADMIN_ROLES = new Set(["admin", "super_admin", "owner"]);
 
@@ -198,6 +199,16 @@ export function registerDropboxIntegrationRoutes(app: Express) {
       if (!result.affectedRows) { res.status(404).json({ error: "Connectez Dropbox avant d’ajouter le dossier client" }); return; }
       res.json({ success: true });
     } finally { await db.end(); }
+  });
+
+  app.post("/api/integrations/dropbox/sync", async (req, res) => {
+    const user = await requireAdmin(req, res); if (!user) return;
+    try {
+      const result = await syncDropboxMedia(user.organizationId || 1);
+      res.json({ success: true, ...result });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Synchronisation impossible" });
+    }
   });
 
   app.post("/api/integrations/dropbox/folder", async (req, res) => {
