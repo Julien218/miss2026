@@ -66,6 +66,10 @@ function publicBaseUrl(req: Request) {
   return (process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "");
 }
 
+function dropboxRedirectUri(req: Request) {
+  return process.env.DROPBOX_REDIRECT_URI || dropboxRedirectUri(req);
+}
+
 function configured() {
   return Boolean(process.env.DROPBOX_APP_KEY && process.env.DROPBOX_APP_SECRET);
 }
@@ -74,7 +78,7 @@ export function registerDropboxIntegrationRoutes(app: Express) {
   app.get("/api/integrations/dropbox/status", async (req, res) => {
     const user = await requireAdmin(req, res); if (!user) return;
     if (!configured()) {
-      res.json({ configured: false, connected: false, redirectUri: `${publicBaseUrl(req)}/api/integrations/dropbox/callback` });
+      res.json({ configured: false, connected: false, redirectUri: dropboxRedirectUri(req) });
       return;
     }
     await ensureTable();
@@ -94,7 +98,7 @@ export function registerDropboxIntegrationRoutes(app: Express) {
         lastSyncAt: item?.last_sync_at || null,
         lastSyncStatus: item?.last_sync_status || "never",
         lastSyncMessage: item?.last_sync_message || null,
-        redirectUri: `${publicBaseUrl(req)}/api/integrations/dropbox/callback`,
+        redirectUri: dropboxRedirectUri(req),
       });
     } finally { await db.end(); }
   });
@@ -110,7 +114,7 @@ export function registerDropboxIntegrationRoutes(app: Express) {
       organizationId: user.organizationId || 1,
       purpose: "dropbox-connect",
     }).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime("10m").sign(secretKey());
-    const redirectUri = `${publicBaseUrl(req)}/api/integrations/dropbox/callback`;
+    const redirectUri = dropboxRedirectUri(req);
     const url = new URL("https://www.dropbox.com/oauth2/authorize");
     url.searchParams.set("client_id", process.env.DROPBOX_APP_KEY!);
     url.searchParams.set("response_type", "code");
@@ -129,7 +133,7 @@ export function registerDropboxIntegrationRoutes(app: Express) {
       if (verified.payload.purpose !== "dropbox-connect" || Number(verified.payload.userId) !== user.id) {
         throw new Error("État OAuth invalide");
       }
-      const redirectUri = `${publicBaseUrl(req)}/api/integrations/dropbox/callback`;
+      const redirectUri = dropboxRedirectUri(req);
       const tokenResponse = await fetch("https://api.dropboxapi.com/oauth2/token", {
         method: "POST",
         headers: {
