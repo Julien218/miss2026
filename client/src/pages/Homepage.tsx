@@ -3,7 +3,6 @@ import { useState as useMenuState } from "react";
 import { Crown, Calendar, Users, Award, Newspaper, Mail, ArrowRight, Sparkles, LogIn, Menu, X, Heart, Camera } from "lucide-react";
 import { BRANDING } from "@/config/branding";
 import { useAuth } from "@/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 import { GagaNightCountdown } from "@/components/GagaNightCountdown";
 import { SEOHead } from "@/components/SEOHead";
 import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
@@ -67,10 +66,10 @@ export default function Homepage() {
                   {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
                 </Link>
               ) : (
-                <a href={getLoginUrl()} className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
+                <Link href="/login" className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
                   <LogIn className="w-4 h-4" />
                   Se connecter
-                </a>
+                </Link>
               )}
             </nav>
             {/* Hamburger mobile */}
@@ -98,10 +97,10 @@ export default function Homepage() {
                   {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
                 </Link>
               ) : (
-                <a href={getLoginUrl()} className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/login" className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                   <LogIn className="w-4 h-4" />
                   Se connecter
-                </a>
+                </Link>
               )}
             </nav>
           )}
