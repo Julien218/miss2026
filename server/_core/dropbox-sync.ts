@@ -89,11 +89,10 @@ async function listSharedFiles(token: string, sharedLink: string) {
       }
       const payload = await response.json() as any;
       for (const entry of payload.entries) {
-        if (entry[".tag"] === "file") files.push(entry);
-        if (entry[".tag"] === "folder") {
-          const childPath = entry.path_lower || entry.path_display;
-          if (childPath) folders.push(childPath);
-        }
+        const joinedPath = `${folderPath.replace(/\/$/, "")}/${entry.name}`;
+        const sharedPath = entry.path_lower || entry.path_display || joinedPath;
+        if (entry[".tag"] === "file") files.push({ ...entry, _shared_path: sharedPath });
+        if (entry[".tag"] === "folder") folders.push(sharedPath);
       }
       if (!payload.has_more) break;
       response = await fetch("https://api.dropboxapi.com/2/files/list_folder/continue", {
@@ -191,7 +190,7 @@ export async function syncDropboxMedia(organizationId = 1) {
         const pathNormalized = normalize(sourcePath);
         const candidate = candidates.find((item: any) => pathNormalized.includes(item.normalized)) || null;
         const kind = /\.(mp4|mov|m4v|webm)$/i.test(entry.name) ? "video" : "photo";
-        const original = await downloadSharedFile(token, integration.source_shared_link, entry.path_lower || sourcePath);
+        const original = await downloadSharedFile(token, integration.source_shared_link, entry._shared_path || entry.path_lower || sourcePath);
         const digest = crypto.createHash("sha256").update(original).digest("hex");
         const slug = entry.id.replace(/[^a-zA-Z0-9_-]/g, "_");
         const year = 2026;
