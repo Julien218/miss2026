@@ -149,6 +149,58 @@ function inferCategory(path: string) {
   return "event";
 }
 
+type CandidateMatch = {
+  candidate: any;
+  method: "first_last" | "last_first" | "name_tokens" | "unique_first_name" | "unique_last_name";
+  confidence: number;
+};
+
+function inferCandidateFromPath(sourcePath: string, candidates: any[]): CandidateMatch | null {
+  const normalizedPath = normalize(sourcePath);
+  const pathTokens = new Set(normalizedPath.split(" ").filter(Boolean));
+  const firstNameCounts = new Map<string, number>();
+  const lastNameCounts = new Map<string, number>();
+
+  for (const candidate of candidates) {
+    firstNameCounts.set(candidate.firstNormalized, (firstNameCounts.get(candidate.firstNormalized) || 0) + 1);
+    lastNameCounts.set(candidate.lastNormalized, (lastNameCounts.get(candidate.lastNormalized) || 0) + 1);
+  }
+
+  const matches: Array<CandidateMatch & { score: number }> = [];
+  for (const candidate of candidates) {
+    const firstLast = `${candidate.firstNormalized} ${candidate.lastNormalized}`.trim();
+    const lastFirst = `${candidate.lastNormalized} ${candidate.firstNormalized}`.trim();
+    const firstTokens = candidate.firstNormalized.split(" ").filter(Boolean);
+    const lastTokens = candidate.lastNormalized.split(" ").filter(Boolean);
+    const allNameTokensPresent = [...firstTokens, ...lastTokens].every(token => pathTokens.has(token));
+
+    if (firstLast && normalizedPath.includes(firstLast)) {
+      matches.push({ candidate, method: "first_last", confidence: 1, score: 100 });
+    } else if (lastFirst && normalizedPath.includes(lastFirst)) {
+      matches.push({ candidate, method: "last_first", confidence: 0.98, score: 98 });
+    } else if (allNameTokensPresent && firstTokens.length && lastTokens.length) {
+      matches.push({ candidate, method: "name_tokens", confidence: 0.94, score: 94 });
+    } else if (
+      candidate.firstNormalized.length >= 3 &&
+      pathTokens.has(candidate.firstNormalized) &&
+      firstNameCounts.get(candidate.firstNormalized) === 1
+    ) {
+      matches.push({ candidate, method: "unique_first_name", confidence: 0.78, score: 78 });
+    } else if (
+      candidate.lastNormalized.length >= 3 &&
+      pathTokens.has(candidate.lastNormalized) &&
+      lastNameCounts.get(candidate.lastNormalized) === 1
+    ) {
+      matches.push({ candidate, method: "unique_last_name", confidence: 0.76, score: 76 });
+    }
+  }
+
+  matches.sort((a, b) => b.score - a.score);
+  if (!matches.length || (matches[1] && matches[1].score === matches[0].score)) return null;
+  const { candidate, method, confidence } = matches[0];
+  return { candidate, method, confidence };
+}
+
 function watermarkSvg(width: number, height: number) {
   const fontSize = Math.max(16, Math.round(Math.min(width, height) * 0.026));
   const pad = Math.max(18, Math.round(fontSize * 1.2));
@@ -205,7 +257,11 @@ export async function syncDropboxMedia(organizationId = 1) {
     total = entries.length;
     console.info("[Dropbox Sync] fichiers détectés:", total);
     const [candidateRows] = await db.execute<any[]>("SELECT id, firstName, lastName FROM candidates");
-    const candidates = candidateRows.map((row: any) => ({ ...row, normalized: normalize(`${row.firstName} ${row.lastName}`) }));
+    const candidates = candidateRows.map((row: any) => ({
+      ...row,
+      firstNormalized: normalize(row.firstName || ""),
+      lastNormalized: normalize(row.lastName || ""),
+    }));
     const supported = /\.(jpe?g|png|webp|heic|avif|mp4|mov|m4v|webm)$/i;
     const configuredBatchSize = Number(process.env.DROPBOX_SYNC_BATCH_SIZE || "25");
     const batchSize = Number.isFinite(configuredBatchSize) && configuredBatchSize > 0
@@ -224,13 +280,45 @@ export async function syncDropboxMedia(organizationId = 1) {
       }
       const sourcePath = entry.path_display || entry.path_lower || entry.name;
       if (!supported.test(entry.name || "")) { skipped++; continue; }
-      const [existingRows] = await db.execute<any[]>("SELECT source_rev, status FROM dropbox_media_sync WHERE source_file_id=? LIMIT 1", [entry.id]);
-      if (existingRows[0]?.source_rev === entry.rev && ["imported", "inaccessible"].includes(existingRows[0]?.status)) { skipped++; continue; }
+      const candidateMatch = inferCandidateFromPath(sourcePath, candidates);
+      const candidate = candidateMatch?.candidate || null;
+      const [existingRows] = await db.execute<any[]>(
+        "SELECT source_rev, status, candidate_id, metadata_json, photo_id, media_id FROM dropbox_media_sync WHERE source_file_id=? LIMIT 1",
+        [entry.id]
+      );
+      const existing = existingRows[0];
+      if (existing?.source_rev === entry.rev && ["imported", "inaccessible"].includes(existing?.status)) {
+        if (existing.status === "imported" && candidate && !existing.candidate_id) {
+          let previousMetadata: Record<string, unknown> = {};
+          try { previousMetadata = existing.metadata_json ? JSON.parse(existing.metadata_json) : {}; } catch {}
+          const enrichedMetadata = {
+            ...previousMetadata,
+            candidateId: candidate.id,
+            person: `${candidate.firstName} ${candidate.lastName}`,
+            personFirstName: candidate.firstName,
+            personLastName: candidate.lastName,
+            personFullName: `${candidate.firstName} ${candidate.lastName}`,
+            candidateMatchMethod: candidateMatch?.method,
+            candidateMatchConfidence: candidateMatch?.confidence,
+            metadataUpdatedAt: new Date().toISOString(),
+          };
+          await db.execute(
+            "UPDATE dropbox_media_sync SET candidate_id=?, metadata_json=? WHERE source_file_id=?",
+            [candidate.id, JSON.stringify(enrichedMetadata), entry.id]
+          );
+          if (existing.photo_id) {
+            await db.execute("UPDATE photos SET candidateId=? WHERE id=? AND candidateId IS NULL", [candidate.id, existing.photo_id]);
+          }
+          if (existing.media_id) {
+            await db.execute("UPDATE media SET candidateId=? WHERE id=? AND candidateId IS NULL", [candidate.id, existing.media_id]);
+          }
+        }
+        skipped++;
+        continue;
+      }
       if (attempted >= batchSize) break;
       attempted++;
       try {
-        const pathNormalized = normalize(sourcePath);
-        const candidate = candidates.find((item: any) => pathNormalized.includes(item.normalized)) || null;
         const kind = /\.(mp4|mov|m4v|webm)$/i.test(entry.name) ? "video" : "photo";
         const original = await downloadSharedFile(token, integration.source_shared_link, entry._shared_path || entry.path_lower || sourcePath);
         const digest = crypto.createHash("sha256").update(original).digest("hex");
@@ -241,8 +329,20 @@ export async function syncDropboxMedia(organizationId = 1) {
         const trace = {
           source: "dropbox_shared_folder", sourceFileId: entry.id, sourceRevision: entry.rev,
           sourcePath, sourceModified: entry.server_modified, sha256: digest,
-          edition: year, person: candidate ? `${candidate.firstName} ${candidate.lastName}` : null,
-          brand: "Miss & Mister Dour", technologyPartner: "JS-Innov.IA",
+          edition: year,
+          candidateId: candidate?.id || null,
+          person: candidate ? `${candidate.firstName} ${candidate.lastName}` : null,
+          personFirstName: candidate?.firstName || null,
+          personLastName: candidate?.lastName || null,
+          personFullName: candidate ? `${candidate.firstName} ${candidate.lastName}` : null,
+          candidateMatchMethod: candidateMatch?.method || null,
+          candidateMatchConfidence: candidateMatch?.confidence || null,
+          brand: "Miss & Mister Dour",
+          technologyPartner: "JS-Innov.IA",
+          seoTitle: candidate
+            ? `${candidate.firstName} ${candidate.lastName} — Miss & Mister Dour 2026 — JS-Innov.IA`
+            : "Miss & Mister Dour 2026 — Média officiel — JS-Innov.IA",
+          seoKeywords: ["Miss et Mister Dour", "Miss Mister Dour", "Dour", "2026", "JS-Innov.IA", candidate?.firstName, candidate?.lastName].filter(Boolean),
           importedAt: new Date().toISOString(),
         };
 
