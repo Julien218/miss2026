@@ -225,7 +225,7 @@ export async function syncDropboxMedia(organizationId = 1) {
       const sourcePath = entry.path_display || entry.path_lower || entry.name;
       if (!supported.test(entry.name || "")) { skipped++; continue; }
       const [existingRows] = await db.execute<any[]>("SELECT source_rev, status FROM dropbox_media_sync WHERE source_file_id=? LIMIT 1", [entry.id]);
-      if (existingRows[0]?.source_rev === entry.rev && existingRows[0]?.status === "imported") { skipped++; continue; }
+      if (existingRows[0]?.source_rev === entry.rev && ["imported", "inaccessible"].includes(existingRows[0]?.status)) { skipped++; continue; }
       if (attempted >= batchSize) break;
       attempted++;
       try {
@@ -291,11 +291,13 @@ export async function syncDropboxMedia(organizationId = 1) {
         failed++;
         const message = error instanceof Error ? error.message : String(error);
         if (failed <= 3) console.warn("[Dropbox Sync] erreur média:", message.slice(0, 500));
+        const inaccessible = message.includes("Dropbox shared file download 409") && message.includes("shared_link_access_denied");
+        const failureStatus = inaccessible ? "inaccessible" : "failed";
         await db.execute(
           `INSERT INTO dropbox_media_sync (source_file_id, source_rev, source_path, media_kind, status, error_message)
-           VALUES (?, ?, ?, 'unknown', 'failed', ?)
-           ON DUPLICATE KEY UPDATE source_rev=VALUES(source_rev), status='failed', error_message=VALUES(error_message)`,
-          [entry.id, entry.rev || null, sourcePath, message.slice(0, 1000)]
+           VALUES (?, ?, ?, 'unknown', ?, ?)
+           ON DUPLICATE KEY UPDATE source_rev=VALUES(source_rev), status=VALUES(status), error_message=VALUES(error_message)`,
+          [entry.id, entry.rev || null, sourcePath, failureStatus, message.slice(0, 1000)]
         );
         if (message.includes("Dropbox shared file download 401")) {
           throw new Error("Dropbox exige l’autorisation sharing.read. Activez-la dans l’application Dropbox puis reconnectez le compte.");
