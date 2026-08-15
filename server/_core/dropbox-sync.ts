@@ -312,6 +312,9 @@ export async function syncDropboxMedia(organizationId = 1) {
 
 let timerStarted = false;
 export function startDropboxAutoSync() {
+  // Keep automatic imports paused until the low-cost R2 destination is configured.
+  // Manual admin sync remains available for controlled verification.
+  if (process.env.DROPBOX_SYNC_ENABLED !== "true") return;
   if (timerStarted || process.env.NODE_ENV !== "production") return;
   timerStarted = true;
   setTimeout(() => syncDropboxMedia().catch(error => console.warn("[Dropbox Sync]", error instanceof Error ? error.message : String(error))), 30_000);
