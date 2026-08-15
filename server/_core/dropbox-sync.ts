@@ -183,7 +183,13 @@ async function processImage(buffer: Buffer, sourcePath: string, candidateName: s
   return { full, thumb, width: outMeta.width || width, height: outMeta.height || height, description };
 }
 
+let syncInProgress = false;
+
 export async function syncDropboxMedia(organizationId = 1) {
+  if (syncInProgress) {
+    return { imported: 0, skipped: 0, failed: 0, total: 0, summary: "Une synchronisation Dropbox est déjà en cours" };
+  }
+  syncInProgress = true;
   const db = await dbConnection();
   let imported = 0, skipped = 0, failed = 0, total = 0;
   try {
@@ -200,7 +206,15 @@ export async function syncDropboxMedia(organizationId = 1) {
     const candidates = candidateRows.map((row: any) => ({ ...row, normalized: normalize(`${row.firstName} ${row.lastName}`) }));
     const supported = /\.(jpe?g|png|webp|heic|avif|mp4|mov|m4v|webm)$/i;
 
+    let processed = 0;
     for (const entry of entries) {
+      processed++;
+      if (processed === 1 || processed % 25 === 0) {
+        await db.execute(
+          "UPDATE dropbox_integrations SET last_sync_message=? WHERE organization_id=?",
+          [`${processed}/${total} fichier(s) analysé(s) · ${imported} importé(s) · ${failed} erreur(s)`, organizationId]
+        );
+      }
       const sourcePath = entry.path_display || entry.path_lower || entry.name;
       if (!supported.test(entry.name || "")) { skipped++; continue; }
       const [existingRows] = await db.execute<any[]>("SELECT source_rev, status FROM dropbox_media_sync WHERE source_file_id=? LIMIT 1", [entry.id]);
@@ -284,7 +298,10 @@ export async function syncDropboxMedia(organizationId = 1) {
     await db.execute("UPDATE dropbox_integrations SET last_sync_at=NOW(), last_sync_status='failed', last_sync_message=? WHERE organization_id=?",
       [message.slice(0, 1000), organizationId]).catch(() => {});
     throw error;
-  } finally { await db.end(); }
+  } finally {
+    await db.end();
+    syncInProgress = false;
+  }
 }
 
 let timerStarted = false;
