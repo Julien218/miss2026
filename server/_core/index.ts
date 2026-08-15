@@ -12,11 +12,13 @@ import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { apiLimiter } from "./rateLimit";
 import { serveStatic, setupVite } from "./vite";
-import { registerUser } from "./auth-password";
 
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // Railway terminates TLS and forwards the real client IP through one trusted proxy.
+  app.set("trust proxy", 1);
 
   // 🔁 Redirection domaine
   app.use(domainRedirectMiddleware);
@@ -33,62 +35,6 @@ async function startServer() {
 
   // 📸 Upload photo candidat
   app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, any]));
-
-  // ============================================================
-  // ⚠️  TEMPORARY ENDPOINT - DELETE AFTER USE
-  // ------------------------------------------------------------
-  // Cette route est temporaire pour la création initiale d'utilisateurs.
-  // À supprimer une fois les comptes créés.
-  //
-  // Comptes à créer :
-  //   - julien.pagin.pv@gmail.com  → super_admin
-  //   - olivier.trevis@houtlook.be → admin
-  // ============================================================
-  app.post("/api/admin/create-user-temp", async (req, res) => {
-    try {
-      const { email, password, role, organizationId } = req.body as {
-        email?: string;
-        password?: string;
-        role?: string;
-        organizationId?: number;
-      };
-
-      if (!email || !password) {
-        res.status(400).json({ error: "email et password sont requis" });
-        return;
-      }
-
-      const allowedRoles = [
-        "user", "candidate", "press", "photographer", "staff",
-        "marketing", "organizer", "admin", "super_admin",
-      ];
-      if (role && !allowedRoles.includes(role)) {
-        res.status(400).json({ error: `Rôle invalide. Valeurs acceptées: ${allowedRoles.join(", ")}` });
-        return;
-      }
-
-      const user = await registerUser({
-        email,
-        password,
-        role: (role as any) ?? "user",
-        organizationId: organizationId ?? 1,
-      });
-
-      res.status(201).json({
-        success: true,
-        message: "Utilisateur créé avec succès",
-        user,
-      });
-    } catch (error: any) {
-      console.error("[create-user-temp] Erreur:", error);
-      res.status(500).json({
-        error: error?.message ?? "Erreur interne lors de la création de l'utilisateur",
-      });
-    }
-  });
-  // ============================================================
-  // ⚠️  FIN TEMPORARY ENDPOINT
-  // ============================================================
 
   // 📄 Sitemap
   app.get("/sitemap.xml", async (req, res) => {
