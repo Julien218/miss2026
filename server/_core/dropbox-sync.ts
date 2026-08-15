@@ -101,7 +101,9 @@ async function listSharedFiles(token: string, sharedLink: string) {
       if (pageCount > 200) throw new Error(`Dropbox: pagination anormale pour ${folderPath || "/"}`);
       for (const entry of payload.entries) {
         const joinedPath = `${folderPath.replace(/\/$/, "")}/${entry.name}`;
-        const sharedPath = entry.path_lower || entry.path_display || joinedPath;
+        // The content endpoint expects a path relative to the shared-link root.
+        // Dropbox may return an account-absolute path here, so keep our own path.
+        const sharedPath = joinedPath;
         if (entry[".tag"] === "file" && !seenFiles.has(entry.id || sharedPath)) {
           seenFiles.add(entry.id || sharedPath);
           files.push({ ...entry, _shared_path: sharedPath });
