@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import {
   Crown, Camera, X, ChevronLeft, ChevronRight, Heart,
-  ZoomIn, Users, ArrowLeft, Filter, Sparkles, Image as ImageIcon
+  ZoomIn, Users, ArrowLeft, Filter, Sparkles, Image as ImageIcon, Share2, ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -105,6 +105,17 @@ export default function Gallery() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [lightboxOpen, closeLightbox, nextPhoto, prevPhoto]);
+
+  const sharePhoto = useCallback(async (photo: any) => {
+    const shareUrl = `${window.location.origin}/gallery?photo=${photo.id}`;
+    const shareData = {
+      title: photo.title || "Miss & Mister Dour 2026",
+      text: `${photo.candidateName ? photo.candidateName + " — " : ""}Photo officielle Miss & Mister Dour 2026 · JS-Innov.IA`,
+      url: shareUrl,
+    };
+    if (navigator.share) await navigator.share(shareData);
+    else await navigator.clipboard.writeText(shareUrl);
+  }, []);
 
   const currentPhoto = lightboxOpen && filteredPhotos.length > 0 ? filteredPhotos[lightboxIndex] : null;
 
@@ -280,6 +291,8 @@ export default function Gallery() {
                     }`}>
                       <img
                         src={photo.thumbnail || photo.url}
+                        draggable={false}
+                        onContextMenu={(event) => event.preventDefault()}
                         alt={photo.title || "Photo"}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
@@ -417,6 +430,8 @@ export default function Gallery() {
           >
             <img
               src={currentPhoto.url}
+              draggable={false}
+              onContextMenu={(event) => event.preventDefault()}
               alt={currentPhoto.title || "Photo"}
               className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
             />
@@ -458,6 +473,17 @@ export default function Gallery() {
                       <span className="text-gray-300 text-xs">{currentPhoto.title}</span>
                     )}
                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(event) => { event.stopPropagation(); sharePhoto(currentPhoto).catch(() => {}); }}
+                    className="px-4 py-2 bg-white/10 text-white text-sm font-bold rounded-lg hover:bg-white/20 transition-colors flex items-center gap-2"
+                  >
+                    <Share2 className="w-4 h-4" /> Partager
+                  </button>
+                  <span className="hidden md:flex items-center gap-1 text-[10px] text-white/60">
+                    <ShieldCheck className="w-3 h-3" /> Média officiel signé
+                  </span>
                 </div>
                 {currentPhoto.candidateId && (
                   <Link
