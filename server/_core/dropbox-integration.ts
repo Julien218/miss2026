@@ -67,7 +67,7 @@ function publicBaseUrl(req: Request) {
 }
 
 function dropboxRedirectUri(req: Request) {
-  return process.env.DROPBOX_REDIRECT_URI || dropboxRedirectUri(req);
+  return process.env.DROPBOX_REDIRECT_URI || `${publicBaseUrl(req)}/api/integrations/dropbox/callback`;
 }
 
 function configured() {
