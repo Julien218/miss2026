@@ -14,11 +14,13 @@ type Status = {
   lastSyncStatus?: string;
   lastSyncMessage?: string | null;
   redirectUri?: string;
+  sharedFolderConfigured?: boolean;
 };
 
 export default function AdminDropbox() {
   const [status, setStatus] = useState<Status | null>(null);
   const [folder, setFolder] = useState("");
+  const [sharedLink, setSharedLink] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -30,6 +32,24 @@ export default function AdminDropbox() {
   }
 
   useEffect(() => { load().catch(() => setMessage("Impossible de lire l’état Dropbox")); }, []);
+
+  async function saveSharedFolder() {
+    setBusy(true); setMessage("");
+    try {
+      const response = await fetch("/api/integrations/dropbox/shared-folder", {
+        method: "POST", credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ sharedLink }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Enregistrement impossible");
+      setSharedLink("");
+      setMessage("Dossier partagé client enregistré. Les sous-dossiers photos et vidéos seront utilisés comme source officielle.");
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Enregistrement impossible");
+    } finally { setBusy(false); }
+  }
 
   async function saveFolder() {
     setBusy(true); setMessage("");
@@ -77,8 +97,22 @@ export default function AdminDropbox() {
               <p className="font-semibold">{status.accountName || "Compte Dropbox connecté"}</p>
               <p className="text-sm text-muted-foreground">{status.accountEmail}</p>
             </div>
+            <div className="space-y-2 rounded-lg border p-4">
+              <label htmlFor="dropbox-shared-link" className="font-medium">Dossier partagé du client</label>
+              <div className="flex flex-col gap-2">
+                <input id="dropbox-shared-link" value={sharedLink} onChange={e => setSharedLink(e.target.value)}
+                  placeholder="https://www.dropbox.com/scl/fo/…"
+                  className="w-full rounded-md border bg-background px-3 py-2" />
+                <Button onClick={saveSharedFolder} disabled={busy || !sharedLink.includes("dropbox.com/scl/fo/")}>
+                  <FolderSync className="w-4 h-4 mr-2" /> Relier le dossier partagé
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {status.sharedFolderConfigured ? "✓ Dossier partagé client configuré" : "Collez le lien du dossier déjà organisé par le client."}
+              </p>
+            </div>
             <div className="space-y-2">
-              <label htmlFor="dropbox-folder" className="font-medium">Dossier média officiel</label>
+              <label htmlFor="dropbox-folder" className="font-medium">Chemin interne</label>
               <div className="flex flex-col sm:flex-row gap-2">
                 <input id="dropbox-folder" value={folder} onChange={e => setFolder(e.target.value)}
                   placeholder="/Miss Mister Dour/2026/Officiel"
