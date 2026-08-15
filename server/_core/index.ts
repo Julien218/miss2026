@@ -12,6 +12,7 @@ import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { apiLimiter } from "./rateLimit";
 import { registerLocalAuthRoutes } from "./auth-local-routes";
+import { registerDropboxIntegrationRoutes } from "./dropbox-integration";
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
@@ -31,6 +32,7 @@ async function startServer() {
   // 🔐 Auth locale et OAuth
   registerLocalAuthRoutes(app);
   registerOAuthRoutes(app);
+  registerDropboxIntegrationRoutes(app);
 
   // 🖼️ Image countdown
   app.get("/api/countdown-image", generateCountdownImage);
