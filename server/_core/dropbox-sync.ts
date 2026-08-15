@@ -77,6 +77,8 @@ async function listSharedFiles(token: string, sharedLink: string) {
     if (visitedFolders.has(folderKey)) continue;
     visitedFolders.add(folderKey);
     if (visitedFolders.size > 1000) throw new Error("Dropbox: arborescence anormalement profonde");
+    const seenCursors = new Set<string>();
+    let pageCount = 0;
     let response = await fetch("https://api.dropboxapi.com/2/files/list_folder", {
       method: "POST",
       headers,
@@ -94,6 +96,8 @@ async function listSharedFiles(token: string, sharedLink: string) {
         throw new Error(`Dropbox list_folder ${response.status}: ${detail.slice(0, 300)}`);
       }
       const payload = await response.json() as any;
+      pageCount++;
+      if (pageCount > 200) throw new Error(`Dropbox: pagination anormale pour ${folderPath || "/"}`);
       for (const entry of payload.entries) {
         const joinedPath = `${folderPath.replace(/\/$/, "")}/${entry.name}`;
         const sharedPath = entry.path_lower || entry.path_display || joinedPath;
@@ -104,6 +108,10 @@ async function listSharedFiles(token: string, sharedLink: string) {
         if (entry[".tag"] === "folder" && !visitedFolders.has(sharedPath.toLowerCase())) folders.push(sharedPath);
       }
       if (!payload.has_more) break;
+      if (!payload.cursor || seenCursors.has(payload.cursor)) {
+        throw new Error(`Dropbox: curseur de pagination répété pour ${folderPath || "/"}`);
+      }
+      seenCursors.add(payload.cursor);
       response = await fetch("https://api.dropboxapi.com/2/files/list_folder/continue", {
         method: "POST",
         headers,
