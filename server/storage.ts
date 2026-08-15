@@ -2,8 +2,31 @@
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
 
 import { ENV } from './_core/env';
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 type StorageConfig = { baseUrl: string; apiKey: string };
+type R2Config = { bucket: string; publicUrl: string; client: S3Client };
+
+let r2Client: S3Client | null = null;
+
+function getR2Config(): R2Config | null {
+  const endpoint = process.env.R2_ENDPOINT;
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+  const bucket = process.env.R2_BUCKET;
+  const publicUrl = process.env.R2_PUBLIC_URL;
+  if (!endpoint || !accessKeyId || !secretAccessKey || !bucket || !publicUrl) return null;
+  r2Client ??= new S3Client({
+    region: "auto",
+    endpoint,
+    credentials: { accessKeyId, secretAccessKey },
+  });
+  return { bucket, publicUrl: publicUrl.replace(/\/+$/, ""), client: r2Client };
+}
+
+function publicR2Url(baseUrl: string, key: string): string {
+  return `${baseUrl}/${key.split("/").map(encodeURIComponent).join("/")}`;
+}
 
 function getStorageConfig(): StorageConfig {
   const baseUrl = ENV.forgeApiUrl;
@@ -72,8 +95,21 @@ export async function storagePut(
   data: Buffer | Uint8Array | string,
   contentType = "application/octet-stream"
 ): Promise<{ key: string; url: string }> {
-  const { baseUrl, apiKey } = getStorageConfig();
   const key = normalizeKey(relKey);
+  const r2 = getR2Config();
+  if (r2) {
+    await r2.client.send(new PutObjectCommand({
+      Bucket: r2.bucket,
+      Key: key,
+      Body: data,
+      ContentType: contentType,
+      CacheControl: "public, max-age=31536000, immutable",
+      ContentDisposition: "inline",
+    }));
+    return { key, url: publicR2Url(r2.publicUrl, key) };
+  }
+
+  const { baseUrl, apiKey } = getStorageConfig();
   const uploadUrl = buildUploadUrl(baseUrl, key);
   const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
   const response = await fetch(uploadUrl, {
@@ -93,10 +129,10 @@ export async function storagePut(
 }
 
 export async function storageGet(relKey: string): Promise<{ key: string; url: string; }> {
-  const { baseUrl, apiKey } = getStorageConfig();
   const key = normalizeKey(relKey);
-  return {
-    key,
-    url: await buildDownloadUrl(baseUrl, key, apiKey),
-  };
+  const r2 = getR2Config();
+  if (r2) return { key, url: publicR2Url(r2.publicUrl, key) };
+
+  const { baseUrl, apiKey } = getStorageConfig();
+  return { key, url: await buildDownloadUrl(baseUrl, key, apiKey) };
 }
