@@ -72,11 +72,15 @@ import CandidatePublicProfile from "./pages/CandidatePublicProfile";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import Photographer from "./pages/Photographer";
+import Login from "./pages/Login";
+import AdminActivate from "./pages/AdminActivate";
 
 function Router() {
   return (
     <Switch>
       {/* ========== PAGES PUBLIQUES ========== */}
+      <Route path="/login" component={Login} />
+      <Route path="/admin/activate" component={AdminActivate} />
       <Route path="/" component={Homepage} />
       <Route path="/about" component={About} />
       <Route path="/press" component={Press} />
