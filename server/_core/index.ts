@@ -11,6 +11,7 @@ import { domainRedirectMiddleware } from "./domain-redirect";
 import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { apiLimiter } from "./rateLimit";
+import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
@@ -27,7 +28,8 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-  // 🔐 OAuth
+  // 🔐 Auth locale et OAuth
+  registerLocalAuthRoutes(app);
   registerOAuthRoutes(app);
 
   // 🖼️ Image countdown
