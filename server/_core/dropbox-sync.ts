@@ -65,12 +65,18 @@ async function accessToken(refreshToken: string) {
 async function listSharedFiles(token: string, sharedLink: string) {
   const files: any[] = [];
   const folders = [""];
+  const visitedFolders = new Set<string>();
+  const seenFiles = new Set<string>();
   const headers = { authorization: `Bearer ${token}`, "content-type": "application/json" };
 
   // Dropbox does not support recursive=true for shared links. Walk every
   // directory explicitly while keeping pagination for folders with many files.
   while (folders.length) {
     const folderPath = folders.shift() || "";
+    const folderKey = folderPath.toLowerCase();
+    if (visitedFolders.has(folderKey)) continue;
+    visitedFolders.add(folderKey);
+    if (visitedFolders.size > 1000) throw new Error("Dropbox: arborescence anormalement profonde");
     let response = await fetch("https://api.dropboxapi.com/2/files/list_folder", {
       method: "POST",
       headers,
@@ -91,8 +97,11 @@ async function listSharedFiles(token: string, sharedLink: string) {
       for (const entry of payload.entries) {
         const joinedPath = `${folderPath.replace(/\/$/, "")}/${entry.name}`;
         const sharedPath = entry.path_lower || entry.path_display || joinedPath;
-        if (entry[".tag"] === "file") files.push({ ...entry, _shared_path: sharedPath });
-        if (entry[".tag"] === "folder") folders.push(sharedPath);
+        if (entry[".tag"] === "file" && !seenFiles.has(entry.id || sharedPath)) {
+          seenFiles.add(entry.id || sharedPath);
+          files.push({ ...entry, _shared_path: sharedPath });
+        }
+        if (entry[".tag"] === "folder" && !visitedFolders.has(sharedPath.toLowerCase())) folders.push(sharedPath);
       }
       if (!payload.has_more) break;
       response = await fetch("https://api.dropboxapi.com/2/files/list_folder/continue", {
