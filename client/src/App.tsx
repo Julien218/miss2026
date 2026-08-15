@@ -74,6 +74,7 @@ import Notifications from "./pages/Notifications";
 import Photographer from "./pages/Photographer";
 import Login from "./pages/Login";
 import AdminActivate from "./pages/AdminActivate";
+import AdminDropbox from "./pages/admin/AdminDropbox";
 
 function Router() {
   return (
@@ -201,6 +202,11 @@ function Router() {
       <Route path="/admin/validation">
         <RoleGuard requiredRole="admin">
           <AdminValidation />
+        </RoleGuard>
+      </Route>
+      <Route path="/admin/dropbox">
+        <RoleGuard requiredRole="admin">
+          <AdminDropbox />
         </RoleGuard>
       </Route>
       <Route path={"/dashboard-internal"}>
