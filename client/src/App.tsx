@@ -95,6 +95,7 @@ function Router() {
       <Route path="/miss-mister" component={Home} />
       <Route path="/video-factory" component={VideoFactory2026} />
       <Route path="/ranking" component={Ranking} />
+      <Route path="/voter" component={Candidates} />
       
       {/* Pages articles/news */}
       <Route path="/public" component={HomeArticles} />
