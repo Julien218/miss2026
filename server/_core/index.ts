@@ -13,7 +13,7 @@ import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { apiLimiter } from "./rateLimit";
 import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { registerDropboxIntegrationRoutes } from "./dropbox-integration";
-import { startDropboxAutoSync } from "./dropbox-sync";
+import { startDropboxLowCostAutoSync } from "./dropbox-auto-sync-lowcost";
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
@@ -85,7 +85,7 @@ async function startServer() {
 
   server.listen(port, "0.0.0.0", () => {
     console.log(`✅ Server running on port ${port}`);
-    startDropboxAutoSync();
+    startDropboxLowCostAutoSync();
   });
 }
 
