@@ -281,6 +281,7 @@ export async function syncDropboxMedia(organizationId = 1) {
       } catch (error) {
         failed++;
         const message = error instanceof Error ? error.message : String(error);
+        if (failed <= 3) console.warn("[Dropbox Sync] erreur média:", message.slice(0, 500));
         await db.execute(
           `INSERT INTO dropbox_media_sync (source_file_id, source_rev, source_path, media_kind, status, error_message)
            VALUES (?, ?, ?, 'unknown', 'failed', ?)
