@@ -126,14 +126,14 @@ async function listSharedFiles(token: string, sharedLink: string) {
 }
 
 async function downloadSharedFile(token: string, sharedLink: string, path: string) {
-  const response = await fetch("https://content.dropboxapi.com/2/files/download", {
+  const response = await fetch("https://content.dropboxapi.com/2/sharing/get_shared_link_file", {
     method: "POST",
     headers: {
       authorization: `Bearer ${token}`,
-      "Dropbox-API-Arg": JSON.stringify({ path, shared_link: { url: sharedLink } }),
+      "Dropbox-API-Arg": JSON.stringify({ url: sharedLink, path }),
     },
   });
-  if (!response.ok) throw new Error(`Dropbox download ${response.status}: ${(await response.text()).slice(0, 250)}`);
+  if (!response.ok) throw new Error(`Dropbox shared file download ${response.status}: ${(await response.text()).slice(0, 250)}`);
   return Buffer.from(await response.arrayBuffer());
 }
 
