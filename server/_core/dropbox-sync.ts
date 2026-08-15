@@ -76,7 +76,8 @@ async function listSharedFiles(token: string, sharedLink: string) {
     const folderKey = folderPath.toLowerCase();
     if (visitedFolders.has(folderKey)) continue;
     visitedFolders.add(folderKey);
-    if (visitedFolders.size > 1000) throw new Error("Dropbox: arborescence anormalement profonde");
+    if (visitedFolders.size > 100) throw new Error("Dropbox: plus de 100 dossiers détectés, parcours interrompu");
+    if (visitedFolders.size === 1 || visitedFolders.size % 10 === 0) console.info("[Dropbox Sync] dossiers parcourus:", visitedFolders.size);
     const seenCursors = new Set<string>();
     let pageCount = 0;
     let response = await fetch("https://api.dropboxapi.com/2/files/list_folder", {
@@ -194,6 +195,7 @@ export async function syncDropboxMedia(organizationId = 1) {
     const token = await accessToken(decrypt(integration.refresh_token_encrypted));
     const entries = await listSharedFiles(token, integration.source_shared_link);
     total = entries.length;
+    console.info("[Dropbox Sync] fichiers détectés:", total);
     const [candidateRows] = await db.execute<any[]>("SELECT id, firstName, lastName FROM candidates");
     const candidates = candidateRows.map((row: any) => ({ ...row, normalized: normalize(`${row.firstName} ${row.lastName}`) }));
     const supported = /\.(jpe?g|png|webp|heic|avif|mp4|mov|m4v|webm)$/i;
