@@ -128,7 +128,7 @@ export default function AdminDropbox() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <p className="font-medium">Synchronisation automatique</p>
-                  <p className="text-xs text-muted-foreground">Détection toutes les 10 minutes, sans doublons.</p>
+                  <p className="text-xs text-muted-foreground">Synchronisation économique chaque mercredi à 20 h (Bruxelles), sans doublons. Le bouton ci-dessous permet un passage immédiat.</p>
                 </div>
                 <Button onClick={syncNow} disabled={busy || !status.sharedFolderConfigured}>
                   <FolderSync className="w-4 h-4 mr-2" /> Synchroniser maintenant
