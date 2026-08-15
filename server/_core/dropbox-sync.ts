@@ -290,6 +290,9 @@ export async function syncDropboxMedia(organizationId = 1) {
            ON DUPLICATE KEY UPDATE source_rev=VALUES(source_rev), status='failed', error_message=VALUES(error_message)`,
           [entry.id, entry.rev || null, sourcePath, message.slice(0, 1000)]
         );
+        if (message.includes("Dropbox shared file download 401")) {
+          throw new Error("Dropbox exige l’autorisation sharing.read. Activez-la dans l’application Dropbox puis reconnectez le compte.");
+        }
       }
     }
     const summary = `${imported} importé(s), ${skipped} ignoré(s), ${failed} erreur(s), ${total} fichier(s) détecté(s)`;
