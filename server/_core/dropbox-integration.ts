@@ -36,6 +36,7 @@ async function ensureTable() {
       refresh_token_encrypted TEXT NOT NULL,
       access_token_encrypted TEXT NULL,
       source_folder VARCHAR(1024) NOT NULL DEFAULT '',
+      source_shared_link TEXT NULL,
       sync_cursor TEXT NULL,
       last_sync_at TIMESTAMP NULL,
       last_sync_status VARCHAR(32) NOT NULL DEFAULT 'never',
@@ -43,6 +44,11 @@ async function ensureTable() {
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
+    try {
+      await db.execute("ALTER TABLE dropbox_integrations ADD COLUMN source_shared_link TEXT NULL");
+    } catch (error) {
+      if (!String(error).toLowerCase().includes("duplicate")) throw error;
+    }
   } finally {
     await db.end();
   }
@@ -85,7 +91,7 @@ export function registerDropboxIntegrationRoutes(app: Express) {
     const db = await connection();
     try {
       const [rows] = await db.execute<any[]>(
-        "SELECT account_name, account_email, source_folder, last_sync_at, last_sync_status, last_sync_message, updated_at FROM dropbox_integrations WHERE organization_id = ? LIMIT 1",
+        "SELECT account_name, account_email, source_folder, source_shared_link, last_sync_at, last_sync_status, last_sync_message, updated_at FROM dropbox_integrations WHERE organization_id = ? LIMIT 1",
         [user.organizationId || 1]
       );
       const item = rows[0];
@@ -95,6 +101,7 @@ export function registerDropboxIntegrationRoutes(app: Express) {
         accountName: item?.account_name || null,
         accountEmail: item?.account_email || null,
         sourceFolder: item?.source_folder || "",
+        sharedFolderConfigured: Boolean(item?.source_shared_link),
         lastSyncAt: item?.last_sync_at || null,
         lastSyncStatus: item?.last_sync_status || "never",
         lastSyncMessage: item?.last_sync_message || null,
@@ -171,6 +178,26 @@ export function registerDropboxIntegrationRoutes(app: Express) {
       console.error("[Dropbox] OAuth callback failed", error instanceof Error ? error.message : String(error));
       res.redirect("/admin/dropbox?error=connection");
     }
+  });
+
+  app.post("/api/integrations/dropbox/shared-folder", async (req, res) => {
+    const user = await requireAdmin(req, res); if (!user) return;
+    const sharedLink = String(req.body?.sharedLink || "").trim();
+    let parsed: URL;
+    try { parsed = new URL(sharedLink); } catch { res.status(400).json({ error: "Lien Dropbox invalide" }); return; }
+    if (parsed.protocol !== "https:" || parsed.hostname !== "www.dropbox.com" || !parsed.pathname.startsWith("/scl/fo/")) {
+      res.status(400).json({ error: "Utilisez un lien de dossier partagé Dropbox valide" }); return;
+    }
+    await ensureTable();
+    const db = await connection();
+    try {
+      const [result] = await db.execute<any>(
+        "UPDATE dropbox_integrations SET source_shared_link=?, source_folder='/', sync_cursor=NULL, last_sync_status='never', last_sync_message=NULL WHERE organization_id=?",
+        [sharedLink, user.organizationId || 1]
+      );
+      if (!result.affectedRows) { res.status(404).json({ error: "Connectez Dropbox avant d’ajouter le dossier client" }); return; }
+      res.json({ success: true });
+    } finally { await db.end(); }
   });
 
   app.post("/api/integrations/dropbox/folder", async (req, res) => {
