@@ -11,8 +11,13 @@ export default function Dashboard() {
   const { data: contests } = trpc.contests.list.useQuery();
   const { data: notifications } = trpc.notifications.list.useQuery({ limit: 5 });
   
-  const isAdmin = user?.role === 'admin';
-  const activeContests = contests?.filter(c => c.status !== 'completed') || [];
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'owner';
+  // L'édition officielle actuelle est 2026. Des doublons techniques historiques
+  // peuvent rester en base, mais ne doivent jamais gonfler les indicateurs métier.
+  const contests2026 = (contests || []).filter(contest => contest.year === 2026);
+  const officialContest = contests2026.find(contest => contest.status === 'ongoing') ?? contests2026[0];
+  const visibleContests = officialContest ? [officialContest] : [];
+  const activeContests = visibleContests.filter(contest => contest.status !== 'completed');
   const unreadNotifications = notifications?.filter(n => n.isRead === 0) || [];
 
   return (
@@ -93,9 +98,9 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {contests && contests.length > 0 ? (
+              {visibleContests.length > 0 ? (
                 <div className="space-y-4">
-                  {contests.slice(0, 3).map((contest) => (
+                  {visibleContests.map((contest) => (
                     <div key={contest.id} className="flex items-center justify-between rounded-lg border border-border p-4">
                       <div>
                         <h4 className="font-semibold">{contest.title}</h4>
