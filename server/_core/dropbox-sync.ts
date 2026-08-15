@@ -64,24 +64,44 @@ async function accessToken(refreshToken: string) {
 
 async function listSharedFiles(token: string, sharedLink: string) {
   const files: any[] = [];
-  let response = await fetch("https://api.dropboxapi.com/2/files/list_folder", {
-    method: "POST",
-    headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
-    body: JSON.stringify({ path: "", recursive: true, include_deleted: false, shared_link: { url: sharedLink } }),
-  });
-  while (true) {
-    if (!response.ok) {
-      const detail = await response.text();
-      throw new Error(`Dropbox list_folder ${response.status}: ${detail.slice(0, 300)}`);
-    }
-    const payload = await response.json() as any;
-    files.push(...payload.entries.filter((entry: any) => entry[".tag"] === "file"));
-    if (!payload.has_more) break;
-    response = await fetch("https://api.dropboxapi.com/2/files/list_folder/continue", {
+  const folders = [""];
+  const headers = { authorization: `Bearer ${token}`, "content-type": "application/json" };
+
+  // Dropbox does not support recursive=true for shared links. Walk every
+  // directory explicitly while keeping pagination for folders with many files.
+  while (folders.length) {
+    const folderPath = folders.shift() || "";
+    let response = await fetch("https://api.dropboxapi.com/2/files/list_folder", {
       method: "POST",
-      headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
-      body: JSON.stringify({ cursor: payload.cursor }),
+      headers,
+      body: JSON.stringify({
+        path: folderPath,
+        recursive: false,
+        include_deleted: false,
+        shared_link: { url: sharedLink },
+      }),
     });
+
+    while (true) {
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(`Dropbox list_folder ${response.status}: ${detail.slice(0, 300)}`);
+      }
+      const payload = await response.json() as any;
+      for (const entry of payload.entries) {
+        if (entry[".tag"] === "file") files.push(entry);
+        if (entry[".tag"] === "folder") {
+          const childPath = entry.path_lower || entry.path_display;
+          if (childPath) folders.push(childPath);
+        }
+      }
+      if (!payload.has_more) break;
+      response = await fetch("https://api.dropboxapi.com/2/files/list_folder/continue", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ cursor: payload.cursor }),
+      });
+    }
   }
   return files;
 }
