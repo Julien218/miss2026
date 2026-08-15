@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import mysql from "mysql2/promise";
+import mysql, { type Connection } from "mysql2/promise";
 import sharp from "sharp";
 import { storagePut } from "../storage";
 
@@ -27,7 +27,7 @@ async function dbConnection() {
   return mysql.createConnection(process.env.DATABASE_URL);
 }
 
-async function ensureSyncTable(db: mysql.Connection) {
+async function ensureSyncTable(db: Connection) {
   await db.execute(`CREATE TABLE IF NOT EXISTS dropbox_media_sync (
     source_file_id VARCHAR(255) NOT NULL PRIMARY KEY,
     source_rev VARCHAR(255) NULL,
