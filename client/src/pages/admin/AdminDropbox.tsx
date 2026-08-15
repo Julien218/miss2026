@@ -33,6 +33,19 @@ export default function AdminDropbox() {
 
   useEffect(() => { load().catch(() => setMessage("Impossible de lire l’état Dropbox")); }, []);
 
+  async function syncNow() {
+    setBusy(true); setMessage("Synchronisation et traitement des médias en cours…");
+    try {
+      const response = await fetch("/api/integrations/dropbox/sync", { method: "POST", credentials: "include" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Synchronisation impossible");
+      setMessage(data.summary || "Synchronisation terminée");
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Synchronisation impossible");
+    } finally { setBusy(false); }
+  }
+
   async function saveSharedFolder() {
     setBusy(true); setMessage("");
     try {
@@ -110,6 +123,22 @@ export default function AdminDropbox() {
               <p className="text-xs text-muted-foreground">
                 {status.sharedFolderConfigured ? "✓ Dossier partagé client configuré" : "Collez le lien du dossier déjà organisé par le client."}
               </p>
+            </div>
+            <div className="rounded-lg border p-4 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <p className="font-medium">Synchronisation automatique</p>
+                  <p className="text-xs text-muted-foreground">Détection toutes les 10 minutes, sans doublons.</p>
+                </div>
+                <Button onClick={syncNow} disabled={busy || !status.sharedFolderConfigured}>
+                  <FolderSync className="w-4 h-4 mr-2" /> Synchroniser maintenant
+                </Button>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                <p>État : <strong>{status.lastSyncStatus || "jamais exécutée"}</strong></p>
+                {status.lastSyncAt && <p>Dernière exécution : {new Date(status.lastSyncAt).toLocaleString("fr-BE")}</p>}
+                {status.lastSyncMessage && <p>{status.lastSyncMessage}</p>}
+              </div>
             </div>
             <div className="space-y-2">
               <label htmlFor="dropbox-folder" className="font-medium">Chemin interne</label>
