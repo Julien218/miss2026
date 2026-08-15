@@ -207,8 +207,13 @@ export async function syncDropboxMedia(organizationId = 1) {
     const [candidateRows] = await db.execute<any[]>("SELECT id, firstName, lastName FROM candidates");
     const candidates = candidateRows.map((row: any) => ({ ...row, normalized: normalize(`${row.firstName} ${row.lastName}`) }));
     const supported = /\.(jpe?g|png|webp|heic|avif|mp4|mov|m4v|webm)$/i;
+    const configuredBatchSize = Number(process.env.DROPBOX_SYNC_BATCH_SIZE || "25");
+    const batchSize = Number.isFinite(configuredBatchSize) && configuredBatchSize > 0
+      ? Math.min(Math.floor(configuredBatchSize), 100)
+      : 25;
 
     let processed = 0;
+    let attempted = 0;
     for (const entry of entries) {
       processed++;
       if (processed === 1 || processed % 25 === 0) {
@@ -221,6 +226,8 @@ export async function syncDropboxMedia(organizationId = 1) {
       if (!supported.test(entry.name || "")) { skipped++; continue; }
       const [existingRows] = await db.execute<any[]>("SELECT source_rev, status FROM dropbox_media_sync WHERE source_file_id=? LIMIT 1", [entry.id]);
       if (existingRows[0]?.source_rev === entry.rev && existingRows[0]?.status === "imported") { skipped++; continue; }
+      if (attempted >= batchSize) break;
+      attempted++;
       try {
         const pathNormalized = normalize(sourcePath);
         const candidate = candidates.find((item: any) => pathNormalized.includes(item.normalized)) || null;
@@ -295,7 +302,8 @@ export async function syncDropboxMedia(organizationId = 1) {
         }
       }
     }
-    const summary = `${imported} importé(s), ${skipped} ignoré(s), ${failed} erreur(s), ${total} fichier(s) détecté(s)`;
+    const remaining = Math.max(0, total - skipped - attempted);
+    const summary = `${imported} importé(s), ${skipped} ignoré(s), ${failed} erreur(s), ${total} fichier(s) détecté(s) · lot ${attempted}/${batchSize}${remaining ? ` · ${remaining} restant(s)` : ""}`;
     await db.execute("UPDATE dropbox_integrations SET last_sync_at=NOW(), last_sync_status=?, last_sync_message=? WHERE organization_id=?",
       [failed ? "partial" : "success", summary, organizationId]);
     return { imported, skipped, failed, total, summary };
