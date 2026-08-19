@@ -24,7 +24,8 @@ import {
   knowledgeGarden, InsertKnowledgeGarden,
   assets, InsertAsset,
   invitations, InsertInvitation,
-  photos, InsertPhoto
+  photos, InsertPhoto,
+  gallerySubscribers, InsertGallerySubscriber
 } from "../drizzle/schema";
 import crypto from "crypto";
 import { ENV } from './_core/env';
@@ -3088,4 +3089,45 @@ export async function deleteCandidateApplication(id: number) {
     .where(eq(candidateApplications.id, id));
 
   return { success: true };
+}
+
+// ========== GALLERY SUBSCRIBERS ==========
+
+export async function subscribeToGallery(email: string, name?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Upsert: if already exists and unsubscribed, reactivate
+  const existing = await db.select().from(gallerySubscribers).where(eq(gallerySubscribers.email, email)).limit(1);
+
+  if (existing.length > 0) {
+    const sub = existing[0];
+    if (sub.status === "unsubscribed") {
+      await db.update(gallerySubscribers)
+        .set({ status: "active", name: name || sub.name, unsubscribedAt: null })
+        .where(eq(gallerySubscribers.id, sub.id));
+    }
+    return sub;
+  }
+
+  await db.insert(gallerySubscribers).values({ email, name, status: "active" });
+  return { email, name, status: "active" as const };
+}
+
+export async function unsubscribeFromGallery(email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(gallerySubscribers)
+    .set({ status: "unsubscribed", unsubscribedAt: new Date() })
+    .where(eq(gallerySubscribers.email, email));
+
+  return { success: true };
+}
+
+export async function getActiveGallerySubscribers() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(gallerySubscribers).where(eq(gallerySubscribers.status, "active"));
 }

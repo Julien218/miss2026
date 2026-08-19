@@ -1152,3 +1152,19 @@ export const commentLikes = mysqlTable("comment_likes", {
 }));
 export type CommentLike = typeof commentLikes.$inferSelect;
 export type InsertCommentLike = typeof commentLikes.$inferInsert;
+
+// ─── Galerie : abonnés aux nouveautés ─────────────────────────────────────────
+export const gallerySubscribers = mysqlTable("gallery_subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull(),
+  name: varchar("name", { length: 100 }),
+  status: mysqlEnum("status", ["active", "unsubscribed"]).default("active").notNull(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  emailIdx: index("gs_email_idx").on(table.email),
+  statusIdx: index("gs_status_idx").on(table.status),
+  uniqueEmail: uniqueIndex("gs_unique_email").on(table.email),
+}));
+export type GallerySubscriber = typeof gallerySubscribers.$inferSelect;
+export type InsertGallerySubscriber = typeof gallerySubscribers.$inferInsert;

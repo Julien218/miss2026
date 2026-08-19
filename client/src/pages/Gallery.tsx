@@ -33,6 +33,9 @@ export default function Gallery() {
   const [candidateFilter, setCandidateFilter] = useState<CandidateFilter>("all");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [subscribeEmail, setSubscribeEmail] = useState("");
+  const [subscribeName, setSubscribeName] = useState("");
+  const subscribeMutation = trpc.photos.subscribe.useMutation();
 
   // Récupérer toutes les photos approuvées
   const { data: photos, isLoading: loadingPhotos } = trpc.photos.listPublic.useQuery(
@@ -483,6 +486,70 @@ export default function Gallery() {
           )}
         </div>
       )}
+
+      {/* Section abonnement newsletter galerie */}
+      <section className="py-12 border-t border-gray-800 mt-8">
+        <div className="container mx-auto px-4 max-w-2xl text-center">
+          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: "#C87941" }} />
+          <h2 className="text-2xl font-bold mb-2" style={{ color: "#C87941" }}>Restez informé(e)</h2>
+          <p className="text-gray-400 text-sm mb-6">
+            Recevez un email à chaque nouvelle publication dans la galerie
+          </p>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!subscribeEmail.trim()) return;
+              try {
+                await subscribeMutation.mutateAsync({
+                  email: subscribeEmail,
+                  name: subscribeName || undefined,
+                });
+                setSubscribeEmail("");
+                setSubscribeName("");
+              } catch (err) {
+                console.error("Subscribe error:", err);
+              }
+            }}
+            className="flex flex-col sm:flex-row gap-3 justify-center"
+          >
+            <input
+              type="text"
+              placeholder="Votre nom (optionnel)"
+              value={subscribeName}
+              onChange={(e) => setSubscribeName(e.target.value)}
+              className="px-4 py-2.5 rounded-lg bg-gray-800/60 border border-gray-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-amber-600/50"
+              style={{ maxWidth: "200px" }}
+            />
+            <input
+              type="email"
+              required
+              placeholder="Votre email"
+              value={subscribeEmail}
+              onChange={(e) => setSubscribeEmail(e.target.value)}
+              className="px-4 py-2.5 rounded-lg bg-gray-800/60 border border-gray-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-amber-600/50 flex-1"
+              style={{ maxWidth: "300px" }}
+            />
+            <button
+              type="submit"
+              disabled={subscribeMutation.isPending}
+              className="px-6 py-2.5 rounded-lg text-black font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              style={{ background: "linear-gradient(135deg, #C87941, #D4956A)" }}
+            >
+              {subscribeMutation.isPending ? "Inscription..." : "S'abonner"}
+            </button>
+          </form>
+          {subscribeMutation.isSuccess && (
+            <p className="text-green-400 text-sm mt-3">
+              Merci ! Vous recevrez les nouveautés par email.
+            </p>
+          )}
+          {subscribeMutation.isError && (
+            <p className="text-red-400 text-sm mt-3">
+              Erreur lors de l'inscription. Réessayez.
+            </p>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

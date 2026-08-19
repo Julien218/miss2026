@@ -1496,19 +1496,90 @@ export const appRouter = router({
         };
       }),
 
-    // Approve photo (admin only)
+    // Approve photo (admin only) + notify uploader & gallery subscribers
     approve: adminProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input, ctx }) => {
         await db.updatePhotoStatus(input.id, "approved", ctx.user.id);
+
+        // Send email notifications (non-blocking)
+        (async () => {
+          try {
+            const photo = await db.getPhotoById(input.id);
+            if (!photo) return;
+
+            // 1. Notify the uploader
+            const uploader = await db.getUserById(photo.uploadedBy);
+            if (uploader?.email) {
+              const { buildPhotoApprovedEmail, sendEmail } = await import("./helpers/email");
+              const baseUrl = process.env.PUBLIC_URL || "https://missetmisterdour.be";
+              const emailContent = buildPhotoApprovedEmail({
+                photoTitle: photo.title,
+                photoUrl: photo.url,
+                galleryUrl: `${baseUrl}/gallery`,
+                recipientName: uploader.name ?? undefined,
+              });
+              await sendEmail({ to: uploader.email, ...emailContent });
+            }
+
+            // 2. Notify gallery subscribers
+            const subscribers = await db.getActiveGallerySubscribers();
+            if (subscribers.length > 0) {
+              const { buildGalleryUpdateEmail, sendEmail } = await import("./helpers/email");
+              const baseUrl = process.env.PUBLIC_URL || "https://missetmisterdour.be";
+              for (const sub of subscribers) {
+                const emailContent = buildGalleryUpdateEmail({
+                  photoCount: 1,
+                  galleryUrl: `${baseUrl}/gallery`,
+                  recipientName: sub.name ?? undefined,
+                });
+                await sendEmail({ to: sub.email, ...emailContent });
+              }
+            }
+          } catch (err) {
+            console.error("[Gallery] Failed to send approval notifications:", err);
+          }
+        })().catch(() => {});
+
         return { success: true };
       }),
 
-    // Reject photo (admin only)
+    // Reject photo (admin only) + notify uploader
     reject: adminProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input, ctx }) => {
         await db.updatePhotoStatus(input.id, "rejected", ctx.user.id);
+
+        // Send email notification to uploader (non-blocking)
+        (async () => {
+          try {
+            const photo = await db.getPhotoById(input.id);
+            if (!photo) return;
+            const uploader = await db.getUserById(photo.uploadedBy);
+            if (uploader?.email) {
+              const { sendEmail } = await import("./helpers/email");
+              const baseUrl = process.env.PUBLIC_URL || "https://missetmisterdour.be";
+              await sendEmail({
+                to: uploader.email,
+                subject: "Mise à jour de votre photo — Miss & Mister Dour 2026",
+                html: `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#0A0A0F;color:#fff;padding:40px;">
+<div style="max-width:600px;margin:0 auto;background:#111;border-radius:16px;border:1px solid #C87941;overflow:hidden;">
+<div style="background:linear-gradient(135deg,#1a0f08,#2a1a0a);padding:30px;text-align:center;">
+<h1 style="color:#E8D5B7;margin:0;">Photo non retenue</h1>
+</div>
+<div style="padding:30px;">
+<p style="color:#ccc;">Bonjour ${uploader.name || ""},</p>
+<p style="color:#ccc;">Votre photo <strong style="color:#C87941;">${photo.title}</strong> n'a pas été retenue pour la galerie publique.
+Si vous pensez qu'il s'agit d'une erreur, vous pouvez contacter l'équipe.</p>
+</div></div></body></html>`,
+                text: `Bonjour, votre photo "${photo.title}" n'a pas été retenue pour la galerie.`,
+              });
+            }
+          } catch (err) {
+            console.error("[Gallery] Failed to send rejection notification:", err);
+          }
+        })().catch(() => {});
+
         return { success: true };
       }),
 
@@ -1558,6 +1629,25 @@ export const appRouter = router({
           })
         );
         return photosWithCandidate;
+      }),
+
+    // Public: subscribe to gallery updates
+    subscribe: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        name: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        await db.subscribeToGallery(input.email, input.name);
+        return { success: true, message: "Vous êtes abonné aux nouveautés de la galerie !" };
+      }),
+
+    // Public: unsubscribe from gallery updates
+    unsubscribe: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        await db.unsubscribeFromGallery(input.email);
+        return { success: true, message: "Vous avez été désabonné." };
       }),
   }),
 
