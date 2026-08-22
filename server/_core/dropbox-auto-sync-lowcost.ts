@@ -1,4 +1,4 @@
-import { syncDropboxMedia } from "./dropbox-sync";
+import { cleanupDuplicateDropboxPhotos, syncDropboxMedia } from "./dropbox-sync";
 
 let timerStarted = false;
 let weeklyHandle: NodeJS.Timeout | null = null;
@@ -98,6 +98,10 @@ export function startDropboxLowCostAutoSync() {
   if (process.env.DROPBOX_SYNC_ENABLED !== "true") return;
   if (timerStarted || process.env.NODE_ENV !== "production") return;
   timerStarted = true;
+
+  cleanupDuplicateDropboxPhotos()
+    .then(result => console.info(`[Dropbox Cleanup] ${result.deleted} doublon(s) supprimé(s) dans ${result.groups} groupe(s)${result.alreadyApplied ? " · déjà appliqué" : ""}`))
+    .catch(error => console.warn("[Dropbox Cleanup]", error instanceof Error ? error.message : String(error)));
 
   const config = scheduleConfig();
 
