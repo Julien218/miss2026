@@ -421,6 +421,68 @@ export async function syncDropboxMedia(organizationId = 1) {
   }
 }
 
+
+export async function cleanupDuplicateDropboxPhotos() {
+  const migrationKey = "2026-08-22-dropbox-photo-url-dedupe-v1";
+  const db = await dbConnection();
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS maintenance_migrations (
+      migration_key VARCHAR(191) NOT NULL PRIMARY KEY,
+      applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      details_json LONGTEXT NULL
+    )`);
+    await db.beginTransaction();
+    const [claim] = await db.execute<any>(
+      "INSERT IGNORE INTO maintenance_migrations (migration_key) VALUES (?)",
+      [migrationKey]
+    );
+    if (!claim.affectedRows) {
+      await db.rollback();
+      return { deleted: 0, groups: 0, alreadyApplied: true };
+    }
+
+    const publicBase = (process.env.R2_PUBLIC_URL || "").replace(/\/+$/, "");
+    if (!publicBase) throw new Error("R2_PUBLIC_URL absent pour le nettoyage des doublons");
+    const pattern = `${publicBase}/official/2026/photos/%`;
+    const [groups] = await db.execute<any[]>(
+      `SELECT url, MAX(id) AS keep_id, COUNT(*) AS row_count
+       FROM photos
+       WHERE url LIKE ?
+       GROUP BY url
+       HAVING COUNT(*) > 1`,
+      [pattern]
+    );
+
+    let deleted = 0;
+    for (const group of groups) {
+      await db.execute(
+        `UPDATE dropbox_media_sync d
+         INNER JOIN photos p ON p.id=d.photo_id
+         SET d.photo_id=?
+         WHERE p.url=? AND p.id<>?`,
+        [group.keep_id, group.url, group.keep_id]
+      );
+      const [result] = await db.execute<any>(
+        "DELETE FROM photos WHERE url=? AND id<>?",
+        [group.url, group.keep_id]
+      );
+      deleted += Number(result.affectedRows || 0);
+    }
+
+    await db.execute(
+      "UPDATE maintenance_migrations SET details_json=? WHERE migration_key=?",
+      [JSON.stringify({ deleted, groups: groups.length, completedAt: new Date().toISOString() }), migrationKey]
+    );
+    await db.commit();
+    return { deleted, groups: groups.length, alreadyApplied: false };
+  } catch (error) {
+    await db.rollback().catch(() => {});
+    throw error;
+  } finally {
+    await db.end();
+  }
+}
+
 let timerStarted = false;
 export function startDropboxAutoSync() {
   // Keep automatic imports paused until the low-cost R2 destination is configured.
