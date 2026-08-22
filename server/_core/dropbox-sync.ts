@@ -287,7 +287,7 @@ export async function syncDropboxMedia(organizationId = 1) {
         [entry.id]
       );
       const existing = existingRows[0];
-      if (existing?.source_rev === entry.rev && ["imported", "inaccessible"].includes(existing?.status)) {
+      const sameRevision = (existing?.source_rev ?? null) === (entry.rev ?? null);\n      if (sameRevision && ["imported", "inaccessible"].includes(existing?.status)) {
         if (existing.status === "imported" && candidate && !existing.candidate_id) {
           let previousMetadata: Record<string, unknown> = {};
           try { previousMetadata = existing.metadata_json ? JSON.parse(existing.metadata_json) : {}; } catch {}
