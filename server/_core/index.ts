@@ -15,6 +15,7 @@ import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { registerDropboxIntegrationRoutes } from "./dropbox-integration";
 import { startDropboxLowCostAutoSync } from "./dropbox-auto-sync-lowcost";
 import { serveStatic, setupVite } from "./vite";
+import { registerCockpitRegistrationRoutes } from "./cockpit-registrations";
 
 async function startServer() {
   const app = express();
@@ -34,6 +35,7 @@ async function startServer() {
   registerLocalAuthRoutes(app);
   registerOAuthRoutes(app);
   registerDropboxIntegrationRoutes(app);
+  registerCockpitRegistrationRoutes(app);
 
   // 🖼️ Image countdown
   app.get("/api/countdown-image", generateCountdownImage);
