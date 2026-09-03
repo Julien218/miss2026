@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./cookies";
-import { registerUser, verifyPasswordUser } from "./auth-password";
+import { registerUser, resetPasswordUser, verifyPasswordUser } from "./auth-password";
 import { sdk } from "./sdk";
 
 const ADMIN_EMAIL = "info@jsinnovia.store";
@@ -47,38 +47,31 @@ export function registerLocalAuthRoutes(app: Express) {
       return;
     }
 
+    let owner;
+    let created = false;
     try {
-      const created = await registerUser({
+      owner = await registerUser({
         email,
         password,
         role: "super_admin",
         organizationId: 1,
         name: "JS-Innov.IA",
       });
-      const sessionToken = await sdk.createSessionToken(created.openId, {
-        name: "JS-Innov.IA",
-        expiresInMs: ONE_YEAR_MS,
-      });
-      res.cookie(COOKIE_NAME, sessionToken, {
-        ...getSessionCookieOptions(req),
-        maxAge: ONE_YEAR_MS,
-      });
-      res.status(201).json({ success: true, role: "super_admin" });
-    } catch (error) {
-      const existing = await verifyPasswordUser(email, password);
-      if (!existing) {
-        res.status(409).json({ error: "Un compte existe déjà pour cette adresse. Utilisez la page de connexion." });
-        return;
-      }
-      const sessionToken = await sdk.createSessionToken(existing.openId, {
-        name: existing.name || "JS-Innov.IA",
-        expiresInMs: ONE_YEAR_MS,
-      });
-      res.cookie(COOKIE_NAME, sessionToken, {
-        ...getSessionCookieOptions(req),
-        maxAge: ONE_YEAR_MS,
-      });
-      res.json({ success: true, role: existing.role });
+      created = true;
+    } catch {
+      // Le lien propriétaire est autorisé à réinitialiser le compte existant.
+      // Le token serveur reste obligatoire : cette route n'est pas un reset public.
+      owner = await resetPasswordUser(email, password, "super_admin");
     }
+
+    const sessionToken = await sdk.createSessionToken(owner.openId, {
+      name: owner.name || "JS-Innov.IA",
+      expiresInMs: ONE_YEAR_MS,
+    });
+    res.cookie(COOKIE_NAME, sessionToken, {
+      ...getSessionCookieOptions(req),
+      maxAge: ONE_YEAR_MS,
+    });
+    res.status(created ? 201 : 200).json({ success: true, role: "super_admin" });
   });
 }
