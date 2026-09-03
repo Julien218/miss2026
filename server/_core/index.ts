@@ -16,10 +16,18 @@ import { registerDropboxIntegrationRoutes } from "./dropbox-integration";
 import { startDropboxLowCostAutoSync } from "./dropbox-auto-sync-lowcost";
 import { serveStatic, setupVite } from "./vite";
 import { registerCockpitRegistrationRoutes } from "./cockpit-registrations";
+import { ensureSchema } from "./ensure-schema";
 
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // 🗄️ Ensure database schema is initialized (non-destructive)
+  try {
+    await ensureSchema();
+  } catch (error) {
+    console.error("[Init] Schema check failed, continuing anyway:", error);
+  }
 
   // Railway terminates TLS and forwards the real client IP through one trusted proxy.
   app.set("trust proxy", 1);
@@ -92,3 +100,4 @@ async function startServer() {
 }
 
 startServer().catch(console.error);
+
