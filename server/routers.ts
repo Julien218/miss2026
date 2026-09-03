@@ -20,6 +20,7 @@ import { assistantRouter } from "./routers/assistant";
 import { whatsappRouter } from "./routers/whatsapp";
 import { videoGeneratorRouter } from "./routers/videoGenerator";
 import { validationRouter } from "./routers/validation";
+import { schemaFixRouter } from "./routers/schema-fix";
 import { checkRateLimit, rateLimitConfigs } from "./_core/rateLimit";
 
 // Admin-only procedure (admin + super_admin)
@@ -1649,6 +1650,7 @@ export const appRouter = router({
   videoGenerator: videoGeneratorRouter,
   // ========== VALIDATION ADMIN ==========
   validation: validationRouter,
+  schemaFix: schemaFixRouter,
 
 });
 
