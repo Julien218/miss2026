@@ -83,8 +83,8 @@ export const BRANDING = {
    * theme    : thème artistique de la soirée
    */
   closingNight: {
-    dateISO: "2027-04-18T20:00:00+02:00",   // ← MODIFIER ICI pour changer la date
-    dateDisplay: "18 Avril 2027",             // ← Texte court affiché dans l'UI
+    dateISO: "",                              // ← MODIFIER ICI quand la date sera confirmée
+    dateDisplay: "Date à confirmer",          // ← Texte court affiché dans l'UI
     timeDisplay: "20h00",                     // ← Heure affichée
     label: "Miss & Mister Dour",             // ← Nom affiché (soirée 2026 retirée)
     theme: "Élection 2027",                   // ← Sous-titre

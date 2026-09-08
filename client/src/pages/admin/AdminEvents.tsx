@@ -1,6 +1,6 @@
 /**
  * AdminEvents.tsx — Gestion des événements
- * Calendrier et gestion des événements du concours Miss & Mister Dour 2026
+ * Calendrier et gestion des événements du concours Miss & Mister Dour
  */
 import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -49,16 +49,16 @@ const DEFAULT_EVENTS: EventItem[] = [
   {
     id: 1,
     title: "Séance de sélection — Candidats",
-    date: "2026-02-15",
+    date: "",
     time: "14:00",
     location: "Centre Sportif d'Elouges",
-    description: "Première séance de sélection officielle pour les candidats Miss & Mister Dour 2026.",
+    description: "Première séance de sélection officielle pour les candidats Miss & Mister Dour 2027. Date à confirmer.",
     type: "selection",
   },
   {
     id: 2,
     title: "Répétition générale",
-    date: "2026-04-17",
+    date: "",
     time: "10:00",
     location: "Centre Sportif d'Elouges",
     description: "Répétition générale avant la soirée de clôture.",
@@ -67,10 +67,10 @@ const DEFAULT_EVENTS: EventItem[] = [
   {
     id: 3,
     title: `${BRANDING.closingNight.label} — Soirée de Clôture`,
-    date: "2026-04-19",
+    date: BRANDING.closingNight.dateISO || "",
     time: BRANDING.closingNight.timeDisplay,
     location: BRANDING.closingNight.venue,
-    description: `Grande finale Miss & Mister Dour 2026 sur le thème ${BRANDING.closingNight.label}.`,
+    description: `Grande finale Miss & Mister Dour sur le thème ${BRANDING.closingNight.label}.`,
     type: "finale",
     highlight: true,
   },
@@ -122,7 +122,7 @@ export default function AdminEvents() {
     toast.success("Événement supprimé.");
   };
 
-  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...events].sort((a, b) => (a.date || "9999").localeCompare(b.date || "9999"));
 
   return (
     <DashboardLayout>
@@ -134,7 +134,7 @@ export default function AdminEvents() {
               <Calendar className="w-6 h-6 text-green-400" />
               Gestion des Événements
             </h1>
-            <p className="text-gray-400 text-sm mt-1">Calendrier et planning du concours 2026</p>
+            <p className="text-gray-400 text-sm mt-1">Calendrier et planning du concours</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -237,8 +237,17 @@ export default function AdminEvents() {
                 >
                   {/* Date */}
                   <div className="flex-shrink-0 text-center w-12">
-                    <p className="text-xs text-gray-400">{new Date(ev.date + "T00:00:00").toLocaleDateString("fr-BE", { month: "short" }).toUpperCase()}</p>
-                    <p className="text-2xl font-bold text-white leading-none">{new Date(ev.date + "T00:00:00").getDate()}</p>
+                    {ev.date ? (
+                      <>
+                        <p className="text-xs text-gray-400">{new Date(ev.date + "T00:00:00").toLocaleDateString("fr-BE", { month: "short" }).toUpperCase()}</p>
+                        <p className="text-2xl font-bold text-white leading-none">{new Date(ev.date + "T00:00:00").getDate()}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-xs text-gray-400">À</p>
+                        <p className="text-sm font-bold text-gray-400 leading-none">DÉF.</p>
+                      </>
+                    )}
                   </div>
                   {/* Infos */}
                   <div className="flex-1 min-w-0">
