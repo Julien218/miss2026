@@ -6,7 +6,7 @@ import { GoldenParticles } from "@/components/home/GoldenParticles";
 import { CrownAnimation } from "@/components/home/CrownAnimation";
 import { FloatingCarousel } from "@/components/home/FloatingCarousel";
 import { CountdownTimer } from "@/components/home/CountdownTimer";
-import { Crown, Calendar, Users, Award, LogIn, ArrowRight, Sparkles, Music, Star } from "lucide-react";
+import { Crown, Users, Award, LogIn, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 
@@ -141,23 +141,6 @@ export default function Home() {
       {/* ── Hero Section ── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 px-4">
 
-        {/* Badge thème soirée */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="flex items-center gap-2 mb-8 px-5 py-2 rounded-full text-xs font-semibold tracking-widest uppercase"
-          style={{
-            background: `linear-gradient(135deg, ${GAGA_ROSE}20, ${COPPER}20)`,
-            border: `1px solid ${GAGA_ROSE}40`,
-            color: `${CHAMPAGNE}CC`,
-          }}
-        >
-          <Music className="w-3 h-3" style={{ color: GAGA_ROSE }} />
-          Soirée de clôture · Thème Lady Gaga
-          <Star className="w-3 h-3" style={{ color: GOLD }} />
-        </motion.div>
-
         {/* Crown Animation */}
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
@@ -187,7 +170,7 @@ export default function Home() {
             textShadow: "none",
           }}
         >
-          Miss & Mister Dour 2026
+          Miss &amp; Mister Dour
         </motion.h1>
 
         {/* Sous-titre */}
@@ -209,10 +192,10 @@ export default function Home() {
           className="flex flex-wrap items-center justify-center gap-3 mb-12"
           style={{ color: COPPER_LIGHT }}
         >
-          <Calendar className="w-5 h-5" />
-          <span className="text-lg font-medium">19 Avril 2026</span>
+          <Sparkles className="w-5 h-5" />
+          <span className="text-lg font-medium">Inscriptions ouvertes · Élection 2027</span>
           <span style={{ color: `${CHAMPAGNE}30` }}>|</span>
-          <span className="text-lg" style={{ color: `${CHAMPAGNE}70` }}>Centre Sportif d'Elouges, Belgique</span>
+          <span className="text-lg" style={{ color: `${CHAMPAGNE}70` }}>Dour, Belgique</span>
         </motion.div>
 
         {/* CTA */}
@@ -222,7 +205,7 @@ export default function Home() {
           transition={{ delay: 0.9, duration: 0.5 }}
           className="flex flex-col sm:flex-row gap-4 items-center"
         >
-          <Link href="/candidates">
+          <Link href="/inscription-candidat">
             <Button
               size="lg"
               className="font-bold text-lg px-8 py-6 rounded-full group transition-all duration-300"
@@ -233,8 +216,8 @@ export default function Home() {
                 border: `1px solid ${COPPER_LIGHT}`,
               }}
             >
-              <Users className="w-5 h-5 mr-2" />
-              Découvrir les Candidats
+              <Sparkles className="w-5 h-5 mr-2" />
+              Je m'inscris pour 2027
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
@@ -345,46 +328,6 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── Bandeau Lady Gaga (thème soirée) ── */}
-      <section className="relative py-16 overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(135deg, ${GAGA_ROSE}15, ${COPPER}20, ${GOLD}10)`,
-            borderTop: `1px solid ${COPPER}25`,
-            borderBottom: `1px solid ${COPPER}25`,
-          }}
-        />
-        <div className="container relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Music className="w-6 h-6" style={{ color: GAGA_ROSE }} />
-              <span
-                className="text-xs font-semibold tracking-widest uppercase"
-                style={{ color: `${CHAMPAGNE}80` }}
-              >
-                Soirée de clôture
-              </span>
-              <Music className="w-6 h-6" style={{ color: GAGA_ROSE }} />
-            </div>
-            <h3
-              className="font-playfair text-3xl md:text-4xl font-bold mb-4"
-              style={{ color: CHAMPAGNE }}
-            >
-              Thème Officiel · Lady Gaga
-            </h3>
-            <p className="text-base max-w-2xl mx-auto" style={{ color: `${CHAMPAGNE}60` }}>
-              La soirée de clôture du 19 Avril 2026 sera placée sous le signe du glamour et de l'audace,
-              en hommage à l'icône mondiale Lady Gaga. Préparez vos tenues les plus extravagantes.
-            </p>
-          </motion.div>
         </div>
       </section>
     </div>

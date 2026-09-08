@@ -786,7 +786,7 @@ export default function AdminAssistant() {
                   {([
                     { value: "profile_reminder", label: "📋 Rappel profil", desc: "Demande de complétion du profil" },
                     { value: "vote_call",         label: "🗳️ Appel aux votes", desc: "Encourager le partage pour les votes" },
-                    { value: "event_info",        label: "📅 Info événement", desc: "Rappel soirée Lady Gaga Night" },
+                    { value: "event_info",        label: "📅 Info événement", desc: "Rappel soirée de clôture" },
                     { value: "welcome",           label: "👑 Bienvenue",      desc: "Message d'accueil officiel" },
                   ] as const).map((opt) => (
                     <button

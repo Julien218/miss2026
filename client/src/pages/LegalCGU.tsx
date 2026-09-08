@@ -82,7 +82,7 @@ const SECTIONS = [
         </table>
         <p>
           La soirée de clôture et de remise des titres, intitulée{" "}
-          <strong className="text-white">Lady Gaga Night</strong>, se tiendra le{" "}
+          <strong className="text-white">la soirée de clôture</strong>, se tiendra le{" "}
           <strong className="text-white">{DATE_FINALE}</strong> à Dour, Belgique.
         </p>
       </div>

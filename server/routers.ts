@@ -300,7 +300,16 @@ export const appRouter = router({
         // Vérifier si l'email existe déjà
         // TODO: Implémenter la vérification email unique
         
-        // Upload de la photo vers Supabase Storage
+        // Vérifier si l'email existe déjà (anti-doublon)
+        const existing = await db.getCandidateApplicationByEmail(input.email);
+        if (existing) {
+          throw new TRPCError({ 
+            code: 'CONFLICT', 
+            message: "Une candidature avec cet email existe déjà. Si vous pensez qu'il s'agit d'une erreur, contactez-nous." 
+          });
+        }
+
+        // Upload de la photo vers le stockage
         const photoBuffer = Buffer.from(input.photoBase64.split(',')[1], 'base64');
         const photoExtension = input.photoFilename.split('.').pop() || 'jpg';
         const photoKey = `candidates/${Date.now()}-${Math.random().toString(36).substring(7)}.${photoExtension}`;
@@ -311,23 +320,51 @@ export const appRouter = router({
           `image/${photoExtension}`
         );
 
-        // Créer le candidat dans Supabase
-        // TODO: Implémenter l'insertion dans Supabase
-        // Pour l'instant, on simule le succès
-        
-        console.log('Candidat inscrit:', {
-          name: `${input.firstName} ${input.lastName}`,
+        // Insérer la candidature dans la base de données
+        const application = await db.createCandidateApplication({
           email: input.email,
+          firstName: input.firstName,
+          lastName: input.lastName,
+          phone: input.phone,
+          dateOfBirth: new Date(input.birthDate),
+          city: input.city,
+          country: "Belgique",
           category: input.category,
-          photoUrl,
-          acceptCGU: input.acceptCGU,
-          acceptCGUAt: new Date().toISOString(),
-          consentVersion: input.consentVersion,
+          photoProfile: photoUrl,
+          bio: input.bio,
+          motivation: input.motivation,
+          interests: JSON.stringify(input.interests || []),
+          profession: input.profession,
+          instagram: input.instagram || undefined,
+          facebook: input.facebook || undefined,
+          tiktok: input.tiktok || undefined,
+          linkedin: input.linkedin || undefined,
+          acceptedTerms: input.acceptCGU,
+          acceptedMedia: input.acceptMedia,
+          acceptedNewsletter: input.acceptNewsletter,
+          status: "pending",
         });
-        
+
+        // Notifier les admins de la nouvelle candidature
+        (async () => {
+          try {
+            const admins = await db.getAllAdmins();
+            for (const admin of admins) {
+              await db.createNotification({
+                userId: admin.id,
+                type: "info",
+                title: "Nouvelle candidature 2027",
+                content: `${input.firstName} ${input.lastName} s'est inscrit(e) en tant que ${input.category === 'miss' ? 'Miss' : 'Mister'} Dour 2027. Candidature #${application.id} en attente de validation.`,
+              });
+            }
+          } catch (err) {
+            console.error("[Registration] Failed to notify admins:", err);
+          }
+        })().catch(() => {});
+
         return { 
           success: true,
-          candidateId: Math.random().toString(36).substring(7),
+          candidateId: application.id,
           photoUrl,
           consentTraced: {
             acceptCGU: input.acceptCGU,

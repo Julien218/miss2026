@@ -291,8 +291,8 @@ export default function CandidateRegistration() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white py-20 px-4">
       <SEOHead
-        title="Inscription Candidat — Miss & Mister Dour 2026"
-        description="Inscrivez-vous au concours Miss & Mister Dour 2026. Formulaire d'inscription officiel pour les candidats Miss et Mister. Dour, Belgique."
+        title="Inscription Candidat — Miss & Mister Dour 2027"
+        description="Inscrivez-vous au concours Miss & Mister Dour 2027. Formulaire d'inscription officiel pour les candidats Miss et Mister. Dour, Belgique."
         url="https://missetmisterdour.be/inscription-candidat"
         tags={["inscription Miss Dour", "candidature Mister Dour", "concours beauté Belgique"]}
       />
@@ -303,7 +303,7 @@ export default function CandidateRegistration() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <Link href="/miss-mister-dour-2026">
+          <Link href="/">
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="mb-6 text-[#C0C0C0] hover:text-[#D4AF37] transition-colors flex items-center gap-2 mx-auto"
@@ -316,7 +316,7 @@ export default function CandidateRegistration() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
             Devenez{" "}
             <span className="bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
-              Miss ou Mister Dour 2026
+              Miss ou Mister Dour 2027
             </span>
           </h1>
           <p className="text-xl text-[#C0C0C0]">
@@ -489,7 +489,7 @@ export default function CandidateRegistration() {
                       <Sparkles className={`w-8 h-8 mx-auto mb-3 ${
                         formData.category === "miss" ? "text-[#EC4899]" : "text-[#C0C0C0]"
                       }`} />
-                      <p className="font-bold text-lg">Miss Dour 2026</p>
+                      <p className="font-bold text-lg">Miss Dour 2027</p>
                     </motion.button>
 
                     <motion.button
@@ -506,7 +506,7 @@ export default function CandidateRegistration() {
                       <Sparkles className={`w-8 h-8 mx-auto mb-3 ${
                         formData.category === "mister" ? "text-[#3B82F6]" : "text-[#C0C0C0]"
                       }`} />
-                      <p className="font-bold text-lg">Mister Dour 2026</p>
+                      <p className="font-bold text-lg">Mister Dour 2027</p>
                     </motion.button>
                   </div>
                   {errors.category && <p className="text-red-400 text-sm mt-2">{errors.category}</p>}
@@ -589,7 +589,7 @@ export default function CandidateRegistration() {
                     onChange={(e) => updateField("motivation", e.target.value)}
                     rows={3}
                     className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors resize-none"
-                    placeholder="Pourquoi souhaitez-vous participer à Miss & Mister Dour 2026 ?"
+                    placeholder="Pourquoi souhaitez-vous participer à Miss & Mister Dour 2027 ?"
                   />
                   {errors.motivation && <p className="text-red-400 text-sm mt-1">{errors.motivation}</p>}
                   <p className="text-xs text-[#C0C0C0] mt-1">Minimum 50 caractères</p>
@@ -734,7 +734,7 @@ export default function CandidateRegistration() {
                           ? "bg-[#EC4899]/20 text-[#EC4899]" 
                           : "bg-[#3B82F6]/20 text-[#3B82F6]"
                       }`}>
-                        {formData.category === "miss" ? "Miss Dour 2026" : "Mister Dour 2026"}
+                        {formData.category === "miss" ? "Miss Dour 2027" : "Mister Dour 2027"}
                       </p>
                     </div>
                   </div>
@@ -801,7 +801,7 @@ export default function CandidateRegistration() {
                       className="mt-1 w-5 h-5 rounded border-[#D4AF37]/30 bg-black/60 checked:bg-[#D4AF37] focus:ring-[#D4AF37] focus:ring-offset-0"
                     />
                     <span className="text-sm group-hover:text-[#D4AF37] transition-colors">
-                      J'accepte le règlement du concours Miss & Mister Dour 2026 *
+                      J'accepte le règlement du concours Miss & Mister Dour 2027 *
                     </span>
                   </label>
                   {errors.acceptRules && <p className="text-red-400 text-sm">{errors.acceptRules}</p>}
@@ -859,7 +859,7 @@ export default function CandidateRegistration() {
                         >
                           Politique de Confidentialité
                         </a>
-                        {" "}de Miss & Mister Dour 2026, incluant le traitement de mes données personnelles conformément au RGPD.
+                        {" "}de Miss & Mister Dour 2027, incluant le traitement de mes données personnelles conformément au RGPD.
                         <span className="block mt-1 text-xs text-[#C0C0C0]">
                           Consentement horodaté et tracé — Version v1.0 — {new Date().toLocaleDateString('fr-BE')}
                         </span>

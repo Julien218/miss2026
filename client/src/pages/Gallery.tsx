@@ -33,6 +33,7 @@ export default function Gallery() {
   const [candidateFilter, setCandidateFilter] = useState<CandidateFilter>("all");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(40);
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribeName, setSubscribeName] = useState("");
   const subscribeMutation = trpc.photos.subscribe.useMutation();
@@ -272,7 +273,7 @@ export default function Gallery() {
 
               {/* Grille masonry-like */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-                {filteredPhotos.map((photo, index) => (
+                {filteredPhotos.slice(0, visibleCount).map((photo, index) => (
                   <div
                     key={photo.id}
                     className="group relative rounded-xl overflow-hidden cursor-pointer border border-gray-800/50 hover:border-gold/40 transition-all duration-300 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-1"
@@ -347,6 +348,24 @@ export default function Gallery() {
                   </div>
                 ))}
               </div>
+
+              {/* Bouton "Voir plus" pour charger progressivement */}
+              {filteredPhotos.length > visibleCount && (
+                <div className="mt-10 text-center">
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + 40)}
+                    className="px-8 py-3 rounded-full font-semibold text-sm transition-all hover:opacity-90"
+                    style={{ background: "linear-gradient(135deg, #C87941, #D4956A)", color: "#000" }}
+                  >
+                    Voir plus de photos ({filteredPhotos.length - visibleCount} restantes)
+                  </button>
+                </div>
+              )}
+              {filteredPhotos.length === 0 && !loadingPhotos && (
+                <p className="text-center text-gray-500 py-10">
+                  Aucune photo ne correspond à ces filtres.
+                </p>
+              )}
             </>
           )}
         </div>
@@ -356,15 +375,15 @@ export default function Gallery() {
       <section className="py-16 border-t border-gray-800">
         <div className="container mx-auto px-4 text-center">
           <Sparkles className="w-8 h-8 mx-auto mb-4 text-gold" />
-          <h2 className="text-2xl font-bold text-gold mb-4">Soutenez vos candidats favoris</h2>
+          <h2 className="text-2xl font-bold text-gold mb-4">Devenez la prochaine star de Dour</h2>
           <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-            Votez pour élire Miss & Mister Dour 2026 et partagez les profils de vos favoris sur les réseaux sociaux.
+            Les inscriptions pour l'élection Miss &amp; Mister Dour 2027 sont ouvertes. Inscrivez-vous dès maintenant !
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/voter">
+            <Link href="/inscription-candidat">
               <Button className="bg-gold text-black hover:bg-gold/90 font-bold px-8 py-3">
-                <Heart className="w-5 h-5 mr-2" />
-                Voter maintenant
+                <Sparkles className="w-5 h-5 mr-2" />
+                Je m'inscris pour 2027
               </Button>
             </Link>
             <Link href="/candidates">

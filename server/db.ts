@@ -448,6 +448,18 @@ export async function getUserNotifications(userId: number, limit = 50) {
     .limit(limit);
 }
 
+export async function getAllAdmins() {
+  const db = await getDb();
+  if (!db) return [];
+
+  const results = await db
+    .select()
+    .from(users)
+    .where(inArray(users.role, ["admin", "super_admin"]));
+
+  return results;
+}
+
 export async function createNotification(data: InsertNotification) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -2929,6 +2941,19 @@ export async function getCandidateApplicationById(id: number) {
     .select()
     .from(candidateApplications)
     .where(eq(candidateApplications.id, id))
+    .limit(1);
+
+  return results[0] || null;
+}
+
+export async function getCandidateApplicationByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const results = await db
+    .select()
+    .from(candidateApplications)
+    .where(eq(candidateApplications.email, email))
     .limit(1);
 
   return results[0] || null;

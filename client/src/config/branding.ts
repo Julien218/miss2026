@@ -83,11 +83,11 @@ export const BRANDING = {
    * theme    : thème artistique de la soirée
    */
   closingNight: {
-    dateISO: "2026-04-19T20:00:00+02:00",   // ← MODIFIER ICI pour changer la date
-    dateDisplay: "19 Avril 2026",             // ← Texte court affiché dans l'UI
+    dateISO: "2027-04-18T20:00:00+02:00",   // ← MODIFIER ICI pour changer la date
+    dateDisplay: "18 Avril 2027",             // ← Texte court affiché dans l'UI
     timeDisplay: "20h00",                     // ← Heure affichée
-    label: "Born to Dance",                  // ← Nom de la soirée
-    theme: "Soirée de Clôture",              // ← Sous-titre
+    label: "Miss & Mister Dour",             // ← Nom affiché (soirée 2026 retirée)
+    theme: "Élection 2027",                   // ← Sous-titre
     location: "Dour, Belgique",               // ← Lieu
     venue: "Centre Sportif d'Elouges",        // ← Salle
   },

@@ -1,12 +1,11 @@
 /**
  * SplashScreen - Animation d'intro Miss & Mister Dour 2026
- * Thème Born to Dance : noir, cuivre, champagne, particules dorées
+ * Thème : noir, cuivre, champagne, particules dorées
  * Affiché uniquement à la première visite (sessionStorage)
  */
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BRANDING } from "@/config/branding";
 
 const LOGO_HQ = "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png";
 
@@ -172,39 +171,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#D4AF37]" />
               <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
               <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#D4AF37]" />
-            </motion.div>
-
-            {/* Texte "Born to Dance" */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={phase === "show" ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-col items-center gap-1"
-            >
-              <span
-                className="text-xs font-semibold tracking-[0.4em] uppercase"
-                style={{ color: "#C87941" }}
-              >
-                {BRANDING.closingNight.theme}
-              </span>
-              <span
-                className="text-2xl md:text-3xl font-bold tracking-widest uppercase"
-                style={{
-                  background: "linear-gradient(135deg, #D4AF37, #F5E6C8, #C87941)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  fontFamily: "'Playfair Display', serif",
-                  letterSpacing: "0.15em",
-                }}
-              >
-                {BRANDING.closingNight.label}
-              </span>
-              <span
-                className="text-xs tracking-[0.3em] uppercase mt-1"
-                style={{ color: "rgba(245,230,200,0.6)" }}
-              >
-                {BRANDING.closingNight.dateDisplay} · {BRANDING.closingNight.location}
-              </span>
             </motion.div>
 
             {/* Barre de chargement */}

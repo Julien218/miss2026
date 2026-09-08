@@ -102,7 +102,7 @@ const SECTIONS = [
           <li>la présentation des partenaires et sponsors de l'événement.</li>
         </ul>
         <p>
-          La soirée de clôture, intitulée <strong className="text-white">Lady Gaga Night</strong>, est prévue
+          La soirée de clôture <strong className="text-white">Miss & Mister Dour</strong> est prévue
           le <strong className="text-white">19 avril 2026</strong> à Dour, Belgique.
         </p>
       </div>

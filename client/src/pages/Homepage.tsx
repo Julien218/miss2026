@@ -4,7 +4,6 @@ import { Crown, Calendar, Users, Award, Newspaper, Mail, ArrowRight, Sparkles, L
 import { BRANDING } from "@/config/branding";
 import { useAuth } from "@/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { GagaNightCountdown } from "@/components/GagaNightCountdown";
 import { SEOHead } from "@/components/SEOHead";
 import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
 
@@ -38,7 +37,7 @@ export default function Homepage() {
         title="Miss &amp; Mister Dour 2026 — Dour, Belgique"
         description="Concours de beauté officiel de Dour. Gala le 19 avril 2026. Inscriptions ouvertes — Votez pour vos candidats !"
         url="https://missetmisterdour.be"
-        tags={["Miss Dour", "Mister Dour", "concours beauté Belgique", "gala Dour 2026", "Lady Gaga Night", "Hainaut", "Starlight ASBL"]}
+        tags={["Miss Dour", "Mister Dour", "concours beauté Belgique", "gala Dour", "recrutement 2027", "Hainaut", "Starlight ASBL"]}
       />
       {/* Header/Navigation */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
@@ -130,9 +129,6 @@ export default function Homepage() {
           </div>
         </div>
       </section>
-
-      {/* ── Lady Gaga Night Countdown ── */}
-      <GagaNightCountdown />
 
       {/* Section 2: À Propos (Résumé) */}
       <section className="py-20 bg-gradient-to-b from-transparent to-gray-900/50">
