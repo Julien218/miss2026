@@ -1,0 +1,384 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Couleurs personnalisées Miss & Mister Dour 2026 ── */
+  --color-copper: var(--copper);
+  --color-copper-light: var(--copper-light);
+  --color-champagne: var(--champagne);
+  --color-gold: var(--gold);
+  --color-obsidian: var(--obsidian);
+  --color-gaga-pink: var(--gaga-pink);
+}
+
+:root {
+  /* ══════════════════════════════════════════════════════════════
+     Miss & Mister Dour 2026 — Thème "Lady Gaga Gala Night"
+     Palette : Noir obsidien · Cuivre brûlé · Champagne rosé · Or
+     ══════════════════════════════════════════════════════════════ */
+
+  /* Couleurs signature */
+  --copper:        oklch(0.58 0.14 42);   /* Cuivre brûlé principal */
+  --copper-light:  oklch(0.72 0.12 38);   /* Cuivre clair / champagne */
+  --champagne:     oklch(0.82 0.07 60);   /* Rose champagne doux */
+  --gold:          oklch(0.76 0.13 72);   /* Or élégant */
+  --obsidian:      oklch(0.10 0.005 280); /* Noir obsidien */
+  --gaga-pink:     oklch(0.68 0.12 10);   /* Rose Gaga discret */
+
+  /* Système de couleurs Tailwind/shadcn */
+  --radius: 0.625rem;
+
+  /* Mode clair (admin / pages internes) */
+  --background:              oklch(0.97 0.005 60);   /* Crème très clair */
+  --foreground:              oklch(0.12 0.005 280);  /* Noir doux */
+  --card:                    oklch(0.99 0.003 60);
+  --card-foreground:         oklch(0.12 0.005 280);
+  --popover:                 oklch(0.99 0.003 60);
+  --popover-foreground:      oklch(0.12 0.005 280);
+  --primary:                 oklch(0.58 0.14 42);    /* Cuivre */
+  --primary-foreground:      oklch(0.98 0 0);
+  --secondary:               oklch(0.92 0.02 60);
+  --secondary-foreground:    oklch(0.20 0.005 280);
+  --muted:                   oklch(0.94 0.01 60);
+  --muted-foreground:        oklch(0.50 0.01 60);
+  --accent:                  oklch(0.76 0.13 72);    /* Or */
+  --accent-foreground:       oklch(0.10 0 0);
+  --destructive:             oklch(0.577 0.245 27.325);
+  --destructive-foreground:  oklch(0.985 0 0);
+  --border:                  oklch(0.86 0.02 60);
+  --input:                   oklch(0.91 0.01 60);
+  --ring:                    oklch(0.58 0.14 42);
+
+  /* Charts */
+  --chart-1: oklch(0.58 0.14 42);
+  --chart-2: oklch(0.76 0.13 72);
+  --chart-3: oklch(0.82 0.07 60);
+  --chart-4: oklch(0.68 0.12 10);
+  --chart-5: oklch(0.45 0.10 42);
+
+  /* Sidebar (mode clair) */
+  --sidebar:                       oklch(0.13 0.005 280); /* Noir pour sidebar */
+  --sidebar-foreground:            oklch(0.92 0.01 60);
+  --sidebar-primary:               oklch(0.58 0.14 42);
+  --sidebar-primary-foreground:    oklch(0.98 0 0);
+  --sidebar-accent:                oklch(0.76 0.13 72);
+  --sidebar-accent-foreground:     oklch(0.10 0 0);
+  --sidebar-border:                oklch(0.22 0.01 280);
+  --sidebar-ring:                  oklch(0.58 0.14 42);
+}
+
+.dark {
+  /* ══════════════════════════════════════════════════════════════
+     Mode sombre — Pages publiques & soirée gala
+     Noir obsidien profond · Cuivre · Champagne · Or scintillant
+     ══════════════════════════════════════════════════════════════ */
+  --background:              oklch(0.09 0.005 280);  /* Noir obsidien */
+  --foreground:              oklch(0.93 0.01 60);    /* Champagne clair */
+  --card:                    oklch(0.13 0.005 280);  /* Noir légèrement plus clair */
+  --card-foreground:         oklch(0.93 0.01 60);
+  --popover:                 oklch(0.13 0.005 280);
+  --popover-foreground:      oklch(0.93 0.01 60);
+  --primary:                 oklch(0.68 0.14 42);    /* Cuivre lumineux */
+  --primary-foreground:      oklch(0.09 0.005 280);  /* Noir */
+  --secondary:               oklch(0.18 0.005 280);  /* Anthracite */
+  --secondary-foreground:    oklch(0.93 0.01 60);
+  --muted:                   oklch(0.20 0.005 280);
+  --muted-foreground:        oklch(0.62 0.04 60);
+  --accent:                  oklch(0.76 0.13 72);    /* Or */
+  --accent-foreground:       oklch(0.09 0.005 280);
+  --destructive:             oklch(0.704 0.191 22.216);
+  --destructive-foreground:  oklch(0.985 0 0);
+  --border:                  oklch(0.24 0.01 42);    /* Bordure cuivre sombre */
+  --input:                   oklch(0.22 0.008 42);
+  --ring:                    oklch(0.68 0.14 42);
+
+  /* Charts */
+  --chart-1: oklch(0.68 0.14 42);
+  --chart-2: oklch(0.76 0.13 72);
+  --chart-3: oklch(0.82 0.07 60);
+  --chart-4: oklch(0.68 0.12 10);
+  --chart-5: oklch(0.45 0.10 42);
+
+  /* Sidebar (mode sombre) */
+  --sidebar:                       oklch(0.07 0.005 280); /* Noir très profond */
+  --sidebar-foreground:            oklch(0.92 0.01 60);
+  --sidebar-primary:               oklch(0.68 0.14 42);
+  --sidebar-primary-foreground:    oklch(0.09 0.005 280);
+  --sidebar-accent:                oklch(0.76 0.13 72);
+  --sidebar-accent-foreground:     oklch(0.09 0.005 280);
+  --sidebar-border:                oklch(0.18 0.01 42);
+  --sidebar-ring:                  oklch(0.68 0.14 42);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  /* Fond sombre texturé global pour les pages publiques (mode dark) */
+  .dark body {
+    background: radial-gradient(ellipse at 50% 0%, #1a1000 0%, #0d0800 30%, #050300 60%, #000000 100%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* ── Bouton cuivre signature ── */
+  .btn-copper {
+    background: linear-gradient(135deg, oklch(0.58 0.14 42), oklch(0.48 0.12 38));
+    color: oklch(0.98 0 0);
+    border: 1px solid oklch(0.68 0.14 42);
+    transition: all 0.3s ease;
+  }
+  .btn-copper:hover {
+    background: linear-gradient(135deg, oklch(0.65 0.15 42), oklch(0.55 0.13 38));
+    box-shadow: 0 0 20px oklch(0.58 0.14 42 / 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* ── Bouton or signature ── */
+  .btn-gold {
+    background: linear-gradient(135deg, oklch(0.76 0.13 72), oklch(0.65 0.12 68));
+    color: oklch(0.09 0.005 280);
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+  .btn-gold:hover {
+    background: linear-gradient(135deg, oklch(0.82 0.14 72), oklch(0.72 0.13 68));
+    box-shadow: 0 0 24px oklch(0.76 0.13 72 / 0.5);
+    transform: translateY(-1px);
+  }
+
+  /* ── Card gala (fond noir, bordure cuivre) ── */
+  .card-gala {
+    background: linear-gradient(145deg, oklch(0.13 0.005 280), oklch(0.10 0.005 280));
+    border: 1px solid oklch(0.35 0.08 42);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+  }
+  .card-gala:hover {
+    border-color: oklch(0.58 0.14 42);
+    box-shadow: 0 8px 32px oklch(0.58 0.14 42 / 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* ── Texte cuivre gradient ── */
+  .text-copper-gradient {
+    background: linear-gradient(135deg, oklch(0.76 0.13 72), oklch(0.68 0.14 42), oklch(0.82 0.07 60));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Séparateur doré ── */
+  .divider-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.76 0.13 72), oklch(0.58 0.14 42), transparent);
+  }
+
+  /* ── Badge Lady Gaga (rose discret) ── */
+  .badge-gaga {
+    background: linear-gradient(135deg, oklch(0.68 0.12 10 / 0.2), oklch(0.58 0.14 42 / 0.2));
+    border: 1px solid oklch(0.68 0.12 10 / 0.4);
+    color: oklch(0.82 0.07 10);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 999px;
+  }
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmerCopper {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px oklch(0.58 0.14 42 / 0.3); }
+  50%       { box-shadow: 0 0 24px oklch(0.58 0.14 42 / 0.7), 0 0 48px oklch(0.76 0.13 72 / 0.3); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+@keyframes floatUp {
+  0%   { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+  100% { transform: translateY(-80px) rotate(20deg); opacity: 0; }
+}
+
+@keyframes marqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeRight {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-shimmer-copper {
+  animation: shimmerCopper 3s infinite linear;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(0.58 0.14 42 / 0.25) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Alias pour compatibilité avec l'ancien code */
+.animate-shimmer {
+  animation: shimmerCopper 3s infinite linear;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(0.58 0.14 42 / 0.3) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 1.8s ease-in-out infinite;
+}
+
+.animate-marquee-left {
+  animation: marqueeLeft 30s linear infinite;
+  width: max-content;
+}
+
+.animate-marquee-right {
+  animation: marqueeRight 35s linear infinite;
+  width: max-content;
+}
+
+/* ── Particules scintillantes (décoration Lady Gaga) ── */
+.gaga-sparkles::before,
+.gaga-sparkles::after {
+  content: '✦';
+  position: absolute;
+  color: oklch(0.76 0.13 72 / 0.6);
+  font-size: 0.6rem;
+  animation: sparkle 2s ease-in-out infinite;
+}
+.gaga-sparkles::before { top: 10%; left: 5%; animation-delay: 0s; }
+.gaga-sparkles::after  { top: 20%; right: 8%; animation-delay: 0.9s; }
+
+/* ── Scrollbar personnalisée ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: oklch(0.12 0.005 280); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(oklch(0.58 0.14 42), oklch(0.45 0.10 38));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: oklch(0.68 0.14 42); }
+
+/* ── Sélection de texte ── */
+::selection {
+  background: oklch(0.58 0.14 42 / 0.35);
+  color: oklch(0.98 0 0);
+}

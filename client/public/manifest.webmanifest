@@ -1,0 +1,60 @@
+{
+  "name": "Miss & Mister Dour 2026",
+  "short_name": "Miss Dour",
+  "description": "Concours de beauté officiel de Dour, Belgique — Édition 2026. Votez pour vos candidats préférés !",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0F",
+  "theme_color": "#D4AF37",
+  "orientation": "portrait-primary",
+  "lang": "fr-BE",
+  "scope": "/",
+  "categories": ["entertainment", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "apple touch icon"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Voter",
+      "short_name": "Vote",
+      "description": "Votez pour vos candidats préférés",
+      "url": "/vote",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Candidats",
+      "short_name": "Candidats",
+      "description": "Voir tous les candidats",
+      "url": "/miss-mister",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "S'inscrire",
+      "short_name": "Inscription",
+      "description": "Inscription au concours",
+      "url": "/inscription-candidat",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    }
+  ]
+}
