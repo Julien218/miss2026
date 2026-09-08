@@ -847,6 +847,138 @@ export const appRouter = router({
   votes: votesRouter,
 
   // ========== NOTIFICATIONS ==========
+  proposals: router({
+    /** Calendrier partagé: événements officiels (annuel + 3 mois) puis propositions validées */
+    calendar: protectedProcedure
+      .input(z.object({ months: z.number().min(1).max(12).optional() }))
+      .query(async ({ input }) => {
+        return await db.getUpcomingCalendar(input.months ?? 3);
+      }),
+
+    /** Vérifier si une date est libre AVANT de proposer (UX) */
+    checkDate: protectedProcedure
+      .input(z.object({ date: z.date(), endDate: z.date().optional() }))
+      .query(async ({ input }) => {
+        return await db.isDateTaken(input.date, input.endDate ?? null);
+      }),
+
+    /** Un membre (candidat/bénévole) propose une ou plusieurs sorties */
+    create: protectedProcedure
+      .input(z.object({
+        title: z.string().min(3).max(255),
+        description: z.string().max(2000).optional(),
+        proposedDate: z.date(),
+        endDate: z.date().optional(),
+        location: z.string().max(255).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Règle anti-conflit: la date ne peut pas être proposée si un événement
+        // est déjà programmé au calendrier annuel ou des 3 mois (ou déjà proposé par un membre)
+        const conflict = await db.isDateTaken(input.proposedDate, input.endDate ?? null);
+        if (conflict.taken) {
+          const by = conflict.by === "event" ? "un événement du calendrier officiel" : "une autre proposition";
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: `Impossible de proposer cette date: elle est déjà occupée par ${by} (« ${conflict.item?.title} »). Choisissez une autre date.`,
+          });
+        }
+
+        const proposal = await db.createEventProposal({
+          proposerId: ctx.user.id,
+          title: input.title,
+          description: input.description,
+          proposedDate: input.proposedDate,
+          endDate: input.endDate,
+          location: input.location,
+          status: "pending",
+        });
+
+        // Notifier les admins pour validation (Olivier)
+        (async () => {
+          try {
+            const admins = await db.getAllAdmins();
+            for (const admin of admins) {
+              await db.createNotification({
+                userId: admin.id,
+                type: "info",
+                title: "Nouvelle proposition de sortie",
+                content: `${ctx.user.name || "Un membre"} a proposé « ${input.title} ». En attente de votre validation.`,
+              });
+            }
+          } catch (err) {
+            console.error("[Proposals] Failed to notify admins:", err);
+          }
+        })().catch(() => {});
+
+        return { success: true, proposal };
+      }),
+
+    /** Mes propositions avec leur statut de validation */
+    listMine: protectedProcedure
+      .query(async ({ ctx }) => {
+        return await db.getEventProposalsByUser(ctx.user.id);
+      }),
+
+    /** Toutes les propositions (admin: validation/refus) */
+    listAll: adminProcedure
+      .query(async () => {
+        return await db.getAllEventProposals();
+      }),
+
+    /** Propositions en attente de validation (admin) */
+    listPending: adminProcedure
+      .query(async () => {
+        return await db.getPendingEventProposals();
+      }),
+
+    /** Validation par Olivier (admin) -> la sortie entre au calendrier officiel */
+    approve: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await db.approveEventProposal(input.id, ctx.user.id);
+
+        // Notifier le membre que sa sortie est validée
+        try {
+          const proposal = await db.getEventProposalById(input.id);
+          if (proposal) {
+            await db.createNotification({
+              userId: proposal.proposerId,
+              type: "success",
+              title: "Sortie validée 🎉",
+              content: `Votre proposition « ${proposal.title} » a été validée par ${ctx.user.name || "l'organisation"} et figure maintenant au calendrier partagé.`,
+            });
+          }
+        } catch (err) {
+          console.error("[Proposals] Failed to notify proposer:", err);
+        }
+
+        return { success: true, ...result };
+      }),
+
+    /** Refus par un admin avec motif */
+    reject: adminProcedure
+      .input(z.object({ id: z.number(), note: z.string().max(500).optional() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.rejectEventProposal(input.id, ctx.user.id, input.note);
+
+        try {
+          const proposal = await db.getEventProposalById(input.id);
+          if (proposal) {
+            await db.createNotification({
+              userId: proposal.proposerId,
+              type: "warning",
+              title: "Proposition non retenue",
+              content: `Votre proposition « ${proposal.title} » n'a pas été retenue${input.note ? `: ${input.note}` : ""}.`,
+            });
+          }
+        } catch (err) {
+          console.error("[Proposals] Failed to notify proposer:", err);
+        }
+
+        return { success: true };
+      }),
+  }),
+
   notifications: router({
     list: protectedProcedure
       .input(z.object({ limit: z.number().optional() }))

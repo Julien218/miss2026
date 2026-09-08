@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { Calendar as CalendarIcon, Plus, Users, MapPin, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, Users, MapPin, Clock, Lightbulb, CheckCircle2, XCircle, Hourglass } from "lucide-react";
 
 const localizer = momentLocalizer(moment);
 
@@ -34,11 +34,17 @@ export default function Calendar() {
   const [date, setDate] = useState(new Date());
   const [selectedContest, setSelectedContest] = useState<number>(1); // Default contest ID
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isProposeDialogOpen, setIsProposeDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
   // Fetch events
   const { data: events = [], refetch } = trpc.events.listByContest.useQuery({ contestId: selectedContest });
   const { data: userEvents = [] } = trpc.events.getUserEvents.useQuery(undefined, {
+    enabled: !!user,
+  });
+
+  // Propositions de sorties des membres
+  const { data: myProposals = [], refetch: refetchProposals } = trpc.proposals.listMine.useQuery(undefined, {
     enabled: !!user,
   });
 
@@ -117,6 +123,37 @@ export default function Calendar() {
               <p className="text-[#8B7355] mt-1">Gérez et consultez tous les événements du concours</p>
             </div>
           </div>
+
+          {user && (
+            <Dialog open={isProposeDialogOpen} onOpenChange={setIsProposeDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="border-[#D4AF37] text-[#B8941E] hover:bg-[#D4AF37]/10 shadow-sm"
+                >
+                  <Lightbulb className="w-5 h-5 mr-2" />
+                  Proposer une sortie
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-xl">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-playfair text-[#D4AF37]">
+                    Proposer une sortie
+                  </DialogTitle>
+                </DialogHeader>
+                <p className="text-sm text-[#8B7355] -mt-2">
+                  Votre proposition sera examinée par l'organisation (Olivier) avant d'entrer au calendrier.
+                  Une date déjà occupée au calendrier annuel ou des 3 mois ne peut pas être proposée.
+                </p>
+                <ProposeOutingForm
+                  onSuccess={() => {
+                    setIsProposeDialogOpen(false);
+                    refetchProposals();
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+          )}
 
           {user?.role === "admin" && (
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -227,8 +264,167 @@ export default function Calendar() {
             </DialogContent>
           </Dialog>
         )}
+
+        {/* Mes propositions de sorties */}
+        {user && (
+          <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-[#D4AF37]/20">
+            <div className="flex items-center gap-3 mb-4">
+              <Lightbulb className="w-6 h-6 text-[#D4AF37]" />
+              <h2 className="text-2xl font-playfair font-bold text-[#B8941E]">
+                Mes propositions de sorties
+              </h2>
+            </div>
+            {myProposals.length === 0 ? (
+              <p className="text-[#8B7355] italic">
+                Vous n'avez pas encore proposé de sortie. Utilisez le bouton « Proposer une sortie » pour suggérer un événement au calendrier.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {myProposals.map((p: { id: number; title: string; description: string | null; proposedDate: Date; location: string | null; status: string; reviewNote: string | null }) => {
+                  const dateStr = new Date(p.proposedDate).toLocaleDateString("fr-BE", {
+                    weekday: "long", day: "numeric", month: "long", year: "numeric",
+                  });
+                  return (
+                    <div
+                      key={p.id}
+                      className="flex items-start justify-between gap-4 p-4 rounded-xl border"
+                      style={{
+                        borderColor: p.status === "approved" ? "#22C55E40" : p.status === "rejected" ? "#EF444440" : "#D4AF3740",
+                        background: p.status === "approved" ? "#22C55E08" : p.status === "rejected" ? "#EF444408" : "#D4AF3708",
+                      }}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-800">{p.title}</p>
+                        <p className="text-sm text-[#8B7355]">
+                          {dateStr}
+                          {p.location ? ` · ${p.location}` : ""}
+                        </p>
+                        {p.description && (
+                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{p.description}</p>
+                        )}
+                        {p.status === "rejected" && p.reviewNote && (
+                          <p className="text-sm text-red-500 mt-1">Motif : {p.reviewNote}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm font-semibold flex-shrink-0">
+                        {p.status === "approved" && (
+                          <span className="flex items-center gap-1 text-green-600">
+                            <CheckCircle2 className="w-4 h-4" /> Validée
+                          </span>
+                        )}
+                        {p.status === "pending" && (
+                          <span className="flex items-center gap-1 text-amber-500">
+                            <Hourglass className="w-4 h-4" /> En attente de validation
+                          </span>
+                        )}
+                        {p.status === "rejected" && (
+                          <span className="flex items-center gap-1 text-red-500">
+                            <XCircle className="w-4 h-4" /> Refusée
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <p className="text-xs text-[#8B7355] mt-4">
+              Ordre du calendrier : les événements officiels (calendrier annuel + 3 mois validés par l'organisation) passent en priorité ; les sorties validées s'ajoutent à la suite.
+            </p>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+// Propose Outing Form Component
+function ProposeOutingForm({ onSuccess }: { onSuccess: () => void }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [location, setLocation] = useState("");
+
+  const proposeMutation = trpc.proposals.create.useMutation({
+    onSuccess: () => {
+      toast.success("Proposition envoyée ! Elle sera examinée par l'organisation avant validation.");
+      setTitle(""); setDescription(""); setDate(""); setLocation("");
+      onSuccess();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Erreur lors de l'envoi de la proposition");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !date) {
+      toast.error("Veuillez renseigner un titre et une date");
+      return;
+    }
+    proposeMutation.mutate({
+      title: title.trim(),
+      description: description.trim() || undefined,
+      proposedDate: new Date(date + "T12:00:00"),
+      location: location.trim() || undefined,
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="prop-title">Titre de la sortie *</Label>
+        <Input
+          id="prop-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Ex : Sortie bowling, visite culturelle, entraînement..."
+          required
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="prop-date">Date souhaitée *</Label>
+          <Input
+            id="prop-date"
+            type="date"
+            value={date}
+            min={new Date().toISOString().split("T")[0]}
+            onChange={(e) => setDate(e.target.value)}
+            required
+          />
+          <p className="text-xs text-[#8B7355] mt-1">
+            Les dates déjà occupées au calendrier annuel ou des 3 mois seront refusées automatiquement.
+          </p>
+        </div>
+        <div>
+          <Label htmlFor="prop-location">Lieu</Label>
+          <Input
+            id="prop-location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Ex : Dour, Centre Sportif..."
+          />
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="prop-desc">Description / raison de la sortie</Label>
+        <Textarea
+          id="prop-desc"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Expliquez pourquoi cette sortie est importante pour le groupe..."
+          rows={3}
+        />
+      </div>
+      <Button
+        type="submit"
+        disabled={proposeMutation.isPending}
+        className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+      >
+        {proposeMutation.isPending ? "Envoi..." : "Envoyer la proposition"}
+      </Button>
+    </form>
   );
 }
 

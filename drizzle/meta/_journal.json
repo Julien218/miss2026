@@ -22,6 +22,13 @@
       "when": 1774881258737,
       "tag": "0002_curved_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1788859427115,
+      "tag": "0003_event_proposals",
+      "breakpoints": true
     }
   ]
 }

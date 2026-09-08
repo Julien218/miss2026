@@ -1,4 +1,4 @@
-import { eq, desc, and, gte, lte, lt, inArray, sql, or, like } from "drizzle-orm";
+import { eq, desc, asc, and, gte, lte, lt, inArray, sql, or, like, ne } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users,
@@ -26,7 +26,8 @@ import {
   invitations, InsertInvitation,
   photos, InsertPhoto,
   gallerySubscribers, InsertGallerySubscriber
-} from "../drizzle/schema";
+, eventProposals } from "../drizzle/schema";
+import type { InsertEventProposal } from "../drizzle/schema";
 import crypto from "crypto";
 import { ENV } from './_core/env';
 
@@ -290,6 +291,174 @@ export async function deleteEvent(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(events).where(eq(events.id, id));
+}
+
+// ========== EVENT PROPOSALS (sorties proposées par les membres) ==========
+
+/** Vérifie si une date est déjà occupée au calendrier annuel ou des 3 mois.
+ *  Conflit = un événement programmé (scheduled/ongoing) OU une proposition
+ *  (pending/approved) touche le même jour. */
+export async function isDateTaken(date: Date, endDate?: Date | null, excludeProposalId?: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const rangeStart = new Date(date);
+  rangeStart.setHours(0, 0, 0, 0);
+  const rangeEnd = endDate ? new Date(endDate) : new Date(date);
+  rangeEnd.setHours(23, 59, 59, 999);
+
+  // 1. Événements officiels déjà programmés au calendrier
+  const conflictingEvents = await db
+    .select({ id: events.id, title: events.title, date: events.date })
+    .from(events)
+    .where(
+      and(
+        inArray(events.status, ["scheduled", "ongoing"]),
+        lte(events.date, rangeEnd),
+        gte(events.date, rangeStart)
+      )
+    )
+    .limit(1);
+
+  if (conflictingEvents.length > 0) return { taken: true, by: "event", item: conflictingEvents[0] };
+
+  // 2. Propositions déjà déposées ou validées sur cette date
+  const conflictConditions = [
+    inArray(eventProposals.status, ["pending", "approved"]),
+    lte(eventProposals.proposedDate, rangeEnd),
+    gte(eventProposals.proposedDate, rangeStart),
+  ];
+  if (excludeProposalId) {
+    conflictConditions.push(ne(eventProposals.id, excludeProposalId));
+  }
+  const conflictingProposals = await db
+    .select({ id: eventProposals.id, title: eventProposals.title, proposedDate: eventProposals.proposedDate })
+    .from(eventProposals)
+    .where(and(...conflictConditions))
+    .limit(1);
+
+  if (conflictingProposals.length > 0) return { taken: true, by: "proposal", item: conflictingProposals[0] };
+
+  return { taken: false, by: null, item: null };
+}
+
+export async function createEventProposal(data: InsertEventProposal) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(eventProposals).values(data);
+  const insertId = (result as unknown as { insertId: number }).insertId;
+  return db.select().from(eventProposals).where(eq(eventProposals.id, insertId)).limit(1).then(r => r[0]);
+}
+
+export async function getEventProposalsByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(eventProposals)
+    .where(eq(eventProposals.proposerId, userId))
+    .orderBy(desc(eventProposals.createdAt));
+}
+
+export async function getPendingEventProposals() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(eventProposals)
+    .where(eq(eventProposals.status, "pending"))
+    .orderBy(asc(eventProposals.proposedDate));
+}
+
+export async function getAllEventProposals() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(eventProposals)
+    .orderBy(desc(eventProposals.createdAt));
+}
+
+export async function getEventProposalById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(eventProposals).where(eq(eventProposals.id, id)).limit(1);
+  return result[0];
+}
+
+/** Approbation par un admin (Olivier): crée l'événement au calendrier officiel
+ *  avec priorité élevée (les points officiels passent avant les propositions). */
+export async function approveEventProposal(id: number, adminId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const proposal = await getEventProposalById(id);
+  if (!proposal) throw new Error("Proposition introuvable");
+  if (proposal.status !== "pending") throw new Error("Cette proposition a déjà été traitée");
+
+  // Résoudre le concours actif (année la plus récente)
+  const activeContests = await db.select().from(contests).orderBy(desc(contests.year)).limit(1);
+  const contestId = activeContests[0]?.id;
+  if (!contestId) throw new Error("Aucun concours actif trouvé");
+
+  // Créer l'événement au calendrier — priorité officielle (50) : avant les autres propositions
+  const eventResult = await db.insert(events).values({
+    contestId,
+    type: "public_event",
+    title: proposal.title,
+    description: proposal.description || undefined,
+    date: proposal.proposedDate,
+    endDate: proposal.endDate || undefined,
+    location: proposal.location || undefined,
+    organizerId: adminId,
+    status: "scheduled",
+    notes: `Sortie proposée par le membre #${proposal.proposerId} — validée le ${new Date().toISOString()}`,
+  });
+  const eventId = (eventResult as unknown as { insertId: number }).insertId;
+
+  // Marquer la proposition approuvée
+  await db.update(eventProposals)
+    .set({ status: "approved", reviewedBy: adminId, reviewedAt: new Date(), eventId, priority: 50 })
+    .where(eq(eventProposals.id, id));
+
+  return { eventId, proposalId: id };
+}
+
+export async function rejectEventProposal(id: number, adminId: number, note?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const proposal = await getEventProposalById(id);
+  if (!proposal) throw new Error("Proposition introuvable");
+  if (proposal.status !== "pending") throw new Error("Cette proposition a déjà été traitée");
+
+  await db.update(eventProposals)
+    .set({ status: "rejected", reviewedBy: adminId, reviewedAt: new Date(), reviewNote: note || undefined })
+    .where(eq(eventProposals.id, id));
+}
+
+/** Calendrier combiné: événements officiels (annuel + 3 mois) puis propositions validées.
+ *  Les points officiels arrivent en tête d'ordre, les propositions à la suite. */
+export async function getUpcomingCalendar(months = 3) {
+  const db = await getDb();
+  if (!db) return { events: [], proposals: [] };
+
+  const now = new Date();
+  const horizon = new Date();
+  horizon.setMonth(horizon.getMonth() + months);
+
+  const upcomingEvents = await db.select().from(events)
+    .where(
+      and(
+        inArray(events.status, ["scheduled", "ongoing"]),
+        gte(events.date, now)
+      )
+    )
+    .orderBy(asc(events.date));
+
+  const approvedProposals = await db.select().from(eventProposals)
+    .where(
+      and(
+        eq(eventProposals.status, "approved"),
+        gte(eventProposals.proposedDate, now)
+      )
+    )
+    .orderBy(asc(eventProposals.proposedDate));
+
+  return { events: upcomingEvents, proposals: approvedProposals };
 }
 
 // ========== EVENT ATTENDEES ==========

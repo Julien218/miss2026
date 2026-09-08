@@ -286,7 +286,7 @@ function Router() {
         </RoleGuard>
       </Route>
       <Route path="/calendar">
-        <RoleGuard requiredRole="candidate">
+        <RoleGuard requiredRole="user">
           <Calendar />
         </RoleGuard>
       </Route>

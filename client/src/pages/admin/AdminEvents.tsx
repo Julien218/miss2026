@@ -14,8 +14,9 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader,
   DialogTitle, DialogTrigger, DialogFooter,
 } from "@/components/ui/dialog";
-import { Calendar, Plus, MapPin, Clock, Edit2, Trash2, Star } from "lucide-react";
+import { Calendar, Plus, MapPin, Clock, Edit2, Trash2, Star, Lightbulb, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 import { BRANDING } from "@/config/branding";
 
 interface EventItem {
@@ -289,7 +290,117 @@ export default function AdminEvents() {
             </div>
           </CardContent>
         </Card>
+
+        <ProposalsValidationPanel />
       </div>
     </DashboardLayout>
+  );
+}
+
+/**
+ * Panneau de validation des propositions de sorties (Olivier / admin).
+ * Approuver -> la sortie entre au calendrier officiel avec priorité.
+ * Refuser -> motif transmis au membre.
+ */
+function ProposalsValidationPanel() {
+  const { data: pending = [], refetch } = trpc.proposals.listPending.useQuery(undefined);
+
+  const approveMutation = trpc.proposals.approve.useMutation({
+    onSuccess: () => {
+      toast.success("Proposition validée — la sortie entre au calendrier officiel.");
+      refetch();
+    },
+    onError: (error) => toast.error(error.message || "Erreur lors de la validation"),
+  });
+
+  const rejectMutation = trpc.proposals.reject.useMutation({
+    onSuccess: () => {
+      toast.success("Proposition refusée — le membre a été notifié.");
+      refetch();
+    },
+    onError: (error) => toast.error(error.message || "Erreur lors du refus"),
+  });
+
+  const handleReject = (id: number, title: string) => {
+    const note = window.prompt(
+      `Motif du refus pour « ${title} » (transmis au membre) :`,
+      ""
+    );
+    if (note === null) return; // annulé
+    rejectMutation.mutate({ id, note: note || undefined });
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Lightbulb className="w-5 h-5 text-yellow-400" />
+          Propositions de sorties des membres
+        </CardTitle>
+        <CardDescription>
+          Sorties proposées par les candidats et bénévoles. La validation les ajoute
+          au calendrier officiel — une date déjà occupée ne peut pas être proposée,
+          et les points officiels du calendrier gardent la priorité d'affichage.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {pending.length === 0 ? (
+          <p className="text-gray-400 italic">Aucune proposition en attente de validation.</p>
+        ) : (
+          <div className="space-y-3">
+            {pending.map((p: {
+              id: number;
+              title: string;
+              description: string | null;
+              proposedDate: Date;
+              endDate: Date | null;
+              location: string | null;
+              proposerId: number;
+            }) => {
+              const dateStr = new Date(p.proposedDate).toLocaleDateString("fr-BE", {
+                weekday: "long", day: "numeric", month: "long", year: "numeric",
+              });
+              return (
+                <div
+                  key={p.id}
+                  className="flex flex-col md:flex-row md:items-center gap-3 p-4 rounded-lg bg-gray-800/60 border border-yellow-500/20"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-white">{p.title}</p>
+                    <p className="text-xs text-gray-400">
+                      {dateStr}
+                      {p.location ? ` · ${p.location}` : ""} · proposée par le membre #{p.proposerId}
+                    </p>
+                    {p.description && (
+                      <p className="text-sm text-gray-300 mt-1">{p.description}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <Button
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      disabled={approveMutation.isPending || rejectMutation.isPending}
+                      onClick={() => approveMutation.mutate({ id: p.id })}
+                    >
+                      <CheckCircle2 className="w-4 h-4 mr-1" />
+                      Valider
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={approveMutation.isPending || rejectMutation.isPending}
+                      onClick={() => handleReject(p.id, p.title)}
+                    >
+                      <XCircle className="w-4 h-4 mr-1" />
+                      Refuser
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

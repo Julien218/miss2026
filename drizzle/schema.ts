@@ -190,6 +190,32 @@ export type EventAttendee = typeof eventAttendees.$inferSelect;
 export type InsertEventAttendee = typeof eventAttendees.$inferInsert;
 
 /**
+ * Event proposals table - sorties proposées par les membres (candidats/bénévoles)
+ * Chaque proposition est validée par un admin (Olivier) avant d'entrer au calendrier.
+ * Une date déjà occupée au calendrier (annuel ou 3 mois) ne peut pas être proposée.
+ */
+export const eventProposals = mysqlTable("event_proposals", {
+  id: int("id").autoincrement().primaryKey(),
+  proposerId: int("proposerId").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  proposedDate: timestamp("proposedDate").notNull(),
+  endDate: timestamp("endDate"),
+  location: varchar("location", { length: 255 }),
+  status: mysqlEnum("status", ["pending", "approved", "rejected"]).default("pending").notNull(),
+  priority: int("priority").default(100).notNull(), // 0-49 = calendrier officiel, 100+ = propositions validées
+  reviewedBy: int("reviewedBy"),
+  reviewedAt: timestamp("reviewedAt"),
+  reviewNote: text("reviewNote"),
+  eventId: int("eventId"), // événement créé au calendrier une fois approuvé
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EventProposal = typeof eventProposals.$inferSelect;
+export type InsertEventProposal = typeof eventProposals.$inferInsert;
+
+/**
  * Evaluations table - stores jury evaluations and scores
  */
 export const evaluations = mysqlTable("evaluations", {
