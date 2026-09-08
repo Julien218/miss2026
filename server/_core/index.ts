@@ -46,6 +46,13 @@ async function startServer() {
   // ============================================================
   app.post("/api/admin/create-user-temp", async (req, res) => {
     try {
+      // Sécurité : ce endpoint exige le token d'administration (ADMIN_BOOTSTRAP_TOKEN)
+      const providedToken = (req.headers["x-admin-token"] as string) || (req.headers["authorization"] as string)?.replace(/^Bearer\s+/i, "") || "";
+      const expectedToken = process.env.ADMIN_BOOTSTRAP_TOKEN || "";
+      if (!expectedToken || providedToken !== expectedToken) {
+        res.status(401).json({ error: "Accès non autorisé" });
+        return;
+      }
       const { email, password, role, organizationId } = req.body as {
         email?: string;
         password?: string;
