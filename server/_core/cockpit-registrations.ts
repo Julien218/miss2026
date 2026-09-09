@@ -13,13 +13,13 @@ SELECT * FROM (
  c.category, c.status, t.year, c.registrationDate AS created_at, c.updatedAt AS updated_at
  FROM candidates c JOIN contests t ON t.id = c.contestId
  LEFT JOIN users u ON u.id = c.userId
- WHERE t.year = 2026
+ WHERE t.year >= 2026
  UNION ALL
  SELECT CONCAT('application:', LPAD(a.id, 10, '0')) AS id, 'application' AS source,
  a.firstName AS first_name, a.lastName AS last_name, a.email, a.phone, a.city,
  a.category, a.status, t.year, a.createdAt AS created_at, a.updatedAt AS updated_at
  FROM candidateApplications a JOIN contests t ON t.id = a.contestId
- WHERE t.year = 2026 AND NOT EXISTS (
+ WHERE t.year >= 2026 AND NOT EXISTS (
    SELECT 1 FROM candidates c WHERE c.id = a.candidateId AND c.contestId = a.contestId
  )
 ) registrations WHERE id > ? ORDER BY id ASC LIMIT 201`;
@@ -58,7 +58,8 @@ export function registrationHandler(readPage = readRegistrationPage) {
     }
     try {
       const page = await readPage(cursor);
-      res.json({ collection: "miss-mister-dour-inscriptions", year: 2026, ...page, fetchedAt: new Date().toISOString() });
+      const years = page.records.map((r) => Number((r as { year?: number }).year ?? 0)).filter(Boolean);
+      res.json({ collection: "miss-mister-dour-inscriptions", year: years.length ? Math.max(...years) : 2026, ...page, fetchedAt: new Date().toISOString() });
     } catch (error) {
       const raw = (error as { code?: string }).code || "SOURCE_UNAVAILABLE";
       const code = /^[A-Z0-9_]{1,64}$/.test(raw) ? raw : "SOURCE_UNAVAILABLE";
