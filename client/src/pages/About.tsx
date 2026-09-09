@@ -1,360 +1,191 @@
 import { Link } from "wouter";
-import { Crown, Heart, Users, Calendar, Sparkles, Award, MapPin, ExternalLink, Navigation } from "lucide-react";
-import { useRef } from "react";
-import { MapView } from "@/components/Map";
-import { BRANDING } from "@/config/branding";
+import { ArrowRight, Crown, Heart, Sparkles, Users } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
+import { BRANDING } from "@/config/branding";
 
-// Coordonnées GPS du Centre Sportif d'Elouges, Rue de la Tournelle 10, 7370 Elouges
-const VENUE_COORDS = { lat: 50.3978, lng: 3.7732 };
+const VALUES = [
+  {
+    title: "Présence",
+    text: "Mettre en lumière une personnalité, une histoire et une manière d’être — pas seulement une image.",
+    icon: Crown,
+  },
+  {
+    title: "Humain",
+    text: "Créer des rencontres, des souvenirs et une aventure qui continue bien au-delà d’une soirée.",
+    icon: Heart,
+  },
+  {
+    title: "Collectif",
+    text: "Réunir candidats, bénévoles, partenaires, public et acteurs locaux autour d’un même événement.",
+    icon: Users,
+  },
+];
+
+const TIMELINE = [
+  {
+    year: "2002",
+    title: "Les premières éditions",
+    text: "Miss & Mister Dour s’inscrit dans une histoire locale portée par STARLIGHT ASBL et par l’envie de créer un rendez-vous fédérateur à Dour.",
+  },
+  {
+    year: "2002—2025",
+    title: "Une histoire qui se construit",
+    text: "Les éditions, les candidats et les partenaires se succèdent. Cette mémoire fait désormais partie intégrante de l’expérience digitale du concours.",
+  },
+  {
+    year: "2026",
+    title: "Le virage connecté",
+    text: "Le site, les profils, la galerie et les outils numériques deviennent un prolongement de l’événement et de sa communauté.",
+  },
+  {
+    year: "2027",
+    title: "Digital Experience",
+    text: "Une nouvelle direction éditoriale : plus immersive, plus mobile, plus cohérente, tout en gardant l’humain au centre.",
+  },
+];
 
 export default function About() {
-  const mapRef = useRef<google.maps.Map | null>(null);
-
-  const handleMapReady = (map: google.maps.Map) => {
-    mapRef.current = map;
-
-    // Marqueur avancé pour le Centre Sportif d'Elouges
-    const marker = new window.google.maps.marker.AdvancedMarkerElement({
-      map,
-      position: VENUE_COORDS,
-      title: "Centre Sportif d'Elouges",
-    });
-
-    // InfoWindow avec les détails du lieu
-    const infoWindow = new window.google.maps.InfoWindow({
-      content: `
-        <div style="font-family: sans-serif; padding: 8px; max-width: 220px;">
-          <h3 style="margin: 0 0 6px; color: #D4AF37; font-size: 15px; font-weight: bold;">Centre Sportif d'Elouges</h3>
-          <p style="margin: 0 0 4px; font-size: 13px; color: #333;">Rue de la Tournelle 10<br/>7370 Elouges, Belgique</p>
-          <p style="margin: 6px 0 0; font-size: 12px; color: #666;">📅 19 Avril 2026 — Miss & Mister Dour</p>
-        </div>
-      `,
-    });
-
-    // Ouvrir l'InfoWindow par défaut
-    infoWindow.open(map, marker);
-
-    // Clic sur le marqueur pour rouvrir l'InfoWindow
-    marker.addListener("click", () => {
-      infoWindow.open(map, marker);
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img
-                src={BRANDING.logoIdentity}
-                alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                loading="eager"
-              />
-            </Link>
-          <Link href="/" className="text-gold hover:text-gold/80 transition-colors font-medium">
-              Retour à l'accueil
-            </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-black text-white">
+      <SEOHead
+        title="À propos — Miss & Mister Dour 2027"
+        description="Découvrez l’histoire, les valeurs et la vision de Miss & Mister Dour, événement porté par STARLIGHT ASBL à Dour."
+        url="https://missetmisterdour.be/about"
+        tags={["Miss Mister Dour", "STARLIGHT ASBL", "Dour", "histoire", "édition 2027"]}
+      />
 
-      {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/10" />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <Crown className="w-16 h-16 mx-auto mb-6 text-gold animate-pulse" />
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
-            À Propos
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-            Une soirée de prestige nationale belge célébrant l'élégance, le talent et le charisme
-          </p>
-        </div>
-      </section>
+      <header className="hidden" aria-hidden="true" />
 
-      {/* Concept */}
-      <section className="py-16 bg-gradient-to-b from-transparent to-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <Sparkles className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Le Concept</h2>
-            </div>
-            <div className="prose prose-invert prose-lg max-w-none">
-              <p className="text-gray-300 leading-relaxed mb-6">
-                <strong className="text-gold">Miss & Mister Dour</strong> est bien plus qu'un simple concours de beauté. 
-                C'est une <strong>plateforme événementielle nationale belge</strong> qui célèbre l'excellence, 
-                la diversité et le talent sous toutes ses formes.
-              </p>
-              <p className="text-gray-300 leading-relaxed mb-6">
-                Chaque année, nous réunissons des candidats exceptionnels venus de toute la Belgique 
-                pour une soirée de prestige inoubliable. Notre mission est de révéler les ambassadeurs 
-                de demain, capables de représenter les valeurs d'élégance, d'authenticité et d'engagement social.
-              </p>
-              <p className="text-gray-300 leading-relaxed">
-                Grâce à une <strong className="text-gold">technologie de pointe développée par Js-Innov.IA</strong>, 
-                nous offrons une expérience immersive unique : votes en temps réel, génération de contenu vidéo 
-                par IA, certificats blockchain, et bien plus encore.
+      <main>
+        <section className="relative overflow-hidden px-4 py-24 md:py-32">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(217,185,120,.12),transparent_34%),radial-gradient(circle_at_85%_72%,rgba(106,70,48,.1),transparent_32%)]" />
+          <div className="relative mx-auto max-w-6xl">
+            <span className="mmd-page-kicker">02 · L’histoire</span>
+            <div className="mt-7 grid gap-10 lg:grid-cols-[1.2fr_.8fr] lg:items-end">
+              <div>
+                <h1 className="max-w-4xl text-5xl font-semibold leading-[.94] tracking-[-.055em] md:text-7xl lg:text-8xl">
+                  Plus qu’une élection. <em className="font-light text-[#d9b978]">Une aventure humaine.</em>
+                </h1>
+              </div>
+              <p className="max-w-xl text-base leading-8 text-white/50 lg:justify-self-end">
+                Miss & Mister Dour est un rendez-vous qui met des personnalités en lumière et rassemble une communauté autour d’une expérience locale, scénique et digitale.
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Organisation */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <Users className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Organisation</h2>
+        <section className="border-y border-white/10 bg-white/[.018] px-4 py-16 md:py-24">
+          <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-[.85fr_1.15fr] md:items-center">
+            <div className="relative min-h-[360px] overflow-hidden rounded-[30px] border border-[#d9b978]/18 bg-[#0d0d0e] p-8 md:min-h-[460px]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_34%,rgba(217,185,120,.15),transparent_34%)]" />
+              <div className="relative flex h-full min-h-[300px] items-center justify-center">
+                <img
+                  src={BRANDING.logoIdentity}
+                  alt="Logo officiel Miss & Mister Dour"
+                  className="w-full max-w-[330px] object-contain drop-shadow-[0_0_30px_rgba(217,185,120,.17)]"
+                />
+              </div>
             </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-gray-800/50 border border-gold/20 rounded-lg p-6 hover:border-gold/40 transition-colors">
-                <h3 className="text-2xl font-bold text-gold mb-4">STARLIGHT asbl</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Organisateur principal de l'événement depuis 2002, STARLIGHT asbl met son expertise 
-                  et son expérience de plus de 20 ans au service de Miss & Mister Dour.
-                  <br /><br />
-                  <strong className="text-gold">Organisateur :</strong> Olivier Trevis<br />
-                  <strong className="text-gold">Téléphone :</strong> +32 475 42 69 42<br />
-                  <strong className="text-gold">Email :</strong> Olivier.trevis@outlook.be<br />
-                  <strong className="text-gold">Adresse :</strong> Grand Place 9, 7370 Dour, Belgique
+
+            <div className="md:pl-8">
+              <span className="mmd-page-kicker">Identité</span>
+              <h2 className="mt-5 text-4xl font-semibold leading-[1] tracking-[-.045em] md:text-6xl">
+                Dour dans le nom. <span className="text-[#d9b978]">L’humain dans l’expérience.</span>
+              </h2>
+              <div className="mt-7 space-y-5 text-sm leading-7 text-white/50 md:text-base md:leading-8">
+                <p>
+                  Le concours ne se limite pas au moment du couronnement. Il commence avec une candidature, se construit au fil des rencontres et laisse derrière lui des images, des liens et des souvenirs.
                 </p>
-              </div>
-              <div className="bg-gray-800/50 border border-gold/20 rounded-lg p-6 hover:border-gold/40 transition-colors">
-                <h3 className="text-2xl font-bold text-gold mb-4">Centre Sportif d'Elouges</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Lieu d'accueil officiel de la soirée de couronnement 2026, le Centre Sportif d'Elouges
-                  dispose d'infrastructures modernes et spacieuses, idéales pour accueillir un événement
-                  de prestige national. Sa grande salle polyvalente offre une scène professionnelle,
-                  un éclairage scénique de qualité et une capacité d'accueil adaptée à un public nombreux.
-                </p>
-                <ul className="space-y-2 text-gray-300 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                    <span><strong className="text-gold">Adresse :</strong> Rue de la Tournelle 10, 7370 Elouges, Belgique</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Calendar className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                    <span><strong className="text-gold">Date :</strong> 19 Avril 2026 — Soirée de Couronnement</span>
-                  </li>
-                </ul>
-                <a
-                  href="https://maps.google.com/?q=Rue+de+la+Tournelle+10,+7370+Elouges,+Belgique"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors text-sm font-medium"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Voir sur Google Maps
-                </a>
-              </div>
-              <div className="bg-gray-800/50 border border-gold/20 rounded-lg p-6 hover:border-gold/40 transition-colors md:col-span-2">
-                <h3 className="text-2xl font-bold text-gold mb-4">Js-Innov.IA</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Partenaire technologique officiel, Js-Innov.IA développe la plateforme digitale 
-                  complète : gestion des candidats, votes en temps réel, génération de contenu IA, 
-                  certificats blockchain, et toutes les innovations technologiques de l'événement.
+                <p>
+                  La plateforme digitale sert cette histoire : elle rassemble les profils, la galerie, les archives et les partenaires sans transformer l’événement en simple produit technologique.
                 </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Valeurs */}
-      <section className="py-16 bg-gradient-to-b from-transparent to-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <Heart className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Nos Valeurs</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gold/20 rounded-full flex items-center justify-center">
-                  <Crown className="w-8 h-8 text-gold" />
-                </div>
-                <h3 className="text-xl font-bold text-gold mb-2">Excellence</h3>
-                <p className="text-gray-300">
-                  Nous recherchons l'excellence dans chaque détail, de la sélection des candidats 
-                  à l'organisation de la soirée.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gold/20 rounded-full flex items-center justify-center">
-                  <Users className="w-8 h-8 text-gold" />
-                </div>
-                <h3 className="text-xl font-bold text-gold mb-2">Diversité</h3>
-                <p className="text-gray-300">
-                  Nous célébrons la diversité sous toutes ses formes : origines, talents, 
-                  personnalités uniques.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gold/20 rounded-full flex items-center justify-center">
-                  <Heart className="w-8 h-8 text-gold" />
-                </div>
-                <h3 className="text-xl font-bold text-gold mb-2">Authenticité</h3>
-                <p className="text-gray-300">
-                  Nous valorisons l'authenticité et l'engagement sincère de nos candidats 
-                  envers les causes qui leur tiennent à cœur.
-                </p>
-              </div>
+        <section className="px-4 py-18 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <span className="mmd-page-kicker">Nos valeurs</span>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {VALUES.map(({ title, text, icon: Icon }, index) => (
+                <article key={title} className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[.025] p-7 md:p-8">
+                  <span className="absolute right-5 top-4 text-5xl font-semibold text-white/[.025]">0{index + 1}</span>
+                  <Icon className="h-6 w-6 text-[#d9b978]" />
+                  <h3 className="mt-8 text-2xl font-semibold">{title}</h3>
+                  <p className="mt-4 text-sm leading-7 text-white/46">{text}</p>
+                </article>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Historique */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <Calendar className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Historique</h2>
-            </div>
-            <div className="space-y-8">
-              <div className="flex gap-6 items-start">
-                <div className="flex-shrink-0 w-24 text-right">
-                  <span className="text-3xl font-bold text-gold">2002</span>
-                </div>
-                <div className="flex-1 bg-gray-800/50 border border-gold/20 rounded-lg p-6">
-                  <h3 className="text-xl font-bold text-gold mb-2">Naissance de l'Événement</h3>
-                  <p className="text-gray-300">
-                    Création de Miss & Mister Dour par STARLIGHT asbl sous la direction d'Olivier Trevis. 
-                    Une première édition qui pose les fondations d'un événement de prestige durable.
-                  </p>
-                </div>
+        <section className="border-y border-white/10 bg-white/[.018] px-4 py-18 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-8 md:grid-cols-[.7fr_1.3fr] md:items-end">
+              <div>
+                <span className="mmd-page-kicker">Mémoire</span>
+                <h2 className="mt-5 text-4xl font-semibold leading-[1] tracking-[-.045em] md:text-6xl">Une histoire qui ne s’efface pas.</h2>
               </div>
-              <div className="flex gap-6 items-start">
-                <div className="flex-shrink-0 w-24 text-right">
-                  <span className="text-3xl font-bold text-gold">2002-2025</span>
-                </div>
-                <div className="flex-1 bg-gray-800/50 border border-gold/20 rounded-lg p-6">
-                  <h3 className="text-xl font-bold text-gold mb-2">20+ Années d'Excellence</h3>
-                  <p className="text-gray-300">
-                    Plus de deux décennies d'événements couronneés de succès, avec des milliers de candidats, 
-                    des dizaines de lauréats, et une réputation d'excellence qui dépasse les frontières de Dour.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-6 items-start">
-                <div className="flex-shrink-0 w-24 text-right">
-                  <span className="text-3xl font-bold text-gold">2026</span>
-                </div>
-                <div className="flex-1 bg-gray-800/50 border border-gold/20 rounded-lg p-6">
-                  <h3 className="text-xl font-bold text-gold mb-2">Édition Nationale 2026</h3>
-                  <p className="text-gray-300">
-                    Édition nationale avec l'intégration de technologies IA avancées 
-                    (génération vidéo, certificats blockchain, votes temps réel) et rayonnement à travers toute la Belgique.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Vision 2026 */}
-      <section className="py-16 bg-gradient-to-b from-transparent to-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <Award className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Vision 2026</h2>
-            </div>
-            <div className="bg-gradient-to-br from-gold/10 to-transparent border border-gold/30 rounded-lg p-8">
-              <p className="text-gray-300 leading-relaxed text-lg mb-6">
-                Pour l'édition 2026, notre ambition est de faire de <strong className="text-gold">Miss & Mister Dour</strong> 
-                la référence européenne des concours de beauté nouvelle génération.
+              <p className="max-w-xl text-sm leading-7 text-white/45 md:justify-self-end">
+                Les anciennes éditions ont leur place dans le site 2027. Les palmarès seront complétés à partir des archives officielles, sans inventer les informations manquantes.
               </p>
-              <ul className="space-y-4 text-gray-300">
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-gold flex-shrink-0 mt-1" />
-                  <span>
-                    <strong className="text-gold">Technologie IA avancée</strong> : Génération automatique de vidéos 
-                    de présentation, voix synthétiques personnalisées, certificats blockchain infalsifiables.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-gold flex-shrink-0 mt-1" />
-                  <span>
-                    <strong className="text-gold">Rayonnement national</strong> : Partenariats avec des centres
-                    sportifs et culturels belges, diffusion en direct sur les réseaux sociaux, candidats de toute la Belgique.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-gold flex-shrink-0 mt-1" />
-                  <span>
-                    <strong className="text-gold">Engagement social</strong> : Chaque candidat s'engage pour une cause 
-                    (environnement, éducation, santé) et bénéficie d'une visibilité médiatique.
-                  </span>
-                </li>
-              </ul>
+            </div>
+
+            <div className="mt-12 grid gap-3">
+              {TIMELINE.map((entry) => (
+                <article key={entry.year} className="grid gap-5 rounded-[24px] border border-white/8 bg-[#111214] p-6 md:grid-cols-[180px_1fr] md:items-center md:p-7">
+                  <strong className="text-3xl tracking-[-.04em] text-[#d9b978] md:text-4xl">{entry.year}</strong>
+                  <div>
+                    <h3 className="text-xl font-semibold md:text-2xl">{entry.title}</h3>
+                    <p className="mt-2 max-w-3xl text-sm leading-7 text-white/43">{entry.text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <a href="/#archives" className="mt-8 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.12em] text-[#d9b978]">
+              Voir le palmarès sur l’accueil <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </section>
+
+        <section className="px-4 py-18 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-4 md:grid-cols-2">
+              <article className="rounded-[30px] border border-[#d9b978]/18 bg-[linear-gradient(145deg,rgba(217,185,120,.08),rgba(255,255,255,.02))] p-8 md:p-10">
+                <Sparkles className="h-6 w-6 text-[#d9b978]" />
+                <span className="mt-8 block text-[10px] font-bold uppercase tracking-[.2em] text-[#d9b978]">Organisation</span>
+                <h2 className="mt-3 text-3xl font-semibold">STARLIGHT ASBL</h2>
+                <p className="mt-4 text-sm leading-7 text-white/48">
+                  L’organisation porte l’événement, sa programmation, son parcours humain et ses relations avec les candidats et partenaires.
+                </p>
+              </article>
+              <article className="rounded-[30px] border border-white/10 bg-white/[.025] p-8 md:p-10">
+                <div className="grid h-12 w-12 place-items-center rounded-xl border border-[#d9b978]/18 bg-black text-sm font-bold text-[#d9b978]">JS</div>
+                <span className="mt-8 block text-[10px] font-bold uppercase tracking-[.2em] text-[#d9b978]">Expérience digitale</span>
+                <h2 className="mt-3 text-3xl font-semibold">JS-Innov.IA®</h2>
+                <p className="mt-4 text-sm leading-7 text-white/48">
+                  La technologie accompagne la navigation, les contenus et les outils du projet avec une présence volontairement discrète au service de l’événement.
+                </p>
+              </article>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Carte Google Maps */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <MapPin className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Accès & Localisation</h2>
-            </div>
-            <div className="bg-gray-800/50 border border-gold/20 rounded-xl overflow-hidden">
-              {/* En-tête de la carte */}
-              <div className="px-6 py-4 border-b border-gold/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <p className="text-white font-semibold">Centre Sportif d'Elouges</p>
-                  <p className="text-gray-400 text-sm">Rue de la Tournelle 10, 7370 Elouges, Belgique</p>
-                </div>
-                <a
-                  href="https://maps.google.com/?q=Rue+de+la+Tournelle+10,+7370+Elouges,+Belgique"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gold text-black text-sm font-bold rounded-lg hover:bg-gold/90 transition-colors flex-shrink-0"
-                >
-                  <Navigation className="w-4 h-4" />
-                  Itinéraire
-                </a>
+        <section className="px-4 pb-24 pt-8 md:pb-32">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[34px] border border-[#d9b978]/22 bg-[linear-gradient(135deg,rgba(217,185,120,.12),rgba(255,255,255,.02))] p-8 md:p-14">
+            <span className="mmd-page-kicker">Édition 2027</span>
+            <div className="mt-6 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+              <h2 className="max-w-4xl text-4xl font-semibold leading-[1] tracking-[-.045em] md:text-6xl">La prochaine histoire est encore à écrire.</h2>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/inscription-candidat" className="rounded-full bg-[#d9b978] px-6 py-3 text-[10px] font-bold uppercase tracking-[.1em] text-black">Candidater</Link>
+                <Link href="/candidates" className="inline-flex items-center gap-2 rounded-full border border-white/12 px-6 py-3 text-[10px] font-bold uppercase tracking-[.1em] text-white/65 hover:border-[#d9b978]/35 hover:text-[#d9b978]">Découvrir <ArrowRight className="h-4 w-4" /></Link>
               </div>
-              {/* Carte interactive */}
-              <MapView
-                initialCenter={VENUE_COORDS}
-                initialZoom={15}
-                onMapReady={handleMapReady}
-                className="h-[420px] w-full"
-              />
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 text-center">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gold mb-6">Rejoignez l'aventure</h2>
-          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Que vous soyez candidat, sponsor, partenaire ou simplement passionné, 
-            il y a une place pour vous dans l'univers Miss & Mister Dour.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/inscription-candidat" className="px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
-                Devenir Candidat
-              </Link>
-            <Link href="/contact" className="px-8 py-3 bg-transparent border-2 border-gold text-gold font-bold rounded-lg hover:bg-gold/10 transition-colors">
-                Nous Contacter
-              </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }
