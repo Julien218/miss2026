@@ -5,6 +5,7 @@ import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
+import { PublicSiteChrome } from "./components/PublicSiteChrome";
 import { getLoginUrl } from "./const";
 import "./index.css";
 import "./editorial-2027.css";
@@ -58,7 +59,9 @@ const trpcClient = trpc.createClient({
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <PublicSiteChrome>
+        <App />
+      </PublicSiteChrome>
     </QueryClientProvider>
   </trpc.Provider>
 );
