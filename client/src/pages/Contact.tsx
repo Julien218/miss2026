@@ -1,258 +1,217 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { Mail, Phone, MapPin, Send, MessageCircle } from "lucide-react";
+import { ArrowRight, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
 import { BRANDING } from "@/config/branding";
 import { SEOHead } from "@/components/SEOHead";
-import { useState } from "react";
+
+const SUBJECT_LABELS: Record<string, string> = {
+  candidature: "Candidature 2027",
+  partenariat: "Partenariat / Sponsoring",
+  presse: "Demande presse",
+  technique: "Question technique",
+  autre: "Autre demande",
+};
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: ""
-  });
-  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
+  const [handoffReady, setHandoffReady] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implémenter l'envoi du formulaire via tRPC
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const subjectLabel = SUBJECT_LABELS[formData.subject] || "Contact";
+    const subject = encodeURIComponent(`[Miss & Mister Dour] ${subjectLabel} — ${formData.name}`);
+    const body = encodeURIComponent(
+      `Nom : ${formData.name}\nEmail : ${formData.email}\nSujet : ${subjectLabel}\n\n${formData.message}`
+    );
+
+    setHandoffReady(true);
+    window.location.href = `mailto:${BRANDING.contact.email}?subject=${subject}&body=${body}`;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const contactInfo = {
-    email: "Olivier.trevis@outlook.be",
-    phone: "+32 475 42 69 42",
-    address: "Centre Sportif d'Elouges, Rue de la Tournelle 10, 7370 Elouges, Belgique"
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setHandoffReady(false);
+    setFormData((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img
-                src={BRANDING.logoIdentity}
-                alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                loading="eager"
-              />
-            </Link>
-          <Link href="/" className="text-gold hover:text-gold/80 transition-colors font-medium">
-              Retour à l'accueil
-            </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-black text-white">
+      <SEOHead
+        title="Contact — Miss & Mister Dour 2027"
+        description="Candidature, partenariat, presse ou question : contactez l’équipe Miss & Mister Dour."
+        url="https://missetmisterdour.be/contact"
+        tags={["contact Miss Mister Dour", "sponsor Dour", "candidature 2027"]}
+      />
 
-      {/* Hero */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/10" />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <MessageCircle className="w-16 h-16 mx-auto mb-6 text-gold animate-pulse" />
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
-            Contactez-nous
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-            Une question ? Une demande de partenariat ? Nous sommes à votre écoute
-          </p>
-        </div>
-      </section>
+      <header className="hidden" aria-hidden="true" />
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-          {/* Formulaire */}
-          <div>
-            <h2 className="text-3xl font-bold text-gold mb-6">Envoyez-nous un message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
+      <main>
+        <section className="relative overflow-hidden px-4 py-24 md:py-32">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(217,185,120,.12),transparent_34%),radial-gradient(circle_at_84%_70%,rgba(106,70,48,.1),transparent_32%)]" />
+          <div className="relative mx-auto max-w-6xl">
+            <span className="mmd-page-kicker">Contact</span>
+            <div className="mt-7 grid gap-10 lg:grid-cols-[1.2fr_.8fr] lg:items-end">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                  Nom complet *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 text-white"
-                  placeholder="Votre nom"
-                />
+                <h1 className="max-w-4xl text-5xl font-semibold leading-[.94] tracking-[-.055em] md:text-7xl lg:text-8xl">
+                  Parlons de la prochaine <em className="font-light text-[#d9b978]">étape.</em>
+                </h1>
+                <p className="mt-7 max-w-2xl text-base leading-8 text-white/52">
+                  Une candidature, un partenariat, une demande presse ou une question : choisissez le bon sujet et préparez votre message.
+                </p>
               </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 text-white"
-                  placeholder="votre@email.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                  Sujet *
-                </label>
-                <select
-                  id="subject"
-                  name="subject"
-                  required
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 text-white"
-                >
-                  <option value="">Sélectionnez un sujet</option>
-                  <option value="candidature">Candidature</option>
-                  <option value="partenariat">Partenariat / Sponsoring</option>
-                  <option value="presse">Demande presse</option>
-                  <option value="technique">Question technique</option>
-                  <option value="autre">Autre</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  Message *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={6}
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 text-white resize-none"
-                  placeholder="Votre message..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors"
-              >
-                <Send className="w-5 h-5" />
-                Envoyer le message
-              </button>
-
-              {submitted && (
-                <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 text-center">
-                  ✓ Message envoyé avec succès !
-                </div>
-              )}
-            </form>
-          </div>
-
-          {/* Informations de contact */}
-          <div>
-            <h2 className="text-3xl font-bold text-gold mb-6">Informations de contact</h2>
-            <div className="space-y-6">
-              <div className="bg-gray-800/50 border border-gold/20 rounded-lg p-6">
-                <div className="flex items-start gap-4">
-                  <Mail className="w-6 h-6 text-gold flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-white mb-2">Email</h3>
-                    <a
-                      href={`mailto:${contactInfo.email}`}
-                      className="text-gold hover:text-gold/80 transition-colors"
-                    >
-                      {contactInfo.email}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-800/50 border border-gold/20 rounded-lg p-6">
-                <div className="flex items-start gap-4">
-                  <Phone className="w-6 h-6 text-gold flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-white mb-2">Téléphone</h3>
-                    <a
-                      href={`tel:${contactInfo.phone}`}
-                      className="text-gold hover:text-gold/80 transition-colors"
-                    >
-                      {contactInfo.phone}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-800/50 border border-gold/20 rounded-lg p-6">
-                <div className="flex items-start gap-4">
-                  <MapPin className="w-6 h-6 text-gold flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-white mb-2">Adresse</h3>
-                    <p className="text-gray-300 leading-relaxed">
-                      {contactInfo.address}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <MessageCircle className="hidden h-20 w-20 text-[#d9b978]/30 lg:block lg:justify-self-end" />
             </div>
+          </div>
+        </section>
 
-            <div className="mt-8 bg-gradient-to-br from-gold/10 to-transparent border border-gold/30 rounded-lg p-6">
-              <h3 className="font-bold text-gold mb-3">Horaires</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Notre équipe répond à vos messages du lundi au vendredi, de 9h à 18h. 
-                Les demandes reçues en dehors de ces horaires seront traitées le jour ouvrable suivant.
+        <section className="border-y border-white/10 bg-white/[.018] px-4 py-16 md:py-24">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.15fr_.85fr]">
+            <div className="rounded-[30px] border border-[#d9b978]/18 bg-[#111214] p-6 md:p-9">
+              <span className="mmd-page-kicker">Votre message</span>
+              <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Préparer la demande</h2>
+              <p className="mt-3 text-sm leading-7 text-white/42">
+                À l’envoi, votre application de messagerie s’ouvrira avec le message prérempli. Rien n’est annoncé comme envoyé tant que vous ne l’avez pas réellement expédié.
               </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* FAQ Rapide */}
-      <section className="py-16 bg-gradient-to-b from-transparent to-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gold mb-8 text-center">Questions Fréquentes</h2>
-            <div className="space-y-4">
-              <details className="bg-gray-800/50 border border-gold/20 rounded-lg p-6 group">
-                <summary className="font-bold text-white cursor-pointer hover:text-gold transition-colors">
-                  Comment devenir candidat(e) ?
-                </summary>
-                <p className="text-gray-300 mt-4 leading-relaxed">
-                  Rendez-vous sur notre <Link href="/inscription-candidat" className="text-gold hover:text-gold/80">page d'inscription</Link> 
-                  pour soumettre votre candidature. Les inscriptions sont ouvertes jusqu'au 1er mars 2026.
+              <form onSubmit={handleSubmit} className="mt-8 grid gap-5">
+                <div className="grid gap-5 md:grid-cols-2">
+                  <label className="grid gap-2 text-xs font-medium text-white/55">
+                    Nom complet
+                    <input
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      autoComplete="name"
+                      placeholder="Votre nom"
+                      className="h-12 rounded-2xl border border-white/10 bg-black/30 px-4 text-sm text-white placeholder:text-white/25"
+                    />
+                  </label>
+                  <label className="grid gap-2 text-xs font-medium text-white/55">
+                    Email
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      autoComplete="email"
+                      placeholder="votre@email.com"
+                      className="h-12 rounded-2xl border border-white/10 bg-black/30 px-4 text-sm text-white placeholder:text-white/25"
+                    />
+                  </label>
+                </div>
+
+                <label className="grid gap-2 text-xs font-medium text-white/55">
+                  Sujet
+                  <select
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className="h-12 rounded-2xl border border-white/10 bg-black/30 px-4 text-sm text-white"
+                  >
+                    <option value="">Sélectionnez un sujet</option>
+                    <option value="candidature">Candidature 2027</option>
+                    <option value="partenariat">Partenariat / Sponsoring</option>
+                    <option value="presse">Demande presse</option>
+                    <option value="technique">Question technique</option>
+                    <option value="autre">Autre</option>
+                  </select>
+                </label>
+
+                <label className="grid gap-2 text-xs font-medium text-white/55">
+                  Message
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={7}
+                    placeholder="Votre message…"
+                    className="resize-none rounded-2xl border border-white/10 bg-black/30 p-4 text-sm leading-7 text-white placeholder:text-white/25"
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#d9b978] px-6 text-[10px] font-bold uppercase tracking-[.1em] text-black"
+                >
+                  Ouvrir ma messagerie <Send className="h-4 w-4" />
+                </button>
+
+                {handoffReady && (
+                  <p className="text-xs leading-6 text-[#d9b978]">
+                    Votre messagerie a été appelée avec le message prérempli. Vérifiez-le puis envoyez-le depuis votre application email.
+                  </p>
+                )}
+              </form>
+            </div>
+
+            <div className="grid content-start gap-4">
+              <article className="rounded-[26px] border border-white/10 bg-[#111214] p-6">
+                <Mail className="h-5 w-5 text-[#d9b978]" />
+                <span className="mt-6 block text-[9px] font-bold uppercase tracking-[.18em] text-white/35">Email</span>
+                <a href={`mailto:${BRANDING.contact.email}`} className="mt-2 block break-all text-lg font-semibold text-white hover:text-[#d9b978]">
+                  {BRANDING.contact.email}
+                </a>
+              </article>
+
+              <article className="rounded-[26px] border border-white/10 bg-[#111214] p-6">
+                <Phone className="h-5 w-5 text-[#d9b978]" />
+                <span className="mt-6 block text-[9px] font-bold uppercase tracking-[.18em] text-white/35">Téléphone</span>
+                <a href={`tel:${BRANDING.contact.phone.replace(/\s/g, "")}`} className="mt-2 block text-lg font-semibold text-white hover:text-[#d9b978]">
+                  {BRANDING.contact.phone}
+                </a>
+              </article>
+
+              <article className="rounded-[26px] border border-white/10 bg-[#111214] p-6">
+                <MapPin className="h-5 w-5 text-[#d9b978]" />
+                <span className="mt-6 block text-[9px] font-bold uppercase tracking-[.18em] text-white/35">Organisation</span>
+                <strong className="mt-2 block text-lg">{BRANDING.contact.organizer}</strong>
+                <p className="mt-2 text-sm leading-6 text-white/42">{BRANDING.contact.address}</p>
+              </article>
+
+              <Link
+                href="/sponsors"
+                className="group rounded-[26px] border border-[#d9b978]/20 bg-[linear-gradient(145deg,rgba(217,185,120,.09),rgba(255,255,255,.02))] p-6"
+              >
+                <Sparkles className="h-5 w-5 text-[#d9b978]" />
+                <span className="mt-6 block text-[9px] font-bold uppercase tracking-[.18em] text-[#d9b978]">Partenariat</span>
+                <strong className="mt-2 block text-xl">Découvrir l’espace sponsors</strong>
+                <span className="mt-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.1em] text-white/45 group-hover:text-[#d9b978]">
+                  Voir les partenaires <ArrowRight className="h-4 w-4" />
+                </span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-18 md:py-24">
+          <div className="mx-auto max-w-4xl">
+            <span className="mmd-page-kicker">Questions fréquentes</span>
+            <div className="mt-8 grid gap-3">
+              <details className="group rounded-[22px] border border-white/10 bg-white/[.025] p-6">
+                <summary className="cursor-pointer list-none text-lg font-semibold text-white">Comment devenir candidat ?</summary>
+                <p className="mt-4 text-sm leading-7 text-white/45">
+                  Utilisez la <Link href="/inscription-candidat" className="text-[#d9b978]">page d’inscription 2027</Link>. Les dates officielles seront affichées dès validation par le comité.
                 </p>
               </details>
-              <details className="bg-gray-800/50 border border-gold/20 rounded-lg p-6 group">
-                <summary className="font-bold text-white cursor-pointer hover:text-gold transition-colors">
-                  Comment devenir sponsor ?
-                </summary>
-                <p className="text-gray-300 mt-4 leading-relaxed">
-                  Consultez notre <Link href="/sponsors" className="text-gold hover:text-gold/80">page sponsors</Link> 
-                  pour découvrir les différents packages disponibles, puis contactez-nous via ce formulaire.
+              <details className="group rounded-[22px] border border-white/10 bg-white/[.025] p-6">
+                <summary className="cursor-pointer list-none text-lg font-semibold text-white">Comment devenir sponsor ?</summary>
+                <p className="mt-4 text-sm leading-7 text-white/45">
+                  Consultez l’<Link href="/sponsors" className="text-[#d9b978]">espace partenaires</Link>, puis sélectionnez « Partenariat / Sponsoring » dans le formulaire ci-dessus.
                 </p>
               </details>
-              <details className="bg-gray-800/50 border border-gold/20 rounded-lg p-6 group">
-                <summary className="font-bold text-white cursor-pointer hover:text-gold transition-colors">
-                  Où se déroule l'événement ?
-                </summary>
-                <p className="text-gray-300 mt-4 leading-relaxed">
-                  La soirée de couronnement aura lieu le 19 avril 2026 au Centre Sportif d'Elouges, 
-                  Rue de la Tournelle 10, 7370 Elouges, Belgique.
+              <details className="group rounded-[22px] border border-white/10 bg-white/[.025] p-6">
+                <summary className="cursor-pointer list-none text-lg font-semibold text-white">Où et quand aura lieu l’édition 2027 ?</summary>
+                <p className="mt-4 text-sm leading-7 text-white/45">
+                  La date, l’heure et le lieu seront publiés uniquement après confirmation officielle. Le site n’affiche plus les anciennes informations 2026 comme si elles étaient encore actuelles.
                 </p>
               </details>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }
