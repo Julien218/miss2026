@@ -78,4 +78,32 @@ export async function ensureSchema() {
             console.error(`[Schema] ✗ Failed to create ${table.name}:`, error.message);
           }
         }
-      } else {\n        console.log(`[Schema] ✓ Table exists: ${table.name}`);\n      }\n    }\n\n    // Verify critical tables exist\n    const criticalTables = [\"users\", \"candidates\", \"photos\", \"media\"];\n    const missing = criticalTables.filter((t) => !existingTables.has(t) && !existingTables.has(t));\n\n    if (missing.length > 0) {\n      console.warn(\n        `[Schema] ⚠️  Missing Drizzle tables: ${missing.join(\", \")}\\n` +\n        `         These should be created by your ORM migrations. ` +\n        `Check that DATABASE_URL points to the correct database.`\n      );\n    } else {\n      console.log(\n        `[Schema] ✓ All critical tables verified: ${criticalTables.join(\", \")}`\n      );\n    }\n\n    console.log(\"[Schema] Schema initialization complete\");\n  } catch (error) {\n    console.error(\"[Schema] Error during schema check:\", error);\n    throw error;\n  } finally {\n    await connection.end();\n  }\n}\n
+      } else {
+        console.log(`[Schema] ✓ Table exists: ${table.name}`);
+      }
+    }
+
+    // Verify critical tables exist
+    const criticalTables = ["users", "candidates", "photos", "media"];
+    const missing = criticalTables.filter((t) => !existingTables.has(t));
+
+    if (missing.length > 0) {
+      console.warn(
+        `[Schema] Missing Drizzle tables: ${missing.join(", ")}\n` +
+        `         These should be created by your ORM migrations. ` +
+        `Check that DATABASE_URL points to the correct database.`
+      );
+    } else {
+      console.log(
+        `[Schema] All critical tables verified: ${criticalTables.join(", ")}`
+      );
+    }
+
+    console.log("[Schema] Schema initialization complete");
+  } catch (error) {
+    console.error("[Schema] Error during schema check:", error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
+}

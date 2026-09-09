@@ -30,6 +30,7 @@ export type RegisterUserResult = {
   role: string;
   organizationId: number;
   openId: string;
+  name: string | null;
   createdAt: Date;
 };
 
@@ -69,7 +70,7 @@ export async function registerUser(input: RegisterUserInput): Promise<RegisterUs
   const insertId = Number((result as any).insertId);
   console.log(`[Auth] Utilisateur créé: ${normalizedEmail} (id=${insertId}, role=${role})`);
 
-  return { id: insertId, email: normalizedEmail, role, organizationId, openId, createdAt: new Date() };
+  return { id: insertId, email: normalizedEmail, role, organizationId, openId, name: name ?? null, createdAt: new Date() };
 }
 
 export async function resetPasswordUser(

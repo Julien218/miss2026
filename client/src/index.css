@@ -382,3 +382,61 @@
   background: oklch(0.58 0.14 42 / 0.35);
   color: oklch(0.98 0 0);
 }
+
+/* ════════════════════════════════════════════════════════════
+   Style éditorial « Affiche » — Homepage Miss & Mister Dour
+   ════════════════════════════════════════════════════════════ */
+
+.font-grotesk {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+/* Bandeau défilant */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.333%); }
+}
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Textes contour */
+.text-stroke-gold {
+  -webkit-text-stroke: 2px var(--gold);
+  paint-order: stroke fill;
+}
+@media (min-width: 768px) {
+  .text-stroke-gold { -webkit-text-stroke-width: 3px; }
+}
+.text-stroke-thin {
+  -webkit-text-stroke: 1.5px rgba(216, 191, 138, 0.35);
+}
+
+/* Grain photographique */
+.grain-overlay {
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Apparition douce du hero */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-fade {
+  animation: hero-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-fade:nth-child(2) { animation-delay: 0.08s; }
+.hero-fade:nth-child(3) { animation-delay: 0.16s; }
+.hero-fade:nth-child(4) { animation-delay: 0.24s; }
+
+/* La homepage éditoriale force le fond noir profond */
+.editorial-home {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(120, 66, 30, 0.25) 0%, transparent 60%),
+    #050403;
+}
