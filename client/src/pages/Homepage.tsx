@@ -370,11 +370,9 @@ export default function Homepage() {
             <span className="hidden justify-self-center font-serif text-3xl italic text-white/25 md:block">+</span>
             <Link href="/sponsors" className="group flex flex-col items-center gap-4 text-center">
               <div className="flex h-32 items-center justify-center rounded-xl border border-white/10 bg-black p-4 transition-colors group-hover:border-gold/40">
-                <img
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/Logo_JS-Innov.IA_EvoluTion_Autonome_02-26_85ca048d.png"
-                  alt="JS-Innov.IA® - Julien Pagin"
-                  className="h-20 w-auto object-contain"
-                />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border-2" style={{ borderColor: "#DCB464", background: "rgba(220,180,100,0.08)" }}>
+                  <span className="text-2xl font-bold" style={{ color: "#FADCA0" }}>JS</span>
+                </div>
               </div>
               <span className="font-grotesk text-xs uppercase tracking-[0.25em] text-white/45">Créateur & partenaire technologique</span>
             </Link>

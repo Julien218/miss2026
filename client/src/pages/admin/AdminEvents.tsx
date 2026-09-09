@@ -139,7 +139,7 @@ export default function AdminEvents() {
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button onClick={openNew} className="gap-2" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}>
+              <Button onClick={openNew} className="gap-2" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}>
                 <Plus className="w-4 h-4" />
                 Nouvel événement
               </Button>
@@ -199,7 +199,7 @@ export default function AdminEvents() {
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setOpen(false)} className="border-gray-600">Annuler</Button>
-                <Button onClick={handleSave} style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}>
+                <Button onClick={handleSave} style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}>
                   {editItem ? "Enregistrer" : "Créer"}
                 </Button>
               </DialogFooter>

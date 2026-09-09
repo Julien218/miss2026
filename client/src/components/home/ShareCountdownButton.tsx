@@ -50,7 +50,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
       toast.success("Lien copié !", {
         duration: 2000,
         style: {
-          background: 'linear-gradient(135deg, #D4AF37 0%, #B8941E 100%)',
+          background: 'linear-gradient(135deg, #DCB464 0%, #AA8228 100%)',
           color: '#0A0A0A',
           fontWeight: 'bold',
         },
@@ -77,7 +77,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
       toast.success(`Image ${selectedFormat} téléchargée !`, {
         duration: 2000,
         style: {
-          background: 'linear-gradient(135deg, #D4AF37 0%, #B8941E 100%)',
+          background: 'linear-gradient(135deg, #DCB464 0%, #AA8228 100%)',
           color: '#0A0A0A',
           fontWeight: 'bold',
         },
@@ -110,7 +110,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
       toast.success(`Partage sur ${platform} ouvert !`, {
         duration: 2000,
         style: {
-          background: 'linear-gradient(135deg, #D4AF37 0%, #B8941E 100%)',
+          background: 'linear-gradient(135deg, #DCB464 0%, #AA8228 100%)',
           color: '#0A0A0A',
           fontWeight: 'bold',
         },
@@ -134,7 +134,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
         <Button
           onClick={() => setOpen(true)}
           variant="outline"
-          className="bg-gradient-to-r from-[#D4AF37]/10 to-[#B8941E]/10 border-[#D4AF37]/30 hover:border-[#D4AF37]/50 text-[#D4AF37] hover:text-[#E8C547] font-semibold group"
+          className="bg-gradient-to-r from-[#DCB464]/10 to-[#AA8228]/10 border-[#DCB464]/30 hover:border-[#DCB464]/50 text-[#DCB464] hover:text-[#FADCA0] font-semibold group"
         >
           <Share2 className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
           Partager le Compte à Rebours
@@ -142,9 +142,9 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
       </motion.div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-gradient-to-br from-[#1A1A1A] to-[#0A0A0A] border-[#D4AF37]/30 text-white max-w-2xl">
+        <DialogContent className="bg-gradient-to-br from-[#1A1A1A] to-[#0A0A0A] border-[#DCB464]/30 text-white max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
               Partager le Compte à Rebours
             </DialogTitle>
             <DialogDescription className="text-white/70">
@@ -165,8 +165,8 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
                     variant={selectedFormat === format ? "default" : "outline"}
                     className={
                       selectedFormat === format
-                        ? "bg-gradient-to-r from-[#D4AF37] to-[#B8941E] text-black hover:opacity-90"
-                        : "border-[#D4AF37]/30 text-[#D4AF37] hover:border-[#D4AF37]/50"
+                        ? "bg-gradient-to-r from-[#DCB464] to-[#AA8228] text-black hover:opacity-90"
+                        : "border-[#DCB464]/30 text-[#DCB464] hover:border-[#DCB464]/50"
                     }
                   >
                     <Icon className="w-4 h-4 mr-2" />
@@ -178,7 +178,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
             </div>
 
             {/* Preview image */}
-            <div className="relative rounded-lg overflow-hidden border border-[#D4AF37]/20 bg-black/50 flex items-center justify-center min-h-[300px]">
+            <div className="relative rounded-lg overflow-hidden border border-[#DCB464]/20 bg-black/50 flex items-center justify-center min-h-[300px]">
               <img 
                 src={imageUrl} 
                 alt="Countdown Preview" 
@@ -192,7 +192,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
             <Button
               onClick={handleDownloadImage}
               variant="outline"
-              className="w-full border-[#D4AF37]/30 hover:border-[#D4AF37]/50 text-[#D4AF37] hover:text-[#E8C547]"
+              className="w-full border-[#DCB464]/30 hover:border-[#DCB464]/50 text-[#DCB464] hover:text-[#FADCA0]"
             >
               <Image className="w-4 h-4 mr-2" />
               Télécharger l'Image
@@ -237,7 +237,7 @@ export function ShareCountdownButton({ daysLeft, hoursLeft, minutesLeft }: Share
             <Button
               onClick={handleCopyLink}
               variant="outline"
-              className="w-full border-[#D4AF37]/30 hover:border-[#D4AF37]/50 text-[#D4AF37] hover:text-[#E8C547]"
+              className="w-full border-[#DCB464]/30 hover:border-[#DCB464]/50 text-[#DCB464] hover:text-[#FADCA0]"
             >
               {copied ? (
                 <>

@@ -269,9 +269,9 @@ function VoteLiveSection() {
             // Couleurs et hauteurs selon position
             const positionStyles = {
               1: {
-                gradient: 'from-[#FFD700] via-[#FFA500] to-[#FFD700]',
+                gradient: 'from-[#FADCA0] via-[#FFA500] to-[#FADCA0]',
                 height: 'h-96',
-                icon: <Crown className="w-12 h-12 text-[#FFD700] fill-[#FFD700]" />,
+                icon: <Crown className="w-12 h-12 text-[#FADCA0] fill-[#FADCA0]" />,
                 glow: '0 0 40px rgba(255, 215, 0, 0.6)',
                 delay: 0.3,
               },
@@ -470,7 +470,7 @@ export default function MissMisterDour2026Premium() {
       <SEOHead
         title="Miss & Mister Dour 2026 - Candidats Officiels"
         description="Découvrez les candidats officiels Miss & Mister Dour 2026. Un miroir ne reflète pas seulement l'image… Il révèle l'essence. Finale le 19 avril 2026 au Liligaga Mirror."
-        image="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+        image="/logo/miss-mister-dour-logo-transparent.png"
         url={typeof window !== 'undefined' ? window.location.href : undefined}
         type="website"
       />
@@ -497,7 +497,7 @@ export default function MissMisterDour2026Premium() {
               className="flex items-center"
             >
               <img
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/GRnxeynZwidOueul.png"
+                src="/logo/miss-mister-dour-logo-transparent.png"
                 alt="Miss & Mister Dour 2026"
                 className="h-12 md:h-16 w-auto"
               />
@@ -525,7 +525,7 @@ export default function MissMisterDour2026Premium() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-2 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black font-semibold"
+                className="px-6 py-2 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black font-semibold"
               >
                 S'inscrire
               </motion.button>
@@ -597,7 +597,7 @@ export default function MissMisterDour2026Premium() {
                     <NotificationBell />
                   </div>
                   <Link href="/inscription-candidat">
-                    <button className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black font-semibold">
+                    <button className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black font-semibold">
                       S'inscrire
                     </button>
                   </Link>
@@ -634,7 +634,7 @@ export default function MissMisterDour2026Premium() {
             className="mb-16 flex justify-center"
           >
             <motion.img
-              src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/GRnxeynZwidOueul.png"
+              src="/logo/miss-mister-dour-logo-transparent.png"
               alt="Miss & Mister Dour 2026"
               className="w-80 md:w-[500px] lg:w-[600px] h-auto"
               animate={{
@@ -729,7 +729,7 @@ export default function MissMisterDour2026Premium() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(200, 164, 92, 0.5)" }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black font-bold text-lg flex items-center gap-2"
+                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black font-bold text-lg flex items-center gap-2"
               >
                 Devenir candidat(e)
                 <ArrowRight className="w-5 h-5" />
@@ -1059,7 +1059,7 @@ export default function MissMisterDour2026Premium() {
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(200, 164, 92, 0.6)" }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black font-bold text-lg flex items-center gap-2 mx-auto"
+              className="px-10 py-4 rounded-full bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black font-bold text-lg flex items-center gap-2 mx-auto"
             >
               <Heart className="w-5 h-5" />
               Voter maintenant
@@ -1087,7 +1087,7 @@ export default function MissMisterDour2026Premium() {
                   Conception & Technologie
                 </div>
                 <div
-                  className="text-3xl font-bold bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] bg-clip-text text-transparent flex items-center gap-2 justify-center"
+                  className="text-3xl font-bold bg-gradient-to-r from-[#C8A45C] to-[#DCB464] bg-clip-text text-transparent flex items-center gap-2 justify-center"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                   <motion.span

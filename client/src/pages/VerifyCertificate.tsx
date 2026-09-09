@@ -51,13 +51,13 @@ export default function VerifyCertificate() {
           ...defaults,
           particleCount,
           origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-          colors: ['#D4AF37', '#FFD700', '#FFA500']
+          colors: ['#DCB464', '#FADCA0', '#FFA500']
         });
         confetti({
           ...defaults,
           particleCount,
           origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-          colors: ['#D4AF37', '#FFD700', '#FFA500']
+          colors: ['#DCB464', '#FADCA0', '#FFA500']
         });
       }, 250);
     }
@@ -71,7 +71,7 @@ export default function VerifyCertificate() {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="w-16 h-16 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-[#DCB464] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-white text-lg">Vérification du certificat...</p>
         </motion.div>
       </div>
@@ -110,7 +110,7 @@ export default function VerifyCertificate() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <Shield className="w-20 h-20 text-[#D4AF37] mx-auto mb-4" />
+          <Shield className="w-20 h-20 text-[#DCB464] mx-auto mb-4" />
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
             Vérification de Certificat
           </h1>
@@ -166,7 +166,7 @@ export default function VerifyCertificate() {
             transition={{ delay: 0.4 }}
           >
             <Card className="bg-white/5 border-white/10 backdrop-blur-xl p-6 h-full">
-              <h3 className="text-xl font-bold text-[#D4AF37] mb-4 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-[#DCB464] mb-4 flex items-center gap-2">
                 <Award className="w-6 h-6" />
                 Informations
               </h3>
@@ -206,7 +206,7 @@ export default function VerifyCertificate() {
             transition={{ delay: 0.5 }}
           >
             <Card className="bg-white/5 border-white/10 backdrop-blur-xl p-6 h-full">
-              <h3 className="text-xl font-bold text-[#D4AF37] mb-4 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-[#DCB464] mb-4 flex items-center gap-2">
                 <QrCode className="w-6 h-6" />
                 QR Code
               </h3>
@@ -232,7 +232,7 @@ export default function VerifyCertificate() {
           transition={{ delay: 0.6 }}
         >
           <Card className="bg-white/5 border-white/10 backdrop-blur-xl p-6">
-            <h3 className="text-xl font-bold text-[#D4AF37] mb-4 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-[#DCB464] mb-4 flex items-center gap-2">
               <Shield className="w-6 h-6" />
               Validation Cryptographique (SHA256)
             </h3>
@@ -293,7 +293,7 @@ export default function VerifyCertificate() {
         >
           <p>
             Système de vérification sécurisé propulsé par{" "}
-            <span className="text-[#D4AF37] font-semibold">JS-Innov.IA</span>
+            <span className="text-[#DCB464] font-semibold">JS-Innov.IA</span>
           </p>
           <p className="mt-1">Pagin Julien - Dour, Belgique</p>
         </motion.div>

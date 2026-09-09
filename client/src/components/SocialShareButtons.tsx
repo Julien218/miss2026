@@ -74,7 +74,7 @@ export function SocialShareButtons({
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black font-semibold rounded-full hover:shadow-lg transition-all duration-300"
+        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black font-semibold rounded-full hover:shadow-lg transition-all duration-300"
         aria-label="Partager sur les réseaux sociaux"
       >
         <Share2 className="w-4 h-4" />

@@ -43,7 +43,7 @@ export function BarometerOrb({ size = "md", className = "" }: BarometerOrbProps)
 
   if (!barometer || !isClient) {
     return (
-      <div className={`${sizeClasses[size]} ${className} rounded-full bg-gradient-to-br from-[#C8A45C]/20 to-[#D4AF37]/20 border border-[#C8A45C]/30 flex items-center justify-center backdrop-blur-xl`}>
+      <div className={`${sizeClasses[size]} ${className} rounded-full bg-gradient-to-br from-[#C8A45C]/20 to-[#DCB464]/20 border border-[#C8A45C]/30 flex items-center justify-center backdrop-blur-xl`}>
         <div className="animate-pulse text-[#C8A45C]">
           <Activity className="w-8 h-8" />
         </div>
@@ -55,8 +55,8 @@ export function BarometerOrb({ size = "md", className = "" }: BarometerOrbProps)
 
   // Determine intensity color
   const getIntensityColor = (value: number) => {
-    if (value >= 80) return { from: "#D4AF37", to: "#FFD700", glow: "rgba(212, 175, 55, 0.6)" }; // Gold
-    if (value >= 60) return { from: "#C8A45C", to: "#D4AF37", glow: "rgba(200, 164, 92, 0.5)" }; // Warm gold
+    if (value >= 80) return { from: "#DCB464", to: "#FADCA0", glow: "rgba(220, 180, 100, 0.6)" }; // Gold
+    if (value >= 60) return { from: "#C8A45C", to: "#DCB464", glow: "rgba(200, 164, 92, 0.5)" }; // Warm gold
     if (value >= 40) return { from: "#F59E0B", to: "#FCD34D", glow: "rgba(245, 158, 11, 0.4)" }; // Orange
     if (value >= 20) return { from: "#10B981", to: "#34D399", glow: "rgba(16, 185, 129, 0.3)" }; // Green
     return { from: "#6B7280", to: "#9CA3AF", glow: "rgba(107, 114, 128, 0.2)" }; // Gray

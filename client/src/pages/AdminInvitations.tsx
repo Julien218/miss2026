@@ -195,7 +195,7 @@ export default function AdminInvitations() {
 
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#C8A45C] text-black font-semibold">
+                <Button className="bg-gradient-to-r from-[#C8A45C] to-[#DCB464] hover:from-[#DCB464] hover:to-[#C8A45C] text-black font-semibold">
                   <Plus className="w-4 h-4 mr-2" />
                   Créer invitation
                 </Button>
@@ -264,7 +264,7 @@ export default function AdminInvitations() {
                   <Button
                     onClick={handleCreate}
                     disabled={createMutation.isPending}
-                    className="w-full bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#C8A45C] text-black font-semibold"
+                    className="w-full bg-gradient-to-r from-[#C8A45C] to-[#DCB464] hover:from-[#DCB464] hover:to-[#C8A45C] text-black font-semibold"
                   >
                     {createMutation.isPending ? "Création..." : "Créer et copier le lien"}
                   </Button>

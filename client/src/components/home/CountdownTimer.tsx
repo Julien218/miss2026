@@ -81,7 +81,7 @@ function TimeUnit({ value, label }: { value: number; label: string }) {
       </div>
       
       {/* Label */}
-      <div className="text-xs md:text-sm font-semibold text-[#D4AF37] uppercase tracking-widest">
+      <div className="text-xs md:text-sm font-semibold text-[#DCB464] uppercase tracking-widest">
         {label}
       </div>
     </div>
@@ -93,7 +93,7 @@ function FlipCard({ value }: { value: string }) {
     <div className="relative w-12 h-16 md:w-16 md:h-20">
       {/* Glow effect */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#B8941E] rounded-lg blur-xl opacity-30"
+        className="absolute inset-0 bg-gradient-to-br from-[#DCB464] to-[#AA8228] rounded-lg blur-xl opacity-30"
         animate={{
           opacity: [0.3, 0.5, 0.3],
         }}
@@ -105,7 +105,7 @@ function FlipCard({ value }: { value: string }) {
       />
 
       {/* Card */}
-      <div className="relative h-full bg-gradient-to-br from-[#1A1A1A]/90 to-[#0A0A0A]/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-lg shadow-2xl overflow-hidden">
+      <div className="relative h-full bg-gradient-to-br from-[#1A1A1A]/90 to-[#0A0A0A]/90 backdrop-blur-xl border border-[#DCB464]/30 rounded-lg shadow-2xl overflow-hidden">
         {/* Top half */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A]/50 to-transparent h-1/2" />
         
@@ -113,7 +113,7 @@ function FlipCard({ value }: { value: string }) {
         <div className="absolute inset-0 top-1/2 bg-gradient-to-t from-[#0A0A0A]/80 to-transparent h-1/2" />
         
         {/* Middle line */}
-        <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-[#D4AF37]/20 transform -translate-y-1/2" />
+        <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-[#DCB464]/20 transform -translate-y-1/2" />
 
         {/* Animated number */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -127,7 +127,7 @@ function FlipCard({ value }: { value: string }) {
                 duration: 0.6,
                 ease: [0.4, 0.0, 0.2, 1],
               }}
-              className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent drop-shadow-lg"
+              className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent drop-shadow-lg"
               style={{ transformStyle: "preserve-3d" }}
             >
               {value}
@@ -136,7 +136,7 @@ function FlipCard({ value }: { value: string }) {
         </div>
 
         {/* Inner glow */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#D4AF37]/10 to-transparent rounded-lg pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#DCB464]/10 to-transparent rounded-lg pointer-events-none" />
         
         {/* Shine effect */}
         <motion.div
@@ -169,8 +169,8 @@ function Separator() {
         ease: "easeInOut",
       }}
     >
-      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#E8C547] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/50" />
-      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#E8C547] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/50" />
+      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#FADCA0] to-[#DCB464] shadow-lg shadow-[#DCB464]/50" />
+      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#FADCA0] to-[#DCB464] shadow-lg shadow-[#DCB464]/50" />
     </motion.div>
   );
 }

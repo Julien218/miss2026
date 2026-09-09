@@ -31,8 +31,8 @@ export function InfluenceBadge({
 
   // Determine color based on influence level
   const getInfluenceColor = (value: number) => {
-    if (value >= 800) return { from: "#D4AF37", to: "#FFD700", text: "#D4AF37", glow: "rgba(212, 175, 55, 0.4)" }; // Gold
-    if (value >= 600) return { from: "#C8A45C", to: "#D4AF37", text: "#C8A45C", glow: "rgba(200, 164, 92, 0.3)" }; // Warm gold
+    if (value >= 800) return { from: "#DCB464", to: "#FADCA0", text: "#DCB464", glow: "rgba(220, 180, 100, 0.4)" }; // Gold
+    if (value >= 600) return { from: "#C8A45C", to: "#DCB464", text: "#C8A45C", glow: "rgba(200, 164, 92, 0.3)" }; // Warm gold
     if (value >= 400) return { from: "#F59E0B", to: "#FCD34D", text: "#F59E0B", glow: "rgba(245, 158, 11, 0.3)" }; // Orange
     if (value >= 200) return { from: "#10B981", to: "#34D399", text: "#10B981", glow: "rgba(16, 185, 129, 0.2)" }; // Green
     return { from: "#6B7280", to: "#9CA3AF", text: "#9CA3AF", glow: "rgba(107, 114, 128, 0.2)" }; // Gray

@@ -131,7 +131,7 @@ export default function AdminPartners() {
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button onClick={openNew} className="gap-2" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}>
+              <Button onClick={openNew} className="gap-2" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}>
                 <Plus className="w-4 h-4" />
                 Ajouter un partenaire
               </Button>
@@ -177,7 +177,7 @@ export default function AdminPartners() {
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setOpen(false)} className="border-gray-600">Annuler</Button>
-                <Button onClick={handleSave} style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}>
+                <Button onClick={handleSave} style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}>
                   {editItem ? "Enregistrer" : "Ajouter"}
                 </Button>
               </DialogFooter>
@@ -231,7 +231,7 @@ export default function AdminPartners() {
             <div className="space-y-3">
               {filtered.map((p) => (
                 <div key={p.id} className={`flex items-start gap-4 p-4 rounded-lg border transition-colors ${p.active ? "bg-gray-800/50 border-gray-700 hover:bg-gray-800" : "bg-gray-900/30 border-gray-800 opacity-60"}`}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)" }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)" }}>
                     <Briefcase className="w-5 h-5 text-black" />
                   </div>
                   <div className="flex-1 min-w-0">

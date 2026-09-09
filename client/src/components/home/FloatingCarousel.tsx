@@ -51,7 +51,7 @@ export function FloatingCarousel({ candidates }: FloatingCarouselProps) {
 
       {/* Center Glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-64 h-64 rounded-full bg-[#D4AF37]/10 blur-3xl animate-pulse" />
+        <div className="w-64 h-64 rounded-full bg-[#DCB464]/10 blur-3xl animate-pulse" />
       </div>
     </div>
   );

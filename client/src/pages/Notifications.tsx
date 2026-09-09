@@ -165,7 +165,7 @@ export default function Notifications() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-[#D4AF37] to-[#F4E4C1] rounded-xl shadow-lg relative">
+            <div className="p-3 bg-gradient-to-br from-[#DCB464] to-[#F4E4C1] rounded-xl shadow-lg relative">
               <Bell className="w-8 h-8 text-white" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
@@ -174,7 +174,7 @@ export default function Notifications() {
               )}
             </div>
             <div>
-              <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+              <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                 Notifications
               </h1>
               <p className="text-[#8B7355] mt-1">
@@ -187,7 +187,7 @@ export default function Notifications() {
             <Button
               onClick={handleMarkAllAsRead}
               variant="outline"
-              className="border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10"
+              className="border-[#DCB464]/30 text-[#DCB464] hover:bg-[#DCB464]/10"
             >
               <Check className="w-4 h-4 mr-2" />
               Tout marquer comme lu
@@ -196,15 +196,15 @@ export default function Notifications() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 mb-6 border border-[#D4AF37]/20">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 mb-6 border border-[#DCB464]/20">
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-[#D4AF37]" />
+              <Filter className="w-5 h-5 text-[#DCB464]" />
               <span className="text-sm font-semibold text-[#8B7355]">Filtres:</span>
             </div>
 
             <Select value={filter} onValueChange={(value: any) => setFilter(value)}>
-              <SelectTrigger className="w-40 border-[#D4AF37]/30">
+              <SelectTrigger className="w-40 border-[#DCB464]/30">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -215,7 +215,7 @@ export default function Notifications() {
             </Select>
 
             <Select value={typeFilter} onValueChange={(value: any) => setTypeFilter(value)}>
-              <SelectTrigger className="w-40 border-[#D4AF37]/30">
+              <SelectTrigger className="w-40 border-[#DCB464]/30">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -233,8 +233,8 @@ export default function Notifications() {
         {/* Notifications List */}
         <div className="space-y-4">
           {filteredNotifications.length === 0 ? (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-12 text-center border border-[#D4AF37]/20">
-              <Bell className="w-16 h-16 text-[#D4AF37]/30 mx-auto mb-4" />
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-12 text-center border border-[#DCB464]/20">
+              <Bell className="w-16 h-16 text-[#DCB464]/30 mx-auto mb-4" />
               <p className="text-lg text-[#8B7355]">Aucune notification à afficher</p>
             </div>
           ) : (
@@ -243,7 +243,7 @@ export default function Notifications() {
                 key={notif.id}
                 className={cn(
                   "bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border transition-all duration-300 hover:shadow-2xl",
-                  notif.read ? "border-[#D4AF37]/10" : "border-[#D4AF37]/30 bg-[#FFF8E8]/80"
+                  notif.read ? "border-[#DCB464]/10" : "border-[#DCB464]/30 bg-[#FFF8E8]/80"
                 )}
               >
                 <div className="flex items-start gap-4">
@@ -256,20 +256,20 @@ export default function Notifications() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1">
-                        <h3 className="text-lg font-playfair font-bold text-[#D4AF37] mb-1">
+                        <h3 className="text-lg font-playfair font-bold text-[#DCB464] mb-1">
                           {notif.title}
                         </h3>
                         <p className="text-sm text-[#8B7355]">{notif.message}</p>
                       </div>
                       {!notif.read && (
-                        <span className="w-3 h-3 bg-[#D4AF37] rounded-full flex-shrink-0 mt-1"></span>
+                        <span className="w-3 h-3 bg-[#DCB464] rounded-full flex-shrink-0 mt-1"></span>
                       )}
                     </div>
 
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center gap-3">
                         <span className="text-xs text-[#8B7355]">{formatTimestamp(notif.timestamp)}</span>
-                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[#D4AF37]/10 text-[#B8941E]">
+                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[#DCB464]/10 text-[#AA8228]">
                           {getTypeLabel(notif.type)}
                         </span>
                       </div>
@@ -280,7 +280,7 @@ export default function Notifications() {
                             size="sm"
                             variant="ghost"
                             onClick={() => handleMarkAsRead(notif.id)}
-                            className="text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                            className="text-[#DCB464] hover:bg-[#DCB464]/10"
                           >
                             <Check className="w-4 h-4 mr-1" />
                             Marquer comme lu
@@ -300,7 +300,7 @@ export default function Notifications() {
                     {notif.actionUrl && (
                       <Button
                         size="sm"
-                        className="mt-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                        className="mt-3 bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
                         onClick={() => {
                           window.location.href = notif.actionUrl!;
                         }}

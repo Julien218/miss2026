@@ -200,7 +200,7 @@ export default function ContestDetail() {
                 <Button variant="ghost" onClick={handleCancelEdit} className="gap-2 text-gray-400">
                   <X className="w-4 h-4" /> Annuler
                 </Button>
-                <Button onClick={handleSave} disabled={updateMutation.isPending} className="gap-2" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}>
+                <Button onClick={handleSave} disabled={updateMutation.isPending} className="gap-2" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}>
                   <Save className="w-4 h-4" />
                   {updateMutation.isPending ? "Enregistrement…" : "Enregistrer"}
                 </Button>
@@ -373,7 +373,7 @@ export default function ContestDetail() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-white truncate">{c.candidateName}</p>
                           <div className="h-1.5 bg-gray-700 rounded-full mt-1 overflow-hidden">
-                            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #C87941, #D4AF37)" }} />
+                            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #AA8228, #DCB464)" }} />
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">

@@ -148,7 +148,7 @@ export default function CandidatePublicProfile() {
             <img
               src={BRANDING.logoIdentity}
               alt="Miss & Mister Dour 2026"
-              className="h-12 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+              className="h-12 object-contain drop-shadow-[0_0_8px_rgba(220,180,100,0.6)]"
             />
           </a>
           <a href="/" className="flex items-center gap-2 text-gray-400 hover:text-gold transition-colors text-sm">

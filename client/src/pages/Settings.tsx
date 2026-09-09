@@ -87,11 +87,11 @@ export default function Settings() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="p-3 bg-gradient-to-br from-[#D4AF37] to-[#F4E4C1] rounded-xl shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-[#DCB464] to-[#F4E4C1] rounded-xl shadow-lg">
             <SettingsIcon className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+            <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
               Paramètres
             </h1>
             <p className="text-[#8B7355] mt-1">Gérez vos préférences et votre compte</p>
@@ -99,22 +99,22 @@ export default function Settings() {
         </div>
 
         {/* Settings Tabs */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-[#D4AF37]/20">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-[#DCB464]/20">
           <Tabs defaultValue="profile" className="p-6">
             <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="profile" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white">
+              <TabsTrigger value="profile" className="data-[state=active]:bg-[#DCB464] data-[state=active]:text-white">
                 <User className="w-4 h-4 mr-2" />
                 Profil
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white">
+              <TabsTrigger value="notifications" className="data-[state=active]:bg-[#DCB464] data-[state=active]:text-white">
                 <Bell className="w-4 h-4 mr-2" />
                 Notifications
               </TabsTrigger>
-              <TabsTrigger value="privacy" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white">
+              <TabsTrigger value="privacy" className="data-[state=active]:bg-[#DCB464] data-[state=active]:text-white">
                 <Lock className="w-4 h-4 mr-2" />
                 Confidentialité
               </TabsTrigger>
-              <TabsTrigger value="appearance" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white">
+              <TabsTrigger value="appearance" className="data-[state=active]:bg-[#DCB464] data-[state=active]:text-white">
                 <Palette className="w-4 h-4 mr-2" />
                 Apparence
               </TabsTrigger>
@@ -129,7 +129,7 @@ export default function Settings() {
                     id="firstName"
                     value={profileSettings.firstName}
                     onChange={(e) => setProfileSettings({ ...profileSettings, firstName: e.target.value })}
-                    className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                    className="border-[#DCB464]/30 focus:border-[#DCB464]"
                   />
                 </div>
                 <div>
@@ -138,7 +138,7 @@ export default function Settings() {
                     id="lastName"
                     value={profileSettings.lastName}
                     onChange={(e) => setProfileSettings({ ...profileSettings, lastName: e.target.value })}
-                    className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                    className="border-[#DCB464]/30 focus:border-[#DCB464]"
                   />
                 </div>
               </div>
@@ -150,7 +150,7 @@ export default function Settings() {
                   type="email"
                   value={profileSettings.email}
                   onChange={(e) => setProfileSettings({ ...profileSettings, email: e.target.value })}
-                  className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                  className="border-[#DCB464]/30 focus:border-[#DCB464]"
                 />
               </div>
 
@@ -162,7 +162,7 @@ export default function Settings() {
                   value={profileSettings.phone}
                   onChange={(e) => setProfileSettings({ ...profileSettings, phone: e.target.value })}
                   placeholder="+32 123 456 789"
-                  className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                  className="border-[#DCB464]/30 focus:border-[#DCB464]"
                 />
               </div>
 
@@ -174,14 +174,14 @@ export default function Settings() {
                   onChange={(e) => setProfileSettings({ ...profileSettings, bio: e.target.value })}
                   rows={4}
                   placeholder="Parlez-nous de vous..."
-                  className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                  className="border-[#DCB464]/30 focus:border-[#DCB464]"
                 />
               </div>
 
               <Button
                 onClick={handleSaveProfile}
                 disabled={isSaving}
-                className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {isSaving ? "Enregistrement..." : "Enregistrer le profil"}
@@ -191,9 +191,9 @@ export default function Settings() {
             {/* Notifications Tab */}
             <TabsContent value="notifications" className="space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Notifications par email</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Notifications par email</Label>
                     <p className="text-sm text-[#8B7355]">Recevoir des notifications par email</p>
                   </div>
                   <Switch
@@ -204,9 +204,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Notifications SMS</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Notifications SMS</Label>
                     <p className="text-sm text-[#8B7355]">Recevoir des notifications par SMS</p>
                   </div>
                   <Switch
@@ -217,9 +217,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Notifications push</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Notifications push</Label>
                     <p className="text-sm text-[#8B7355]">Recevoir des notifications push sur votre appareil</p>
                   </div>
                   <Switch
@@ -230,9 +230,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Rappels d'événements</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Rappels d'événements</Label>
                     <p className="text-sm text-[#8B7355]">Recevoir des rappels avant les événements</p>
                   </div>
                   <Switch
@@ -243,9 +243,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Actualités</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Actualités</Label>
                     <p className="text-sm text-[#8B7355]">Recevoir les dernières actualités du concours</p>
                   </div>
                   <Switch
@@ -256,9 +256,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Résumé hebdomadaire</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Résumé hebdomadaire</Label>
                     <p className="text-sm text-[#8B7355]">Recevoir un résumé hebdomadaire par email</p>
                   </div>
                   <Switch
@@ -273,7 +273,7 @@ export default function Settings() {
               <Button
                 onClick={handleSaveNotifications}
                 disabled={isSaving}
-                className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {isSaving ? "Enregistrement..." : "Enregistrer les préférences"}
@@ -290,7 +290,7 @@ export default function Settings() {
                     setPrivacySettings({ ...privacySettings, profileVisibility: value as any })
                   }
                 >
-                  <SelectTrigger className="border-[#D4AF37]/30">
+                  <SelectTrigger className="border-[#DCB464]/30">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -302,9 +302,9 @@ export default function Settings() {
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Afficher l'email</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Afficher l'email</Label>
                     <p className="text-sm text-[#8B7355]">Rendre votre email visible sur votre profil</p>
                   </div>
                   <Switch
@@ -313,9 +313,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Afficher le téléphone</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Afficher le téléphone</Label>
                     <p className="text-sm text-[#8B7355]">Rendre votre téléphone visible sur votre profil</p>
                   </div>
                   <Switch
@@ -324,9 +324,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Autoriser les messages</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Autoriser les messages</Label>
                     <p className="text-sm text-[#8B7355]">Permettre aux autres utilisateurs de vous envoyer des messages</p>
                   </div>
                   <Switch
@@ -335,9 +335,9 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#D4AF37]/20">
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F5] rounded-lg border border-[#DCB464]/20">
                   <div>
-                    <Label className="text-base font-semibold text-[#D4AF37]">Autoriser les commentaires</Label>
+                    <Label className="text-base font-semibold text-[#DCB464]">Autoriser les commentaires</Label>
                     <p className="text-sm text-[#8B7355]">Permettre aux autres utilisateurs de commenter votre profil</p>
                   </div>
                   <Switch
@@ -350,7 +350,7 @@ export default function Settings() {
               <Button
                 onClick={handleSavePrivacy}
                 disabled={isSaving}
-                className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {isSaving ? "Enregistrement..." : "Enregistrer les paramètres"}
@@ -365,7 +365,7 @@ export default function Settings() {
                   value={appearanceSettings.theme}
                   onValueChange={(value) => setAppearanceSettings({ ...appearanceSettings, theme: value as any })}
                 >
-                  <SelectTrigger className="border-[#D4AF37]/30">
+                  <SelectTrigger className="border-[#DCB464]/30">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -382,7 +382,7 @@ export default function Settings() {
                   value={appearanceSettings.language}
                   onValueChange={(value) => setAppearanceSettings({ ...appearanceSettings, language: value as any })}
                 >
-                  <SelectTrigger className="border-[#D4AF37]/30">
+                  <SelectTrigger className="border-[#DCB464]/30">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -399,7 +399,7 @@ export default function Settings() {
                   value={appearanceSettings.fontSize}
                   onValueChange={(value) => setAppearanceSettings({ ...appearanceSettings, fontSize: value as any })}
                 >
-                  <SelectTrigger className="border-[#D4AF37]/30">
+                  <SelectTrigger className="border-[#DCB464]/30">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -413,7 +413,7 @@ export default function Settings() {
               <Button
                 onClick={handleSaveAppearance}
                 disabled={isSaving}
-                className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {isSaving ? "Enregistrement..." : "Enregistrer les préférences"}

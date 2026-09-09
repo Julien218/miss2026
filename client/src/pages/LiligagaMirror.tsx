@@ -184,7 +184,7 @@ export default function LiligagaMirror() {
                   alt="JS-Innov.IA Logo" 
                   className="w-32 h-32 mx-auto object-contain mb-4"
                   style={{
-                    filter: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.5))'
+                    filter: 'drop-shadow(0 0 40px rgba(220, 180, 100, 0.5))'
                   }}
                 />
                 <div className="text-sm text-gray-400 mt-2">présente</div>
@@ -470,7 +470,7 @@ export default function LiligagaMirror() {
                   alt="JS-Innov.IA Logo" 
                   className="w-40 h-40 mx-auto object-contain mb-8"
                   style={{
-                    filter: 'drop-shadow(0 0 60px rgba(212, 175, 55, 0.5))'
+                    filter: 'drop-shadow(0 0 60px rgba(220, 180, 100, 0.5))'
                   }}
                 />
                 <h2 className="text-3xl md:text-5xl font-bold mb-6">

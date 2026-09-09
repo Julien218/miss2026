@@ -25,7 +25,7 @@ export default function About() {
     const infoWindow = new window.google.maps.InfoWindow({
       content: `
         <div style="font-family: sans-serif; padding: 8px; max-width: 220px;">
-          <h3 style="margin: 0 0 6px; color: #D4AF37; font-size: 15px; font-weight: bold;">Centre Sportif d'Elouges</h3>
+          <h3 style="margin: 0 0 6px; color: #DCB464; font-size: 15px; font-weight: bold;">Centre Sportif d'Elouges</h3>
           <p style="margin: 0 0 4px; font-size: 13px; color: #333;">Rue de la Tournelle 10<br/>7370 Elouges, Belgique</p>
           <p style="margin: 6px 0 0; font-size: 12px; color: #666;">📅 19 Avril 2026 — Miss & Mister Dour</p>
         </div>
@@ -50,7 +50,7 @@ export default function About() {
               <img
                 src={BRANDING.logoIdentity}
                 alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(220,180,100,0.6)]"
                 loading="eager"
               />
             </Link>

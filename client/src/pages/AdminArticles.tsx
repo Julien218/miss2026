@@ -155,7 +155,7 @@ export default function AdminArticles() {
             <button
               onClick={handleAnalyze}
               disabled={!selectedFile || isAnalyzing}
-              className="w-full px-6 py-3 bg-gradient-to-r from-[#C8A45C] via-[#D4AF37] to-[#C8A45C] text-black font-bold rounded-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-gradient-to-r from-[#C8A45C] via-[#DCB464] to-[#C8A45C] text-black font-bold rounded-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isAnalyzing ? (
                 <>

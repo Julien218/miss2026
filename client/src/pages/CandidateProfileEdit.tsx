@@ -384,7 +384,7 @@ export default function CandidateProfileEdit() {
             <img
               src={BRANDING.logoIdentity}
               alt="Miss & Mister Dour 2026"
-              className="h-12 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+              className="h-12 object-contain drop-shadow-[0_0_8px_rgba(220,180,100,0.6)]"
             />
           </a>
           <span className="text-gold font-semibold text-sm hidden sm:block">
@@ -675,12 +675,12 @@ export default function CandidateProfileEdit() {
                           : <span>Consentements obligatoires : <strong className="text-white">{done}/{total}</strong></span>
                         }
                       </span>
-                      <span className="text-xs font-bold" style={{ color: done === total ? "#4ade80" : "#D4AF37" }}>{pct}%</span>
+                      <span className="text-xs font-bold" style={{ color: done === total ? "#4ade80" : "#DCB464" }}>{pct}%</span>
                     </div>
                     <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${pct}%`, background: done === total ? "#4ade80" : "linear-gradient(90deg, #D4AF37, #E8C547)" }}
+                        style={{ width: `${pct}%`, background: done === total ? "#4ade80" : "linear-gradient(90deg, #DCB464, #FADCA0)" }}
                       />
                     </div>
                   </div>

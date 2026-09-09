@@ -8,7 +8,7 @@ export default function LegalCookies() {
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img src={BRANDING.logoIdentity} alt="Logo officiel Miss & Mister Dour 2026" className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]" loading="eager" />
+              <img src={BRANDING.logoIdentity} alt="Logo officiel Miss & Mister Dour 2026" className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(220,180,100,0.6)]" loading="eager" />
             </Link>
           <Link href="/" className="text-gold hover:text-gold/80 transition-colors font-medium">Retour à l'accueil</Link>
         </div>

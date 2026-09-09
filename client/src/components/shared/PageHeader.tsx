@@ -23,7 +23,7 @@ export function PageHeader({
           className={cn(
             "text-4xl font-playfair font-bold mb-2",
             variant === "gradient"
-              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent"
+              ? "bg-gradient-to-r from-[#DCB464] to-[#AA8228] bg-clip-text text-transparent"
               : "text-[#8B7355]"
           )}
         >

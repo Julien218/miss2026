@@ -169,23 +169,23 @@ export default function LegalPrivacy() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-background, #0A0A0F)" }}>
       <style>{`
-        .priv-link { color: #C87941; text-decoration: underline; text-underline-offset: 2px; transition: color .2s; }
-        .priv-link:hover { color: #D4AF37; }
+        .priv-link { color: #AA8228; text-decoration: underline; text-underline-offset: 2px; transition: color .2s; }
+        .priv-link:hover { color: #DCB464; }
         .priv-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
-        .priv-table th { padding: .6rem .75rem; border: 1px solid rgba(200,121,65,.25); background: rgba(200,121,65,.1); color: #C87941; font-weight: 600; text-align: left; white-space: nowrap; }
+        .priv-table th { padding: .6rem .75rem; border: 1px solid rgba(170,130,40,.25); background: rgba(170,130,40,.1); color: #AA8228; font-weight: 600; text-align: left; white-space: nowrap; }
         .priv-table td { padding: .5rem .75rem; border: 1px solid rgba(255,255,255,.07); color: #D1D5DB; vertical-align: top; }
         .priv-table tr:nth-child(even) td { background: rgba(255,255,255,.015); }
         .priv-section { border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.02); }
         .priv-section h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: .6rem; }
         .priv-section p { color: #D1D5DB; line-height: 1.75; margin-bottom: .75rem; }
         .priv-section p:last-child { margin-bottom: 0; }
-        .priv-icon { width: 2rem; height: 2rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(200,121,65,.15); border: 1px solid rgba(200,121,65,.3); }
+        .priv-icon { width: 2rem; height: 2rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(170,130,40,.15); border: 1px solid rgba(170,130,40,.3); }
         .right-card { border-radius: .75rem; padding: 1rem; border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.02); display: flex; gap: .75rem; }
-        .right-icon { width: 2.25rem; height: 2.25rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(200,121,65,.12); border: 1px solid rgba(200,121,65,.25); }
+        .right-icon { width: 2.25rem; height: 2.25rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(170,130,40,.12); border: 1px solid rgba(170,130,40,.25); }
       `}</style>
 
       {/* En-tête */}
-      <div className="border-b border-gray-800" style={{ background: "rgba(200,121,65,.04)" }}>
+      <div className="border-b border-gray-800" style={{ background: "rgba(170,130,40,.04)" }}>
         <div className="max-w-5xl mx-auto px-6 py-8">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
               <ArrowLeft className="w-4 h-4" /> Retour au site
@@ -199,7 +199,7 @@ export default function LegalPrivacy() {
               <p className="text-gray-400 mt-1">Traitement des données personnelles — Conforme au RGPD (UE 2016/679)</p>
               <div className="flex flex-wrap gap-2 mt-3">
                 {["RGPD (UE 2016/679)", "Loi belge 30 juillet 2018", `Mise à jour : ${LAST_UPDATE}`].map((tag) => (
-                  <span key={tag} className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(200,121,65,.4)", color: "#C87941", background: "rgba(200,121,65,.08)" }}>
+                  <span key={tag} className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(170,130,40,.4)", color: "#AA8228", background: "rgba(170,130,40,.08)" }}>
                     {tag}
                   </span>
                 ))}
@@ -225,9 +225,9 @@ export default function LegalPrivacy() {
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
 
         {/* Bannière engagement */}
-        <div className="p-5 rounded-2xl border flex items-start gap-4" style={{ background: "rgba(200,121,65,.05)", borderColor: "rgba(200,121,65,.2)" }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(200,121,65,.15)" }}>
-            <Shield className="w-5 h-5" style={{ color: "#C87941" }} />
+        <div className="p-5 rounded-2xl border flex items-start gap-4" style={{ background: "rgba(170,130,40,.05)", borderColor: "rgba(170,130,40,.2)" }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(170,130,40,.15)" }}>
+            <Shield className="w-5 h-5" style={{ color: "#AA8228" }} />
           </div>
           <div>
             <p className="text-white font-semibold mb-1">Engagement de transparence</p>
@@ -241,7 +241,7 @@ export default function LegalPrivacy() {
 
         {/* 1. Responsable */}
         <section id="responsable" className="priv-section scroll-mt-20">
-          <h2><span className="priv-icon"><Database className="w-4 h-4" style={{ color: "#C87941" }} /></span>1. Responsable du traitement</h2>
+          <h2><span className="priv-icon"><Database className="w-4 h-4" style={{ color: "#AA8228" }} /></span>1. Responsable du traitement</h2>
           <div className="overflow-x-auto">
             <table className="priv-table">
               <tbody>
@@ -276,7 +276,7 @@ export default function LegalPrivacy() {
         {/* 2. Données collectées */}
         <section id="donnees" className="scroll-mt-20">
           <div className="priv-section mb-4">
-            <h2><span className="priv-icon"><Database className="w-4 h-4" style={{ color: "#C87941" }} /></span>2. Données collectées, finalités et durées de conservation</h2>
+            <h2><span className="priv-icon"><Database className="w-4 h-4" style={{ color: "#AA8228" }} /></span>2. Données collectées, finalités et durées de conservation</h2>
             <p>
               Le tableau ci-dessous détaille l'ensemble des catégories de données personnelles traitées sur la plateforme,
               la finalité de chaque traitement, sa base légale au sens de l'article 6 du RGPD, et la durée de conservation applicable.
@@ -299,7 +299,7 @@ export default function LegalPrivacy() {
                     <td className="font-medium text-white">{row.category}</td>
                     <td>{row.data}</td>
                     <td>{row.purpose}</td>
-                    <td className="text-xs" style={{ color: "#C87941" }}>{row.basis}</td>
+                    <td className="text-xs" style={{ color: "#AA8228" }}>{row.basis}</td>
                     <td className="text-xs text-gray-400 whitespace-nowrap">{row.retention}</td>
                   </tr>
                 ))}
@@ -315,7 +315,7 @@ export default function LegalPrivacy() {
         {/* 3. Droits */}
         <section id="droits" className="scroll-mt-20">
           <div className="priv-section mb-4">
-            <h2><span className="priv-icon"><UserCheck className="w-4 h-4" style={{ color: "#C87941" }} /></span>3. Vos droits en tant que personne concernée</h2>
+            <h2><span className="priv-icon"><UserCheck className="w-4 h-4" style={{ color: "#AA8228" }} /></span>3. Vos droits en tant que personne concernée</h2>
             <p>
               Conformément au RGPD et à la loi belge du 30 juillet 2018, vous disposez des droits suivants.
               Pour les exercer, adressez votre demande par email à{" "}
@@ -328,11 +328,11 @@ export default function LegalPrivacy() {
               const Icon = right.icon;
               return (
                 <div key={right.title} className="right-card">
-                  <div className="right-icon"><Icon className="w-4 h-4" style={{ color: "#C87941" }} /></div>
+                  <div className="right-icon"><Icon className="w-4 h-4" style={{ color: "#AA8228" }} /></div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <p className="text-sm font-semibold text-white">{right.title}</p>
-                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(200,121,65,.12)", color: "#C87941" }}>{right.article}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(170,130,40,.12)", color: "#AA8228" }}>{right.article}</span>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">{right.description}</p>
                   </div>
@@ -344,7 +344,7 @@ export default function LegalPrivacy() {
 
         {/* 4. Sous-traitants */}
         <section id="sous-traitants" className="priv-section scroll-mt-20">
-          <h2><span className="priv-icon"><Server className="w-4 h-4" style={{ color: "#C87941" }} /></span>4. Sous-traitants et destinataires des données</h2>
+          <h2><span className="priv-icon"><Server className="w-4 h-4" style={{ color: "#AA8228" }} /></span>4. Sous-traitants et destinataires des données</h2>
           <p>
             JS-Innov.IA fait appel à des sous-traitants techniques pour assurer le fonctionnement de la plateforme.
             Ces sous-traitants agissent exclusivement sur instruction de JS-Innov.IA et sont liés par des contrats de traitement
@@ -361,7 +361,7 @@ export default function LegalPrivacy() {
                     <td className="font-medium text-white">{p.name}</td>
                     <td>{p.role}</td>
                     <td>{p.location}</td>
-                    <td className="text-xs" style={{ color: "#C87941" }}>{p.guarantee}</td>
+                    <td className="text-xs" style={{ color: "#AA8228" }}>{p.guarantee}</td>
                   </tr>
                 ))}
               </tbody>
@@ -374,7 +374,7 @@ export default function LegalPrivacy() {
 
         {/* 5. Transferts hors UE */}
         <section id="transferts" className="priv-section scroll-mt-20">
-          <h2><span className="priv-icon"><Globe className="w-4 h-4" style={{ color: "#C87941" }} /></span>5. Transferts de données hors Union Européenne</h2>
+          <h2><span className="priv-icon"><Globe className="w-4 h-4" style={{ color: "#AA8228" }} /></span>5. Transferts de données hors Union Européenne</h2>
           <p>
             L'ensemble des données personnelles traitées dans le cadre de la plateforme Miss & Mister Dour est hébergé et traité
             au sein de l'Union Européenne. Aucun transfert de données vers des pays tiers n'est effectué dans le cadre normal
@@ -389,7 +389,7 @@ export default function LegalPrivacy() {
 
         {/* 6. Sécurité */}
         <section id="securite" className="priv-section scroll-mt-20">
-          <h2><span className="priv-icon"><Lock className="w-4 h-4" style={{ color: "#C87941" }} /></span>6. Mesures de sécurité</h2>
+          <h2><span className="priv-icon"><Lock className="w-4 h-4" style={{ color: "#AA8228" }} /></span>6. Mesures de sécurité</h2>
           <p>
             JS-Innov.IA met en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données personnelles
             contre tout accès non autorisé, divulgation, altération ou destruction, conformément à l'article 32 du RGPD.
@@ -404,7 +404,7 @@ export default function LegalPrivacy() {
               { label: "Gestion des incidents", detail: "Notification APD dans les 72h en cas de violation (Art. 33)" },
             ].map(({ label, detail }) => (
               <div key={label} className="flex items-start gap-3 p-3 rounded-lg border" style={{ borderColor: "rgba(255,255,255,.06)", background: "rgba(255,255,255,.01)" }}>
-                <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ background: "#C87941" }} />
+                <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ background: "#AA8228" }} />
                 <div>
                   <p className="text-sm font-medium text-white">{label}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{detail}</p>
@@ -416,7 +416,7 @@ export default function LegalPrivacy() {
 
         {/* 7. Mineurs */}
         <section id="mineurs" className="priv-section scroll-mt-20">
-          <h2><span className="priv-icon"><Shield className="w-4 h-4" style={{ color: "#C87941" }} /></span>7. Protection des mineurs</h2>
+          <h2><span className="priv-icon"><Shield className="w-4 h-4" style={{ color: "#AA8228" }} /></span>7. Protection des mineurs</h2>
           <p>
             La plateforme est accessible aux candidats âgés de 16 ans et plus, conformément aux critères d'éligibilité du concours.
             Pour les candidats âgés de 16 à 17 ans, le consentement parental ou tutoral est requis lors de l'inscription,
@@ -430,7 +430,7 @@ export default function LegalPrivacy() {
 
         {/* 8. Contact & APD */}
         <section id="contact" className="priv-section scroll-mt-20">
-          <h2><span className="priv-icon"><Mail className="w-4 h-4" style={{ color: "#C87941" }} /></span>8. Contact, réclamations et Autorité de Protection des Données</h2>
+          <h2><span className="priv-icon"><Mail className="w-4 h-4" style={{ color: "#AA8228" }} /></span>8. Contact, réclamations et Autorité de Protection des Données</h2>
           <p>Pour toute question relative à la présente politique ou pour exercer vos droits :</p>
           <div className="overflow-x-auto mt-3">
             <table className="priv-table">
@@ -448,8 +448,8 @@ export default function LegalPrivacy() {
               </tbody>
             </table>
           </div>
-          <div className="mt-5 p-4 rounded-xl border flex items-start gap-3" style={{ borderColor: "rgba(200,121,65,.2)", background: "rgba(200,121,65,.04)" }}>
-            <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#C87941" }} />
+          <div className="mt-5 p-4 rounded-xl border flex items-start gap-3" style={{ borderColor: "rgba(170,130,40,.2)", background: "rgba(170,130,40,.04)" }}>
+            <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#AA8228" }} />
             <div>
               <p className="text-sm font-semibold text-white mb-1">Autorité de Protection des Données (APD) — Belgique</p>
               <p className="text-sm text-gray-400 leading-relaxed">
@@ -465,7 +465,7 @@ export default function LegalPrivacy() {
         </section>
 
         {/* Liens légaux */}
-        <div className="p-6 rounded-2xl border" style={{ background: "rgba(200,121,65,.04)", borderColor: "rgba(200,121,65,.15)" }}>
+        <div className="p-6 rounded-2xl border" style={{ background: "rgba(170,130,40,.04)", borderColor: "rgba(170,130,40,.15)" }}>
           <h3 className="text-white font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>Documents légaux complémentaires</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
@@ -473,7 +473,7 @@ export default function LegalPrivacy() {
               { href: "/legal/cgu", label: "CGU & Règlement du concours", desc: "Critères, vote, titres" },
               { href: "/legal/cookies", label: "Politique cookies", desc: "Cookies techniques" },
             ].map(({ href, label, desc }) => (
-              <Link key={href} href={href} className="block p-4 rounded-xl border transition-all" style={{ borderColor: "rgba(200,121,65,.2)", background: "rgba(255,255,255,.02)" }}>
+              <Link key={href} href={href} className="block p-4 rounded-xl border transition-all" style={{ borderColor: "rgba(170,130,40,.2)", background: "rgba(255,255,255,.02)" }}>
                   <p className="text-sm font-medium text-white">{label}</p>
                   <p className="text-xs text-gray-500 mt-1">{desc}</p>
                 </Link>

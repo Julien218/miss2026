@@ -696,7 +696,7 @@ export default function AdminCandidates() {
                         {/* Date et version */}
                         {c.acceptCGUAt && (
                           <div className="mt-1 text-[10px] text-gray-500 border-t border-gray-700 pt-1">
-                            <span className="text-[#D4AF37]">{c.consentVersion || "v1.0"}</span>
+                            <span className="text-[#DCB464]">{c.consentVersion || "v1.0"}</span>
                             {" — "}
                             {new Date(c.acceptCGUAt).toLocaleDateString("fr-BE", {
                               day: "2-digit", month: "2-digit", year: "numeric"

@@ -7,29 +7,47 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type EventFilter = "all" | "portrait" | "event" | "backstage" | "performance" | "other";
 type CandidateFilter = "all" | "miss" | "mister";
 
-const EVENT_LABELS: Record<EventFilter, string> = {
+// Catégories de galerie : chaque dossier Dropbox de l'élection = une catégorie
+const CATEGORY_LABELS: Record<string, string> = {
   all: "Toutes",
   portrait: "Portraits",
   event: "Shooting officiel",
   backstage: "Coulisses",
   performance: "Performances",
   other: "Autres",
+  "proclamation-des-resultats": "Proclamation des résultats",
+  "interview-des-candidats-devant-le-jury": "Interview du jury",
+  "prestations-des-lauréats": "Prestations des lauréats",
+  "le-show-du-19-avril-2026": "Le show du 19 avril 2026",
+  "remise-des-echarpes-25-janvier-2026": "Remise des écharpes",
+  "shooting-candidats": "Shooting candidats",
+  "shooting-laureats": "Shooting lauréats",
+  "sorties-avec-les-candidats": "Sorties avec les candidats",
+  "visite-miss-hainaut-dour-08022026": "Visite Miss Hainaut",
 };
 
-const EVENT_ICONS: Record<EventFilter, string> = {
-  all: "📸",
-  portrait: "👤",
-  event: "🎬",
-  backstage: "🎭",
-  performance: "⭐",
-  other: "✨",
-};
+function categoryLabel(slug: string) {
+  return CATEGORY_LABELS[slug] ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function categoryIcon(slug: string) {
+  if (slug === "all") return "📸";
+  if (slug.includes("shooting")) return "👤";
+  if (slug.includes("show")) return "🎬";
+  if (slug.includes("proclamation")) return "🏆";
+  if (slug.includes("interview")) return "🎤";
+  if (slug.includes("remise")) return "👑";
+  if (slug.includes("sortie")) return "🎪";
+  if (slug.includes("visite")) return "🏛️";
+  if (slug.includes("prestation")) return "⭐";
+  return "✨";
+}
 
 export default function Gallery() {
-  const [eventFilter, setEventFilter] = useState<EventFilter>("all");
+  const [eventFilter, setEventFilter] = useState<string>("all");
+  const { data: categories } = trpc.photos.categories.useQuery();
   const [candidateFilter, setCandidateFilter] = useState<CandidateFilter>("all");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -55,18 +73,10 @@ export default function Gallery() {
 
   // Compteurs par catégorie d'événement
   const eventCounts = useMemo(() => {
-    if (!photos) return { all: 0, portrait: 0, event: 0, backstage: 0, performance: 0, other: 0 };
-    // Pour "all", on utilise le total non filtré par candidat
-    const allPhotos = photos;
-    return {
-      all: allPhotos.length,
-      portrait: allPhotos.filter((p) => p.category === "portrait").length,
-      event: allPhotos.filter((p) => p.category === "event").length,
-      backstage: allPhotos.filter((p) => p.category === "backstage").length,
-      performance: allPhotos.filter((p) => p.category === "performance").length,
-      other: allPhotos.filter((p) => p.category === "other").length,
-    };
-  }, [photos]);
+    const map: Record<string, number> = { all: photos?.length ?? 0 };
+    for (const c of categories ?? []) map[c.category] = c.count;
+    return map;
+  }, [photos, categories]);
 
   // Compteurs Miss/Mister
   const candidateCounts = useMemo(() => {
@@ -175,9 +185,10 @@ export default function Gallery() {
                 <Filter className="w-4 h-4" />
                 <span className="text-xs font-medium hidden sm:inline">Catégorie</span>
               </div>
-              {(Object.keys(EVENT_LABELS) as EventFilter[])
-                .filter((key) => key === "all" || eventCounts[key] > 0)
-                .map((key) => (
+              {[
+                  { key: "all" },
+                  ...(categories ?? []).map((c) => ({ key: c.category })),
+                ].map(({ key }) => (
                 <button
                   key={key}
                   onClick={() => setEventFilter(key)}
@@ -187,8 +198,8 @@ export default function Gallery() {
                       : "bg-gray-800/60 text-gray-400 hover:bg-gray-700/60 hover:text-white"
                   }`}
                 >
-                  <span className="text-sm">{EVENT_ICONS[key]}</span>
-                  <span>{EVENT_LABELS[key]}</span>
+                  <span className="text-sm">{categoryIcon(key)}</span>
+                  <span>{categoryLabel(key)}</span>
                   <span className="opacity-70">
                     ({key === "all" ? (photos?.length ?? 0) : eventCounts[key]})
                   </span>
@@ -257,7 +268,7 @@ export default function Gallery() {
               <div className="flex items-center justify-between mb-6">
                 <p className="text-sm text-gray-500">
                   <span className="text-gold font-bold">{filteredPhotos.length}</span> photo{filteredPhotos.length > 1 ? "s" : ""}
-                  {eventFilter !== "all" && <span> &middot; {EVENT_LABELS[eventFilter]}</span>}
+                  {eventFilter !== "all" && <span> &middot; {categoryLabel(eventFilter)}</span>}
                   {candidateFilter !== "all" && <span> &middot; {candidateFilter === "miss" ? "Miss" : "Mister"}</span>}
                 </p>
                 {(eventFilter !== "all" || candidateFilter !== "all") && (
@@ -355,7 +366,7 @@ export default function Gallery() {
                   <button
                     onClick={() => setVisibleCount(prev => prev + 40)}
                     className="px-8 py-3 rounded-full font-semibold text-sm transition-all hover:opacity-90"
-                    style={{ background: "linear-gradient(135deg, #C87941, #D4956A)", color: "#000" }}
+                    style={{ background: "linear-gradient(135deg, #AA8228, #D4956A)", color: "#000" }}
                   >
                     Voir plus de photos ({filteredPhotos.length - visibleCount} restantes)
                   </button>
@@ -509,8 +520,8 @@ export default function Gallery() {
       {/* Section abonnement newsletter galerie */}
       <section className="py-12 border-t border-gray-800 mt-8">
         <div className="container mx-auto px-4 max-w-2xl text-center">
-          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: "#C87941" }} />
-          <h2 className="text-2xl font-bold mb-2" style={{ color: "#C87941" }}>Restez informé(e)</h2>
+          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: "#AA8228" }} />
+          <h2 className="text-2xl font-bold mb-2" style={{ color: "#AA8228" }}>Restez informé(e)</h2>
           <p className="text-gray-400 text-sm mb-6">
             Recevez un email à chaque nouvelle publication dans la galerie
           </p>
@@ -552,7 +563,7 @@ export default function Gallery() {
               type="submit"
               disabled={subscribeMutation.isPending}
               className="px-6 py-2.5 rounded-lg text-black font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #C87941, #D4956A)" }}
+              style={{ background: "linear-gradient(135deg, #AA8228, #D4956A)" }}
             >
               {subscribeMutation.isPending ? "Inscription..." : "S'abonner"}
             </button>

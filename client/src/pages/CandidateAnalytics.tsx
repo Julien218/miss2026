@@ -29,7 +29,7 @@ export default function CandidateAnalytics() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="text-[#D4AF37] text-xl">Chargement des statistiques...</div>
+        <div className="text-[#DCB464] text-xl">Chargement des statistiques...</div>
       </div>
     );
   }
@@ -65,11 +65,11 @@ export default function CandidateAnalytics() {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="fixed top-0 left-0 right-0 z-50 border-b border-[#D4AF37]/10 bg-[#0A0A0A]/70 md:backdrop-blur-2xl backdrop-blur-md"
+        className="fixed top-0 left-0 right-0 z-50 border-b border-[#DCB464]/10 bg-[#0A0A0A]/70 md:backdrop-blur-2xl backdrop-blur-md"
       >
         <div className="container flex h-20 items-center justify-between">
           <Link href={`/candidate/${candidateId}`}>
-            <Button variant="ghost" className="text-[#C0C0C0] hover:text-[#D4AF37]">
+            <Button variant="ghost" className="text-[#C0C0C0] hover:text-[#DCB464]">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au profil
             </Button>
@@ -88,7 +88,7 @@ export default function CandidateAnalytics() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8 md:hidden"
         >
-          <h1 className="text-2xl font-bold bg-gradient-to-br from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-br from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
             Statistiques
           </h1>
           <p className="text-[#C0C0C0]">{candidate.firstName} {candidate.lastName}</p>
@@ -133,16 +133,16 @@ export default function CandidateAnalytics() {
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <Card className="border-[#D4AF37]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
+          <Card className="border-[#DCB464]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="p-4 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#B8941E]/20">
-                    <Award className="h-8 w-8 text-[#D4AF37]" />
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-[#DCB464]/20 to-[#AA8228]/20">
+                    <Award className="h-8 w-8 text-[#DCB464]" />
                   </div>
                   <div>
                     <p className="text-sm text-[#C0C0C0] mb-1">Classement</p>
-                    <p className="text-3xl font-bold bg-gradient-to-br from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+                    <p className="text-3xl font-bold bg-gradient-to-br from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                       #{analytics.ranking}
                     </p>
                   </div>
@@ -163,10 +163,10 @@ export default function CandidateAnalytics() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Card className="border-[#D4AF37]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
+            <Card className="border-[#DCB464]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-[#D4AF37]" />
+                  <TrendingUp className="h-5 w-5 text-[#DCB464]" />
                   Partages par Plateforme
                 </CardTitle>
               </CardHeader>
@@ -174,7 +174,7 @@ export default function CandidateAnalytics() {
                 {platformData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={platformData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#D4AF37" opacity={0.1} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#DCB464" opacity={0.1} />
                       <XAxis 
                         dataKey="platform" 
                         stroke="#C0C0C0"
@@ -187,7 +187,7 @@ export default function CandidateAnalytics() {
                       <Tooltip
                         contentStyle={{
                           backgroundColor: '#1A1A1A',
-                          border: '1px solid #D4AF37',
+                          border: '1px solid #DCB464',
                           borderRadius: '8px',
                           color: '#FFFFFF',
                         }}
@@ -199,9 +199,9 @@ export default function CandidateAnalytics() {
                       />
                       <defs>
                         <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#E8C547" />
-                          <stop offset="50%" stopColor="#D4AF37" />
-                          <stop offset="100%" stopColor="#B8941E" />
+                          <stop offset="0%" stopColor="#FADCA0" />
+                          <stop offset="50%" stopColor="#DCB464" />
+                          <stop offset="100%" stopColor="#AA8228" />
                         </linearGradient>
                       </defs>
                     </BarChart>
@@ -221,10 +221,10 @@ export default function CandidateAnalytics() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <Card className="border-[#D4AF37]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
+            <Card className="border-[#DCB464]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-[#D4AF37]" />
+                  <TrendingUp className="h-5 w-5 text-[#DCB464]" />
                   Évolution des Partages
                 </CardTitle>
               </CardHeader>
@@ -232,7 +232,7 @@ export default function CandidateAnalytics() {
                 {timelineData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={timelineData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#D4AF37" opacity={0.1} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#DCB464" opacity={0.1} />
                       <XAxis 
                         dataKey="date" 
                         stroke="#C0C0C0"
@@ -245,7 +245,7 @@ export default function CandidateAnalytics() {
                       <Tooltip
                         contentStyle={{
                           backgroundColor: '#1A1A1A',
-                          border: '1px solid #D4AF37',
+                          border: '1px solid #DCB464',
                           borderRadius: '8px',
                           color: '#FFFFFF',
                         }}
@@ -253,9 +253,9 @@ export default function CandidateAnalytics() {
                       <Line 
                         type="monotone" 
                         dataKey="partages" 
-                        stroke="#D4AF37"
+                        stroke="#DCB464"
                         strokeWidth={3}
-                        dot={{ fill: '#D4AF37', r: 4 }}
+                        dot={{ fill: '#DCB464', r: 4 }}
                         activeDot={{ r: 6 }}
                       />
                     </LineChart>
@@ -277,7 +277,7 @@ export default function CandidateAnalytics() {
           transition={{ delay: 0.7 }}
           className="mt-8"
         >
-          <Card className="border-[#D4AF37]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
+          <Card className="border-[#DCB464]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md">
             <CardHeader>
               <CardTitle className="text-white">Comparaison avec les Autres Candidats</CardTitle>
             </CardHeader>
@@ -285,7 +285,7 @@ export default function CandidateAnalytics() {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <p className="text-sm text-[#C0C0C0] mb-2">Vos Partages</p>
-                  <p className="text-4xl font-bold bg-gradient-to-br from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+                  <p className="text-4xl font-bold bg-gradient-to-br from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                     {analytics.totalShares}
                   </p>
                 </div>

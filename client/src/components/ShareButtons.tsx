@@ -64,7 +64,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         width: 400,
         margin: 2,
         color: {
-          dark: "#D4AF37", // Or
+          dark: "#DCB464", // Or
           light: "#0A0A0A", // Noir
         },
       });
@@ -87,8 +87,8 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         icon: '🔗',
         style: {
           background: '#1A1A1A',
-          color: '#D4AF37',
-          border: '1px solid #D4AF37',
+          color: '#DCB464',
+          border: '1px solid #DCB464',
         },
       });
     } catch (error) {
@@ -116,8 +116,8 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         duration: 3000,
         style: {
           background: '#1A1A1A',
-          color: '#D4AF37',
-          border: '1px solid #D4AF37',
+          color: '#DCB464',
+          border: '1px solid #DCB464',
         },
       });
     } catch (error) {
@@ -144,8 +144,8 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         icon: '📱',
         style: {
           background: '#1A1A1A',
-          color: '#D4AF37',
-          border: '1px solid #D4AF37',
+          color: '#DCB464',
+          border: '1px solid #DCB464',
         },
       });
       
@@ -168,8 +168,8 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         icon: '🌐',
         style: {
           background: '#1A1A1A',
-          color: '#D4AF37',
-          border: '1px solid #D4AF37',
+          color: '#DCB464',
+          border: '1px solid #DCB464',
         },
       });
     }
@@ -187,8 +187,8 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         icon: '📱',
         style: {
           background: '#1A1A1A',
-          color: '#D4AF37',
-          border: '1px solid #D4AF37',
+          color: '#DCB464',
+          border: '1px solid #DCB464',
         },
       });
       
@@ -209,8 +209,8 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         icon: '🌐',
         style: {
           background: '#1A1A1A',
-          color: '#D4AF37',
-          border: '1px solid #D4AF37',
+          color: '#DCB464',
+          border: '1px solid #DCB464',
         },
       });
     }
@@ -261,7 +261,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
       <Toaster position="top-center" reverseOrder={false} />
       {/* Titre de section */}
       <div className="flex items-center gap-2">
-        <Share2 className="h-5 w-5 text-[#D4AF37]" />
+        <Share2 className="h-5 w-5 text-[#DCB464]" />
         <h3 className="text-lg font-semibold text-white">Partager ce profil</h3>
       </div>
 
@@ -304,7 +304,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
           <Button
             onClick={copyLink}
             variant="outline"
-            className="w-full border-[#D4AF37]/30 bg-[#1A1A1A]/80 hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/50 text-[#C0C0C0] hover:text-[#D4AF37] transition-all duration-300"
+            className="w-full border-[#DCB464]/30 bg-[#1A1A1A]/80 hover:bg-[#DCB464]/10 hover:border-[#DCB464]/50 text-[#C0C0C0] hover:text-[#DCB464] transition-all duration-300"
           >
             {copied ? (
               <>
@@ -330,14 +330,14 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
               <Button
                 onClick={generateQRCode}
                 variant="outline"
-                className="border-[#D4AF37]/30 bg-[#1A1A1A]/80 hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/50 text-[#C0C0C0] hover:text-[#D4AF37] transition-all duration-300"
+                className="border-[#DCB464]/30 bg-[#1A1A1A]/80 hover:bg-[#DCB464]/10 hover:border-[#DCB464]/50 text-[#C0C0C0] hover:text-[#DCB464] transition-all duration-300"
               >
                 <QrCode className="h-4 w-4 mr-2" />
                 QR Code
               </Button>
             </motion.div>
           </DialogTrigger>
-          <DialogContent className="bg-[#0A0A0A] border-[#D4AF37]/30">
+          <DialogContent className="bg-[#0A0A0A] border-[#DCB464]/30">
             <DialogHeader>
               <DialogTitle className="text-white">QR Code - {candidateName}</DialogTitle>
               <DialogDescription className="text-[#C0C0C0]">
@@ -354,7 +354,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   download={`qr-code-${candidateName.toLowerCase().replace(/\s+/g, '-')}.png`}
                   className="w-full"
                 >
-                  <Button className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#E8C547] hover:to-[#D4AF37] text-[#0A0A0A] font-semibold">
+                  <Button className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#FADCA0] hover:to-[#DCB464] text-[#0A0A0A] font-semibold">
                     Télécharger le QR Code
                   </Button>
                 </a>
@@ -365,13 +365,13 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
       </div>
 
       {/* Instagram & TikTok */}
-      <div className="space-y-3 pt-4 border-t border-[#D4AF37]/20">
+      <div className="space-y-3 pt-4 border-t border-[#DCB464]/20">
         <div className="flex items-center justify-between">
           <p className="text-sm text-[#C0C0C0]">
             {isMobile ? 'Partagez sur Instagram et TikTok :' : 'Pour Instagram et TikTok, copiez le lien ou le texte complet :'}
           </p>
           {isMobile && (
-            <span className="text-xs text-[#D4AF37] font-medium">
+            <span className="text-xs text-[#DCB464] font-medium">
               {platform === 'ios' ? '🍎 iOS' : '🤖 Android'}
             </span>
           )}
@@ -380,7 +380,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {/* Instagram */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm font-medium text-[#D4AF37]">
+            <div className="flex items-center gap-2 text-sm font-medium text-[#DCB464]">
               <Instagram size={18} />
               <span>Instagram</span>
             </div>
@@ -393,7 +393,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   onClick={openInstagram}
                   variant="outline"
                   size="sm"
-                  className="w-full border-[#D4AF37]/30 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full border-[#DCB464]/30 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   <Instagram size={16} className="mr-2" />
                   Ouvrir Instagram
@@ -405,7 +405,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   onClick={copyLink}
                   variant="outline"
                   size="sm"
-                  className="flex-1 border-[#D4AF37]/30 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white"
+                  className="flex-1 border-[#DCB464]/30 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white"
                 >
                   {copied ? <Check size={14} /> : <Copy size={14} />}
                   <span className="ml-2 text-xs">{copied ? "Copié !" : "Copier lien"}</span>
@@ -414,7 +414,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   onClick={copyText}
                   variant="outline"
                   size="sm"
-                  className="flex-1 border-[#D4AF37]/30 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white"
+                  className="flex-1 border-[#DCB464]/30 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white"
                 >
                   {copiedText ? <Check size={14} /> : <Copy size={14} />}
                   <span className="ml-2 text-xs">{copiedText ? "Copié !" : "Copier texte"}</span>
@@ -425,7 +425,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
 
           {/* TikTok */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm font-medium text-[#D4AF37]">
+            <div className="flex items-center gap-2 text-sm font-medium text-[#DCB464]">
               <Music2 size={18} />
               <span>TikTok</span>
             </div>
@@ -438,7 +438,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   onClick={openTikTok}
                   variant="outline"
                   size="sm"
-                  className="w-full border-[#D4AF37]/30 bg-black hover:bg-gray-900 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full border-[#DCB464]/30 bg-black hover:bg-gray-900 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   <Music2 size={16} className="mr-2" />
                   Ouvrir TikTok
@@ -450,7 +450,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   onClick={copyLink}
                   variant="outline"
                   size="sm"
-                  className="flex-1 border-[#D4AF37]/30 bg-black hover:bg-gray-900 text-white"
+                  className="flex-1 border-[#DCB464]/30 bg-black hover:bg-gray-900 text-white"
                 >
                   {copied ? <Check size={14} /> : <Copy size={14} />}
                   <span className="ml-2 text-xs">{copied ? "Copié !" : "Copier lien"}</span>
@@ -459,7 +459,7 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
                   onClick={copyText}
                   variant="outline"
                   size="sm"
-                  className="flex-1 border-[#D4AF37]/30 bg-black hover:bg-gray-900 text-white"
+                  className="flex-1 border-[#DCB464]/30 bg-black hover:bg-gray-900 text-white"
                 >
                   {copiedText ? <Check size={14} /> : <Copy size={14} />}
                   <span className="ml-2 text-xs">{copiedText ? "Copié !" : "Copier texte"}</span>
@@ -473,9 +473,9 @@ export function ShareButtons({ candidateId, candidateName, candidatePhoto, conte
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-lg p-3 space-y-2"
+            className="bg-[#DCB464]/10 border border-[#DCB464]/30 rounded-lg p-3 space-y-2"
           >
-            <p className="text-xs text-[#D4AF37] font-semibold flex items-center gap-2">
+            <p className="text-xs text-[#DCB464] font-semibold flex items-center gap-2">
               <span>✨</span>
               Instructions rapides :
             </p>

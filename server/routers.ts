@@ -1611,7 +1611,7 @@ export const appRouter = router({
     // List photos with filters
     list: protectedProcedure
       .input(z.object({
-        category: z.enum(["portrait", "event", "backstage", "performance", "other", "all"]).optional(),
+        category: z.string().optional(), // "all" ou slug de dossier Dropbox
         status: z.enum(["pending", "approved", "rejected", "all"]).optional(),
         candidateId: z.number().optional(),
       }))
@@ -1765,7 +1765,7 @@ Si vous pensez qu'il s'agit d'une erreur, vous pouvez contacter l'équipe.</p>
     // Public: list approved photos with optional category filter
     listPublic: publicProcedure
       .input(z.object({
-        category: z.enum(["portrait", "event", "backstage", "performance", "other", "all"]).optional(),
+        category: z.string().optional(), // "all" ou slug de dossier Dropbox
         candidateId: z.number().optional(),
       }).optional())
       .query(async ({ input }) => {
@@ -1800,6 +1800,12 @@ Si vous pensez qu'il s'agit d'une erreur, vous pouvez contacter l'équipe.</p>
           })
         );
         return photosWithCandidate;
+      }),
+
+    // Public: categories de galerie (une par dossier Dropbox de l'élection)
+    categories: publicProcedure
+      .query(async () => {
+        return await db.getPhotoCategories();
       }),
 
     // Public: subscribe to gallery updates

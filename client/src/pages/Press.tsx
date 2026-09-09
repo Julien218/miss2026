@@ -50,7 +50,7 @@ export default function Press() {
               <img
                 src={BRANDING.logoIdentity}
                 alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(220,180,100,0.6)]"
                 loading="eager"
               />
             </Link>

@@ -19,8 +19,8 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
         onClick={() => onChange("grid")}
         className={cn(
           value === "grid"
-            ? "bg-gradient-to-r from-[#D4AF37] to-[#B8941E] text-white"
-            : "border-[#D4AF37]/30 text-[#8B7355]"
+            ? "bg-gradient-to-r from-[#DCB464] to-[#AA8228] text-white"
+            : "border-[#DCB464]/30 text-[#8B7355]"
         )}
       >
         <Grid3x3 className="w-4 h-4" />
@@ -31,8 +31,8 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
         onClick={() => onChange("list")}
         className={cn(
           value === "list"
-            ? "bg-gradient-to-r from-[#D4AF37] to-[#B8941E] text-white"
-            : "border-[#D4AF37]/30 text-[#8B7355]"
+            ? "bg-gradient-to-r from-[#DCB464] to-[#AA8228] text-white"
+            : "border-[#DCB464]/30 text-[#8B7355]"
         )}
       >
         <List className="w-4 h-4" />

@@ -121,11 +121,11 @@ export default function Choreographer() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-[#D4AF37] to-[#F4E4C1] rounded-xl shadow-lg">
+            <div className="p-3 bg-gradient-to-br from-[#DCB464] to-[#F4E4C1] rounded-xl shadow-lg">
               <Music className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+              <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                 Gestion des Chorégraphies
               </h1>
               <p className="text-[#8B7355] mt-1">Créez et gérez les chorégraphies du concours</p>
@@ -135,14 +135,14 @@ export default function Choreographer() {
           {user?.role === "admin" && (
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white shadow-lg">
+                <Button className="bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white shadow-lg">
                   <Plus className="w-5 h-5 mr-2" />
                   Nouvelle chorégraphie
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-playfair text-[#D4AF37]">
+                  <DialogTitle className="text-2xl font-playfair text-[#DCB464]">
                     Créer une nouvelle chorégraphie
                   </DialogTitle>
                 </DialogHeader>
@@ -162,12 +162,12 @@ export default function Choreographer() {
           {choreographies.map((choreo) => (
             <div
               key={choreo.id}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 border border-[#D4AF37]/20 hover:shadow-3xl transition-all duration-300 hover:scale-105"
+              className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 border border-[#DCB464]/20 hover:shadow-3xl transition-all duration-300 hover:scale-105"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-xl font-playfair font-bold text-[#D4AF37] mb-2">
+                  <h3 className="text-xl font-playfair font-bold text-[#DCB464] mb-2">
                     {choreo.title}
                   </h3>
                   <p className="text-sm text-[#8B7355] line-clamp-2">{choreo.description}</p>
@@ -177,7 +177,7 @@ export default function Choreographer() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                      className="text-[#DCB464] hover:bg-[#DCB464]/10"
                       onClick={() => setSelectedChoreography(choreo)}
                     >
                       <Edit className="w-4 h-4" />
@@ -226,7 +226,7 @@ export default function Choreographer() {
               <div className="flex gap-2">
                 {choreo.musicUrl && (
                   <Button
-                    className="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                    className="flex-1 bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
                     onClick={() => toast.info("Lecture de la musique...")}
                   >
                     <Play className="w-4 h-4 mr-2" />
@@ -235,7 +235,7 @@ export default function Choreographer() {
                 )}
                 <Button
                   variant="outline"
-                  className="flex-1 border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                  className="flex-1 border-[#DCB464]/30 text-[#DCB464] hover:bg-[#DCB464]/10"
                   onClick={() => setSelectedChoreography(choreo)}
                 >
                   Détails
@@ -250,7 +250,7 @@ export default function Choreographer() {
           <Dialog open={!!selectedChoreography} onOpenChange={() => setSelectedChoreography(null)}>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-playfair text-[#D4AF37]">
+                <DialogTitle className="text-2xl font-playfair text-[#DCB464]">
                   {selectedChoreography.title}
                 </DialogTitle>
               </DialogHeader>
@@ -259,26 +259,26 @@ export default function Choreographer() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-[#8B7355]">Durée</Label>
-                    <p className="font-semibold text-[#D4AF37]">
+                    <p className="font-semibold text-[#DCB464]">
                       {Math.floor(selectedChoreography.duration / 60)} min {selectedChoreography.duration % 60} sec
                     </p>
                   </div>
                   <div>
                     <Label className="text-[#8B7355]">Difficulté</Label>
-                    <p className="font-semibold text-[#D4AF37]">
+                    <p className="font-semibold text-[#DCB464]">
                       {getDifficultyLabel(selectedChoreography.difficulty)}
                     </p>
                   </div>
                   <div>
                     <Label className="text-[#8B7355]">Statut</Label>
-                    <p className="font-semibold text-[#D4AF37]">
+                    <p className="font-semibold text-[#DCB464]">
                       {getStatusLabel(selectedChoreography.status)}
                     </p>
                   </div>
                   {selectedChoreography.rehearsalDate && (
                     <div>
                       <Label className="text-[#8B7355]">Répétition</Label>
-                      <p className="font-semibold text-[#D4AF37]">
+                      <p className="font-semibold text-[#DCB464]">
                         {new Date(selectedChoreography.rehearsalDate).toLocaleDateString("fr-FR")}
                       </p>
                     </div>
@@ -329,7 +329,7 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           required
-          className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+          className="border-[#DCB464]/30 focus:border-[#DCB464]"
         />
       </div>
 
@@ -341,7 +341,7 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           required
           rows={3}
-          className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+          className="border-[#DCB464]/30 focus:border-[#DCB464]"
         />
       </div>
 
@@ -354,7 +354,7 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
             value={formData.duration}
             onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
             required
-            className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+            className="border-[#DCB464]/30 focus:border-[#DCB464]"
           />
         </div>
 
@@ -364,7 +364,7 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
             value={formData.difficulty}
             onValueChange={(value) => setFormData({ ...formData, difficulty: value as any })}
           >
-            <SelectTrigger className="border-[#D4AF37]/30">
+            <SelectTrigger className="border-[#DCB464]/30">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -384,7 +384,7 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
           value={formData.musicUrl}
           onChange={(e) => setFormData({ ...formData, musicUrl: e.target.value })}
           placeholder="https://example.com/music.mp3"
-          className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+          className="border-[#DCB464]/30 focus:border-[#DCB464]"
         />
       </div>
 
@@ -395,7 +395,7 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
           type="date"
           value={formData.rehearsalDate}
           onChange={(e) => setFormData({ ...formData, rehearsalDate: e.target.value })}
-          className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+          className="border-[#DCB464]/30 focus:border-[#DCB464]"
         />
       </div>
 
@@ -406,13 +406,13 @@ function CreateChoreographyForm({ onSuccess }: { onSuccess: () => void }) {
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           rows={2}
-          className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+          className="border-[#DCB464]/30 focus:border-[#DCB464]"
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+        className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
       >
         Créer la chorégraphie
       </Button>

@@ -96,7 +96,7 @@ export default function InternalDashboard() {
               <Button
                 variant={selectedTab === "candidates" ? "default" : "outline"}
                 onClick={() => setSelectedTab("candidates")}
-                className="bg-gradient-to-r from-[#C8A45C] to-[#D4AF37]"
+                className="bg-gradient-to-r from-[#C8A45C] to-[#DCB464]"
               >
                 <Users className="w-4 h-4 mr-2" />
                 Candidats
@@ -126,7 +126,7 @@ export default function InternalDashboard() {
                     <Button
                       onClick={handleBatchGenerate}
                       disabled={createVideoMutation.isPending}
-                      className="bg-gradient-to-r from-[#C8A45C] to-[#D4AF37]"
+                      className="bg-gradient-to-r from-[#C8A45C] to-[#DCB464]"
                     >
                       <Video className="w-4 h-4 mr-2" />
                       Batch Génération ({selectedCandidates.length})
@@ -178,7 +178,7 @@ export default function InternalDashboard() {
                         handleGenerateVideo(candidate.id);
                       }}
                       disabled={createVideoMutation.isPending}
-                      className="flex-1 bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] hover:opacity-90"
+                      className="flex-1 bg-gradient-to-r from-[#C8A45C] to-[#DCB464] hover:opacity-90"
                     >
                       <Video className="w-3 h-3 mr-1" />
                       Vidéo

@@ -5,7 +5,7 @@ export function CrownAnimation() {
     <div className="relative w-32 h-32 flex items-center justify-center">
       {/* Outer Glow Ring */}
       <motion.div
-        className="absolute inset-0 rounded-full bg-[#D4AF37]/20 blur-2xl"
+        className="absolute inset-0 rounded-full bg-[#DCB464]/20 blur-2xl"
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.3, 0.6, 0.3],
@@ -19,7 +19,7 @@ export function CrownAnimation() {
 
       {/* Middle Glow Ring */}
       <motion.div
-        className="absolute inset-4 rounded-full bg-[#D4AF37]/30 blur-xl"
+        className="absolute inset-4 rounded-full bg-[#DCB464]/30 blur-xl"
         animate={{
           scale: [1, 1.1, 1],
           opacity: [0.4, 0.7, 0.4],
@@ -48,9 +48,9 @@ export function CrownAnimation() {
       >
         <defs>
           <linearGradient id="crownGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#FFD700" />
-            <stop offset="50%" stopColor="#D4AF37" />
-            <stop offset="100%" stopColor="#B8941E" />
+            <stop offset="0%" stopColor="#FADCA0" />
+            <stop offset="50%" stopColor="#DCB464" />
+            <stop offset="100%" stopColor="#AA8228" />
           </linearGradient>
           <filter id="crownGlow">
             <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -65,7 +65,7 @@ export function CrownAnimation() {
         <path
           d="M 50 20 L 55 35 L 70 30 L 65 45 L 80 50 L 70 60 L 75 75 L 25 75 L 30 60 L 20 50 L 35 45 L 30 30 L 45 35 Z"
           fill="url(#crownGradient)"
-          stroke="#FFD700"
+          stroke="#FADCA0"
           strokeWidth="2"
           filter="url(#crownGlow)"
         />
@@ -107,7 +107,7 @@ export function CrownAnimation() {
         return (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-[#D4AF37] rounded-full"
+            className="absolute w-2 h-2 bg-[#DCB464] rounded-full"
             style={{
               left: `calc(50% + ${x}px)`,
               top: `calc(50% + ${y}px)`,

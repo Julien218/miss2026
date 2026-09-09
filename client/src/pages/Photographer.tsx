@@ -33,7 +33,7 @@ export default function Photographer() {
   const [viewMode, setViewMode] = useViewMode({ storageKey: "photographer-view" });
   const uploadDialog = useDialog();
   
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "portrait" | "event" | "backstage" | "performance" | "other">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadForm, setUploadForm] = useState({
@@ -131,15 +131,15 @@ export default function Photographer() {
     }
   };
 
-  const getCategoryLabel = (category: Photo["category"]) => {
-    const labels = {
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
       portrait: "Portrait",
       event: "Événement",
       backstage: "Coulisses",
       performance: "Performance",
       other: "Autre",
     };
-    return labels[category];
+    return labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   const getStatusLabel = (status: Photo["status"]) => {
@@ -186,7 +186,7 @@ export default function Photographer() {
       <div className="min-h-screen bg-gradient-to-br from-[#FAF8F5] via-[#FFF8E8] to-[#F5EFE0] py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#D4AF37] border-t-transparent"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#DCB464] border-t-transparent"></div>
             <p className="mt-4 text-[#8B7355]">Chargement des photos...</p>
           </div>
         </div>
@@ -205,12 +205,12 @@ export default function Photographer() {
           action={
             <Dialog open={uploadDialog.isOpen} onOpenChange={uploadDialog.setIsOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-[#D4AF37] to-[#B8941E] text-white hover:opacity-90 transition-opacity shadow-lg">
+                <Button className="bg-gradient-to-r from-[#DCB464] to-[#AA8228] text-white hover:opacity-90 transition-opacity shadow-lg">
                   <Upload className="w-4 h-4 mr-2" />
                   Uploader des Photos
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-sm border-[#D4AF37]/20">
+              <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-sm border-[#DCB464]/20">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-playfair text-[#8B7355]">Uploader des Photos</DialogTitle>
                 </DialogHeader>
@@ -225,7 +225,7 @@ export default function Photographer() {
                       multiple
                       accept="image/*"
                       onChange={handleFileSelect}
-                      className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                      className="border-[#DCB464]/30 focus:border-[#DCB464]"
                     />
                     {uploadForm.files.length > 0 && (
                       <p className="text-sm text-[#8B7355]/70 mt-2">
@@ -241,7 +241,7 @@ export default function Photographer() {
                       value={uploadForm.title}
                       onChange={(e) => setUploadForm((prev) => ({ ...prev, title: e.target.value }))}
                       placeholder="Portrait Sophie Martin"
-                      className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                      className="border-[#DCB464]/30 focus:border-[#DCB464]"
                     />
                   </div>
 
@@ -253,7 +253,7 @@ export default function Photographer() {
                       onChange={(e) => setUploadForm((prev) => ({ ...prev, description: e.target.value }))}
                       placeholder="Description de la photo..."
                       rows={3}
-                      className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                      className="border-[#DCB464]/30 focus:border-[#DCB464]"
                     />
                   </div>
 
@@ -263,7 +263,7 @@ export default function Photographer() {
                       value={uploadForm.category}
                       onValueChange={(value: any) => setUploadForm((prev) => ({ ...prev, category: value }))}
                     >
-                      <SelectTrigger className="border-[#D4AF37]/30 focus:border-[#D4AF37]">
+                      <SelectTrigger className="border-[#DCB464]/30 focus:border-[#DCB464]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -283,14 +283,14 @@ export default function Photographer() {
                       value={uploadForm.tags}
                       onChange={(e) => setUploadForm((prev) => ({ ...prev, tags: e.target.value }))}
                       placeholder="portrait, studio, professionnel"
-                      className="border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                      className="border-[#DCB464]/30 focus:border-[#DCB464]"
                     />
                   </div>
 
                   <Button
                     onClick={handleUpload}
                     disabled={uploadMutation.isPending}
-                    className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] text-white hover:opacity-90 transition-opacity"
+                    className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] text-white hover:opacity-90 transition-opacity"
                   >
                     {uploadMutation.isPending ? "Upload en cours..." : "Uploader"}
                   </Button>
@@ -384,7 +384,7 @@ export default function Photographer() {
           </div>
         ) : (
           <DataCard hover={false}>
-            <div className="divide-y divide-[#D4AF37]/10">
+            <div className="divide-y divide-[#DCB464]/10">
               {photos.map((photo) => (
                 <div key={photo.id} className="p-6 hover:bg-[#FFF8E8]/50 transition-colors">
                   <div className="flex items-start gap-6">

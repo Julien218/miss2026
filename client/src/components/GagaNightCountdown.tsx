@@ -3,8 +3,8 @@
  * Badge "Born to Dance" avec compte à rebours animé
  * Soirée de clôture Miss & Mister Dour 2026 — 19 Avril 2026
  *
- * Palette : noir obsidian, cuivre #C87941, champagne #E8D5B7,
- *           or #D4AF37, rose accent #C45E6A
+ * Palette : noir obsidian, cuivre #AA8228, champagne #E8D5B7,
+ *           or #DCB464, rose accent #C45E6A
  *
  * Créé par JS-Innov.IA® — Tous droits réservés
  */
@@ -99,27 +99,27 @@ function DancerIcon({ className = "" }: { className?: string }) {
         opacity="0.6"
       />
       {/* Étoiles décoratives */}
-      <circle cx="46" cy="8" r="1.2" fill="#D4AF37" opacity="0.8" />
+      <circle cx="46" cy="8" r="1.2" fill="#DCB464" opacity="0.8" />
       <circle cx="18" cy="16" r="1" fill="#C45E6A" opacity="0.7" />
-      <circle cx="42" cy="52" r="1" fill="#D4AF37" opacity="0.6" />
+      <circle cx="42" cy="52" r="1" fill="#DCB464" opacity="0.6" />
       {/* Gradients */}
       <defs>
         <linearGradient id="dancer-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#D4AF37" />
-          <stop offset="50%" stopColor="#E8C547" />
-          <stop offset="100%" stopColor="#C87941" />
+          <stop offset="0%" stopColor="#DCB464" />
+          <stop offset="50%" stopColor="#FADCA0" />
+          <stop offset="100%" stopColor="#AA8228" />
         </linearGradient>
         <linearGradient id="dancer-rose" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#C45E6A" />
-          <stop offset="100%" stopColor="#D4AF37" />
+          <stop offset="100%" stopColor="#DCB464" />
         </linearGradient>
         <linearGradient id="dancer-copper" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#C87941" />
+          <stop offset="0%" stopColor="#AA8228" />
           <stop offset="100%" stopColor="#E8D5B7" />
         </linearGradient>
         <linearGradient id="dancer-dress" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#C45E6A" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#C87941" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#AA8228" stopOpacity="0.1" />
         </linearGradient>
       </defs>
     </svg>
@@ -138,7 +138,7 @@ function FloatingNotes() {
           style={{
             left: `${10 + i * 15}%`,
             top: `${20 + (i % 3) * 25}%`,
-            color: i % 2 === 0 ? "#D4AF37" : "#C45E6A",
+            color: i % 2 === 0 ? "#DCB464" : "#C45E6A",
             opacity: 0.15 + (i % 3) * 0.1,
             animation: `dance-note ${4 + (i % 3)}s ease-in-out ${i * 0.7}s infinite alternate`,
             fontSize: `${12 + (i % 3) * 4}px`,
@@ -159,9 +159,9 @@ function CountUnit({ value, label }: { value: number; label: string }) {
         className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center font-bold text-2xl sm:text-3xl tabular-nums"
         style={{
           background: "linear-gradient(145deg, #1a0f08, #2a1a0a)",
-          border: "1px solid #C87941",
+          border: "1px solid #AA8228",
           color: "#E8D5B7",
-          boxShadow: "0 4px 20px #C8794130, inset 0 1px 0 #C8794140",
+          boxShadow: "0 4px 20px #AA822830, inset 0 1px 0 #AA822840",
           fontFamily: "'Playfair Display', serif",
         }}
       >
@@ -169,12 +169,12 @@ function CountUnit({ value, label }: { value: number; label: string }) {
         {/* Reflet */}
         <div
           className="absolute inset-x-0 top-0 h-1/2 rounded-t-2xl pointer-events-none"
-          style={{ background: "linear-gradient(180deg, #C8794115, transparent)" }}
+          style={{ background: "linear-gradient(180deg, #AA822815, transparent)" }}
         />
       </div>
       <span
         className="text-xs font-semibold tracking-widest uppercase"
-        style={{ color: "#C87941", letterSpacing: "0.15em" }}
+        style={{ color: "#AA8228", letterSpacing: "0.15em" }}
       >
         {label}
       </span>
@@ -211,7 +211,7 @@ export function GagaNightCountdown() {
             style={{
               width: `${2 + (i % 3)}px`,
               height: `${2 + (i % 3)}px`,
-              background: i % 3 === 0 ? "#C87941" : i % 3 === 1 ? "#D4AF37" : "#C45E6A",
+              background: i % 3 === 0 ? "#AA8228" : i % 3 === 1 ? "#DCB464" : "#C45E6A",
               left: `${(i * 5.3) % 100}%`,
               top: `${(i * 7.1) % 100}%`,
               opacity: 0.3 + (i % 4) * 0.15,
@@ -227,7 +227,7 @@ export function GagaNightCountdown() {
       {/* ── Ligne décorative haut ── */}
       <div
         className="absolute top-0 inset-x-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, #C87941, #D4AF37, #C87941, transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, #AA8228, #DCB464, #AA8228, transparent)" }}
       />
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
@@ -237,16 +237,16 @@ export function GagaNightCountdown() {
           <div
             className="relative inline-flex items-center gap-4 px-8 py-4 rounded-full"
             style={{
-              background: "linear-gradient(135deg, rgba(196,94,106,0.12), rgba(200,121,65,0.12), rgba(212,175,55,0.08))",
-              border: "1px solid rgba(196,94,106,0.4)",
-              boxShadow: "0 0 40px rgba(196,94,106,0.15), 0 0 80px rgba(200,121,65,0.08), inset 0 1px 0 rgba(232,213,183,0.1)",
+              background: "linear-gradient(135deg, rgba(240,200,130,0.12), rgba(170,130,40,0.12), rgba(220,180,100,0.08))",
+              border: "1px solid rgba(240,200,130,0.4)",
+              boxShadow: "0 0 40px rgba(240,200,130,0.15), 0 0 80px rgba(170,130,40,0.08), inset 0 1px 0 rgba(232,213,183,0.1)",
             }}
           >
             {/* Halo pulsant */}
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                background: "linear-gradient(135deg, rgba(196,94,106,0.06), rgba(200,121,65,0.06))",
+                background: "linear-gradient(135deg, rgba(240,200,130,0.06), rgba(170,130,40,0.06))",
                 animation: "dance-badge-pulse 3s ease-in-out infinite",
               }}
             />
@@ -267,12 +267,12 @@ export function GagaNightCountdown() {
               <div
                 className="text-xl sm:text-2xl font-bold tracking-wide"
                 style={{
-                  background: "linear-gradient(135deg, #E8D5B7, #D4AF37, #C87941)",
+                  background: "linear-gradient(135deg, #E8D5B7, #DCB464, #AA8228)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   fontFamily: "'Playfair Display', serif",
                   textShadow: "none",
-                  filter: "drop-shadow(0 0 12px rgba(212,175,55,0.3))",
+                  filter: "drop-shadow(0 0 12px rgba(220,180,100,0.3))",
                 }}
               >
                 {BRANDING.closingNight.label}
@@ -289,7 +289,7 @@ export function GagaNightCountdown() {
         {/* ── Titre et date ── */}
         <p
           className="text-sm font-semibold tracking-[0.25em] uppercase mb-2"
-          style={{ color: "#C87941" }}
+          style={{ color: "#AA8228" }}
         >
           Miss &amp; Mister Dour 2026
         </p>
@@ -302,7 +302,7 @@ export function GagaNightCountdown() {
         >
           {isOver ? "La soirée a commencé !" : "La grande finale approche"}
         </h2>
-        <p className="text-sm mb-8" style={{ color: "#C8794180" }}>
+        <p className="text-sm mb-8" style={{ color: "#AA822880" }}>
           {BRANDING.closingNight.dateDisplay} · {BRANDING.closingNight.timeDisplay} · {BRANDING.closingNight.venue}, {BRANDING.closingNight.location}
         </p>
 
@@ -310,7 +310,7 @@ export function GagaNightCountdown() {
         {isOver ? (
           <div
             className="text-3xl font-bold py-6"
-            style={{ color: "#D4AF37", fontFamily: "'Playfair Display', serif" }}
+            style={{ color: "#DCB464", fontFamily: "'Playfair Display', serif" }}
           >
             💃 La soirée {BRANDING.closingNight.label} est en cours !
           </div>
@@ -321,7 +321,7 @@ export function GagaNightCountdown() {
             {/* Séparateur animé */}
             <span
               className="text-3xl sm:text-4xl font-bold mb-5 transition-opacity duration-500"
-              style={{ color: "#C87941", opacity: pulse ? 1 : 0.3 }}
+              style={{ color: "#AA8228", opacity: pulse ? 1 : 0.3 }}
             >
               :
             </span>
@@ -330,7 +330,7 @@ export function GagaNightCountdown() {
 
             <span
               className="text-3xl sm:text-4xl font-bold mb-5 transition-opacity duration-500"
-              style={{ color: "#C87941", opacity: pulse ? 1 : 0.3 }}
+              style={{ color: "#AA8228", opacity: pulse ? 1 : 0.3 }}
             >
               :
             </span>
@@ -339,7 +339,7 @@ export function GagaNightCountdown() {
 
             <span
               className="text-3xl sm:text-4xl font-bold mb-5 transition-opacity duration-500"
-              style={{ color: "#C87941", opacity: pulse ? 1 : 0.3 }}
+              style={{ color: "#AA8228", opacity: pulse ? 1 : 0.3 }}
             >
               :
             </span>
@@ -354,9 +354,9 @@ export function GagaNightCountdown() {
             href="/inscription-candidat"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:scale-105"
             style={{
-              background: "linear-gradient(135deg, #C87941, #D4956A)",
+              background: "linear-gradient(135deg, #AA8228, #D4956A)",
               color: "#0A0A0F",
-              boxShadow: "0 4px 20px #C8794140",
+              boxShadow: "0 4px 20px #AA822840",
             }}
           >
             ✨ Rejoindre l'aventure
@@ -366,7 +366,7 @@ export function GagaNightCountdown() {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105"
             style={{
               background: "transparent",
-              border: "1px solid #C87941",
+              border: "1px solid #AA8228",
               color: "#E8D5B7",
             }}
           >
@@ -378,7 +378,7 @@ export function GagaNightCountdown() {
       {/* ── Ligne décorative bas ── */}
       <div
         className="absolute bottom-0 inset-x-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, #C87941, #D4AF37, #C87941, transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, #AA8228, #DCB464, #AA8228, transparent)" }}
       />
 
       {/* ── Keyframes CSS ── */}

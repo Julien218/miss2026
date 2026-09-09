@@ -15,9 +15,9 @@ export function ShareCountBadge({ shareCount, className = "" }: ShareCountBadgeP
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#C8A45C]/20 via-[#D4AF37]/20 to-[#EC4899]/20 backdrop-blur-xl border border-[#C8A45C]/30 ${className}`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#C8A45C]/20 via-[#DCB464]/20 to-[#EC4899]/20 backdrop-blur-xl border border-[#C8A45C]/30 ${className}`}
     >
-      <Share2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+      <Share2 className="w-3.5 h-3.5 text-[#DCB464]" />
       <span className="text-sm font-semibold text-white">
         {shareCount.toLocaleString()}
       </span>

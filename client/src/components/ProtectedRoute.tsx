@@ -42,7 +42,7 @@ export function ProtectedRoute({
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-12 w-12 animate-spin text-[#D4AF37]" />
+          <Loader2 className="h-12 w-12 animate-spin text-[#DCB464]" />
           <p className="text-lg text-slate-300">Vérification de l'authentification...</p>
         </div>
       </div>
@@ -64,7 +64,7 @@ export function ProtectedRoute({
       return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-12 w-12 animate-spin text-[#D4AF37]" />
+            <Loader2 className="h-12 w-12 animate-spin text-[#DCB464]" />
             <p className="text-lg text-slate-300">Vérification des permissions...</p>
           </div>
         </div>
@@ -88,7 +88,7 @@ export function ProtectedRoute({
             </p>
             <button
               onClick={() => window.history.back()}
-              className="mt-6 rounded-lg bg-[#D4AF37] px-6 py-2 font-semibold text-slate-950 transition-all hover:bg-[#B8941E]"
+              className="mt-6 rounded-lg bg-[#DCB464] px-6 py-2 font-semibold text-slate-950 transition-all hover:bg-[#AA8228]"
             >
               Retour
             </button>

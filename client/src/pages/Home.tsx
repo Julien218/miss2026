@@ -21,10 +21,10 @@ const mockCandidates = [
 ];
 
 // Couleurs signature Lady Gaga × Miss & Mister Dour
-const COPPER = "#C87941";
+const COPPER = "#AA8228";
 const COPPER_LIGHT = "#D4956A";
 const CHAMPAGNE = "#E8D5B7";
-const GOLD = "#D4AF37";
+const GOLD = "#DCB464";
 const OBSIDIAN = "#0A0A0F";
 const GAGA_ROSE = "#C45E6A";
 

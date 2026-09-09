@@ -26,14 +26,14 @@ export function FilterBar({ filters, children, className, showIcon = true }: Fil
   return (
     <div
       className={cn(
-        "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-[#D4AF37]/20 p-6",
+        "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-[#DCB464]/20 p-6",
         className
       )}
     >
       <div className="flex flex-wrap items-center gap-4">
         {showIcon && (
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-[#D4AF37]" />
+            <Filter className="w-5 h-5 text-[#DCB464]" />
             <span className="font-medium text-[#8B7355]">Filtres:</span>
           </div>
         )}
@@ -44,7 +44,7 @@ export function FilterBar({ filters, children, className, showIcon = true }: Fil
               <span className="text-sm text-[#8B7355]/70">{filter.label}:</span>
             )}
             <Select value={filter.value} onValueChange={filter.onChange}>
-              <SelectTrigger className="w-[200px] border-[#D4AF37]/30">
+              <SelectTrigger className="w-[200px] border-[#DCB464]/30">
                 <SelectValue placeholder={filter.placeholder || "Sélectionner..."} />
               </SelectTrigger>
               <SelectContent>

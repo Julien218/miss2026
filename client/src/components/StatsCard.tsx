@@ -20,12 +20,12 @@ export function StatsCard({ title, value, icon: Icon, trend, delay = 0 }: StatsC
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
     >
-      <Card className="border-[#D4AF37]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md hover:border-[#D4AF37]/40 transition-all duration-300">
+      <Card className="border-[#DCB464]/20 bg-gradient-to-br from-[#1A1A1A]/80 to-[#0A0A0A]/80 backdrop-blur-md hover:border-[#DCB464]/40 transition-all duration-300">
         <CardContent className="p-6">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <p className="text-sm text-[#C0C0C0]">{title}</p>
-              <p className="text-3xl font-bold bg-gradient-to-br from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+              <p className="text-3xl font-bold bg-gradient-to-br from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                 {value}
               </p>
               {trend && (
@@ -37,8 +37,8 @@ export function StatsCard({ title, value, icon: Icon, trend, delay = 0 }: StatsC
                 </div>
               )}
             </div>
-            <div className="p-3 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#B8941E]/20">
-              <Icon className="h-6 w-6 text-[#D4AF37]" />
+            <div className="p-3 rounded-xl bg-gradient-to-br from-[#DCB464]/20 to-[#AA8228]/20">
+              <Icon className="h-6 w-6 text-[#DCB464]" />
             </div>
           </div>
         </CardContent>

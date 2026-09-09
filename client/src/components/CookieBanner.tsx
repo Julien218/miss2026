@@ -121,7 +121,7 @@ export default function CookieBanner() {
             transition: transform .2s;
             box-shadow: 0 1px 3px rgba(0,0,0,.3);
           }
-          .cookie-toggle input:checked + .cookie-slider { background: #C87941; }
+          .cookie-toggle input:checked + .cookie-slider { background: #AA8228; }
           .cookie-toggle input:checked + .cookie-slider::after { transform: translateX(20px); }
           .cookie-toggle input:not(:checked) + .cookie-slider { background: rgba(255,255,255,.2); }
           .cookie-toggle input:disabled + .cookie-slider { opacity: .5; cursor: not-allowed; }
@@ -131,8 +131,8 @@ export default function CookieBanner() {
           className="max-w-4xl mx-auto rounded-2xl border overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #0D0D14 0%, #12101A 100%)",
-            borderColor: "rgba(200,121,65,0.35)",
-            boxShadow: "0 -4px 40px rgba(200,121,65,0.12), 0 0 0 1px rgba(200,121,65,0.08)",
+            borderColor: "rgba(170,130,40,0.35)",
+            boxShadow: "0 -4px 40px rgba(170,130,40,0.12), 0 0 0 1px rgba(170,130,40,0.08)",
           }}
         >
           {/* En-tête */}
@@ -140,9 +140,9 @@ export default function CookieBanner() {
             <div className="flex items-start gap-4">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "rgba(200,121,65,0.15)", border: "1px solid rgba(200,121,65,0.3)" }}
+                style={{ background: "rgba(170,130,40,0.15)", border: "1px solid rgba(170,130,40,0.3)" }}
               >
-                <Cookie className="w-5 h-5" style={{ color: "#C87941" }} />
+                <Cookie className="w-5 h-5" style={{ color: "#AA8228" }} />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -163,7 +163,7 @@ export default function CookieBanner() {
                   techniques nécessaires au fonctionnement du site (authentification, session, préférences d'affichage).
                   Ces cookies ne collectent aucune donnée à des fins publicitaires ou de traçage commercial.
                   Conformément à la directive ePrivacy et au RGPD, votre choix est mémorisé.{" "}
-                  <Link href="/legal/privacy" className="underline" style={{ color: "#C87941", textUnderlineOffset: "2px" }}>
+                  <Link href="/legal/privacy" className="underline" style={{ color: "#AA8228", textUnderlineOffset: "2px" }}>
                       Politique de confidentialité
                     </Link>
                 </p>
@@ -192,8 +192,8 @@ export default function CookieBanner() {
                 {/* Cookies nécessaires — toujours actifs */}
                 <div className="flex items-start justify-between gap-4 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(200,121,65,0.12)" }}>
-                      <Shield className="w-4 h-4" style={{ color: "#C87941" }} />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(170,130,40,0.12)" }}>
+                      <Shield className="w-4 h-4" style={{ color: "#AA8228" }} />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-white">Cookies nécessaires</p>
@@ -232,7 +232,7 @@ export default function CookieBanner() {
                 {/* Cookies marketing */}
                 <div className="flex items-start justify-between gap-4 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(196,94,106,0.12)" }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(240,200,130,0.12)" }}>
                       <Cookie className="w-4 h-4" style={{ color: "#C45E6A" }} />
                     </div>
                     <div>
@@ -253,7 +253,7 @@ export default function CookieBanner() {
               <button
                 onClick={handleSavePreferences}
                 className="mt-4 w-full py-2.5 rounded-xl text-sm font-medium text-white border transition-all"
-                style={{ borderColor: "rgba(200,121,65,0.4)", background: "rgba(200,121,65,0.08)" }}
+                style={{ borderColor: "rgba(170,130,40,0.4)", background: "rgba(170,130,40,0.08)" }}
               >
                 Enregistrer mes préférences
               </button>
@@ -275,8 +275,8 @@ export default function CookieBanner() {
               onClick={handleAcceptAll}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
               style={{
-                background: "linear-gradient(135deg, #C87941 0%, #D4AF37 100%)",
-                boxShadow: "0 2px 12px rgba(200,121,65,0.35)",
+                background: "linear-gradient(135deg, #AA8228 0%, #DCB464 100%)",
+                boxShadow: "0 2px 12px rgba(170,130,40,0.35)",
               }}
             >
               Tout accepter

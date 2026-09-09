@@ -59,9 +59,9 @@ export default function MissMisterDour2026Intro() {
               <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="mirror-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.3" />
+                    <stop offset="0%" stopColor="#DCB464" stopOpacity="0.3" />
                     <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.6" />
-                    <stop offset="100%" stopColor="#B8941E" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#AA8228" stopOpacity="0.3" />
                   </linearGradient>
                 </defs>
                 
@@ -105,7 +105,7 @@ export default function MissMisterDour2026Intro() {
                     style={{
                       left: `${x}%`,
                       top: `${y}%`,
-                      boxShadow: '0 0 10px rgba(212, 175, 55, 0.8)'
+                      boxShadow: '0 0 10px rgba(220, 180, 100, 0.8)'
                     }}
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ 
@@ -137,11 +137,11 @@ export default function MissMisterDour2026Intro() {
             className="absolute inset-0 flex items-center justify-center"
           >
             <motion.img
-              src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+              src="/logo/miss-mister-dour-logo-transparent.png"
               alt="Miss & Mister Dour Logo"
               className="w-80 h-80 object-contain"
               style={{
-                filter: 'drop-shadow(0 0 60px rgba(212, 175, 55, 0.8))'
+                filter: 'drop-shadow(0 0 60px rgba(220, 180, 100, 0.8))'
               }}
               animate={{
                 scale: [1, 1.1, 1],
@@ -170,7 +170,7 @@ export default function MissMisterDour2026Intro() {
             <motion.p
               className="text-xl md:text-2xl text-white font-light tracking-wide"
               style={{
-                textShadow: '0 0 20px rgba(212, 175, 55, 0.5)'
+                textShadow: '0 0 20px rgba(220, 180, 100, 0.5)'
               }}
               animate={{
                 opacity: [0.7, 1, 0.7]

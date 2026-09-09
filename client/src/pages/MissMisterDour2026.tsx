@@ -59,7 +59,7 @@ function GoldenParticles({ count }: { count: number }) {
       particles.forEach((particle) => {
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 175, 55, ${particle.opacity})`;
+        ctx.fillStyle = `rgba(220, 180, 100, ${particle.opacity})`;
         ctx.fill();
 
         particle.x += particle.speedX;
@@ -143,8 +143,8 @@ function Countdown() {
           transition={{ delay: index * 0.1 + 0.5 }}
           className="relative"
         >
-          <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-[#D4AF37]/30">
-            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+          <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-[#DCB464]/30">
+            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
               {String(item.value).padStart(2, "0")}
             </div>
             <div className="text-xs md:text-sm text-[#C0C0C0] mt-2 uppercase tracking-wider">
@@ -215,8 +215,8 @@ const candidatesMister = [
 // Composant Card Candidat
 function CandidateCard({ candidate, category }: { candidate: typeof candidatesMiss[0]; category: "miss" | "mister" }) {
   const gradientColor = category === "miss" 
-    ? "from-[#EC4899] via-[#F472B6] to-[#D4AF37]"
-    : "from-[#3B82F6] via-[#06B6D4] to-[#D4AF37]";
+    ? "from-[#EC4899] via-[#F472B6] to-[#DCB464]"
+    : "from-[#3B82F6] via-[#06B6D4] to-[#DCB464]";
 
   return (
     <motion.div
@@ -227,7 +227,7 @@ function CandidateCard({ candidate, category }: { candidate: typeof candidatesMi
       whileHover={{ scale: 1.05, y: -10 }}
       className="group relative"
     >
-      <div className="relative overflow-hidden rounded-2xl bg-black/40 backdrop-blur-xl border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all duration-300">
+      <div className="relative overflow-hidden rounded-2xl bg-black/40 backdrop-blur-xl border border-[#DCB464]/30 hover:border-[#DCB464] transition-all duration-300">
         {/* Photo */}
         <div className="relative h-80 overflow-hidden">
           <img
@@ -257,7 +257,7 @@ function CandidateCard({ candidate, category }: { candidate: typeof candidatesMi
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`flex-1 px-4 py-2 rounded-xl bg-gradient-to-r ${gradientColor} text-white font-semibold text-sm hover:shadow-lg hover:shadow-[#D4AF37]/50 transition-all duration-300`}
+                className={`flex-1 px-4 py-2 rounded-xl bg-gradient-to-r ${gradientColor} text-white font-semibold text-sm hover:shadow-lg hover:shadow-[#DCB464]/50 transition-all duration-300`}
               >
                 Voir le profil
               </motion.button>
@@ -265,7 +265,7 @@ function CandidateCard({ candidate, category }: { candidate: typeof candidatesMi
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-xl border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all duration-300"
+              className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-xl border border-[#DCB464]/30 text-[#DCB464] hover:bg-[#DCB464]/10 transition-all duration-300"
             >
               <Heart className="w-5 h-5" />
             </motion.button>
@@ -330,23 +330,23 @@ export default function MissMisterDour2026() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-2xl border-l border-[#D4AF37]/30 z-[70] md:hidden overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-2xl border-l border-[#DCB464]/30 z-[70] md:hidden overflow-y-auto"
             >
               <div className="p-6">
                 {/* Header avec logo et bouton fermer */}
                 <div className="flex items-center justify-between mb-8">
                   <img
-                    src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+                    src="/logo/miss-mister-dour-logo-transparent.png"
                     alt="Miss & Mister Dour"
-                    className="h-12 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+                    className="h-12 drop-shadow-[0_0_20px_rgba(220,180,100,0.6)]"
                   />
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-10 h-10 flex items-center justify-center rounded-lg bg-black/40 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-colors"
+                    className="w-10 h-10 flex items-center justify-center rounded-lg bg-black/40 border border-[#DCB464]/30 hover:border-[#DCB464] transition-colors"
                     aria-label="Fermer le menu"
                   >
-                    <X className="w-6 h-6 text-[#D4AF37]" />
+                    <X className="w-6 h-6 text-[#DCB464]" />
                   </motion.button>
                 </div>
 
@@ -355,7 +355,7 @@ export default function MissMisterDour2026() {
                   <a
                     href="#candidats-miss"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#DCB464]/20 hover:border-[#DCB464] hover:bg-[#DCB464]/10 transition-all group"
                   >
                     <Sparkles className="w-5 h-5 text-[#EC4899] group-hover:text-[#F472B6] transition-colors" />
                     <span className="text-white font-semibold">Candidates Miss</span>
@@ -363,7 +363,7 @@ export default function MissMisterDour2026() {
                   <a
                     href="#candidats-mister"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#DCB464]/20 hover:border-[#DCB464] hover:bg-[#DCB464]/10 transition-all group"
                   >
                     <Trophy className="w-5 h-5 text-[#3B82F6] group-hover:text-[#06B6D4] transition-colors" />
                     <span className="text-white font-semibold">Candidats Mister</span>
@@ -371,19 +371,19 @@ export default function MissMisterDour2026() {
                   <a
                     href="#vote"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#DCB464]/20 hover:border-[#DCB464] hover:bg-[#DCB464]/10 transition-all group"
                   >
-                    <Heart className="w-5 h-5 text-[#D4AF37] group-hover:text-[#E8C547] transition-colors" />
+                    <Heart className="w-5 h-5 text-[#DCB464] group-hover:text-[#FADCA0] transition-colors" />
                     <span className="text-white font-semibold">Voter</span>
                   </a>
                   <Link href="/liligaga" onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#DCB464]/20 hover:border-[#DCB464] hover:bg-[#DCB464]/10 transition-all group"
                     >
                       <Sparkles className="w-5 h-5 text-[#7C3AED] group-hover:text-[#A855F7] transition-colors" />
                       <span className="text-white font-semibold">Liligaga Mirror</span>
                     </Link>
                   <Link href="/js-innov" onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#D4AF37]/20 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all group"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 border border-[#DCB464]/20 hover:border-[#DCB464] hover:bg-[#DCB464]/10 transition-all group"
                     >
                       <Sparkles className="w-5 h-5 text-[#06B6D4] group-hover:text-[#22D3EE] transition-colors" />
                       <span className="text-white font-semibold">JS-Innov.IA</span>
@@ -395,19 +395,19 @@ export default function MissMisterDour2026() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full px-6 py-4 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold text-lg hover:shadow-lg hover:shadow-[#D4AF37]/50 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full px-6 py-4 rounded-full bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] text-black font-bold text-lg hover:shadow-lg hover:shadow-[#DCB464]/50 transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <Heart className="w-5 h-5 fill-current" />
                   Voter maintenant
                 </motion.button>
 
                 {/* Footer du drawer */}
-                <div className="mt-8 pt-6 border-t border-[#D4AF37]/20">
+                <div className="mt-8 pt-6 border-t border-[#DCB464]/20">
                   <p className="text-[#C0C0C0] text-sm text-center">
                     © 2026 Miss & Mister Dour
                   </p>
                   <p className="text-[#C0C0C0] text-xs text-center mt-2">
-                    Créé par <span className="text-[#D4AF37]">Pagin Julien</span>
+                    Créé par <span className="text-[#DCB464]">Pagin Julien</span>
                   </p>
                 </div>
               </div>
@@ -420,30 +420,30 @@ export default function MissMisterDour2026() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-2xl border-b border-[#D4AF37]/20"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-2xl border-b border-[#DCB464]/20"
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
             <motion.img
               whileHover={{ scale: 1.05, rotate: 5 }}
-              src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+              src="/logo/miss-mister-dour-logo-transparent.png"
               alt="Miss & Mister Dour"
-              className="h-12 md:h-16 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+              className="h-12 md:h-16 drop-shadow-[0_0_20px_rgba(220,180,100,0.6)]"
             />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <a href="#candidats-miss" className="text-[#C0C0C0] hover:text-[#D4AF37] transition-colors">
+            <a href="#candidats-miss" className="text-[#C0C0C0] hover:text-[#DCB464] transition-colors">
               Miss
             </a>
-            <a href="#candidats-mister" className="text-[#C0C0C0] hover:text-[#D4AF37] transition-colors">
+            <a href="#candidats-mister" className="text-[#C0C0C0] hover:text-[#DCB464] transition-colors">
               Mister
             </a>
-            <a href="#vote" className="text-[#C0C0C0] hover:text-[#D4AF37] transition-colors">
+            <a href="#vote" className="text-[#C0C0C0] hover:text-[#DCB464] transition-colors">
               Voter
             </a>
             <Link href="/liligaga">
-              <span className="text-[#C0C0C0] hover:text-[#D4AF37] transition-colors cursor-pointer">
+              <span className="text-[#C0C0C0] hover:text-[#DCB464] transition-colors cursor-pointer">
                 Liligaga Mirror
               </span>
             </Link>
@@ -453,7 +453,7 @@ export default function MissMisterDour2026() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="hidden md:block px-6 py-2 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold text-sm md:text-base hover:shadow-lg hover:shadow-[#D4AF37]/50 transition-all duration-300"
+              className="hidden md:block px-6 py-2 rounded-full bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] text-black font-bold text-sm md:text-base hover:shadow-lg hover:shadow-[#DCB464]/50 transition-all duration-300"
             >
               Voter maintenant
             </motion.button>
@@ -462,7 +462,7 @@ export default function MissMisterDour2026() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-1.5 rounded-lg bg-black/40 backdrop-blur-xl border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-colors"
+              className="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-1.5 rounded-lg bg-black/40 backdrop-blur-xl border border-[#DCB464]/30 hover:border-[#DCB464] transition-colors"
               aria-label="Menu"
             >
               <motion.span
@@ -470,20 +470,20 @@ export default function MissMisterDour2026() {
                   rotate: mobileMenuOpen ? 45 : 0,
                   y: mobileMenuOpen ? 8 : 0,
                 }}
-                className="w-6 h-0.5 bg-[#D4AF37] rounded-full"
+                className="w-6 h-0.5 bg-[#DCB464] rounded-full"
               />
               <motion.span
                 animate={{
                   opacity: mobileMenuOpen ? 0 : 1,
                 }}
-                className="w-6 h-0.5 bg-[#D4AF37] rounded-full"
+                className="w-6 h-0.5 bg-[#DCB464] rounded-full"
               />
               <motion.span
                 animate={{
                   rotate: mobileMenuOpen ? -45 : 0,
                   y: mobileMenuOpen ? -8 : 0,
                 }}
-                className="w-6 h-0.5 bg-[#D4AF37] rounded-full"
+                className="w-6 h-0.5 bg-[#DCB464] rounded-full"
               />
             </motion.button>
           </div>
@@ -500,9 +500,9 @@ export default function MissMisterDour2026() {
           initial={{ scale: 0, rotate: -180, opacity: 0 }}
           animate={{ scale: 1, rotate: 0, opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+          src="/logo/miss-mister-dour-logo-transparent.png"
           alt="Miss & Mister Dour"
-          className="w-48 md:w-64 mb-8 drop-shadow-[0_0_60px_rgba(212,175,55,0.8)]"
+          className="w-48 md:w-64 mb-8 drop-shadow-[0_0_60px_rgba(220,180,100,0.8)]"
         />
 
         {/* Titre principal */}
@@ -514,7 +514,7 @@ export default function MissMisterDour2026() {
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           Miss & Mister{" "}
-          <span className="bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
             Dour 2026
           </span>
         </motion.h1>
@@ -550,7 +550,7 @@ export default function MissMisterDour2026() {
             href="#candidats-miss"
             whileHover={{ scale: 1.05, y: -5 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold text-lg hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 flex items-center gap-2"
+            className="px-8 py-4 rounded-full bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] text-black font-bold text-lg hover:shadow-2xl hover:shadow-[#DCB464]/50 transition-all duration-300 flex items-center gap-2"
           >
             <Sparkles className="w-5 h-5" />
             Découvrir les candidats
@@ -559,7 +559,7 @@ export default function MissMisterDour2026() {
             href="#vote"
             whileHover={{ scale: 1.05, y: -5 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 rounded-full bg-black/60 backdrop-blur-xl border-2 border-[#D4AF37] text-[#D4AF37] font-bold text-lg hover:bg-[#D4AF37]/10 transition-all duration-300 flex items-center gap-2"
+            className="px-8 py-4 rounded-full bg-black/60 backdrop-blur-xl border-2 border-[#DCB464] text-[#DCB464] font-bold text-lg hover:bg-[#DCB464]/10 transition-all duration-300 flex items-center gap-2"
           >
             <Heart className="w-5 h-5" />
             Voter maintenant
@@ -573,11 +573,11 @@ export default function MissMisterDour2026() {
           transition={{ delay: 1, repeat: Infinity, duration: 1.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <div className="w-6 h-10 rounded-full border-2 border-[#D4AF37] flex items-start justify-center p-2">
+          <div className="w-6 h-10 rounded-full border-2 border-[#DCB464] flex items-start justify-center p-2">
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full"
+              className="w-1.5 h-1.5 bg-[#DCB464] rounded-full"
             />
           </div>
         </motion.div>
@@ -590,28 +590,28 @@ export default function MissMisterDour2026() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-black/40 backdrop-blur-xl rounded-3xl border border-[#D4AF37]/30 p-8 md:p-12"
+            className="bg-black/40 backdrop-blur-xl rounded-3xl border border-[#DCB464]/30 p-8 md:p-12"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-8" style={{ fontFamily: "'Playfair Display', serif" }}>
               Un Événement{" "}
-              <span className="bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                 Prestigieux
               </span>
             </h2>
 
             <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="flex flex-col items-center text-center p-6 bg-black/40 rounded-2xl border border-[#D4AF37]/20">
-                <Calendar className="w-12 h-12 text-[#D4AF37] mb-4" />
+              <div className="flex flex-col items-center text-center p-6 bg-black/40 rounded-2xl border border-[#DCB464]/20">
+                <Calendar className="w-12 h-12 text-[#DCB464] mb-4" />
                 <h3 className="text-xl font-bold mb-2">Date</h3>
                 <p className="text-[#C0C0C0]">Samedi 19 Avril 2026</p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-black/40 rounded-2xl border border-[#D4AF37]/20">
-                <MapPin className="w-12 h-12 text-[#D4AF37] mb-4" />
+              <div className="flex flex-col items-center text-center p-6 bg-black/40 rounded-2xl border border-[#DCB464]/20">
+                <MapPin className="w-12 h-12 text-[#DCB464] mb-4" />
                 <h3 className="text-xl font-bold mb-2">Lieu</h3>
                 <p className="text-[#C0C0C0]">Salle des Fêtes, Dour</p>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-black/40 rounded-2xl border border-[#D4AF37]/20">
-                <Clock className="w-12 h-12 text-[#D4AF37] mb-4" />
+              <div className="flex flex-col items-center text-center p-6 bg-black/40 rounded-2xl border border-[#DCB464]/20">
+                <Clock className="w-12 h-12 text-[#DCB464] mb-4" />
                 <h3 className="text-xl font-bold mb-2">Horaire</h3>
                 <p className="text-[#C0C0C0]">20h00 - 02h00</p>
               </div>
@@ -638,7 +638,7 @@ export default function MissMisterDour2026() {
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               Candidates{" "}
-              <span className="bg-gradient-to-r from-[#EC4899] via-[#F472B6] to-[#D4AF37] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#EC4899] via-[#F472B6] to-[#DCB464] bg-clip-text text-transparent">
                 Miss Dour 2026
               </span>
             </h2>
@@ -666,7 +666,7 @@ export default function MissMisterDour2026() {
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               Candidats{" "}
-              <span className="bg-gradient-to-r from-[#3B82F6] via-[#06B6D4] to-[#D4AF37] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#3B82F6] via-[#06B6D4] to-[#DCB464] bg-clip-text text-transparent">
                 Mister Dour 2026
               </span>
             </h2>
@@ -690,15 +690,15 @@ export default function MissMisterDour2026() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#D4AF37]/20 via-[#EC4899]/20 to-[#3B82F6]/20 backdrop-blur-xl border border-[#D4AF37]/30 p-12 text-center"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#DCB464]/20 via-[#EC4899]/20 to-[#3B82F6]/20 backdrop-blur-xl border border-[#DCB464]/30 p-12 text-center"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.1),transparent_70%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(220,180,100,0.1),transparent_70%)]" />
             
-            <Trophy className="w-20 h-20 text-[#D4AF37] mx-auto mb-6" />
+            <Trophy className="w-20 h-20 text-[#DCB464] mx-auto mb-6" />
             
             <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
               Votez pour votre{" "}
-              <span className="bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                 Favori(te)
               </span>
             </h2>
@@ -711,7 +711,7 @@ export default function MissMisterDour2026() {
             <motion.button
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
-              className="px-12 py-5 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold text-xl hover:shadow-2xl hover:shadow-[#D4AF37]/50 transition-all duration-300 flex items-center gap-3 mx-auto"
+              className="px-12 py-5 rounded-full bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] text-black font-bold text-xl hover:shadow-2xl hover:shadow-[#DCB464]/50 transition-all duration-300 flex items-center gap-3 mx-auto"
             >
               <Heart className="w-6 h-6 fill-current" />
               Voter maintenant
@@ -721,15 +721,15 @@ export default function MissMisterDour2026() {
       </section>
 
       {/* Footer Premium */}
-      <footer className="relative bg-black/60 backdrop-blur-xl border-t border-[#D4AF37]/20 py-12 px-4 mt-20">
+      <footer className="relative bg-black/60 backdrop-blur-xl border-t border-[#DCB464]/20 py-12 px-4 mt-20">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             {/* Logo et description */}
             <div className="md:col-span-2">
               <img
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+                src="/logo/miss-mister-dour-logo-transparent.png"
                 alt="Miss & Mister Dour"
-                className="h-16 mb-4 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+                className="h-16 mb-4 drop-shadow-[0_0_20px_rgba(220,180,100,0.6)]"
               />
               <p className="text-[#C0C0C0] mb-4">
                 L'événement de prestige qui célèbre l'élégance et le talent à Dour depuis 2026.
@@ -738,18 +738,18 @@ export default function MissMisterDour2026() {
 
             {/* Navigation */}
             <div>
-              <h3 className="text-[#D4AF37] font-bold mb-4">Navigation</h3>
+              <h3 className="text-[#DCB464] font-bold mb-4">Navigation</h3>
               <ul className="space-y-2 text-[#C0C0C0]">
-                <li><a href="#candidats-miss" className="hover:text-[#D4AF37] transition-colors">Miss</a></li>
-                <li><a href="#candidats-mister" className="hover:text-[#D4AF37] transition-colors">Mister</a></li>
-                <li><a href="#vote" className="hover:text-[#D4AF37] transition-colors">Voter</a></li>
-                <li><Link href="/liligaga"><span className="hover:text-[#D4AF37] transition-colors cursor-pointer">Liligaga Mirror</span></Link></li>
+                <li><a href="#candidats-miss" className="hover:text-[#DCB464] transition-colors">Miss</a></li>
+                <li><a href="#candidats-mister" className="hover:text-[#DCB464] transition-colors">Mister</a></li>
+                <li><a href="#vote" className="hover:text-[#DCB464] transition-colors">Voter</a></li>
+                <li><Link href="/liligaga"><span className="hover:text-[#DCB464] transition-colors cursor-pointer">Liligaga Mirror</span></Link></li>
               </ul>
             </div>
 
             {/* Contact */}
             <div>
-              <h3 className="text-[#D4AF37] font-bold mb-4">Contact</h3>
+              <h3 className="text-[#DCB464] font-bold mb-4">Contact</h3>
               <ul className="space-y-2 text-[#C0C0C0]">
                 <li>Dour, Belgique</li>
                 <li>info@missmisterdour.be</li>
@@ -758,14 +758,14 @@ export default function MissMisterDour2026() {
           </div>
 
           {/* Séparateur */}
-          <div className="border-t border-[#D4AF37]/20 pt-8">
+          <div className="border-t border-[#DCB464]/20 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[#C0C0C0] text-sm">
               <p>© 2026 Miss & Mister Dour - Tous droits réservés</p>
               <p>
-                Créé par <span className="text-[#D4AF37] font-semibold">Pagin Julien</span> - Dour, Belgique
+                Créé par <span className="text-[#DCB464] font-semibold">Pagin Julien</span> - Dour, Belgique
               </p>
               <Link href="/js-innov">
-                <span className="text-[#D4AF37] hover:text-[#E8C547] transition-colors cursor-pointer font-semibold">
+                <span className="text-[#DCB464] hover:text-[#FADCA0] transition-colors cursor-pointer font-semibold">
                   JS-Innov.IA
                 </span>
               </Link>

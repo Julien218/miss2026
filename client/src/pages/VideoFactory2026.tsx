@@ -53,7 +53,7 @@ export default function VideoFactory2026() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#C8A45C] to-[#DCB464] bg-clip-text text-transparent">
             Video Factory 2026
           </h1>
           <p className="text-gray-400 text-lg">
@@ -113,7 +113,7 @@ export default function VideoFactory2026() {
               <Button
                 onClick={() => handleCreateMission(candidate.id)}
                 disabled={createMission.isPending}
-                className="w-full bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] hover:opacity-90"
+                className="w-full bg-gradient-to-r from-[#C8A45C] to-[#DCB464] hover:opacity-90"
               >
                 {createMission.isPending ? (
                   <>

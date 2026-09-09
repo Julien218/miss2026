@@ -179,16 +179,16 @@ export default function Vote() {
   if (!selectedContestId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black">
-        <Card className="w-full max-w-md bg-black/40 backdrop-blur-xl border-[#D4AF37]/30">
+        <Card className="w-full max-w-md bg-black/40 backdrop-blur-xl border-[#DCB464]/30">
           <CardHeader>
-            <CardTitle className="text-2xl font-display text-[#D4AF37]">Aucun concours disponible</CardTitle>
+            <CardTitle className="text-2xl font-display text-[#DCB464]">Aucun concours disponible</CardTitle>
             <CardDescription className="text-gray-400">
               Il n'y a actuellement aucun concours ouvert au vote public.
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <Link href="/miss-mister-dour-2026">
-              <Button variant="outline" className="border-[#D4AF37]/30 text-[#D4AF37]">
+              <Button variant="outline" className="border-[#DCB464]/30 text-[#DCB464]">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Retour à l'accueil
               </Button>
@@ -228,7 +228,7 @@ export default function Vote() {
           <Link href="/miss-mister-dour-2026">
             <Button 
               variant="ghost" 
-              className="text-[#D4AF37] hover:text-[#E8C547] hover:bg-[#D4AF37]/10"
+              className="text-[#DCB464] hover:text-[#FADCA0] hover:bg-[#DCB464]/10"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Retour à l'accueil
@@ -242,7 +242,7 @@ export default function Vote() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-5xl md:text-6xl font-display font-bold mb-4 bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-display font-bold mb-4 bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] bg-clip-text text-transparent">
             Votez pour votre candidat favori
           </h1>
           <p className="text-gray-400 text-lg">
@@ -291,7 +291,7 @@ export default function Vote() {
               onClick={() => setShowResults(true)}
               variant="outline"
               size="lg"
-              className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+              className="border-[#DCB464] text-[#DCB464] hover:bg-[#DCB464]/10"
             >
               <Trophy className="w-5 h-5 mr-2" />
               Voir les résultats
@@ -306,18 +306,18 @@ export default function Vote() {
             animate={{ opacity: 1 }}
             className="mb-12"
           >
-            <Card className="border-[#D4AF37]/50 bg-black/40 backdrop-blur-xl">
+            <Card className="border-[#DCB464]/50 bg-black/40 backdrop-blur-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl font-display">
-                  <Trophy className="w-6 h-6 text-[#D4AF37]" />
-                  <span className="bg-gradient-to-r from-[#D4AF37] to-[#E8C547] bg-clip-text text-transparent">
+                  <Trophy className="w-6 h-6 text-[#DCB464]" />
+                  <span className="bg-gradient-to-r from-[#DCB464] to-[#FADCA0] bg-clip-text text-transparent">
                     Classement actuel
                   </span>
                 </CardTitle>
                 <CardDescription className="text-gray-400">
                   Résultats en temps réel des votes du public
                   {voteStats && (
-                    <span className="ml-2 text-[#D4AF37]">
+                    <span className="ml-2 text-[#DCB464]">
                       • {voteStats.totalVotes} votes au total
                     </span>
                   )}
@@ -342,7 +342,7 @@ export default function Vote() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-center gap-4 p-4 rounded-lg bg-black/40 border border-[#D4AF37]/20 backdrop-blur-xl"
+                        className="flex items-center gap-4 p-4 rounded-lg bg-black/40 border border-[#DCB464]/20 backdrop-blur-xl"
                       >
                         <div className="text-4xl">{medals[index]}</div>
                         <div className="flex-1">
@@ -444,7 +444,7 @@ export default function Vote() {
                           <div className="mt-4">
                             <div className="flex items-center justify-between text-sm mb-2">
                               <span className="text-gray-400">Votes</span>
-                              <span className="font-semibold text-[#D4AF37]">
+                              <span className="font-semibold text-[#DCB464]">
                                 {votes.voteCount} ({votes.percentage.toFixed(1)}%)
                               </span>
                             </div>
@@ -457,7 +457,7 @@ export default function Vote() {
                         <Button
                           onClick={() => handleVote(candidate.id)}
                           disabled={voteMutation.isPending || isVoted}
-                          className="w-full bg-gradient-to-r from-[#D4AF37] to-[#E8C547] hover:from-[#E8C547] hover:to-[#D4AF37] text-black font-semibold transition-all duration-300"
+                          className="w-full bg-gradient-to-r from-[#DCB464] to-[#FADCA0] hover:from-[#FADCA0] hover:to-[#DCB464] text-black font-semibold transition-all duration-300"
                         >
                           {isVoted ? (
                             <>
@@ -482,9 +482,9 @@ export default function Vote() {
 
         {/* No candidates message */}
         {approvedCandidates.length === 0 && (
-          <Card className="max-w-2xl mx-auto bg-black/40 backdrop-blur-xl border-[#D4AF37]/30">
+          <Card className="max-w-2xl mx-auto bg-black/40 backdrop-blur-xl border-[#DCB464]/30">
             <CardHeader>
-              <CardTitle className="text-2xl font-display text-[#D4AF37]">Aucun candidat disponible</CardTitle>
+              <CardTitle className="text-2xl font-display text-[#DCB464]">Aucun candidat disponible</CardTitle>
               <CardDescription className="text-gray-400">
                 Les candidats seront bientôt disponibles pour le vote public.
               </CardDescription>

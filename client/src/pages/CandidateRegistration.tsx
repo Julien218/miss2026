@@ -306,7 +306,7 @@ export default function CandidateRegistration() {
           <Link href="/">
             <motion.button
               whileHover={{ scale: 1.05 }}
-              className="mb-6 text-[#C0C0C0] hover:text-[#D4AF37] transition-colors flex items-center gap-2 mx-auto"
+              className="mb-6 text-[#C0C0C0] hover:text-[#DCB464] transition-colors flex items-center gap-2 mx-auto"
             >
               <ArrowLeft className="w-5 h-5" />
               Retour à l'accueil
@@ -315,7 +315,7 @@ export default function CandidateRegistration() {
           
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
             Devenez{" "}
-            <span className="bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#FADCA0] via-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
               Miss ou Mister Dour 2027
             </span>
           </h1>
@@ -333,7 +333,7 @@ export default function CandidateRegistration() {
                   initial={{ scale: 0.8 }}
                   animate={{ 
                     scale: currentStep >= step ? 1 : 0.8,
-                    backgroundColor: currentStep >= step ? "#D4AF37" : "#333"
+                    backgroundColor: currentStep >= step ? "#DCB464" : "#333"
                   }}
                   className="w-10 h-10 rounded-full flex items-center justify-center font-bold relative z-10"
                 >
@@ -344,10 +344,10 @@ export default function CandidateRegistration() {
                     initial={{ scaleX: 0 }}
                     animate={{ 
                       scaleX: currentStep > step ? 1 : 0,
-                      backgroundColor: "#D4AF37"
+                      backgroundColor: "#DCB464"
                     }}
                     className="h-1 flex-1 mx-2 origin-left"
-                    style={{ backgroundColor: currentStep > step ? "#D4AF37" : "#333" }}
+                    style={{ backgroundColor: currentStep > step ? "#DCB464" : "#333" }}
                   />
                 )}
               </div>
@@ -365,7 +365,7 @@ export default function CandidateRegistration() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-black/40 backdrop-blur-xl rounded-3xl border border-[#D4AF37]/30 p-8 md:p-12"
+          className="bg-black/40 backdrop-blur-xl rounded-3xl border border-[#DCB464]/30 p-8 md:p-12"
         >
           <AnimatePresence mode="wait">
             {/* Étape 1: Informations personnelles */}
@@ -378,7 +378,7 @@ export default function CandidateRegistration() {
                 className="space-y-6"
               >
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <User className="w-6 h-6 text-[#D4AF37]" />
+                  <User className="w-6 h-6 text-[#DCB464]" />
                   Informations personnelles
                 </h2>
 
@@ -389,7 +389,7 @@ export default function CandidateRegistration() {
                       type="text"
                       value={formData.firstName}
                       onChange={(e) => updateField("firstName", e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="Votre prénom"
                     />
                     {errors.firstName && <p className="text-red-400 text-sm mt-1">{errors.firstName}</p>}
@@ -401,7 +401,7 @@ export default function CandidateRegistration() {
                       type="text"
                       value={formData.lastName}
                       onChange={(e) => updateField("lastName", e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="Votre nom"
                     />
                     {errors.lastName && <p className="text-red-400 text-sm mt-1">{errors.lastName}</p>}
@@ -416,7 +416,7 @@ export default function CandidateRegistration() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => updateField("email", e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="votre@email.com"
                     />
                   </div>
@@ -431,7 +431,7 @@ export default function CandidateRegistration() {
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => updateField("phone", e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="+32 XXX XX XX XX"
                     />
                   </div>
@@ -447,7 +447,7 @@ export default function CandidateRegistration() {
                         type="date"
                         value={formData.birthDate}
                         onChange={(e) => updateField("birthDate", e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                        className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       />
                     </div>
                     {errors.birthDate && <p className="text-red-400 text-sm mt-1">{errors.birthDate}</p>}
@@ -464,7 +464,7 @@ export default function CandidateRegistration() {
                         type="text"
                         value={formData.city}
                         onChange={(e) => updateField("city", e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                        className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                         placeholder="Votre ville"
                       />
                     </div>
@@ -483,7 +483,7 @@ export default function CandidateRegistration() {
                       className={`p-6 rounded-xl border-2 transition-all ${
                         formData.category === "miss"
                           ? "border-[#EC4899] bg-[#EC4899]/10"
-                          : "border-[#D4AF37]/30 bg-black/40"
+                          : "border-[#DCB464]/30 bg-black/40"
                       }`}
                     >
                       <Sparkles className={`w-8 h-8 mx-auto mb-3 ${
@@ -500,7 +500,7 @@ export default function CandidateRegistration() {
                       className={`p-6 rounded-xl border-2 transition-all ${
                         formData.category === "mister"
                           ? "border-[#3B82F6] bg-[#3B82F6]/10"
-                          : "border-[#D4AF37]/30 bg-black/40"
+                          : "border-[#DCB464]/30 bg-black/40"
                       }`}
                     >
                       <Sparkles className={`w-8 h-8 mx-auto mb-3 ${
@@ -524,7 +524,7 @@ export default function CandidateRegistration() {
                 className="space-y-6"
               >
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <Upload className="w-6 h-6 text-[#D4AF37]" />
+                  <Upload className="w-6 h-6 text-[#DCB464]" />
                   Photo et présentation
                 </h2>
 
@@ -536,7 +536,7 @@ export default function CandidateRegistration() {
                         <img
                           src={formData.photoPreview}
                           alt="Prévisualisation"
-                          className="w-48 h-48 object-cover rounded-2xl border-2 border-[#D4AF37]"
+                          className="w-48 h-48 object-cover rounded-2xl border-2 border-[#DCB464]"
                         />
                         <button
                           type="button"
@@ -550,8 +550,8 @@ export default function CandidateRegistration() {
                         </button>
                       </div>
                     ) : (
-                      <label className="w-48 h-48 border-2 border-dashed border-[#D4AF37]/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#D4AF37] transition-colors">
-                        <Upload className="w-12 h-12 text-[#D4AF37] mb-2" />
+                      <label className="w-48 h-48 border-2 border-dashed border-[#DCB464]/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#DCB464] transition-colors">
+                        <Upload className="w-12 h-12 text-[#DCB464] mb-2" />
                         <span className="text-sm text-[#C0C0C0]">Cliquez pour uploader</span>
                         <span className="text-xs text-[#C0C0C0] mt-1">Max 5MB</span>
                         <input
@@ -575,7 +575,7 @@ export default function CandidateRegistration() {
                     onChange={(e) => updateField("bio", e.target.value)}
                     rows={4}
                     maxLength={500}
-                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors resize-none"
                     placeholder="Présentez-vous en quelques mots... Cette bio sera utilisée sur les réseaux sociaux."
                   />
                   {errors.bio && <p className="text-red-400 text-sm mt-1">{errors.bio}</p>}
@@ -588,7 +588,7 @@ export default function CandidateRegistration() {
                     value={formData.motivation}
                     onChange={(e) => updateField("motivation", e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors resize-none"
                     placeholder="Pourquoi souhaitez-vous participer à Miss & Mister Dour 2027 ?"
                   />
                   {errors.motivation && <p className="text-red-400 text-sm mt-1">{errors.motivation}</p>}
@@ -601,7 +601,7 @@ export default function CandidateRegistration() {
                     type="text"
                     value={formData.profession}
                     onChange={(e) => updateField("profession", e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                     placeholder="Ex: Étudiant en communication, Entrepreneur, etc."
                   />
                   {errors.profession && <p className="text-red-400 text-sm mt-1">{errors.profession}</p>}
@@ -613,7 +613,7 @@ export default function CandidateRegistration() {
                     type="text"
                     value={formData.interests.join(", ")}
                     onChange={(e) => updateField("interests", e.target.value.split(",").map(i => i.trim()))}
-                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                     placeholder="Ex: Danse, Musique, Sport, Voyage (séparés par des virgules)"
                   />
                   <p className="text-xs text-[#C0C0C0] mt-1">Séparez vos centres d'intérêt par des virgules</p>
@@ -631,7 +631,7 @@ export default function CandidateRegistration() {
                 className="space-y-6"
               >
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <Hash className="w-6 h-6 text-[#D4AF37]" />
+                  <Hash className="w-6 h-6 text-[#DCB464]" />
                   Réseaux sociaux (optionnel)
                 </h2>
 
@@ -647,7 +647,7 @@ export default function CandidateRegistration() {
                       type="text"
                       value={formData.instagram}
                       onChange={(e) => updateField("instagram", e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="@votre_username"
                     />
                   </div>
@@ -661,7 +661,7 @@ export default function CandidateRegistration() {
                       type="text"
                       value={formData.facebook}
                       onChange={(e) => updateField("facebook", e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="https://facebook.com/votre-profil"
                     />
                   </div>
@@ -675,7 +675,7 @@ export default function CandidateRegistration() {
                       type="text"
                       value={formData.tiktok}
                       onChange={(e) => updateField("tiktok", e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="@votre_username"
                     />
                   </div>
@@ -689,7 +689,7 @@ export default function CandidateRegistration() {
                       type="text"
                       value={formData.linkedin}
                       onChange={(e) => updateField("linkedin", e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 focus:border-[#D4AF37] outline-none transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 focus:border-[#DCB464] outline-none transition-colors"
                       placeholder="https://linkedin.com/in/votre-profil"
                     />
                   </div>
@@ -707,7 +707,7 @@ export default function CandidateRegistration() {
                 className="space-y-6"
               >
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                  <Check className="w-6 h-6 text-[#D4AF37]" />
+                  <Check className="w-6 h-6 text-[#DCB464]" />
                   Récapitulatif et validation
                 </h2>
 
@@ -739,23 +739,23 @@ export default function CandidateRegistration() {
                     </div>
                   </div>
 
-                  <div className="border-t border-[#D4AF37]/20 pt-4">
+                  <div className="border-t border-[#DCB464]/20 pt-4">
                     <p className="text-sm text-[#C0C0C0] mb-2"><strong>Bio:</strong></p>
                     <p className="text-sm">{formData.bio}</p>
                   </div>
 
-                  <div className="border-t border-[#D4AF37]/20 pt-4">
+                  <div className="border-t border-[#DCB464]/20 pt-4">
                     <p className="text-sm text-[#C0C0C0] mb-2"><strong>Motivations:</strong></p>
                     <p className="text-sm">{formData.motivation}</p>
                   </div>
 
                   {formData.interests.length > 0 && formData.interests[0] && (
-                    <div className="border-t border-[#D4AF37]/20 pt-4">
+                    <div className="border-t border-[#DCB464]/20 pt-4">
                       <p className="text-sm text-[#C0C0C0] mb-2"><strong>Centres d'intérêt:</strong></p>
                       <div className="flex flex-wrap gap-2">
                         {formData.interests.map((interest, index) => (
                           interest && (
-                            <span key={index} className="px-3 py-1 bg-[#D4AF37]/20 text-[#D4AF37] rounded-full text-sm">
+                            <span key={index} className="px-3 py-1 bg-[#DCB464]/20 text-[#DCB464] rounded-full text-sm">
                               {interest}
                             </span>
                           )
@@ -765,7 +765,7 @@ export default function CandidateRegistration() {
                   )}
 
                   {(formData.instagram || formData.facebook || formData.tiktok || formData.linkedin) && (
-                    <div className="border-t border-[#D4AF37]/20 pt-4">
+                    <div className="border-t border-[#DCB464]/20 pt-4">
                       <p className="text-sm text-[#C0C0C0] mb-2"><strong>Réseaux sociaux:</strong></p>
                       <div className="flex flex-wrap gap-3">
                         {formData.instagram && (
@@ -798,9 +798,9 @@ export default function CandidateRegistration() {
                       type="checkbox"
                       checked={formData.acceptRules}
                       onChange={(e) => updateField("acceptRules", e.target.checked)}
-                      className="mt-1 w-5 h-5 rounded border-[#D4AF37]/30 bg-black/60 checked:bg-[#D4AF37] focus:ring-[#D4AF37] focus:ring-offset-0"
+                      className="mt-1 w-5 h-5 rounded border-[#DCB464]/30 bg-black/60 checked:bg-[#DCB464] focus:ring-[#DCB464] focus:ring-offset-0"
                     />
-                    <span className="text-sm group-hover:text-[#D4AF37] transition-colors">
+                    <span className="text-sm group-hover:text-[#DCB464] transition-colors">
                       J'accepte le règlement du concours Miss & Mister Dour 2027 *
                     </span>
                   </label>
@@ -811,9 +811,9 @@ export default function CandidateRegistration() {
                       type="checkbox"
                       checked={formData.acceptMedia}
                       onChange={(e) => updateField("acceptMedia", e.target.checked)}
-                      className="mt-1 w-5 h-5 rounded border-[#D4AF37]/30 bg-black/60 checked:bg-[#D4AF37] focus:ring-[#D4AF37] focus:ring-offset-0"
+                      className="mt-1 w-5 h-5 rounded border-[#DCB464]/30 bg-black/60 checked:bg-[#DCB464] focus:ring-[#DCB464] focus:ring-offset-0"
                     />
-                    <span className="text-sm group-hover:text-[#D4AF37] transition-colors">
+                    <span className="text-sm group-hover:text-[#DCB464] transition-colors">
                       J'autorise l'utilisation de mes photos et vidéos pour la promotion de l'événement *
                     </span>
                   </label>
@@ -824,29 +824,29 @@ export default function CandidateRegistration() {
                       type="checkbox"
                       checked={formData.acceptNewsletter}
                       onChange={(e) => updateField("acceptNewsletter", e.target.checked)}
-                      className="mt-1 w-5 h-5 rounded border-[#D4AF37]/30 bg-black/60 checked:bg-[#D4AF37] focus:ring-[#D4AF37] focus:ring-offset-0"
+                      className="mt-1 w-5 h-5 rounded border-[#DCB464]/30 bg-black/60 checked:bg-[#DCB464] focus:ring-[#DCB464] focus:ring-offset-0"
                     />
-                    <span className="text-sm group-hover:text-[#D4AF37] transition-colors">
+                    <span className="text-sm group-hover:text-[#DCB464] transition-colors">
                       Je souhaite recevoir la newsletter de Miss & Mister Dour
                     </span>
                   </label>
 
                   {/* Case à cocher CGU + Politique de Confidentialité — OBLIGATOIRE RGPD */}
-                  <div className="border border-[#D4AF37]/30 rounded-xl p-4 bg-[#D4AF37]/5">
+                  <div className="border border-[#DCB464]/30 rounded-xl p-4 bg-[#DCB464]/5">
                     <label className="flex items-start gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
                         checked={formData.acceptCGU}
                         onChange={(e) => updateField("acceptCGU", e.target.checked)}
-                        className="mt-1 w-5 h-5 rounded border-[#D4AF37]/50 bg-black/60 checked:bg-[#D4AF37] focus:ring-[#D4AF37] focus:ring-offset-0 flex-shrink-0"
+                        className="mt-1 w-5 h-5 rounded border-[#DCB464]/50 bg-black/60 checked:bg-[#DCB464] focus:ring-[#DCB464] focus:ring-offset-0 flex-shrink-0"
                       />
-                      <span className="text-sm group-hover:text-[#D4AF37] transition-colors leading-relaxed">
-                        <span className="text-[#D4AF37] font-semibold">*</span> J'ai lu et j'accepte les{" "}
+                      <span className="text-sm group-hover:text-[#DCB464] transition-colors leading-relaxed">
+                        <span className="text-[#DCB464] font-semibold">*</span> J'ai lu et j'accepte les{" "}
                         <a
                           href="/legal/cgu"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#D4AF37] underline hover:text-[#C87941] font-medium"
+                          className="text-[#DCB464] underline hover:text-[#AA8228] font-medium"
                         >
                           Conditions Générales d'Utilisation
                         </a>
@@ -855,7 +855,7 @@ export default function CandidateRegistration() {
                           href="/legal/privacy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#D4AF37] underline hover:text-[#C87941] font-medium"
+                          className="text-[#DCB464] underline hover:text-[#AA8228] font-medium"
                         >
                           Politique de Confidentialité
                         </a>
@@ -881,13 +881,13 @@ export default function CandidateRegistration() {
           </AnimatePresence>
 
           {/* Boutons de navigation */}
-          <div className="flex justify-between items-center mt-8 pt-8 border-t border-[#D4AF37]/20">
+          <div className="flex justify-between items-center mt-8 pt-8 border-t border-[#DCB464]/20">
             {currentStep > 1 ? (
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={goToPrevStep}
-                className="px-6 py-3 rounded-xl bg-black/60 border border-[#D4AF37]/30 text-white hover:border-[#D4AF37] transition-colors flex items-center gap-2"
+                className="px-6 py-3 rounded-xl bg-black/60 border border-[#DCB464]/30 text-white hover:border-[#DCB464] transition-colors flex items-center gap-2"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Précédent
@@ -901,7 +901,7 @@ export default function CandidateRegistration() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={goToNextStep}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold hover:shadow-lg hover:shadow-[#D4AF37]/50 transition-all flex items-center gap-2"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] text-black font-bold hover:shadow-lg hover:shadow-[#DCB464]/50 transition-all flex items-center gap-2"
               >
                 Suivant
                 <ArrowRight className="w-5 h-5" />
@@ -912,7 +912,7 @@ export default function CandidateRegistration() {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold text-lg hover:shadow-lg hover:shadow-[#D4AF37]/50 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#DCB464] via-[#FADCA0] to-[#DCB464] text-black font-bold text-lg hover:shadow-lg hover:shadow-[#DCB464]/50 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

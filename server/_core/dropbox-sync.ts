@@ -142,6 +142,17 @@ function normalize(value: string) {
 }
 
 function inferCategory(path: string) {
+  // Chaque dossier Dropbox = une catégorie de galerie.
+  // Le nom du dossier parent direct devient le slug de catégorie
+  // (ex: ".../shooting candidats/img.jpg" -> "shooting-candidats").
+  const dir = path.replace(/\/+$/, "").replace(/\/[^/]+$/, "");
+  const folder = dir.split("/").filter(Boolean).pop();
+  if (folder) {
+    let slug = normalize(folder).split(" ").filter(Boolean).join("-").slice(0, 100);
+    slug = slug.replace(/^election-miss-mister-dour-\d{4}(-photos)?-/, ""); // retire le préfixe d'arborescence
+    if (/^[a-z0-9-]{2,100}$/.test(slug)) return slug;
+  }
+  // Fallback: inférence par mots-clés (ancien comportement)
   const p = normalize(path);
   if (p.includes("portrait")) return "portrait";
   if (p.includes("coulisse") || p.includes("backstage")) return "backstage";

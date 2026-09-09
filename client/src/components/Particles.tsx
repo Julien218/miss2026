@@ -103,7 +103,7 @@ export function Particles() {
           particle.size
         );
         gradient.addColorStop(0, `rgba(232, 197, 71, ${particle.opacity})`);
-        gradient.addColorStop(1, `rgba(212, 175, 55, 0)`);
+        gradient.addColorStop(1, `rgba(220, 180, 100, 0)`);
         
         ctx.fillStyle = gradient;
         ctx.fill();
@@ -120,7 +120,7 @@ export function Particles() {
               ctx.beginPath();
               ctx.moveTo(particle.x, particle.y);
               ctx.lineTo(otherParticle.x, otherParticle.y);
-              ctx.strokeStyle = `rgba(212, 175, 55, ${(1 - distance / 100) * 0.1})`;
+              ctx.strokeStyle = `rgba(220, 180, 100, ${(1 - distance / 100) * 0.1})`;
               ctx.lineWidth = 0.5;
               ctx.stroke();
             }

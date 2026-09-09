@@ -285,7 +285,7 @@ export default function CandidateOnboardingForm() {
               
               <Button
                 onClick={() => setStep(2)}
-                className="w-full bg-[#C8A45C] text-black hover:bg-[#B8941E]"
+                className="w-full bg-[#C8A45C] text-black hover:bg-[#AA8228]"
                 disabled={!formData.firstName || !formData.lastName || !formData.phone || !formData.birthDate || !formData.city}
               >
                 Suivant
@@ -375,7 +375,7 @@ export default function CandidateOnboardingForm() {
                 </Button>
                 <Button
                   onClick={() => setStep(3)}
-                  className="flex-1 bg-[#C8A45C] text-black hover:bg-[#B8941E]"
+                  className="flex-1 bg-[#C8A45C] text-black hover:bg-[#AA8228]"
                   disabled={!formData.profilePhoto || !formData.bio || formData.bio.length < 50 || !formData.profession}
                 >
                   Suivant
@@ -445,7 +445,7 @@ export default function CandidateOnboardingForm() {
                 </Button>
                 <Button
                   onClick={() => setStep(4)}
-                  className="flex-1 bg-[#C8A45C] text-black hover:bg-[#B8941E]"
+                  className="flex-1 bg-[#C8A45C] text-black hover:bg-[#AA8228]"
                 >
                   Suivant
                 </Button>
@@ -521,7 +521,7 @@ export default function CandidateOnboardingForm() {
                 </Button>
                 <Button
                   onClick={handleSubmit}
-                  className="flex-1 bg-[#C8A45C] text-black hover:bg-[#B8941E]"
+                  className="flex-1 bg-[#C8A45C] text-black hover:bg-[#AA8228]"
                   disabled={!formData.acceptRules || submitting}
                 >
                   {submitting ? 'Envoi en cours...' : 'Soumettre ma candidature'}

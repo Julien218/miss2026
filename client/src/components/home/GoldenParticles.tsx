@@ -57,14 +57,14 @@ export function GoldenParticles() {
 
       draw() {
         if (!ctx) return;
-        ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+        ctx.fillStyle = `rgba(220, 180, 100, ${this.opacity})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
 
         // Add glow
         ctx.shadowBlur = 10;
-        ctx.shadowColor = "#D4AF37";
+        ctx.shadowColor = "#DCB464";
       }
     }
 

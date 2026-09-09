@@ -2884,7 +2884,7 @@ export async function createPhoto(data: {
   sizeBytes?: number;
   width?: number;
   height?: number;
-  category: "portrait" | "event" | "backstage" | "performance" | "other";
+  category: string; // Catégorie de galerie (dossier source Dropbox, ex: "shooting-candidats")
   tags?: string[];
   candidateId?: number;
   uploadedBy: number;
@@ -2899,6 +2899,18 @@ export async function createPhoto(data: {
   });
 
   return result;
+}
+
+export async function getPhotoCategories() {
+  const db = await getDb();
+  if (!db) return [] as Array<{ category: string; count: number }>;
+  const rows = await db
+    .select({ category: photos.category, count: sql<number>`count(*)` })
+    .from(photos)
+    .where(eq(photos.status, "approved"))
+    .groupBy(photos.category)
+    .orderBy(sql`count(*) DESC`);
+  return rows.map((r: any) => ({ category: String(r.category), count: Number(r.count) }));
 }
 
 export async function getPhotos(filters?: {

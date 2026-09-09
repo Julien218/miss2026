@@ -39,7 +39,7 @@ export default function HomeArticles() {
       <SEOHead
         title="Actualités Miss & Mister Dour 2026"
         description="Découvrez les dernières actualités, événements et bonnes actions de nos candidats Miss & Mister Dour 2026. Suivez leur parcours vers la finale du 19 avril 2026."
-        image="https://files.manuscdn.com/user_upload_by_module/session_file/87304619/eiRLiShMPFEUcfRq.png"
+        image="/logo/miss-mister-dour-logo-transparent.png"
         url={typeof window !== 'undefined' ? window.location.href : undefined}
         type="website"
       />
@@ -71,7 +71,7 @@ export default function HomeArticles() {
             className="font-['Playfair_Display'] text-6xl md:text-8xl font-bold mb-6"
           >
             Miss & Mister{" "}
-            <span className="bg-gradient-to-r from-[#C8A45C] via-[#D4AF37] to-[#C8A45C] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#C8A45C] via-[#DCB464] to-[#C8A45C] bg-clip-text text-transparent">
               Dour 2026
             </span>
           </motion.h1>
@@ -92,7 +92,7 @@ export default function HomeArticles() {
             className="flex flex-wrap gap-4 justify-center"
           >
             <Link href="/miss-mister-dour-2026">
-              <button className="px-8 py-4 bg-gradient-to-r from-[#C8A45C] via-[#D4AF37] to-[#C8A45C] text-black font-semibold rounded-lg hover:scale-105 transition-transform">
+              <button className="px-8 py-4 bg-gradient-to-r from-[#C8A45C] via-[#DCB464] to-[#C8A45C] text-black font-semibold rounded-lg hover:scale-105 transition-transform">
                 <Trophy className="inline mr-2 w-5 h-5" />
                 Voir les candidats
               </button>
@@ -189,7 +189,7 @@ export default function HomeArticles() {
                 Chaque partage compte ! Aidez votre candidat(e) à gagner en partageant son profil sur les réseaux sociaux.
               </p>
               <Link href="/miss-mister-dour-2026">
-                <button className="px-10 py-4 bg-gradient-to-r from-[#C8A45C] via-[#D4AF37] to-[#C8A45C] text-black font-bold text-lg rounded-lg hover:scale-105 transition-transform">
+                <button className="px-10 py-4 bg-gradient-to-r from-[#C8A45C] via-[#DCB464] to-[#C8A45C] text-black font-bold text-lg rounded-lg hover:scale-105 transition-transform">
                   <Heart className="inline mr-2 w-6 h-6" />
                   Voter maintenant
                 </button>

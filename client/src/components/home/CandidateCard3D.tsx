@@ -48,7 +48,7 @@ export function CandidateCard3D({ name, photo, city, category, index, total }: C
         transition: { duration: 0.3 },
       }}
     >
-      <div className="relative w-64 h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1A1A1A]/90 to-[#0A0A0A]/90 backdrop-blur-xl border-2 border-[#D4AF37]/30 shadow-2xl">
+      <div className="relative w-64 h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1A1A1A]/90 to-[#0A0A0A]/90 backdrop-blur-xl border-2 border-[#DCB464]/30 shadow-2xl">
         {/* Photo Background */}
         <div className="absolute inset-0">
           <img
@@ -60,7 +60,7 @@ export function CandidateCard3D({ name, photo, city, category, index, total }: C
         </div>
 
         {/* Crown Badge */}
-        <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8941E] flex items-center justify-center shadow-lg">
+        <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br from-[#DCB464] to-[#AA8228] flex items-center justify-center shadow-lg">
           <Crown className="w-6 h-6 text-white" />
         </div>
 
@@ -79,7 +79,7 @@ export function CandidateCard3D({ name, photo, city, category, index, total }: C
           </h3>
 
           {/* City */}
-          <div className="flex items-center gap-2 text-[#D4AF37]">
+          <div className="flex items-center gap-2 text-[#DCB464]">
             <MapPin className="w-4 h-4" />
             <span className="text-sm font-medium">{city}</span>
           </div>
@@ -89,14 +89,14 @@ export function CandidateCard3D({ name, photo, city, category, index, total }: C
             {[1, 2, 3, 4, 5].map((star) => (
               <Star
                 key={star}
-                className="w-4 h-4 fill-[#D4AF37] text-[#D4AF37]"
+                className="w-4 h-4 fill-[#DCB464] text-[#DCB464]"
               />
             ))}
           </div>
         </div>
 
         {/* Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#D4AF37]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#DCB464]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
     </motion.div>
   );

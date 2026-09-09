@@ -19,7 +19,7 @@ export function DataCard({
   return (
     <div
       className={cn(
-        "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-[#D4AF37]/20 overflow-hidden",
+        "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-[#DCB464]/20 overflow-hidden",
         hover && "hover:scale-105 transition-transform duration-300 cursor-pointer",
         variant === "compact" && "shadow-md",
         variant === "image" && "shadow-2xl",

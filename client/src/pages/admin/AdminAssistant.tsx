@@ -262,7 +262,7 @@ export default function AdminAssistant() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)" }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)" }}>
                 <Brain className="w-7 h-7 text-black" />
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900 animate-pulse" />
@@ -280,7 +280,7 @@ export default function AdminAssistant() {
               size="sm"
               onClick={() => { setBulkDialogOpen(true); handleResetCampaign(); }}
               className="gap-2 font-semibold"
-              style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}
+              style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}
             >
               <Megaphone className="w-4 h-4" />
               Campagne de rappel
@@ -536,7 +536,7 @@ export default function AdminAssistant() {
                   {chatHistory.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                       {msg.role === "assistant" && (
-                        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 mt-0.5" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)" }}>
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 mt-0.5" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)" }}>
                           <Brain className="w-3.5 h-3.5 text-black" />
                         </div>
                       )}
@@ -546,7 +546,7 @@ export default function AdminAssistant() {
                             ? "text-white rounded-br-sm"
                             : "bg-gray-800 text-gray-200 rounded-bl-sm"
                         }`}
-                        style={msg.role === "user" ? { background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" } : {}}
+                        style={msg.role === "user" ? { background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" } : {}}
                       >
                         {msg.content}
                       </div>
@@ -554,7 +554,7 @@ export default function AdminAssistant() {
                   ))}
                   {chatMutation.isPending && (
                     <div className="flex justify-start">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2" style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)" }}>
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2" style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)" }}>
                         <Brain className="w-3.5 h-3.5 text-black" />
                       </div>
                       <div className="bg-gray-800 px-3 py-2 rounded-2xl rounded-bl-sm">
@@ -583,7 +583,7 @@ export default function AdminAssistant() {
                     size="icon"
                     onClick={handleSendChat}
                     disabled={chatMutation.isPending || !chatInput.trim()}
-                    style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)" }}
+                    style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)" }}
                   >
                     <Send className="w-4 h-4 text-black" />
                   </Button>
@@ -671,7 +671,7 @@ export default function AdminAssistant() {
               onClick={handleGenerateMessage}
               disabled={generateMsgMutation.isPending}
               className="w-full gap-2"
-              style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}
+              style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}
             >
               <Sparkles className="w-4 h-4" />
               {generateMsgMutation.isPending ? "Génération en cours…" : "Générer le message"}
@@ -733,7 +733,7 @@ export default function AdminAssistant() {
                 className="flex-1 gap-2"
                 onClick={handleSendAdminMessage}
                 disabled={sendAdminMsgMutation.isPending || !adminMessageText.trim()}
-                style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}
+                style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}
               >
                 <Send className="w-4 h-4" />
                 {sendAdminMsgMutation.isPending ? "Envoi…" : "Envoyer"}
@@ -747,7 +747,7 @@ export default function AdminAssistant() {
         <DialogContent className="bg-gray-900 border-gray-700 max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center gap-2">
-              <Megaphone className="w-5 h-5" style={{ color: "#C87941" }} />
+              <Megaphone className="w-5 h-5" style={{ color: "#AA8228" }} />
               Campagne de rappel groupée
             </DialogTitle>
             <DialogDescription className="text-gray-400">
@@ -810,7 +810,7 @@ export default function AdminAssistant() {
                 <div className="p-4 rounded-xl bg-gray-800/60 border border-gray-700 space-y-2">
                   <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Estimation des candidats ciblés</p>
                   <div className="flex items-center gap-3">
-                    <div className="text-3xl font-bold" style={{ color: "#C87941" }}>
+                    <div className="text-3xl font-bold" style={{ color: "#AA8228" }}>
                       {(candidatesData?.candidates ?? []).filter((c) => c.completion.percentage < bulkThreshold).length}
                     </div>
                     <div>
@@ -829,7 +829,7 @@ export default function AdminAssistant() {
                   className="flex-1 gap-2 font-semibold"
                   onClick={handleLaunchCampaign}
                   disabled={bulkCampaignMutation.isPending}
-                  style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}
+                  style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}
                 >
                   <Megaphone className="w-4 h-4" />
                   {bulkCampaignMutation.isPending ? "Génération en cours…" : "Lancer la campagne"}
@@ -841,8 +841,8 @@ export default function AdminAssistant() {
           {bulkStep === "results" && bulkResults && (
             <div className="space-y-4">
               {/* Résumé */}
-              <div className="p-4 rounded-xl border" style={{ background: "rgba(200,121,65,0.1)", borderColor: "rgba(200,121,65,0.3)" }}>
-                <p className="text-sm font-medium" style={{ color: "#D4AF37" }}>{bulkResults.summary}</p>
+              <div className="p-4 rounded-xl border" style={{ background: "rgba(170,130,40,0.1)", borderColor: "rgba(170,130,40,0.3)" }}>
+                <p className="text-sm font-medium" style={{ color: "#DCB464" }}>{bulkResults.summary}</p>
               </div>
 
               {bulkResults.total === 0 ? (
@@ -859,7 +859,7 @@ export default function AdminAssistant() {
                       <div key={r.candidateId} className="p-3 rounded-xl bg-gray-800/60 border border-gray-700 space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Crown className="w-4 h-4" style={{ color: "#C87941" }} />
+                            <Crown className="w-4 h-4" style={{ color: "#AA8228" }} />
                             <span className="text-white font-medium text-sm">{r.name}</span>
                             <Badge
                               className={`text-xs ${
@@ -930,7 +930,7 @@ export default function AdminAssistant() {
                           .join("\n\n");
                         copyToClipboard(allMessages);
                       }}
-                      style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}
+                      style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}
                     >
                       <Copy className="w-3.5 h-3.5" /> Copier tous les messages
                     </Button>

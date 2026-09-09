@@ -50,7 +50,7 @@ const VIDEO_TYPES = [
 ];
 
 const VIDEO_STYLES = [
-  { id: "luxury_gold" as VideoStyle, label: "Luxe Doré", icon: "✨", description: "Élégant avec dorures et glamour", colors: ["#D4AF37", "#B8941E", "#1A1A1A"] },
+  { id: "luxury_gold" as VideoStyle, label: "Luxe Doré", icon: "✨", description: "Élégant avec dorures et glamour", colors: ["#DCB464", "#AA8228", "#1A1A1A"] },
   { id: "cinematic" as VideoStyle, label: "Cinématique", icon: "🎬", description: "Style film hollywoodien dramatique", colors: ["#1A1A2E", "#16213E", "#E94560"] },
   { id: "modern_minimal" as VideoStyle, label: "Moderne Minimaliste", icon: "◻️", description: "Design épuré et contemporain", colors: ["#FFFFFF", "#F5F5F5", "#333333"] },
   { id: "social_media" as VideoStyle, label: "Réseaux Sociaux", icon: "📱", description: "Format vertical 9:16 Instagram/TikTok", colors: ["#E1306C", "#833AB4", "#FCAF45"] },

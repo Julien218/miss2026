@@ -344,8 +344,8 @@ function DashboardLayoutContent({
             <div
               className="relative rounded-full p-3 shadow-lg transition-all hover:scale-110"
               style={{
-                background: 'linear-gradient(135deg, #C87941, #D4956A)',
-                boxShadow: '0 4px 20px #C8794150',
+                background: 'linear-gradient(135deg, #AA8228, #D4956A)',
+                boxShadow: '0 4px 20px #AA822850',
               }}
             >
               <Bell className="w-6 h-6" style={{ color: '#0A0A0F' }} />

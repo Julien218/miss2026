@@ -107,7 +107,7 @@ export function AdminAnalytics() {
     if (intensity < 0.2) return "rgba(16, 185, 129, 0.3)"; // Light green
     if (intensity < 0.4) return "rgba(245, 158, 11, 0.4)"; // Orange
     if (intensity < 0.6) return "rgba(200, 164, 92, 0.5)"; // Warm gold
-    if (intensity < 0.8) return "rgba(212, 175, 55, 0.7)"; // Gold
+    if (intensity < 0.8) return "rgba(220, 180, 100, 0.7)"; // Gold
     return "rgba(255, 215, 0, 0.9)"; // Bright gold
   };
 
@@ -126,7 +126,7 @@ export function AdminAnalytics() {
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               <span className="text-white">Analytics</span>{" "}
-              <span className="bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#C8A45C] to-[#DCB464] bg-clip-text text-transparent">
                 Dashboard
               </span>
             </h1>
@@ -141,7 +141,7 @@ export function AdminAnalytics() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="bg-gradient-to-br from-[#C8A45C]/10 to-[#D4AF37]/5 border border-[#C8A45C]/30 rounded-2xl p-6 backdrop-blur-xl"
+                  className="bg-gradient-to-br from-[#C8A45C]/10 to-[#DCB464]/5 border border-[#C8A45C]/30 rounded-2xl p-6 backdrop-blur-xl"
                 >
                   <TrendingUp className="w-8 h-8 text-[#C8A45C] mb-3" />
                   <div className="text-3xl font-bold text-white mb-1">{summary.totalEvents.toLocaleString()}</div>
@@ -152,7 +152,7 @@ export function AdminAnalytics() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="bg-gradient-to-br from-[#C8A45C]/10 to-[#D4AF37]/5 border border-[#C8A45C]/30 rounded-2xl p-6 backdrop-blur-xl"
+                  className="bg-gradient-to-br from-[#C8A45C]/10 to-[#DCB464]/5 border border-[#C8A45C]/30 rounded-2xl p-6 backdrop-blur-xl"
                 >
                   <Calendar className="w-8 h-8 text-[#C8A45C] mb-3" />
                   <div className="text-3xl font-bold text-white mb-1">{summary.avgEventsPerCell}</div>
@@ -211,7 +211,7 @@ export function AdminAnalytics() {
                         onClick={() => setEventType(type.value as any)}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
                           eventType === type.value
-                            ? "bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black"
+                            ? "bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black"
                             : "bg-black/60 text-[#B0B0B0] hover:text-white border border-[#C8A45C]/30"
                         }`}
                       >
@@ -249,7 +249,7 @@ export function AdminAnalytics() {
                         onClick={() => setPeriod(days as any)}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                           period === days
-                            ? "bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black"
+                            ? "bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black"
                             : "bg-black/60 text-[#B0B0B0] hover:text-white border border-[#C8A45C]/30"
                         }`}
                       >
@@ -264,7 +264,7 @@ export function AdminAnalytics() {
               <div className="flex gap-4 mt-6">
                 <button
                   onClick={handleExportCSV}
-                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black font-semibold hover:scale-105 transition-transform flex items-center gap-2"
+                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black font-semibold hover:scale-105 transition-transform flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
                   Export CSV

@@ -46,7 +46,7 @@ export default function AdminVotes() {
           <Button
             onClick={() => toast.info("Export CSV en cours de développement")}
             className="gap-2"
-            style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)", color: "#0A0A0F" }}
+            style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)", color: "#0A0A0F" }}
           >
             <Download className="w-4 h-4" />
             Exporter CSV
@@ -168,7 +168,7 @@ export default function AdminVotes() {
                             className="h-full rounded-full transition-all"
                             style={{
                               width: `${pct}%`,
-                              background: "linear-gradient(90deg, #C87941, #D4AF37)",
+                              background: "linear-gradient(90deg, #AA8228, #DCB464)",
                             }}
                           />
                         </div>

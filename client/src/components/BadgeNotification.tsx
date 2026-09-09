@@ -68,7 +68,7 @@ export function BadgeNotification({ badge, onClose }: BadgeNotificationProps) {
       particleCount: 50,
       spread: 60,
       origin: { x: 0.9, y: 0.1 },
-      colors: badge.rarity === "legendary" ? ["#FFD700", "#FFA500"] : ["#EC4899", "#8B5CF6"],
+      colors: badge.rarity === "legendary" ? ["#FADCA0", "#FFA500"] : ["#EC4899", "#8B5CF6"],
     });
 
     // Auto close after 5 seconds

@@ -349,12 +349,12 @@ export default function LegalNotice() {
       {/* Styles inline pour la page légale */}
       <style>{`
         .legal-link {
-          color: #C87941;
+          color: #AA8228;
           text-decoration: underline;
           text-underline-offset: 2px;
           transition: color 0.2s;
         }
-        .legal-link:hover { color: #D4AF37; }
+        .legal-link:hover { color: #DCB464; }
         .legal-table {
           width: 100%;
           border-collapse: collapse;
@@ -381,7 +381,7 @@ export default function LegalNotice() {
         .legal-list li {
           padding: 0.35rem 0 0.35rem 1.25rem;
           position: relative;
-          border-left: 2px solid rgba(200,121,65,0.3);
+          border-left: 2px solid rgba(170,130,40,0.3);
           margin-left: 0.5rem;
           margin-bottom: 0.35rem;
           color: #D1D5DB;
@@ -390,13 +390,13 @@ export default function LegalNotice() {
           content: "—";
           position: absolute;
           left: -0.1rem;
-          color: #C87941;
+          color: #AA8228;
           font-weight: bold;
         }
       `}</style>
 
       {/* En-tête */}
-      <div className="border-b border-gray-800" style={{ background: "rgba(200,121,65,0.05)" }}>
+      <div className="border-b border-gray-800" style={{ background: "rgba(170,130,40,0.05)" }}>
         <div className="max-w-4xl mx-auto px-6 py-8">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
               <ArrowLeft className="w-4 h-4" />
@@ -405,7 +405,7 @@ export default function LegalNotice() {
           <div className="flex items-start gap-4">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "linear-gradient(135deg, #C87941, #D4AF37)" }}
+              style={{ background: "linear-gradient(135deg, #AA8228, #DCB464)" }}
             >
               <Scale className="w-6 h-6 text-black" />
             </div>
@@ -446,12 +446,12 @@ export default function LegalNotice() {
         <div
           className="p-5 rounded-2xl border"
           style={{
-            background: "linear-gradient(135deg, rgba(200,121,65,0.08), rgba(212,175,55,0.05))",
-            borderColor: "rgba(200,121,65,0.25)",
+            background: "linear-gradient(135deg, rgba(170,130,40,0.08), rgba(220,180,100,0.05))",
+            borderColor: "rgba(170,130,40,0.25)",
           }}
         >
           <div className="flex items-start gap-3">
-            <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#C87941" }} />
+            <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#AA8228" }} />
             <p className="text-sm text-gray-300 leading-relaxed">
               Le présent document constitue les mentions légales obligatoires du site web{" "}
               <strong className="text-white">Miss & Mister Dour</strong>, conformément aux
@@ -470,9 +470,9 @@ export default function LegalNotice() {
               <div className="flex items-center gap-3 mb-5">
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(200,121,65,0.15)", border: "1px solid rgba(200,121,65,0.3)" }}
+                  style={{ background: "rgba(170,130,40,0.15)", border: "1px solid rgba(170,130,40,0.3)" }}
                 >
-                  <Icon className="w-4 h-4" style={{ color: "#C87941" }} />
+                  <Icon className="w-4 h-4" style={{ color: "#AA8228" }} />
                 </div>
                 <h2
                   className="text-xl font-bold text-white"

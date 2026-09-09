@@ -6,9 +6,9 @@
 
 export const BRANDING = {
   // Logos officiels
-  logoHologram: "https://files.manuscdn.com/user_upload_by_module/session_file/87304619/QqoPYFovLiObmUny.png",
-  logoIdentity: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
-  logoIdentityCompressed: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
+  logoHologram: "/logo/miss-mister-dour-logo-transparent.png",
+  logoIdentity: "/logo/miss-mister-dour-logo-transparent.png",
+  logoIdentityCompressed: "/logo/miss-mister-dour-logo-transparent.png",
   
   // Informations de copyright
   creator: "JS-Innov.IA",
@@ -21,12 +21,12 @@ export const BRANDING = {
   rightsReserved: "Tous droits réservés",
   copyProtection: "Copie strictement interdite - Propriété intellectuelle protégée",
   
-  // Palette Gala Chic (noir profond, blanc pur, or/argent subtil)
+  // Palette ADN logo officiel (noir obsidien, or antique, champagne, crème dorée)
   colors: {
     // Or élégant
-    gold: "#D4AF37",
-    goldLight: "#E8C547",
-    goldDark: "#B8941E",
+    gold: "#DCB464",
+    goldLight: "#FADCA0",
+    goldDark: "#AA8228",
     
     // Noir profond et anthracite
     black: "#0A0A0A",
@@ -38,12 +38,12 @@ export const BRANDING = {
     whiteSoft: "#F8F8F8",
     
     // Argent subtil
-    silver: "#C0C0C0",
-    silverLight: "#E5E5E5",
+    silver: "#CCC0A8",
+    silverLight: "#FADCA0",
     
     // Accents
-    accent: "#D4AF37",
-    accentHover: "#B8941E",
+    accent: "#DCB464",
+    accentHover: "#AA8228",
   },
   
   // Réseaux sociaux officiels

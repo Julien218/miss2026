@@ -252,7 +252,7 @@ export default function AdminWhatsApp() {
             { label: "Total candidats", value: candidates.length, icon: <Users className="w-5 h-5" />, color: "text-blue-400" },
             { label: "Avec téléphone", value: withPhone, icon: <Phone className="w-5 h-5" />, color: "text-green-400" },
             { label: "Sans téléphone", value: withoutPhone, icon: <AlertCircle className="w-5 h-5" />, color: "text-red-400" },
-            { label: "Sélectionnés", value: filtered.filter((c) => !!c.phone).length, icon: <CheckCircle2 className="w-5 h-5" />, color: "text-[#C87941]" },
+            { label: "Sélectionnés", value: filtered.filter((c) => !!c.phone).length, icon: <CheckCircle2 className="w-5 h-5" />, color: "text-[#AA8228]" },
           ].map((stat) => (
             <div key={stat.label} className="bg-gray-900/60 border border-gray-700 rounded-xl p-4">
               <div className={`${stat.color} mb-2`}>{stat.icon}</div>
@@ -294,7 +294,7 @@ export default function AdminWhatsApp() {
               {/* Sélection du template */}
               <div className="bg-gray-900/60 border border-gray-700 rounded-xl p-4 space-y-3">
                 <h2 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-[#C87941]" />
+                  <MessageCircle className="w-4 h-4 text-[#AA8228]" />
                   Template de message
                 </h2>
                 <div className="space-y-2">
@@ -337,7 +337,7 @@ export default function AdminWhatsApp() {
               {/* Filtres */}
               <div className="bg-gray-900/60 border border-gray-700 rounded-xl p-4 space-y-3">
                 <h2 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-[#C87941]" />
+                  <Filter className="w-4 h-4 text-[#AA8228]" />
                   Filtres
                 </h2>
                 <div className="relative">
@@ -364,7 +364,7 @@ export default function AdminWhatsApp() {
               {/* Info API */}
               <div className="bg-gray-900/60 border border-gray-700 rounded-xl p-4">
                 <h2 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2 mb-3">
-                  <Wifi className="w-4 h-4 text-[#C87941]" />
+                  <Wifi className="w-4 h-4 text-[#AA8228]" />
                   Mode d'envoi
                 </h2>
                 <div className="space-y-2 text-xs text-gray-400">
@@ -541,7 +541,7 @@ export default function AdminWhatsApp() {
                             <div className="text-xs text-gray-400">
                               <p className="font-medium text-white mb-1">QR Code WhatsApp</p>
                               <p>Scannez ce code pour ouvrir directement la conversation avec le message pré-rempli.</p>
-                              <p className="mt-2 text-gray-500">Template : <span className="text-[#C87941]">{currentTemplate?.label}</span></p>
+                              <p className="mt-2 text-gray-500">Template : <span className="text-[#AA8228]">{currentTemplate?.label}</span></p>
                             </div>
                           </div>
                         )}
@@ -569,7 +569,7 @@ export default function AdminWhatsApp() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
-                <History className="w-4 h-4 text-[#C87941]" />
+                <History className="w-4 h-4 text-[#AA8228]" />
                 Historique des envois WhatsApp Business API
               </h2>
               <button
@@ -635,7 +635,7 @@ export default function AdminWhatsApp() {
                         <Phone className="w-3 h-3" />
                         {log.phone}
                         {log.templateType && (
-                          <span className="text-[#C87941]">· {log.templateType}</span>
+                          <span className="text-[#AA8228]">· {log.templateType}</span>
                         )}
                       </div>
                       {log.message && (
@@ -658,7 +658,7 @@ export default function AdminWhatsApp() {
         {activeTab === "stats" && (
           <div className="space-y-6">
             <h2 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#C87941]" />
+              <BarChart3 className="w-4 h-4 text-[#AA8228]" />
               Statistiques WhatsApp Business API
             </h2>
 
@@ -681,7 +681,7 @@ export default function AdminWhatsApp() {
                   { label: "Livrés", value: statsData.delivered, color: "text-green-300", bg: "bg-green-500/10" },
                   { label: "Lus", value: statsData.read, color: "text-blue-400", bg: "bg-blue-500/10" },
                   { label: "Échecs", value: statsData.failed, color: "text-red-400", bg: "bg-red-500/10" },
-                  { label: "7 derniers jours", value: statsData.recent, color: "text-[#C87941]", bg: "bg-[#C87941]/10" },
+                  { label: "7 derniers jours", value: statsData.recent, color: "text-[#AA8228]", bg: "bg-[#AA8228]/10" },
                 ].map((stat) => (
                   <div key={stat.label} className={`${stat.bg} border border-gray-700 rounded-xl p-4 text-center`}>
                     <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
@@ -773,7 +773,7 @@ export default function AdminWhatsApp() {
         {/* ─── Footer info ─────────────────────────────────────────────────── */}
         <div className="text-center text-xs text-gray-600 pt-4 border-t border-gray-800">
           Tous les messages sont générés avec la signature officielle{" "}
-          <span className="text-[#C87941]">Julien P. / By Js-Innov.IA</span>
+          <span className="text-[#AA8228]">Julien P. / By Js-Innov.IA</span>
         </div>
       </div>
     </DashboardLayout>

@@ -917,7 +917,7 @@ export const photos = mysqlTable("photos", {
   height: int("height"),
   
   // Categorization
-  category: mysqlEnum("category", ["portrait", "event", "backstage", "performance", "other"]).default("other").notNull(),
+  category: varchar("category", { length: 100 }).default("other").notNull(), // Catégorie de galerie = dossier source Dropbox
   tags: text("tags"), // JSON array of tags
   
   // Relations

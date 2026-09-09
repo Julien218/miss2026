@@ -7,7 +7,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const LOGO_HQ = "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png";
+const LOGO_HQ = "/logo/miss-mister-dour-logo-transparent.png";
 
 // Particules dorées flottantes
 function GoldenParticles({ count = 30 }: { count?: number }) {
@@ -32,7 +32,7 @@ function GoldenParticles({ count = 30 }: { count?: number }) {
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
-            background: `radial-gradient(circle, #D4AF37, #C87941)`,
+            background: `radial-gradient(circle, #DCB464, #AA8228)`,
             opacity: p.opacity,
           }}
           animate={{
@@ -63,7 +63,7 @@ function LightLines() {
           className="absolute w-full h-px"
           style={{
             top: `${pos * 100}%`,
-            background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)",
+            background: "linear-gradient(90deg, transparent, rgba(220,180,100,0.3), transparent)",
           }}
           animate={{
             scaleX: [0, 1, 0],
@@ -125,7 +125,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             style={{
               width: 400,
               height: 400,
-              background: "radial-gradient(circle, rgba(200,121,65,0.15) 0%, rgba(212,175,55,0.08) 40%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(170,130,40,0.15) 0%, rgba(220,180,100,0.08) 40%, transparent 70%)",
             }}
             animate={{
               scale: [1, 1.15, 1],
@@ -149,12 +149,12 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               <motion.img
                 src={LOGO_HQ}
                 alt="Miss & Mister Dour 2026"
-                className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_30px_rgba(212,175,55,0.5)]"
+                className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_30px_rgba(220,180,100,0.5)]"
                 animate={{
                   filter: [
-                    "drop-shadow(0 0 20px rgba(212,175,55,0.4))",
-                    "drop-shadow(0 0 40px rgba(212,175,55,0.7))",
-                    "drop-shadow(0 0 20px rgba(212,175,55,0.4))",
+                    "drop-shadow(0 0 20px rgba(220,180,100,0.4))",
+                    "drop-shadow(0 0 40px rgba(220,180,100,0.7))",
+                    "drop-shadow(0 0 20px rgba(220,180,100,0.4))",
                   ],
                 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -168,9 +168,9 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               animate={phase === "show" ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#D4AF37]" />
-              <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#D4AF37]" />
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#DCB464]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DCB464]" />
+              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#DCB464]" />
             </motion.div>
 
             {/* Barre de chargement */}
@@ -184,7 +184,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               <motion.div
                 className="h-full rounded-full"
                 style={{
-                  background: "linear-gradient(90deg, #C87941, #D4AF37, #F5E6C8)",
+                  background: "linear-gradient(90deg, #AA8228, #DCB464, #F5E6C8)",
                 }}
                 initial={{ width: "0%" }}
                 animate={phase === "show" ? { width: "100%" } : { width: "0%" }}
@@ -203,7 +203,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             <motion.div
               key={i}
               className={`absolute w-8 h-8 ${cls}`}
-              style={{ borderColor: "rgba(212,175,55,0.4)" }}
+              style={{ borderColor: "rgba(220,180,100,0.4)" }}
               initial={{ opacity: 0, scale: 0 }}
               animate={phase === "show" ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
               transition={{ duration: 0.4, delay: 0.2 + i * 0.05 }}

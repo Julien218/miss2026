@@ -113,11 +113,11 @@ export default function Calendar() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-[#D4AF37] to-[#F4E4C1] rounded-xl shadow-lg">
+            <div className="p-3 bg-gradient-to-br from-[#DCB464] to-[#F4E4C1] rounded-xl shadow-lg">
               <CalendarIcon className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
+              <h1 className="text-4xl font-playfair font-bold bg-gradient-to-r from-[#DCB464] to-[#AA8228] bg-clip-text text-transparent">
                 Calendrier des Événements
               </h1>
               <p className="text-[#8B7355] mt-1">Gérez et consultez tous les événements du concours</p>
@@ -129,7 +129,7 @@ export default function Calendar() {
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="border-[#D4AF37] text-[#B8941E] hover:bg-[#D4AF37]/10 shadow-sm"
+                  className="border-[#DCB464] text-[#AA8228] hover:bg-[#DCB464]/10 shadow-sm"
                 >
                   <Lightbulb className="w-5 h-5 mr-2" />
                   Proposer une sortie
@@ -137,7 +137,7 @@ export default function Calendar() {
               </DialogTrigger>
               <DialogContent className="max-w-xl">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-playfair text-[#D4AF37]">
+                  <DialogTitle className="text-2xl font-playfair text-[#DCB464]">
                     Proposer une sortie
                   </DialogTitle>
                 </DialogHeader>
@@ -158,14 +158,14 @@ export default function Calendar() {
           {user?.role === "admin" && (
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white shadow-lg">
+                <Button className="bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white shadow-lg">
                   <Plus className="w-5 h-5 mr-2" />
                   Créer un événement
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-playfair text-[#D4AF37]">
+                  <DialogTitle className="text-2xl font-playfair text-[#DCB464]">
                     Créer un nouvel événement
                   </DialogTitle>
                 </DialogHeader>
@@ -182,7 +182,7 @@ export default function Calendar() {
         </div>
 
         {/* Calendar */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 border border-[#D4AF37]/20">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 border border-[#DCB464]/20">
           <BigCalendar
             localizer={localizer}
             events={calendarEvents}
@@ -216,7 +216,7 @@ export default function Calendar() {
           <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="text-2xl font-playfair text-[#D4AF37]">
+                <DialogTitle className="text-2xl font-playfair text-[#DCB464]">
                   {selectedEvent.title}
                 </DialogTitle>
               </DialogHeader>
@@ -239,7 +239,7 @@ export default function Calendar() {
                 )}
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-[#8B7355]">Type:</span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#D4AF37]/20 text-[#B8941E]">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#DCB464]/20 text-[#AA8228]">
                     {selectedEvent.resource.type}
                   </span>
                 </div>
@@ -254,7 +254,7 @@ export default function Calendar() {
                   <Button
                     onClick={() => handleRegister(selectedEvent.id)}
                     disabled={registerMutation.isPending}
-                    className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+                    className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
                   >
                     <Users className="w-5 h-5 mr-2" />
                     {registerMutation.isPending ? "Inscription en cours..." : "S'inscrire à cet événement"}
@@ -267,10 +267,10 @@ export default function Calendar() {
 
         {/* Mes propositions de sorties */}
         {user && (
-          <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-[#D4AF37]/20">
+          <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-[#DCB464]/20">
             <div className="flex items-center gap-3 mb-4">
-              <Lightbulb className="w-6 h-6 text-[#D4AF37]" />
-              <h2 className="text-2xl font-playfair font-bold text-[#B8941E]">
+              <Lightbulb className="w-6 h-6 text-[#DCB464]" />
+              <h2 className="text-2xl font-playfair font-bold text-[#AA8228]">
                 Mes propositions de sorties
               </h2>
             </div>
@@ -289,8 +289,8 @@ export default function Calendar() {
                       key={p.id}
                       className="flex items-start justify-between gap-4 p-4 rounded-xl border"
                       style={{
-                        borderColor: p.status === "approved" ? "#22C55E40" : p.status === "rejected" ? "#EF444440" : "#D4AF3740",
-                        background: p.status === "approved" ? "#22C55E08" : p.status === "rejected" ? "#EF444408" : "#D4AF3708",
+                        borderColor: p.status === "approved" ? "#22C55E40" : p.status === "rejected" ? "#EF444440" : "#DCB46440",
+                        background: p.status === "approved" ? "#22C55E08" : p.status === "rejected" ? "#EF444408" : "#DCB46408",
                       }}
                     >
                       <div className="flex-1 min-w-0">
@@ -420,7 +420,7 @@ function ProposeOutingForm({ onSuccess }: { onSuccess: () => void }) {
       <Button
         type="submit"
         disabled={proposeMutation.isPending}
-        className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+        className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
       >
         {proposeMutation.isPending ? "Envoi..." : "Envoyer la proposition"}
       </Button>
@@ -566,7 +566,7 @@ function CreateEventForm({ contestId, onSuccess }: { contestId: number; onSucces
       <Button
         type="submit"
         disabled={createMutation.isPending}
-        className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#D4AF37] text-white"
+        className="w-full bg-gradient-to-r from-[#DCB464] to-[#AA8228] hover:from-[#AA8228] hover:to-[#DCB464] text-white"
       >
         {createMutation.isPending ? "Création en cours..." : "Créer l'événement"}
       </Button>

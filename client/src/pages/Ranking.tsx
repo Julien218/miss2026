@@ -93,7 +93,7 @@ export function Ranking() {
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
                 <span className="text-white">Classement</span>{" "}
-                <span className="bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#C8A45C] to-[#DCB464] bg-clip-text text-transparent">
                   Live
                 </span>
               </h1>
@@ -116,7 +116,7 @@ export function Ranking() {
                   onClick={() => setSelectedCategory(cat as typeof selectedCategory)}
                   className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
                     selectedCategory === cat
-                      ? "bg-gradient-to-r from-[#C8A45C] to-[#D4AF37] text-black"
+                      ? "bg-gradient-to-r from-[#C8A45C] to-[#DCB464] text-black"
                       : "bg-white/10 text-white hover:bg-white/20"
                   }`}
                 >

@@ -468,12 +468,12 @@ export default function LegalCGU() {
 
       <style>{`
         .cgu-link {
-          color: #C87941;
+          color: #AA8228;
           text-decoration: underline;
           text-underline-offset: 2px;
           transition: color 0.2s;
         }
-        .cgu-link:hover { color: #D4AF37; }
+        .cgu-link:hover { color: #DCB464; }
         .cgu-table {
           width: 100%;
           border-collapse: collapse;
@@ -482,9 +482,9 @@ export default function LegalCGU() {
         }
         .cgu-table th {
           padding: 0.6rem 0.75rem;
-          border: 1px solid rgba(200,121,65,0.25);
-          background: rgba(200,121,65,0.1);
-          color: #C87941;
+          border: 1px solid rgba(170,130,40,0.25);
+          background: rgba(170,130,40,0.1);
+          color: #AA8228;
           font-weight: 600;
           text-align: left;
         }
@@ -508,7 +508,7 @@ export default function LegalCGU() {
         .cgu-list li {
           padding: 0.35rem 0 0.35rem 1.25rem;
           position: relative;
-          border-left: 2px solid rgba(200,121,65,0.3);
+          border-left: 2px solid rgba(170,130,40,0.3);
           margin-left: 0.5rem;
           margin-bottom: 0.35rem;
           color: #D1D5DB;
@@ -517,7 +517,7 @@ export default function LegalCGU() {
           content: "—";
           position: absolute;
           left: -0.1rem;
-          color: #C87941;
+          color: #AA8228;
           font-weight: bold;
         }
         .cgu-ordered-list {
@@ -540,21 +540,21 @@ export default function LegalCGU() {
           left: 0.5rem;
           width: 1.5rem;
           height: 1.5rem;
-          background: rgba(200,121,65,0.2);
-          border: 1px solid rgba(200,121,65,0.4);
+          background: rgba(170,130,40,0.2);
+          border: 1px solid rgba(170,130,40,0.4);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 0.7rem;
           font-weight: 700;
-          color: #C87941;
+          color: #AA8228;
           top: 0.5rem;
         }
       `}</style>
 
       {/* En-tête */}
-      <div className="border-b border-gray-800" style={{ background: "rgba(200,121,65,0.05)" }}>
+      <div className="border-b border-gray-800" style={{ background: "rgba(170,130,40,0.05)" }}>
         <div className="max-w-4xl mx-auto px-6 py-8">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6">
               <ArrowLeft className="w-4 h-4" />
@@ -575,13 +575,13 @@ export default function LegalCGU() {
                 Règlement officiel du concours Miss & Mister Dour {EDITION}
               </p>
               <div className="flex flex-wrap gap-3 mt-3">
-                <span className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(200,121,65,0.4)", color: "#C87941", background: "rgba(200,121,65,0.08)" }}>
+                <span className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(170,130,40,0.4)", color: "#AA8228", background: "rgba(170,130,40,0.08)" }}>
                   Droit belge applicable
                 </span>
-                <span className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(200,121,65,0.4)", color: "#C87941", background: "rgba(200,121,65,0.08)" }}>
+                <span className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(170,130,40,0.4)", color: "#AA8228", background: "rgba(170,130,40,0.08)" }}>
                   Édition {EDITION}
                 </span>
-                <span className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(200,121,65,0.4)", color: "#C87941", background: "rgba(200,121,65,0.08)" }}>
+                <span className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: "rgba(170,130,40,0.4)", color: "#AA8228", background: "rgba(170,130,40,0.08)" }}>
                   Mise à jour : {LAST_UPDATE}
                 </span>
               </div>
@@ -613,7 +613,7 @@ export default function LegalCGU() {
         {/* Bannière résumé */}
         <div
           className="p-5 rounded-2xl border grid grid-cols-1 sm:grid-cols-3 gap-4"
-          style={{ background: "rgba(200,121,65,0.05)", borderColor: "rgba(200,121,65,0.2)" }}
+          style={{ background: "rgba(170,130,40,0.05)", borderColor: "rgba(170,130,40,0.2)" }}
         >
           {[
             { icon: Users, label: "Inscriptions", value: `Jusqu'au ${CLOSING_DATE_INSCRIPTION}` },
@@ -623,9 +623,9 @@ export default function LegalCGU() {
             <div key={label} className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ background: "rgba(200,121,65,0.15)" }}
+                style={{ background: "rgba(170,130,40,0.15)" }}
               >
-                <Icon className="w-5 h-5" style={{ color: "#C87941" }} />
+                <Icon className="w-5 h-5" style={{ color: "#AA8228" }} />
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
@@ -643,9 +643,9 @@ export default function LegalCGU() {
               <div className="flex items-center gap-3 mb-5">
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(200,121,65,0.15)", border: "1px solid rgba(200,121,65,0.3)" }}
+                  style={{ background: "rgba(170,130,40,0.15)", border: "1px solid rgba(170,130,40,0.3)" }}
                 >
-                  <Icon className="w-4 h-4" style={{ color: "#C87941" }} />
+                  <Icon className="w-4 h-4" style={{ color: "#AA8228" }} />
                 </div>
                 <h2
                   className="text-xl font-bold text-white"
@@ -667,7 +667,7 @@ export default function LegalCGU() {
         {/* Liens vers autres pages légales */}
         <div
           className="p-6 rounded-2xl border"
-          style={{ background: "rgba(200,121,65,0.04)", borderColor: "rgba(200,121,65,0.15)" }}
+          style={{ background: "rgba(170,130,40,0.04)", borderColor: "rgba(170,130,40,0.15)" }}
         >
           <h3 className="text-white font-semibold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
             Documents légaux complémentaires
@@ -679,7 +679,7 @@ export default function LegalCGU() {
               { href: "/legal/cookies", label: "Politique cookies", desc: "Cookies techniques" },
             ].map(({ href, label, desc }) => (
               <Link key={href} href={href} className="block p-4 rounded-xl border transition-all hover:border-opacity-60"
-                  style={{ borderColor: "rgba(200,121,65,0.2)", background: "rgba(255,255,255,0.02)" }}>
+                  style={{ borderColor: "rgba(170,130,40,0.2)", background: "rgba(255,255,255,0.02)" }}>
                   <p className="text-sm font-medium text-white">{label}</p>
                   <p className="text-xs text-gray-500 mt-1">{desc}</p>
                 </Link>
