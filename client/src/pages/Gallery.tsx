@@ -1,31 +1,19 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
+import { Camera, ChevronLeft, ChevronRight, Crown, Image as ImageIcon, Search, Sparkles, Users, X, ZoomIn } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import {
-  Crown, Camera, X, ChevronLeft, ChevronRight, Heart,
-  ZoomIn, Users, ArrowLeft, Filter, Sparkles, Image as ImageIcon
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SEOHead } from "@/components/SEOHead";
 
 type EventFilter = "all" | "portrait" | "event" | "backstage" | "performance" | "other";
 type CandidateFilter = "all" | "miss" | "mister";
 
 const EVENT_LABELS: Record<EventFilter, string> = {
-  all: "Toutes",
+  all: "Tout",
   portrait: "Portraits",
-  event: "Shooting officiel",
-  backstage: "Coulisses",
-  performance: "Performances",
+  event: "Shooting",
+  backstage: "Backstage",
+  performance: "Scène",
   other: "Autres",
-};
-
-const EVENT_ICONS: Record<EventFilter, string> = {
-  all: "📸",
-  portrait: "👤",
-  event: "🎬",
-  backstage: "🎭",
-  performance: "⭐",
-  other: "✨",
 };
 
 export default function Gallery() {
@@ -36,46 +24,25 @@ export default function Gallery() {
   const [visibleCount, setVisibleCount] = useState(40);
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribeName, setSubscribeName] = useState("");
-  const subscribeMutation = trpc.photos.subscribe.useMutation();
 
-  // Récupérer toutes les photos approuvées
-  const { data: photos, isLoading: loadingPhotos } = trpc.photos.listPublic.useQuery(
+  const subscribeMutation = trpc.photos.subscribe.useMutation();
+  const { data: photos, isLoading } = trpc.photos.listPublic.useQuery(
     eventFilter === "all" ? undefined : { category: eventFilter }
   );
-
-  // Récupérer les candidats pour les compteurs
   const { data: candidates } = trpc.candidateProfile.listApproved.useQuery();
 
-  // Filtrer par catégorie candidat (Miss/Mister)
   const filteredPhotos = useMemo(() => {
-    if (!photos) return [];
-    if (candidateFilter === "all") return photos;
-    return photos.filter((p) => p.candidateCategory === candidateFilter);
+    const rows = photos || [];
+    if (candidateFilter === "all") return rows;
+    return rows.filter((photo) => photo.candidateCategory === candidateFilter);
   }, [photos, candidateFilter]);
 
-  // Compteurs par catégorie d'événement
-  const eventCounts = useMemo(() => {
-    if (!photos) return { all: 0, portrait: 0, event: 0, backstage: 0, performance: 0, other: 0 };
-    // Pour "all", on utilise le total non filtré par candidat
-    const allPhotos = photos;
-    return {
-      all: allPhotos.length,
-      portrait: allPhotos.filter((p) => p.category === "portrait").length,
-      event: allPhotos.filter((p) => p.category === "event").length,
-      backstage: allPhotos.filter((p) => p.category === "backstage").length,
-      performance: allPhotos.filter((p) => p.category === "performance").length,
-      other: allPhotos.filter((p) => p.category === "other").length,
-    };
-  }, [photos]);
-
-  // Compteurs Miss/Mister
   const candidateCounts = useMemo(() => {
-    if (!photos) return { all: 0, miss: 0, mister: 0 };
-    const base = photos; // photos déjà filtrées par événement
+    const rows = photos || [];
     return {
-      all: base.length,
-      miss: base.filter((p) => p.candidateCategory === "miss").length,
-      mister: base.filter((p) => p.candidateCategory === "mister").length,
+      all: rows.length,
+      miss: rows.filter((photo) => photo.candidateCategory === "miss").length,
+      mister: rows.filter((photo) => photo.candidateCategory === "mister").length,
     };
   }, [photos]);
 
@@ -91,484 +58,288 @@ export default function Gallery() {
   }, []);
 
   const nextPhoto = useCallback(() => {
-    setLightboxIndex((prev) => (prev + 1) % filteredPhotos.length);
+    if (!filteredPhotos.length) return;
+    setLightboxIndex((index) => (index + 1) % filteredPhotos.length);
   }, [filteredPhotos.length]);
 
-  const prevPhoto = useCallback(() => {
-    setLightboxIndex((prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length);
+  const previousPhoto = useCallback(() => {
+    if (!filteredPhotos.length) return;
+    setLightboxIndex((index) => (index - 1 + filteredPhotos.length) % filteredPhotos.length);
   }, [filteredPhotos.length]);
 
-  // Keyboard navigation
   useEffect(() => {
     if (!lightboxOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowRight") nextPhoto();
-      if (e.key === "ArrowLeft") prevPhoto();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowRight") nextPhoto();
+      if (event.key === "ArrowLeft") previousPhoto();
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [lightboxOpen, closeLightbox, nextPhoto, prevPhoto]);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightboxOpen, closeLightbox, nextPhoto, previousPhoto]);
 
-  const currentPhoto = lightboxOpen && filteredPhotos.length > 0 ? filteredPhotos[lightboxIndex] : null;
+  const currentPhoto = lightboxOpen ? filteredPhotos[lightboxIndex] : null;
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-black/90 backdrop-blur-md border-b border-gold/20">
-        <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-gold hover:text-gold/80 transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-            <Crown className="h-6 w-6" />
-            <span className="text-lg font-bold hidden sm:inline">Miss & Mister Dour</span>
-          </Link>
-          <nav className="flex items-center gap-4">
-            <Link href="/candidates" className="text-sm font-medium text-gray-400 hover:text-gold transition-colors">
-              Candidats
-            </Link>
-            <Link href="/voter" className="text-sm font-medium text-gray-400 hover:text-gold transition-colors">
-              Voter
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SEOHead
+        title="Galerie — Miss & Mister Dour 2027"
+        description="Portraits, shootings, coulisses et moments forts de Miss & Mister Dour."
+        url="https://missetmisterdour.be/gallery"
+        tags={["galerie Miss Mister Dour", "backstage", "photos Dour", "édition 2027"]}
+      />
 
-      {/* Hero Banner */}
-      <section className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gold/5 via-transparent to-transparent" />
-        {/* Particules décoratives */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 rounded-full bg-gold/30 animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            />
-          ))}
-        </div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <Camera className="w-12 h-12 mx-auto mb-4 text-gold" />
-          <h1 className="text-4xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
-            Galerie Photos
-          </h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-2">
-            Shooting officiel Miss & Mister Dour 2026
-          </p>
-          <p className="text-sm text-gray-500">
-            {candidates?.length ?? 0} candidats &middot; {filteredPhotos.length} photos
-          </p>
-        </div>
-      </section>
+      <header className="hidden" aria-hidden="true" />
 
-      {/* Filtres par événement */}
-      <section className="sticky top-16 z-30 bg-black/80 backdrop-blur-md border-b border-gray-800 py-4">
-        <div className="container mx-auto px-4">
-          {/* Ligne 1 : Filtres par catégorie d'événement */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2 justify-center flex-wrap">
-              <div className="flex items-center gap-1.5 text-gray-500 mr-1">
-                <Filter className="w-4 h-4" />
-                <span className="text-xs font-medium hidden sm:inline">Catégorie</span>
+      <main>
+        <section className="relative overflow-hidden px-4 py-20 md:py-28">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(217,185,120,.11),transparent_34%),radial-gradient(circle_at_85%_72%,rgba(103,67,46,.11),transparent_32%)]" />
+          <div className="relative mx-auto max-w-6xl">
+            <span className="mmd-page-kicker">09 · Galerie</span>
+            <div className="mt-7 grid gap-9 lg:grid-cols-[1.2fr_.8fr] lg:items-end">
+              <div>
+                <h1 className="max-w-4xl text-5xl font-semibold leading-[.94] tracking-[-.055em] md:text-7xl lg:text-8xl">
+                  Les images qui prolongent <em className="font-light text-[#d9b978]">l’émotion.</em>
+                </h1>
+                <p className="mt-7 max-w-2xl text-base leading-8 text-white/52">
+                  Portraits officiels, backstage, scène et moments partagés : la mémoire visuelle de l’événement reste accessible d’une édition à l’autre.
+                </p>
               </div>
-              {(Object.keys(EVENT_LABELS) as EventFilter[])
-                .filter((key) => key === "all" || eventCounts[key] > 0)
-                .map((key) => (
+              <div className="grid grid-cols-2 gap-3 lg:justify-self-end">
+                <div className="rounded-2xl border border-white/10 bg-white/[.025] p-5 text-center">
+                  <strong className="block text-3xl text-[#d9b978]">{filteredPhotos.length}</strong>
+                  <span className="mt-1 block text-[9px] uppercase tracking-[.16em] text-white/35">Images</span>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/[.025] p-5 text-center">
+                  <strong className="block text-3xl text-[#d9b978]">{candidates?.length || 0}</strong>
+                  <span className="mt-1 block text-[9px] uppercase tracking-[.16em] text-white/35">Profils</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="sticky top-[68px] z-30 border-y border-white/8 bg-black/88 px-4 py-4 backdrop-blur-xl md:top-[78px]">
+          <div className="mx-auto flex max-w-6xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
+              {(Object.keys(EVENT_LABELS) as EventFilter[]).map((key) => (
                 <button
                   key={key}
-                  onClick={() => setEventFilter(key)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 ${
+                  type="button"
+                  onClick={() => {
+                    setEventFilter(key);
+                    setVisibleCount(40);
+                  }}
+                  className={`whitespace-nowrap rounded-full border px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.1em] ${
                     eventFilter === key
-                      ? "bg-gold text-black shadow-lg shadow-gold/20"
-                      : "bg-gray-800/60 text-gray-400 hover:bg-gray-700/60 hover:text-white"
+                      ? "border-[#d9b978] bg-[#d9b978] text-black"
+                      : "border-white/10 bg-white/[.02] text-white/48 hover:border-[#d9b978]/35 hover:text-white"
                   }`}
                 >
-                  <span className="text-sm">{EVENT_ICONS[key]}</span>
-                  <span>{EVENT_LABELS[key]}</span>
-                  <span className="opacity-70">
-                    ({key === "all" ? (photos?.length ?? 0) : eventCounts[key]})
-                  </span>
+                  {EVENT_LABELS[key]}
                 </button>
               ))}
             </div>
 
-            {/* Ligne 2 : Filtres par candidat Miss/Mister */}
-            <div className="flex items-center gap-2 justify-center">
-              <div className="flex items-center gap-1.5 text-gray-500 mr-1">
-                <Users className="w-4 h-4" />
-                <span className="text-xs font-medium hidden sm:inline">Candidats</span>
-              </div>
-              {([
-                { key: "all" as CandidateFilter, label: "Tous", icon: "👑" },
-                { key: "miss" as CandidateFilter, label: "Miss", icon: "👸" },
-                { key: "mister" as CandidateFilter, label: "Mister", icon: "🤴" },
-              ]).map(({ key, label, icon }) => (
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-white/30" />
+              {(["all", "miss", "mister"] as CandidateFilter[]).map((key) => (
                 <button
                   key={key}
+                  type="button"
                   onClick={() => setCandidateFilter(key)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 ${
+                  className={`rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[.08em] ${
                     candidateFilter === key
-                      ? key === "miss"
-                        ? "bg-pink-500 text-white shadow-lg shadow-pink-500/20"
-                        : key === "mister"
-                        ? "bg-blue-500 text-white shadow-lg shadow-blue-500/20"
-                        : "bg-gold text-black shadow-lg shadow-gold/20"
-                      : "bg-gray-800/60 text-gray-400 hover:bg-gray-700/60 hover:text-white"
+                      ? "border-[#d9b978]/70 bg-[#d9b978]/12 text-[#d9b978]"
+                      : "border-white/10 text-white/42 hover:text-white"
                   }`}
                 >
-                  <span className="text-sm">{icon}</span>
-                  <span>{label}</span>
-                  <span className="opacity-70">({candidateCounts[key]})</span>
+                  {key === "all" ? "Tous" : key === "miss" ? "Miss" : "Mister"} · {candidateCounts[key]}
                 </button>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Grille de photos */}
-      <section className="py-10">
-        <div className="container mx-auto px-4">
-          {loadingPhotos ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {Array.from({ length: 15 }).map((_, i) => (
-                <div key={i} className="aspect-[3/4] rounded-xl bg-gray-800/50 animate-pulse" />
-              ))}
-            </div>
-          ) : filteredPhotos.length === 0 ? (
-            <div className="text-center py-20">
-              <ImageIcon className="w-16 h-16 mx-auto mb-4 text-gray-700" />
-              <h3 className="text-xl font-bold text-gray-400 mb-2">Aucune photo dans cette catégorie</h3>
-              <p className="text-gray-500 mb-6">Essayez un autre filtre pour voir plus de photos.</p>
-              <button
-                onClick={() => { setEventFilter("all"); setCandidateFilter("all"); }}
-                className="px-6 py-2 bg-gold/20 text-gold rounded-full hover:bg-gold/30 transition-colors text-sm font-medium"
-              >
-                Voir toutes les photos
-              </button>
-            </div>
-          ) : (
-            <>
-              {/* Compteur résultats */}
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-sm text-gray-500">
-                  <span className="text-gold font-bold">{filteredPhotos.length}</span> photo{filteredPhotos.length > 1 ? "s" : ""}
-                  {eventFilter !== "all" && <span> &middot; {EVENT_LABELS[eventFilter]}</span>}
-                  {candidateFilter !== "all" && <span> &middot; {candidateFilter === "miss" ? "Miss" : "Mister"}</span>}
-                </p>
-                {(eventFilter !== "all" || candidateFilter !== "all") && (
-                  <button
-                    onClick={() => { setEventFilter("all"); setCandidateFilter("all"); }}
-                    className="text-xs text-gray-500 hover:text-gold transition-colors flex items-center gap-1"
-                  >
-                    <X className="w-3 h-3" />
-                    Réinitialiser
-                  </button>
-                )}
-              </div>
-
-              {/* Grille masonry-like */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-                {filteredPhotos.slice(0, visibleCount).map((photo, index) => (
-                  <div
-                    key={photo.id}
-                    className="group relative rounded-xl overflow-hidden cursor-pointer border border-gray-800/50 hover:border-gold/40 transition-all duration-300 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-1"
-                    onClick={() => openLightbox(index)}
-                  >
-                    <div className={`relative overflow-hidden bg-gray-900 ${
-                      photo.category === "portrait" ? "aspect-[3/4]" : "aspect-square"
-                    }`}>
-                      <img
-                        src={photo.thumbnail || photo.url}
-                        alt={photo.title || "Photo"}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                      />
-
-                      {/* Overlay au hover */}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                        <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
-                      </div>
-
-                      {/* Gradient bas */}
-                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
-
-                      {/* Badge catégorie événement */}
-                      <div className="absolute top-2 left-2 flex items-center gap-1">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full backdrop-blur-sm ${
-                          photo.category === "portrait"
-                            ? "bg-amber-500/80 text-white"
-                            : photo.category === "event"
-                            ? "bg-emerald-500/80 text-white"
-                            : photo.category === "backstage"
-                            ? "bg-purple-500/80 text-white"
-                            : photo.category === "performance"
-                            ? "bg-red-500/80 text-white"
-                            : "bg-gray-500/80 text-white"
-                        }`}>
-                          {photo.category === "portrait" ? "Portrait" :
-                           photo.category === "event" ? "Shooting" :
-                           photo.category === "backstage" ? "Coulisses" :
-                           photo.category === "performance" ? "Performance" :
-                           photo.category === "other" ? "Autre" : photo.category}
-                        </span>
-                      </div>
-
-                      {/* Badge Miss/Mister */}
-                      {photo.candidateCategory && (
-                        <div className="absolute top-2 right-2">
-                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full backdrop-blur-sm ${
-                            photo.candidateCategory === "miss"
-                              ? "bg-pink-500/80 text-white"
-                              : "bg-blue-500/80 text-white"
-                          }`}>
-                            {photo.candidateCategory}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Infos en bas */}
-                      <div className="absolute bottom-0 left-0 right-0 p-3">
-                        {photo.candidateName && (
-                          <p className="text-white font-bold text-sm leading-tight truncate">
-                            {photo.candidateName}
-                          </p>
-                        )}
-                        {photo.title && photo.title !== "title" && !photo.candidateName && (
-                          <p className="text-white font-medium text-xs leading-tight truncate">
-                            {photo.title}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+        <section className="px-4 py-12 md:py-18">
+          <div className="mx-auto max-w-7xl">
+            {isLoading ? (
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <div key={index} className="aspect-[3/4] animate-pulse rounded-[22px] border border-white/5 bg-white/[.035]" />
                 ))}
               </div>
-
-              {/* Bouton "Voir plus" pour charger progressivement */}
-              {filteredPhotos.length > visibleCount && (
-                <div className="mt-10 text-center">
-                  <button
-                    onClick={() => setVisibleCount(prev => prev + 40)}
-                    className="px-8 py-3 rounded-full font-semibold text-sm transition-all hover:opacity-90"
-                    style={{ background: "linear-gradient(135deg, #C87941, #D4956A)", color: "#000" }}
-                  >
-                    Voir plus de photos ({filteredPhotos.length - visibleCount} restantes)
-                  </button>
-                </div>
-              )}
-              {filteredPhotos.length === 0 && !loadingPhotos && (
-                <p className="text-center text-gray-500 py-10">
-                  Aucune photo ne correspond à ces filtres.
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </section>
-
-      {/* CTA section */}
-      <section className="py-16 border-t border-gray-800">
-        <div className="container mx-auto px-4 text-center">
-          <Sparkles className="w-8 h-8 mx-auto mb-4 text-gold" />
-          <h2 className="text-2xl font-bold text-gold mb-4">Devenez la prochaine star de Dour</h2>
-          <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-            Les inscriptions pour l'élection Miss &amp; Mister Dour 2027 sont ouvertes. Inscrivez-vous dès maintenant !
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/inscription-candidat">
-              <Button className="bg-gold text-black hover:bg-gold/90 font-bold px-8 py-3">
-                <Sparkles className="w-5 h-5 mr-2" />
-                Je m'inscris pour 2027
-              </Button>
-            </Link>
-            <Link href="/candidates">
-              <Button variant="outline" className="border-gold/40 text-gold hover:bg-gold/10 px-8 py-3">
-                <Users className="w-5 h-5 mr-2" />
-                Voir les profils
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800 bg-black py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Miss & Mister Dour. Tous droits réservés.</p>
-        </div>
-      </footer>
-
-      {/* Lightbox */}
-      {lightboxOpen && currentPhoto && (
-        <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
-          onClick={closeLightbox}
-        >
-          {/* Close button */}
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
-
-          {/* Counter */}
-          <div className="absolute top-4 left-4 z-50 text-white/60 text-sm">
-            {lightboxIndex + 1} / {filteredPhotos.length}
-          </div>
-
-          {/* Previous */}
-          {filteredPhotos.length > 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); prevPhoto(); }}
-              className="absolute left-4 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <ChevronLeft className="w-6 h-6 text-white" />
-            </button>
-          )}
-
-          {/* Image */}
-          <div
-            className="relative max-w-5xl max-h-[85vh] mx-16"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={currentPhoto.url}
-              alt={currentPhoto.title || "Photo"}
-              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
-            />
-            {/* Info overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div>
-                  {currentPhoto.candidateName && (
-                    <p className="text-white font-bold text-lg">{currentPhoto.candidateName}</p>
-                  )}
-                  <div className="flex items-center gap-2 text-sm flex-wrap">
-                    {/* Badge catégorie événement */}
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase ${
-                      currentPhoto.category === "portrait"
-                        ? "bg-amber-500/80 text-white"
-                        : currentPhoto.category === "event"
-                        ? "bg-emerald-500/80 text-white"
-                        : currentPhoto.category === "backstage"
-                        ? "bg-purple-500/80 text-white"
-                        : "bg-red-500/80 text-white"
-                    }`}>
-                      {currentPhoto.category === "portrait" ? "Portrait" :
-                       currentPhoto.category === "event" ? "Shooting" :
-                       currentPhoto.category === "backstage" ? "Coulisses" :
-                       currentPhoto.category === "performance" ? "Performance" :
-                       currentPhoto.category === "other" ? "Autre" : currentPhoto.category}
-                    </span>
-                    {/* Badge Miss/Mister */}
-                    {currentPhoto.candidateCategory && (
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase ${
-                        currentPhoto.candidateCategory === "miss"
-                          ? "bg-pink-500/80 text-white"
-                          : "bg-blue-500/80 text-white"
-                      }`}>
-                        {currentPhoto.candidateCategory}
-                      </span>
-                    )}
-                    {currentPhoto.title && currentPhoto.title !== "title" && (
-                      <span className="text-gray-300 text-xs">{currentPhoto.title}</span>
-                    )}
-                  </div>
-                </div>
-                {currentPhoto.candidateId && (
-                  <Link
-                    href={`/candidat/${currentPhoto.candidateId}`}
-                    className="px-4 py-2 bg-gold text-black text-sm font-bold rounded-lg hover:bg-gold/90 transition-colors"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Voir le profil
-                  </Link>
-                )}
+            ) : filteredPhotos.length === 0 ? (
+              <div className="mx-auto max-w-xl rounded-[28px] border border-white/10 bg-white/[.025] px-8 py-16 text-center">
+                <ImageIcon className="mx-auto h-9 w-9 text-[#d9b978]/45" />
+                <h2 className="mt-5 text-2xl font-semibold">Aucune image dans ce filtre</h2>
+                <p className="mt-3 text-sm leading-7 text-white/42">Les contenus apparaissent ici dès leur validation.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEventFilter("all");
+                    setCandidateFilter("all");
+                  }}
+                  className="mt-6 rounded-full border border-[#d9b978]/30 px-5 py-2.5 text-[10px] font-bold uppercase tracking-[.1em] text-[#d9b978]"
+                >
+                  Réinitialiser
+                </button>
               </div>
+            ) : (
+              <>
+                <div className="mb-7 flex items-center justify-between gap-4">
+                  <p className="text-xs text-white/35">
+                    <strong className="text-[#d9b978]">{filteredPhotos.length}</strong> contenu{filteredPhotos.length > 1 ? "s" : ""}
+                  </p>
+                  {(eventFilter !== "all" || candidateFilter !== "all") && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEventFilter("all");
+                        setCandidateFilter("all");
+                      }}
+                      className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[.1em] text-white/35 hover:text-[#d9b978]"
+                    >
+                      <X className="h-3.5 w-3.5" /> Réinitialiser
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+                  {filteredPhotos.slice(0, visibleCount).map((photo, index) => (
+                    <button
+                      key={photo.id}
+                      type="button"
+                      onClick={() => openLightbox(index)}
+                      className="group relative overflow-hidden rounded-[22px] border border-white/8 bg-[#111] text-left hover:border-[#d9b978]/32"
+                    >
+                      <div className={photo.category === "portrait" ? "aspect-[3/4]" : "aspect-square"}>
+                        <img
+                          src={photo.thumbnail || photo.url}
+                          alt={photo.title || photo.candidateName || "Miss & Mister Dour"}
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                      <div className="absolute left-3 top-3 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[8px] font-bold uppercase tracking-[.13em] text-white/72 backdrop-blur-md">
+                        {EVENT_LABELS[(photo.category as EventFilter) || "other"] || "Galerie"}
+                      </div>
+                      <ZoomIn className="absolute right-3 top-3 h-4 w-4 text-white/0 transition group-hover:text-white/70" />
+                      <div className="absolute bottom-3 left-3 right-3">
+                        {photo.candidateName && <strong className="block truncate text-sm text-white">{photo.candidateName}</strong>}
+                        {photo.candidateCategory && (
+                          <span className="mt-1 block text-[8px] font-bold uppercase tracking-[.15em] text-[#d9b978]">{photo.candidateCategory}</span>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {filteredPhotos.length > visibleCount && (
+                  <div className="mt-10 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount((value) => value + 40)}
+                      className="rounded-full border border-[#d9b978]/30 px-6 py-3 text-[10px] font-bold uppercase tracking-[.1em] text-[#d9b978] hover:bg-[#d9b978] hover:text-black"
+                    >
+                      Voir plus · {filteredPhotos.length - visibleCount}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 px-4 py-16 md:py-20">
+          <div className="mx-auto grid max-w-6xl gap-8 rounded-[30px] border border-[#d9b978]/18 bg-white/[.025] p-7 md:grid-cols-[1fr_auto] md:items-end md:p-10">
+            <div>
+              <Sparkles className="h-6 w-6 text-[#d9b978]" />
+              <h2 className="mt-5 text-3xl font-semibold md:text-4xl">Recevoir les nouvelles publications</h2>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-white/45">Inscrivez-vous aux nouveautés de la galerie Miss & Mister Dour.</p>
+            </div>
+            <form
+              onSubmit={async (event) => {
+                event.preventDefault();
+                if (!subscribeEmail.trim()) return;
+                try {
+                  await subscribeMutation.mutateAsync({ email: subscribeEmail, name: subscribeName || undefined });
+                  setSubscribeEmail("");
+                  setSubscribeName("");
+                } catch (error) {
+                  console.error("Subscribe error:", error);
+                }
+              }}
+              className="grid gap-2 sm:grid-cols-[150px_220px_auto]"
+            >
+              <input
+                value={subscribeName}
+                onChange={(event) => setSubscribeName(event.target.value)}
+                placeholder="Nom (optionnel)"
+                className="h-11 rounded-full border border-white/10 bg-black/35 px-4 text-sm text-white placeholder:text-white/28"
+              />
+              <input
+                type="email"
+                required
+                value={subscribeEmail}
+                onChange={(event) => setSubscribeEmail(event.target.value)}
+                placeholder="Votre email"
+                className="h-11 rounded-full border border-white/10 bg-black/35 px-4 text-sm text-white placeholder:text-white/28"
+              />
+              <button
+                type="submit"
+                disabled={subscribeMutation.isPending}
+                className="h-11 rounded-full bg-[#d9b978] px-5 text-[10px] font-bold uppercase tracking-[.1em] text-black disabled:opacity-50"
+              >
+                {subscribeMutation.isPending ? "Inscription…" : "S’abonner"}
+              </button>
+              {subscribeMutation.isSuccess && <p className="sm:col-span-3 text-xs text-[#d9b978]">Inscription enregistrée.</p>}
+              {subscribeMutation.isError && <p className="sm:col-span-3 text-xs text-red-300">Impossible de vous inscrire pour le moment.</p>}
+            </form>
+          </div>
+        </section>
+
+        <section className="px-4 pb-20 md:pb-28">
+          <div className="mx-auto max-w-6xl text-center">
+            <Crown className="mx-auto h-7 w-7 text-[#d9b978]" />
+            <h2 className="mt-5 text-3xl font-semibold md:text-5xl">Votre histoire pourrait rejoindre la prochaine galerie.</h2>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <Link href="/inscription-candidat" className="rounded-full bg-[#d9b978] px-6 py-3 text-[10px] font-bold uppercase tracking-[.1em] text-black">Candidater 2027</Link>
+              <Link href="/candidates" className="rounded-full border border-white/12 px-6 py-3 text-[10px] font-bold uppercase tracking-[.1em] text-white/65 hover:border-[#d9b978]/35 hover:text-[#d9b978]">Voir les candidats</Link>
             </div>
           </div>
+        </section>
+      </main>
 
-          {/* Next */}
+      {lightboxOpen && currentPhoto && (
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/96 p-4" onClick={closeLightbox}>
+          <button type="button" onClick={closeLightbox} className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-white/12 bg-black/55 text-white/75">
+            <X className="h-5 w-5" />
+          </button>
+          <span className="absolute left-5 top-7 text-xs text-white/38">{lightboxIndex + 1} / {filteredPhotos.length}</span>
           {filteredPhotos.length > 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); nextPhoto(); }}
-              className="absolute right-4 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <ChevronRight className="w-6 h-6 text-white" />
+            <button type="button" onClick={(event) => { event.stopPropagation(); previousPhoto(); }} className="absolute left-4 grid h-11 w-11 place-items-center rounded-full border border-white/12 bg-black/55 text-white/75">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+          )}
+          <div className="relative max-h-[86vh] max-w-5xl" onClick={(event) => event.stopPropagation()}>
+            <img src={currentPhoto.url} alt={currentPhoto.title || currentPhoto.candidateName || "Galerie"} className="max-h-[86vh] max-w-full rounded-2xl object-contain" />
+            {(currentPhoto.candidateName || currentPhoto.title) && (
+              <div className="absolute bottom-0 left-0 right-0 rounded-b-2xl bg-gradient-to-t from-black/90 to-transparent p-5 pt-16">
+                {currentPhoto.candidateName && <strong className="block text-lg text-white">{currentPhoto.candidateName}</strong>}
+                {currentPhoto.title && currentPhoto.title !== "title" && <span className="mt-1 block text-xs text-white/50">{currentPhoto.title}</span>}
+              </div>
+            )}
+          </div>
+          {filteredPhotos.length > 1 && (
+            <button type="button" onClick={(event) => { event.stopPropagation(); nextPhoto(); }} className="absolute right-4 grid h-11 w-11 place-items-center rounded-full border border-white/12 bg-black/55 text-white/75">
+              <ChevronRight className="h-5 w-5" />
             </button>
           )}
         </div>
       )}
-
-      {/* Section abonnement newsletter galerie */}
-      <section className="py-12 border-t border-gray-800 mt-8">
-        <div className="container mx-auto px-4 max-w-2xl text-center">
-          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: "#C87941" }} />
-          <h2 className="text-2xl font-bold mb-2" style={{ color: "#C87941" }}>Restez informé(e)</h2>
-          <p className="text-gray-400 text-sm mb-6">
-            Recevez un email à chaque nouvelle publication dans la galerie
-          </p>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              if (!subscribeEmail.trim()) return;
-              try {
-                await subscribeMutation.mutateAsync({
-                  email: subscribeEmail,
-                  name: subscribeName || undefined,
-                });
-                setSubscribeEmail("");
-                setSubscribeName("");
-              } catch (err) {
-                console.error("Subscribe error:", err);
-              }
-            }}
-            className="flex flex-col sm:flex-row gap-3 justify-center"
-          >
-            <input
-              type="text"
-              placeholder="Votre nom (optionnel)"
-              value={subscribeName}
-              onChange={(e) => setSubscribeName(e.target.value)}
-              className="px-4 py-2.5 rounded-lg bg-gray-800/60 border border-gray-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-amber-600/50"
-              style={{ maxWidth: "200px" }}
-            />
-            <input
-              type="email"
-              required
-              placeholder="Votre email"
-              value={subscribeEmail}
-              onChange={(e) => setSubscribeEmail(e.target.value)}
-              className="px-4 py-2.5 rounded-lg bg-gray-800/60 border border-gray-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-amber-600/50 flex-1"
-              style={{ maxWidth: "300px" }}
-            />
-            <button
-              type="submit"
-              disabled={subscribeMutation.isPending}
-              className="px-6 py-2.5 rounded-lg text-black font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #C87941, #D4956A)" }}
-            >
-              {subscribeMutation.isPending ? "Inscription..." : "S'abonner"}
-            </button>
-          </form>
-          {subscribeMutation.isSuccess && (
-            <p className="text-green-400 text-sm mt-3">
-              Merci ! Vous recevrez les nouveautés par email.
-            </p>
-          )}
-          {subscribeMutation.isError && (
-            <p className="text-red-400 text-sm mt-3">
-              Erreur lors de l'inscription. Réessayez.
-            </p>
-          )}
-        </div>
-      </section>
     </div>
   );
 }
