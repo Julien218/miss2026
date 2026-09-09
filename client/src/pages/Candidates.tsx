@@ -1,23 +1,21 @@
-/**
- * Candidates.tsx
- * Galerie premium des candidats Miss & Mister Dour 2026
- * Accessible sans connexion — utilise la route publique listApproved
- * Les admins connectés ont accès aux fonctions de gestion de statut
- */
-
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { Crown, Check, X, Trophy, MapPin, Star, Search, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
-import { Search, Crown, Check, X, Trophy, MapPin, Heart, ExternalLink, Star, ArrowLeft } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Link, useLocation } from "wouter";
-import { BRANDING } from "@/config/branding";
 import { SEOHead } from "@/components/SEOHead";
 
-// ─── Constantes ───────────────────────────────────────────────────────────────
 const CATEGORY_LABELS: Record<string, string> = {
   miss: "Miss",
   mister: "Mister",
@@ -25,14 +23,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   teen_mister: "Teen Mister",
 };
 
-const CATEGORY_COLORS: Record<string, string> = {
-  miss: "from-pink-500 to-rose-600",
-  mister: "from-blue-500 to-indigo-600",
-  teen_miss: "from-purple-500 to-pink-500",
-  teen_mister: "from-cyan-500 to-blue-500",
-};
-
-// ─── Composant Card Candidat ──────────────────────────────────────────────────
 interface CandidateCardProps {
   candidate: any;
   isAdmin: boolean;
@@ -42,322 +32,259 @@ interface CandidateCardProps {
 
 function CandidateCard({ candidate, isAdmin, onStatusClick, onViewProfile }: CandidateCardProps) {
   const [imgError, setImgError] = useState(false);
-  const categoryGradient = CATEGORY_COLORS[candidate.category] || "from-gold to-yellow-600";
   const initials = `${candidate.firstName?.[0] || ""}${candidate.lastName?.[0] || ""}`.toUpperCase();
+  const category = CATEGORY_LABELS[candidate.category] || "Candidat";
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-gray-900 border border-gold/20 hover:border-gold/60 transition-all duration-300 hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1">
-      {/* Photo / Fallback */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-gray-800">
-        {candidate.profilePhoto && !imgError ? (
-          <img
-            src={candidate.profilePhoto}
-            alt={`${candidate.firstName} ${candidate.lastName}`}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={() => setImgError(true)}
-            loading="lazy"
-          />
-        ) : (
-          <div className={`flex h-full items-center justify-center bg-gradient-to-br ${categoryGradient} opacity-20`}>
-            <div className="flex flex-col items-center gap-3">
-              <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${categoryGradient} flex items-center justify-center shadow-2xl`}>
-                {initials ? (
-                  <span className="text-3xl font-bold text-white">{initials}</span>
-                ) : (
-                  <Crown className="w-10 h-10 text-white" />
-                )}
+    <article className="group relative overflow-hidden rounded-[26px] border border-[#d9b978]/16 bg-[#111214] transition duration-500 hover:-translate-y-1 hover:border-[#d9b978]/38">
+      <button
+        type="button"
+        onClick={() => onViewProfile(candidate.id)}
+        className="relative block w-full text-left"
+        aria-label={`Voir le profil de ${candidate.firstName} ${candidate.lastName}`}
+      >
+        <div className="relative aspect-[3/4] overflow-hidden bg-[#151515]">
+          {candidate.profilePhoto && !imgError ? (
+            <img
+              src={candidate.profilePhoto}
+              alt={`${candidate.firstName} ${candidate.lastName}`}
+              className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]"
+              onError={() => setImgError(true)}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_50%_28%,rgba(217,185,120,.16),transparent_38%),linear-gradient(145deg,#17130f,#080808)]">
+              <div className="text-center">
+                <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#d9b978]/28 bg-black/40 text-xl font-semibold tracking-[.08em] text-[#d9b978]">
+                  {initials || <Crown className="h-7 w-7" />}
+                </div>
+                <span className="mt-4 block text-[10px] uppercase tracking-[.16em] text-white/35">Photo à venir</span>
               </div>
-              <span className="text-gray-400 text-sm">Photo à venir</span>
             </div>
-          </div>
-        )}
-
-        {/* Overlay dégradé bas */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-        {/* Badge catégorie (coin haut gauche) */}
-        <div className={`absolute top-3 left-3 px-2.5 py-1 bg-gradient-to-r ${categoryGradient} rounded-full text-white text-xs font-bold shadow-lg`}>
-          {CATEGORY_LABELS[candidate.category] || candidate.category}
-        </div>
-
-        {/* Votes (bas gauche) */}
-        {(candidate.voteCount ?? 0) > 0 && (
-          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm border border-gold/30 rounded-full px-3 py-1">
-            <Heart className="w-3.5 h-3.5 text-gold fill-gold" />
-            <span className="text-gold text-xs font-bold">{candidate.voteCount}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Infos */}
-      <div className="p-4">
-        <h3 className="font-bold text-white text-lg leading-tight mb-1">
-          {candidate.firstName} <span className="text-gold">{candidate.lastName}</span>
-        </h3>
-
-        {candidate.city && (
-          <p className="flex items-center gap-1.5 text-gray-400 text-sm mb-3">
-            <MapPin className="w-3.5 h-3.5 text-gold/60 flex-shrink-0" />
-            {candidate.city}
-          </p>
-        )}
-
-        {candidate.bio && (
-          <p className="text-gray-500 text-xs line-clamp-2 mb-3 leading-relaxed">
-            {candidate.bio}
-          </p>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-2 mt-auto">
-          <button
-            onClick={() => onViewProfile(candidate.id)}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-gold text-black text-sm font-bold rounded-lg hover:bg-gold/90 transition-colors"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            Voir le profil
-          </button>
-
-          {isAdmin && (
-            <button
-              onClick={() => onStatusClick(candidate)}
-              className="px-3 py-2 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-gray-600 transition-colors border border-gray-600"
-              title="Modifier le statut"
-            >
-              <Trophy className="w-4 h-4" />
-            </button>
           )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+          <div className="absolute left-4 top-4 rounded-full border border-[#d9b978]/25 bg-black/55 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[.16em] text-[#e3c986] backdrop-blur-md">
+            {category}
+          </div>
+
+          <div className="absolute bottom-0 left-0 right-0 p-5">
+            <span className="text-[9px] font-bold uppercase tracking-[.18em] text-[#d9b978]/80">Édition 2027</span>
+            <h3 className="mt-2 text-2xl font-semibold leading-none tracking-[-.04em] text-white">
+              {candidate.firstName} {candidate.lastName}
+            </h3>
+            {candidate.city && (
+              <p className="mt-3 flex items-center gap-1.5 text-xs text-white/55">
+                <MapPin className="h-3.5 w-3.5 text-[#d9b978]" /> {candidate.city}
+              </p>
+            )}
+          </div>
         </div>
+      </button>
+
+      <div className="flex items-center gap-3 border-t border-white/8 p-4">
+        <button
+          type="button"
+          onClick={() => onViewProfile(candidate.id)}
+          className="inline-flex flex-1 items-center justify-between rounded-full border border-white/10 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.1em] text-white/70 hover:border-[#d9b978]/40 hover:text-[#d9b978]"
+        >
+          Découvrir <ArrowRight className="h-3.5 w-3.5" />
+        </button>
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => onStatusClick(candidate)}
+            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-white/45 hover:border-[#d9b978]/40 hover:text-[#d9b978]"
+            title="Modifier le statut"
+          >
+            <Trophy className="h-4 w-4" />
+          </button>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
 
-// ─── Page principale (publique) ──────────────────────────────────────────────
 export default function Candidates() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
 
-  // Route publique : pas besoin de connexion
-  const { data: allCandidates, refetch } = trpc.candidateProfile.listApproved.useQuery();
+  const { data: allCandidates, refetch, isLoading } = trpc.candidateProfile.listApproved.useQuery();
 
-  // Filtrage par catégorie et recherche côté client
-  const candidates = allCandidates?.filter(c => {
-    const matchCategory = selectedCategory === "all" || c.category === selectedCategory;
-    const matchSearch = !searchTerm || 
-      `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (c.city && c.city.toLowerCase().includes(searchTerm.toLowerCase()));
+  const candidates = (allCandidates || []).filter((candidate) => {
+    const matchCategory = selectedCategory === "all" || candidate.category === selectedCategory;
+    const needle = searchTerm.trim().toLowerCase();
+    const matchSearch = !needle ||
+      `${candidate.firstName || ""} ${candidate.lastName || ""}`.toLowerCase().includes(needle) ||
+      (candidate.city || "").toLowerCase().includes(needle);
     return matchCategory && matchSearch;
   });
 
-  // Mutation admin (uniquement si connecté en admin)
+  const counts = {
+    all: allCandidates?.length || 0,
+    miss: allCandidates?.filter((candidate) => candidate.category === "miss").length || 0,
+    mister: allCandidates?.filter((candidate) => candidate.category === "mister").length || 0,
+  };
+
   const updateStatusMutation = trpc.candidates.updateStatus.useMutation({
     onSuccess: () => {
       toast.success("Statut mis à jour");
       setIsStatusDialogOpen(false);
       refetch();
     },
-    onError: (error: any) => {
-      toast.error("Erreur : " + error.message);
-    },
+    onError: (error: any) => toast.error(`Erreur : ${error.message}`),
   });
 
   const handleStatusChange = (candidateId: number, status: string) => {
     updateStatusMutation.mutate({ id: candidateId, status: status as any });
   };
 
-  const handleViewProfile = (id: number) => {
-    setLocation(`/candidat/${id}`);
-  };
-
   const isAdmin = user?.role === "admin" || user?.role === "super_admin";
 
-  // Compteurs par catégorie
-  const counts = {
-    all: allCandidates?.length || 0,
-    miss: allCandidates?.filter(c => c.category === "miss").length || 0,
-    mister: allCandidates?.filter(c => c.category === "mister").length || 0,
-    teen_miss: allCandidates?.filter(c => c.category === "teen_miss").length || 0,
-    teen_mister: allCandidates?.filter(c => c.category === "teen_mister").length || 0,
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
+    <div className="min-h-screen bg-black text-white">
       <SEOHead
-        title="Nos Candidats — Miss & Mister Dour 2026"
-        description="Découvrez les 19 candidats en lice pour le titre Miss & Mister Dour 2026. Votez pour vos favoris !"
+        title="Candidats 2027 — Miss & Mister Dour"
+        description="Découvrez les profils officiels de l’édition 2027 de Miss & Mister Dour."
         url="https://missetmisterdour.be/candidates"
-        tags={["Miss Dour", "Mister Dour", "candidats", "concours beauté Belgique"]}
+        tags={["Miss Dour", "Mister Dour", "candidats 2027", "Dour"]}
       />
 
-      {/* Header simplifié */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img
-                src={BRANDING.logoIdentity}
-                alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-12 max-[640px]:h-9 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                loading="eager"
-              />
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-300 hover:text-gold transition-colors">Accueil</Link>
-              <Link href="/about" className="text-gray-300 hover:text-gold transition-colors">À Propos</Link>
-              <Link href="/candidates" className="text-gold font-bold">Candidats</Link>
-              <Link href="/ranking" className="text-gray-300 hover:text-gold transition-colors">Classement</Link>
-              <Link href="/gallery" className="text-gray-300 hover:text-gold transition-colors">Galerie</Link>
-              <Link href="/sponsors" className="text-gray-300 hover:text-gold transition-colors">Sponsors</Link>
-              <Link href="/contact" className="px-4 py-2 bg-transparent border border-gold text-gold font-medium rounded-lg hover:bg-gold/10 transition-colors">Contact</Link>
-            </nav>
-            <Link href="/" className="md:hidden flex items-center gap-2 text-gold hover:text-gold/80 transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-              Retour
-            </Link>
-          </div>
-        </div>
-      </header>
+      <header className="hidden" aria-hidden="true" />
 
-      <div className="container mx-auto px-4 py-8">
-        {/* En-tête */}
-        <div className="mb-8 text-center">
-          <Crown className="w-12 h-12 mx-auto mb-4 text-gold" />
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent mb-3">
-            Nos Candidats 2026
-          </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Découvrez les {counts.all} candidat{counts.all > 1 ? "s" : ""} en lice pour Miss & Mister Dour 2026
-          </p>
-        </div>
-
-        {/* Filtres */}
-        <div className="bg-gray-900/80 border border-gold/20 rounded-xl p-5 mb-8 space-y-4">
-          {/* Recherche */}
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-            <Input
-              placeholder="Rechercher un candidat..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:border-gold"
-            />
-          </div>
-
-          {/* Filtres rapides catégorie */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            {[
-              { key: "all", label: "Tous", count: counts.all },
-              { key: "miss", label: "Miss", count: counts.miss, gradient: "from-pink-500 to-rose-600" },
-              { key: "mister", label: "Mister", count: counts.mister, gradient: "from-blue-500 to-indigo-600" },
-            ].filter(({ count }) => count > 0 || true).map(({ key, label, count, gradient }) => (
-              <button
-                key={key}
-                onClick={() => setSelectedCategory(key)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-                  selectedCategory === key
-                    ? gradient
-                      ? `bg-gradient-to-r ${gradient} text-white shadow-lg`
-                      : "bg-gold text-black shadow-lg"
-                    : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700"
-                }`}
-              >
-                {label} {count > 0 && <span className="opacity-70">({count})</span>}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Galerie */}
-        {candidates && candidates.length > 0 ? (
-          <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {candidates.map((candidate) => (
-              <CandidateCard
-                key={candidate.id}
-                candidate={candidate}
-                isAdmin={isAdmin}
-                onStatusClick={(c) => { setSelectedCandidate(c); setIsStatusDialogOpen(true); }}
-                onViewProfile={handleViewProfile}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-24 h-24 rounded-full bg-gray-800 border-2 border-dashed border-gray-600 flex items-center justify-center mb-6">
-              <Crown className="w-10 h-10 text-gray-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Aucun candidat trouvé</h3>
-            <p className="text-gray-500 max-w-sm">
-              {searchTerm
-                ? "Essayez de modifier vos critères de recherche"
-                : "Les candidatures seront bientôt disponibles"}
-            </p>
-          </div>
-        )}
-
-        {/* Dialog modification statut (admin uniquement) */}
-        {isAdmin && (
-          <Dialog open={isStatusDialogOpen} onOpenChange={setIsStatusDialogOpen}>
-            <DialogContent className="bg-gray-900 border border-gold/30 text-white">
-              <DialogHeader>
-                <DialogTitle className="text-gold">Modifier le statut</DialogTitle>
-                <DialogDescription className="text-gray-400">
-                  Changez le statut de {selectedCandidate?.firstName} {selectedCandidate?.lastName}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-3 py-4">
-                <Button
-                  variant="outline"
-                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                  onClick={() => handleStatusChange(selectedCandidate?.id, "approved")}
-                >
-                  <Check className="mr-2 h-4 w-4 text-green-400" />
-                  Approuver
-                </Button>
-                <Button
-                  variant="outline"
-                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                  onClick={() => handleStatusChange(selectedCandidate?.id, "rejected")}
-                >
-                  <X className="mr-2 h-4 w-4 text-red-400" />
-                  Rejeter
-                </Button>
-                <Button
-                  variant="outline"
-                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                  onClick={() => handleStatusChange(selectedCandidate?.id, "finalist")}
-                >
-                  <Star className="mr-2 h-4 w-4 text-gold" />
-                  Marquer comme Finaliste
-                </Button>
-                <Button
-                  variant="outline"
-                  className="justify-start border-gray-700 text-white hover:bg-gray-800"
-                  onClick={() => handleStatusChange(selectedCandidate?.id, "winner")}
-                >
-                  <Crown className="mr-2 h-4 w-4 text-yellow-400" />
-                  Marquer comme Gagnant
-                </Button>
+      <main>
+        <section className="relative overflow-hidden px-4 py-20 md:py-28">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(217,185,120,.11),transparent_34%),radial-gradient(circle_at_82%_56%,rgba(117,74,47,.09),transparent_32%)]" />
+          <div className="relative mx-auto max-w-6xl">
+            <span className="mmd-page-kicker">03 · Candidats</span>
+            <div className="mt-7 grid gap-8 lg:grid-cols-[1.2fr_.8fr] lg:items-end">
+              <div>
+                <h1 className="max-w-4xl text-5xl font-semibold leading-[.94] tracking-[-.055em] md:text-7xl lg:text-8xl">
+                  Les visages de <em className="font-light text-[#d9b978]">2027.</em>
+                </h1>
+                <p className="mt-7 max-w-2xl text-base leading-8 text-white/52">
+                  Découvrez les personnalités qui composent la nouvelle édition. Chaque profil possède son propre espace public.
+                </p>
               </div>
+              <div className="grid grid-cols-3 gap-2 lg:justify-self-end">
+                {[
+                  ["Tous", counts.all],
+                  ["Miss", counts.miss],
+                  ["Mister", counts.mister],
+                ].map(([label, value]) => (
+                  <div key={String(label)} className="min-w-24 rounded-2xl border border-white/10 bg-white/[.025] p-4 text-center">
+                    <strong className="block text-2xl text-[#d9b978]">{value}</strong>
+                    <span className="mt-1 block text-[9px] uppercase tracking-[.14em] text-white/35">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
 
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  className="border-gray-700 text-white hover:bg-gray-800"
-                  onClick={() => setIsStatusDialogOpen(false)}
+        <section className="sticky top-[68px] z-30 border-y border-white/8 bg-black/85 px-4 py-4 backdrop-blur-xl md:top-[78px]">
+          <div className="mx-auto flex max-w-6xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="relative w-full md:max-w-sm">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+              <Input
+                placeholder="Rechercher un nom ou une ville"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                className="h-11 rounded-full border-white/10 bg-white/[.035] pl-11 text-sm text-white placeholder:text-white/30"
+              />
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0">
+              {[
+                { key: "all", label: `Tous · ${counts.all}` },
+                { key: "miss", label: `Miss · ${counts.miss}` },
+                { key: "mister", label: `Mister · ${counts.mister}` },
+              ].map((filter) => (
+                <button
+                  key={filter.key}
+                  type="button"
+                  onClick={() => setSelectedCategory(filter.key)}
+                  className={`whitespace-nowrap rounded-full border px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.1em] ${
+                    selectedCategory === filter.key
+                      ? "border-[#d9b978] bg-[#d9b978] text-black"
+                      : "border-white/10 bg-white/[.02] text-white/50 hover:border-[#d9b978]/35 hover:text-white"
+                  }`}
                 >
-                  Annuler
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-14 md:py-20">
+          <div className="mx-auto max-w-7xl">
+            {isLoading ? (
+              <div className="grid min-h-72 place-items-center">
+                <Crown className="h-8 w-8 animate-pulse text-[#d9b978]" />
+              </div>
+            ) : candidates.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {candidates.map((candidate) => (
+                  <CandidateCard
+                    key={candidate.id}
+                    candidate={candidate}
+                    isAdmin={isAdmin}
+                    onStatusClick={(value) => {
+                      setSelectedCandidate(value);
+                      setIsStatusDialogOpen(true);
+                    }}
+                    onViewProfile={(id) => setLocation(`/candidat/${id}`)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="mx-auto max-w-xl rounded-[28px] border border-white/10 bg-white/[.025] px-8 py-16 text-center">
+                <Crown className="mx-auto h-8 w-8 text-[#d9b978]/50" />
+                <h2 className="mt-5 text-2xl font-semibold">Aucun profil ne correspond</h2>
+                <p className="mt-3 text-sm leading-7 text-white/42">
+                  {searchTerm ? "Modifiez votre recherche ou revenez à l’ensemble des candidats." : "Les nouveaux profils seront publiés après validation."}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+
+      {isAdmin && (
+        <Dialog open={isStatusDialogOpen} onOpenChange={setIsStatusDialogOpen}>
+          <DialogContent className="border border-[#d9b978]/25 bg-[#111214] text-white">
+            <DialogHeader>
+              <DialogTitle className="text-[#d9b978]">Modifier le statut</DialogTitle>
+              <DialogDescription className="text-white/45">
+                {selectedCandidate?.firstName} {selectedCandidate?.lastName}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-3 py-4">
+              <Button variant="outline" className="justify-start border-white/10 bg-transparent text-white hover:bg-white/5" onClick={() => handleStatusChange(selectedCandidate?.id, "approved")}>
+                <Check className="mr-2 h-4 w-4" /> Approuver
+              </Button>
+              <Button variant="outline" className="justify-start border-white/10 bg-transparent text-white hover:bg-white/5" onClick={() => handleStatusChange(selectedCandidate?.id, "rejected")}>
+                <X className="mr-2 h-4 w-4" /> Rejeter
+              </Button>
+              <Button variant="outline" className="justify-start border-white/10 bg-transparent text-white hover:bg-white/5" onClick={() => handleStatusChange(selectedCandidate?.id, "finalist")}>
+                <Star className="mr-2 h-4 w-4" /> Finaliste
+              </Button>
+              <Button variant="outline" className="justify-start border-[#d9b978]/25 bg-transparent text-[#d9b978] hover:bg-[#d9b978]/10" onClick={() => handleStatusChange(selectedCandidate?.id, "winner")}>
+                <Crown className="mr-2 h-4 w-4" /> Gagnant
+              </Button>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" className="border-white/10 bg-transparent text-white" onClick={() => setIsStatusDialogOpen(false)}>Annuler</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
