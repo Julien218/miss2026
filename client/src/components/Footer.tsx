@@ -1,206 +1,131 @@
-/**
- * Footer Component - Design JS-Innov.IA® Tech Ecosystem
- * Fond sombre texturé avec particules dorées
- * 
- * Créé par JS-Innov.IA® (Pagin Julien) - Dour, Belgique
- * © Tous droits réservés - Copie strictement interdite
- */
-
 import { useState } from "react";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Facebook, Instagram } from "lucide-react";
+import { BRANDING } from "@/config/branding";
 
-// URLs CDN des logos
-const LOGO_JS_INNOV = "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/Logo_JS-Innov.IA_EvoluTion_Autonome_02-26_85ca048d.png";
-
-// Particules dorées flottantes
-function FooterParticles() {
-  const particles = Array.from({ length: 12 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1.5,
-    duration: Math.random() * 4 + 3,
-    delay: Math.random() * 3,
-    opacity: Math.random() * 0.4 + 0.1,
-  }));
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full"
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: p.size,
-            height: p.size,
-            background: `radial-gradient(circle, #D4AF37, #C87941)`,
-            opacity: p.opacity,
-          }}
-          animate={{
-            y: [0, -20, 0],
-            opacity: [p.opacity, p.opacity * 1.8, p.opacity],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+const FOOTER_LINKS = [
+  { href: "/about", label: "À propos" },
+  { href: "/candidates", label: "Candidats" },
+  { href: "/gallery", label: "Galerie" },
+  { href: "/ranking", label: "Classement" },
+  { href: "/sponsors", label: "Sponsors" },
+  { href: "/press", label: "Presse" },
+  { href: "/contact", label: "Contact" },
+];
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
   const [showLegal, setShowLegal] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-auto overflow-hidden" style={{
-      background: "radial-gradient(ellipse at center, #1a1000 0%, #0d0800 40%, #050300 70%, #000000 100%)"
-    }}>
-      {/* Particules dorées */}
-      <FooterParticles />
+    <footer className="relative mt-auto overflow-hidden border-t border-[#d9b978]/15 bg-[#070707] text-white">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(circle at 16% 0%, rgba(217,185,120,.10), transparent 30%), radial-gradient(circle at 86% 100%, rgba(126,83,51,.10), transparent 34%)",
+        }}
+      />
 
-      {/* Ligne dorée supérieure */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/60 to-transparent" />
-
-      <div className="relative z-10 container mx-auto px-4 py-12">
-        {/* Section Tech Ecosystem */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
-        >
-          <p className="text-[10px] uppercase tracking-[0.5em] text-gray-500 mb-6">
-            Tech Ecosystem
-          </p>
-
-          {/* Logo JS-Innov.IA */}
-          <motion.div
-            className="flex justify-center mb-4"
-            animate={{
-              filter: [
-                "drop-shadow(0 0 8px rgba(212,175,55,0.2))",
-                "drop-shadow(0 0 16px rgba(212,175,55,0.4))",
-                "drop-shadow(0 0 8px rgba(212,175,55,0.2))",
-              ],
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <img
-              src={LOGO_JS_INNOV}
-              alt="JS-Innov.IA®"
-              className="h-24 w-auto object-contain rounded-xl"
-            />
-          </motion.div>
-
-          {/* Nom et slogan */}
-          <h3 className="text-lg font-semibold mb-1" style={{
-            background: "linear-gradient(135deg, #D4AF37, #E8C547, #C87941)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>
-            JS-Innov.IA®
-          </h3>
-          <p className="text-gray-500 text-sm italic">
-            When Vision meets Intelligence.
-          </p>
-        </motion.div>
-
-        {/* Ligne séparatrice */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6" />
-
-        {/* Catégories tech */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-8"
-        >
-          <span className="text-[11px] uppercase tracking-[0.3em] text-gray-500">AI Creative Direction</span>
-          <span className="text-gray-700">|</span>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-gray-500">Automation Systems</span>
-          <span className="text-gray-700">|</span>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-gray-500">Digital Cinema Engine</span>
-        </motion.div>
-
-        {/* Designed & Engineered by */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center mb-6"
-        >
-          <p className="text-gray-500 text-sm">
-            Designed & Engineered by{" "}
-            <span className="font-bold" style={{
-              background: "linear-gradient(135deg, #D4AF37, #E8C547)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}>JS-Innov.IA®</span>
-          </p>
-          <p className="text-gray-600 text-xs mt-1">
-            Artificial Intelligence Creative Systems
-          </p>
-        </motion.div>
-
-        {/* Copyright */}
-        <div className="text-center mb-6">
-          <p className="text-gray-600 text-xs">
-            © {currentYear} STARLIGHT ASBL — Miss & Mister Dour {currentYear} — Tous droits réservés
-          </p>
-        </div>
-
-        {/* Bouton Mentions Légales (discret, cliquable) */}
-        <div className="flex justify-center">
-          <button
-            onClick={() => setShowLegal(!showLegal)}
-            className="flex items-center gap-2 px-6 py-2 rounded-full border border-white/10 text-gray-500 text-xs uppercase tracking-[0.2em] hover:border-[#D4AF37]/30 hover:text-gray-400 transition-all duration-300"
-          >
-            Mentions Légales
-            <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${showLegal ? "rotate-180" : ""}`} />
-          </button>
-        </div>
-
-        {/* Contenu Mentions Légales (déroulant) */}
-        <motion.div
-          initial={false}
-          animate={{ height: showLegal ? "auto" : 0, opacity: showLegal ? 1 : 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="overflow-hidden"
-        >
-          <div className="pt-6 flex flex-wrap justify-center gap-4 text-xs">
-            <Link href="/mentions-legales" className="text-gray-500 hover:text-[#D4AF37] transition-colors">
-              Mentions légales
+      <div className="relative z-10 mx-auto w-[min(1240px,92vw)] py-14 md:py-16">
+        <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-[1.2fr_.8fr] md:items-end">
+          <div>
+            <Link href="/" className="inline-flex" aria-label="Accueil Miss & Mister Dour">
+              <img
+                src={BRANDING.logoIdentity}
+                alt="Miss & Mister Dour"
+                className="h-24 w-auto max-w-[230px] object-contain object-left drop-shadow-[0_0_22px_rgba(217,185,120,.16)]"
+              />
             </Link>
-            <span className="text-gray-700">·</span>
-            <Link href="/legal/cgu" className="text-gray-500 hover:text-[#D4AF37] transition-colors">
-              CGU
-            </Link>
-            <span className="text-gray-700">·</span>
-            <Link href="/legal/privacy" className="text-gray-500 hover:text-[#D4AF37] transition-colors">
-              Politique de confidentialité
-            </Link>
-            <span className="text-gray-700">·</span>
-            <Link href="/legal/cookies" className="text-gray-500 hover:text-[#D4AF37] transition-colors">
-              Cookies
-            </Link>
-            <span className="text-gray-700">·</span>
-            <Link href="/contact" className="text-gray-500 hover:text-[#D4AF37] transition-colors">
-              Contact
+            <p className="mt-5 max-w-xl text-sm leading-7 text-white/55">
+              Une expérience humaine, scénique et digitale à Dour. Découvrez les candidats,
+              les moments forts, les anciennes éditions et celles et ceux qui font vivre l’aventure.
+            </p>
+          </div>
+
+          <div className="md:text-right">
+            <p className="text-[10px] font-semibold uppercase tracking-[.28em] text-[#d9b978]">
+              Édition 2027
+            </p>
+            <p className="mt-3 text-sm text-white/50">Dour · Hainaut · Belgique</p>
+            <Link
+              href="/inscription-candidat"
+              className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full border border-[#d9b978]/50 bg-gradient-to-r from-[#e2c47e] to-[#b88849] px-6 text-xs font-bold uppercase tracking-[.08em] text-black"
+            >
+              Candidater 2027
             </Link>
           </div>
-        </motion.div>
+        </div>
+
+        <div className="grid gap-10 py-10 lg:grid-cols-[1fr_auto] lg:items-center">
+          <nav className="flex flex-wrap gap-x-7 gap-y-4" aria-label="Navigation pied de page">
+            {FOOTER_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-xs font-medium uppercase tracking-[.08em] text-white/50 transition-colors hover:text-[#d9b978]"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3 lg:justify-end">
+            <a
+              href={BRANDING.socialMedia.facebook}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook Miss & Mister Dour"
+              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-white/55 transition hover:border-[#d9b978]/40 hover:text-[#d9b978]"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a
+              href={BRANDING.socialMedia.instagram}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram Miss & Mister Dour"
+              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-white/55 transition hover:border-[#d9b978]/40 hover:text-[#d9b978]"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href={BRANDING.socialMedia.tiktok}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="TikTok Miss & Mister Dour"
+              className="grid h-10 min-w-10 place-items-center rounded-full border border-white/10 px-3 text-[10px] font-bold uppercase tracking-[.08em] text-white/55 transition hover:border-[#d9b978]/40 hover:text-[#d9b978]"
+            >
+              TikTok
+            </a>
+          </div>
+        </div>
+
+        <div className="border-t border-white/10 pt-7">
+          <div className="flex flex-col gap-4 text-xs text-white/35 md:flex-row md:items-center md:justify-between">
+            <span>© {currentYear} STARLIGHT ASBL · Miss & Mister Dour · Tous droits réservés</span>
+            <span>Expérience digitale par <strong className="font-semibold text-white/55">JS-Innov.IA®</strong></span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowLegal((value) => !value)}
+            className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.16em] text-white/35 transition hover:text-[#d9b978]"
+            aria-expanded={showLegal}
+          >
+            Informations légales
+            <ChevronDown className={`h-3 w-3 transition-transform ${showLegal ? "rotate-180" : ""}`} />
+          </button>
+
+          {showLegal && (
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3 text-xs text-white/40">
+              <Link href="/mentions-legales" className="hover:text-[#d9b978]">Mentions légales</Link>
+              <Link href="/legal/cgu" className="hover:text-[#d9b978]">CGU</Link>
+              <Link href="/legal/privacy" className="hover:text-[#d9b978]">Confidentialité</Link>
+              <Link href="/legal/cookies" className="hover:text-[#d9b978]">Cookies</Link>
+            </div>
+          )}
+        </div>
       </div>
     </footer>
   );
