@@ -9,6 +9,7 @@ import { getLoginUrl } from "./const";
 import "./index.css";
 import "./editorial-2027.css";
 import "./editorial-2027-refinements.css";
+import "./public-site-2027.css";
 
 const queryClient = new QueryClient();
 
