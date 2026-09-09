@@ -329,8 +329,9 @@ function App() {
     setShowSplash(false);
   };
 
-  // Masquer le footer sur les dashboards et pages admin
-  const hideFooter = location.startsWith('/dashboard') || 
+  // La homepage possède son footer éditorial dédié.
+  const hideFooter = location === '/' ||
+                     location.startsWith('/dashboard') || 
                      location.startsWith('/admin') || 
                      location.startsWith('/my-profile') ||
                      location.startsWith('/candidate/') ||
