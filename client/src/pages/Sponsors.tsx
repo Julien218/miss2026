@@ -1,255 +1,149 @@
 import { Link } from "wouter";
+import { ArrowRight, Handshake, Sparkles } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
-
-import { Award, ExternalLink, Heart, Crown } from "lucide-react";
 import { BRANDING } from "@/config/branding";
+import { FOUNDING_PARTNERS, HISTORICAL_SPONSORS } from "@/data/sponsors";
 
-export default function Sponsors() {
-  // Sponsors officiels (à remplacer par données dynamiques depuis DB)
-  const mainSponsors = [
-    {
-      name: "Centre Sportif d'Elouges",
-      logo: "https://via.placeholder.com/300x150/D4AF37/000000?text=Centre+Culturel+Dour",
-      description: "Organisateur principal et partenaire culturel majeur de l'événement.",
-      website: "https://centrecultureldour.be",
-      tier: "Partenaire Principal"
-    },
-    {
-      name: "Js-Innov.IA",
-      logo: "https://via.placeholder.com/300x150/D4AF37/000000?text=Js-Innov.IA",
-      description: "Partenaire technologique officiel - Développement plateforme IA, blockchain, génération vidéo.",
-      website: "https://jsinnovia.com",
-      tier: "Partenaire Technologique"
-    }
-  ];
-
-  const goldSponsors = [
-    {
-      name: "Sponsor Gold 1",
-      logo: "https://via.placeholder.com/250x125/FFD700/000000?text=Gold+Sponsor+1",
-      description: "Description du sponsor gold 1.",
-      website: "#"
-    },
-    {
-      name: "Sponsor Gold 2",
-      logo: "https://via.placeholder.com/250x125/FFD700/000000?text=Gold+Sponsor+2",
-      description: "Description du sponsor gold 2.",
-      website: "#"
-    }
-  ];
-
-  const silverSponsors = [
-    {
-      name: "Sponsor Silver 1",
-      logo: "https://via.placeholder.com/200x100/C0C0C0/000000?text=Silver+1",
-      website: "#"
-    },
-    {
-      name: "Sponsor Silver 2",
-      logo: "https://via.placeholder.com/200x100/C0C0C0/000000?text=Silver+2",
-      website: "#"
-    },
-    {
-      name: "Sponsor Silver 3",
-      logo: "https://via.placeholder.com/200x100/C0C0C0/000000?text=Silver+3",
-      website: "#"
-    }
-  ];
+function SponsorMonogram({ name }: { name: string }) {
+  const letters = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
+    <span className="grid h-11 w-11 place-items-center rounded-full border border-[#d9b978]/25 bg-black text-[11px] font-bold tracking-[.08em] text-[#d9b978]">
+      {letters || "MMD"}
+    </span>
+  );
+}
+
+export default function Sponsors() {
+  return (
+    <div className="min-h-screen bg-black text-white">
       <SEOHead
-        title="Sponsors & Partenaires — Miss & Mister Dour 2026"
-        description="Découvrez les sponsors et partenaires officiels du concours Miss & Mister Dour 2026. Rejoignez-nous pour soutenir l'excellence belge."
+        title="Sponsors & Partenaires — Miss & Mister Dour 2027"
+        description="Découvrez les partenaires de Miss & Mister Dour et les entreprises qui ont accompagné les précédentes éditions."
         url="https://missetmisterdour.be/sponsors"
-        tags={["sponsors Miss Dour", "partenaires Dour", "STARLIGHT ASBL"]}
+        tags={["sponsors Miss Mister Dour", "partenaires Dour", "sponsor événement Dour"]}
       />
-      {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img
-                src={BRANDING.logoIdentity}
-                alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                loading="eager"
-              />
-            </Link>
-          <Link href="/" className="text-gold hover:text-gold/80 transition-colors font-medium">
-              Retour à l'accueil
-            </Link>
-        </div>
-      </header>
 
-      {/* Hero */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/10" />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <Award className="w-16 h-16 mx-auto mb-6 text-gold animate-pulse" />
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
-            Nos Sponsors
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-            Ils nous font confiance et soutiennent l'excellence
-          </p>
-        </div>
-      </section>
+      <header className="hidden" aria-hidden="true" />
 
-      {/* Partenaires Principaux */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center gap-3 mb-12 justify-center">
-              <Crown className="w-8 h-8 text-gold" />
-              <h2 className="text-4xl font-bold text-gold">Partenaires Principaux</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              {mainSponsors.map((sponsor, index) => (
-                <div
-                  key={index}
-                  className="bg-gradient-to-br from-gold/10 to-transparent border-2 border-gold/40 rounded-lg p-8 hover:border-gold/60 transition-all group"
+      <main>
+        <section className="relative overflow-hidden px-4 py-24 md:py-32">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(217,185,120,.13),transparent_34%),radial-gradient(circle_at_82%_65%,rgba(111,72,47,.12),transparent_30%)]" />
+          <div className="relative mx-auto max-w-6xl">
+            <span className="mmd-page-kicker">08 · Partenaires</span>
+            <div className="mt-7 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
+              <div>
+                <h1 className="max-w-4xl text-5xl font-semibold leading-[.94] tracking-[-.055em] md:text-7xl lg:text-8xl">
+                  Ceux qui font vivre <em className="font-light text-[#d9b978]">l’aventure.</em>
+                </h1>
+                <p className="mt-7 max-w-2xl text-base leading-8 text-white/55 md:text-lg">
+                  Miss & Mister Dour grandit grâce aux partenaires qui partagent une même envie :
+                  créer une expérience locale forte, visible et mémorable.
+                </p>
+              </div>
+
+              <div className="rounded-[28px] border border-[#d9b978]/18 bg-white/[.035] p-6 md:p-8">
+                <Handshake className="h-7 w-7 text-[#d9b978]" />
+                <h2 className="mt-6 text-2xl font-semibold">Devenir partenaire 2027</h2>
+                <p className="mt-3 text-sm leading-7 text-white/50">
+                  Visibilité digitale, présence événementielle et activations peuvent être adaptées au partenariat.
+                </p>
+                <Link
+                  href="/contact"
+                  className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#d9b978] px-5 py-3 text-xs font-bold uppercase tracking-[.08em] text-black"
                 >
-                  <div className="bg-white rounded-lg p-6 mb-6 flex items-center justify-center h-32">
-                    <img
-                      src={sponsor.logo}
-                      alt={`Logo ${sponsor.name}`}
-                      className="max-h-full max-w-full object-contain"
-                    />
+                  Nous contacter <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-16 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="flex flex-col gap-8 border-b border-white/10 pb-10 md:flex-row md:items-end md:justify-between">
+              <div>
+                <span className="mmd-page-kicker">Écosystème</span>
+                <h2 className="mt-5 text-3xl font-semibold md:text-5xl">Organisation & expérience</h2>
+              </div>
+              <p className="max-w-xl text-sm leading-7 text-white/45">
+                L’événement reste la marque centrale. La technologie accompagne l’expérience sans prendre sa place.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-2">
+              <article className="relative overflow-hidden rounded-[30px] border border-[#d9b978]/20 bg-white/[.04] p-8 md:p-10">
+                <div className="absolute right-[-30px] top-[-20px] h-36 w-36 rounded-full bg-[#d9b978]/10 blur-3xl" />
+                <img src={BRANDING.logoIdentity} alt="Miss & Mister Dour" className="h-24 w-auto max-w-[220px] object-contain object-left" />
+                <span className="mt-8 block text-[10px] font-bold uppercase tracking-[.2em] text-[#d9b978]">Organisation</span>
+                <strong className="mt-2 block text-2xl">STARLIGHT ASBL</strong>
+              </article>
+
+              <article className="relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[.025] p-8 md:p-10">
+                <div className="grid h-20 w-20 place-items-center rounded-2xl border border-[#d9b978]/20 bg-black text-2xl font-bold text-[#d9b978]">JS</div>
+                <span className="mt-8 block text-[10px] font-bold uppercase tracking-[.2em] text-[#d9b978]">Expérience digitale</span>
+                <strong className="mt-2 block text-2xl">JS-Innov.IA®</strong>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-white/10 bg-white/[.018] px-4 py-16 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-end">
+              <div>
+                <span className="mmd-page-kicker">Mémoire · édition 2026</span>
+                <h2 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">
+                  Nos partenaires ne disparaissent pas avec une nouvelle édition.
+                </h2>
+              </div>
+              <p className="max-w-2xl text-sm leading-7 text-white/48 lg:justify-self-end">
+                Ce répertoire a été restauré depuis l’ancienne version du site. Les anciens logos seront
+                réassociés lorsqu’ils sont disponibles dans le stockage public ; les noms restent déjà
+                conservés et visibles dans l’histoire de l’événement.
+              </p>
+            </div>
+
+            <div className="mt-12 mmd-sponsor-wall">
+              {HISTORICAL_SPONSORS.map((sponsor) => (
+                <article key={sponsor.name} className="mmd-sponsor-tile group">
+                  <div className="flex w-full flex-col items-center justify-center gap-3 text-center">
+                    <SponsorMonogram name={sponsor.name} />
+                    <strong className="text-xs font-semibold leading-5 text-[#141414] md:text-sm">{sponsor.name}</strong>
+                    <span className="text-[9px] font-bold uppercase tracking-[.16em] text-black/35">Partenaire 2026</span>
                   </div>
-                  <div className="mb-3">
-                    <span className="inline-block px-3 py-1 bg-gold/20 text-gold text-sm font-bold rounded-full mb-3">
-                      {sponsor.tier}
-                    </span>
-                    <h3 className="text-2xl font-bold text-white mb-2">{sponsor.name}</h3>
-                  </div>
-                  <p className="text-gray-300 mb-4 leading-relaxed">{sponsor.description}</p>
-                  <a
-                    href={sponsor.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium group-hover:gap-3"
-                  >
-                    Visiter le site
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
+                </article>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Sponsors Gold */}
-      <section className="py-16 bg-gradient-to-b from-transparent to-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center gap-3 mb-12 justify-center">
-              <Award className="w-8 h-8 text-yellow-400" />
-              <h2 className="text-4xl font-bold text-yellow-400">Sponsors Gold</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              {goldSponsors.map((sponsor, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-800/50 border border-yellow-400/30 rounded-lg p-6 hover:border-yellow-400/50 transition-all group"
-                >
-                  <div className="bg-white rounded-lg p-4 mb-4 flex items-center justify-center h-24">
-                    <img
-                      src={sponsor.logo}
-                      alt={`Logo ${sponsor.name}`}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">{sponsor.name}</h3>
-                  <p className="text-gray-400 text-sm mb-3">{sponsor.description}</p>
-                  <a
-                    href={sponsor.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors text-sm"
-                  >
-                    En savoir plus
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Sponsors Silver */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center gap-3 mb-12 justify-center">
-              <Award className="w-8 h-8 text-gray-400" />
-              <h2 className="text-4xl font-bold text-gray-400">Sponsors Silver</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {silverSponsors.map((sponsor, index) => (
-                <a
-                  key={index}
-                  href={sponsor.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-gray-800/50 border border-gray-400/20 rounded-lg p-4 hover:border-gray-400/40 transition-all group"
-                >
-                  <div className="bg-white rounded-lg p-3 flex items-center justify-center h-20">
-                    <img
-                      src={sponsor.logo}
-                      alt={`Logo ${sponsor.name}`}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                  <p className="text-center text-gray-300 text-sm mt-3 group-hover:text-white transition-colors">
-                    {sponsor.name}
-                  </p>
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Devenir Sponsor */}
-      <section className="py-16 bg-gradient-to-b from-transparent to-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Heart className="w-16 h-16 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl font-bold text-gold mb-6">Devenez Sponsor</h2>
-            <p className="text-gray-300 text-lg leading-relaxed mb-8">
-              Rejoignez les partenaires qui soutiennent Miss & Mister Dour et bénéficiez d'une 
-              visibilité exceptionnelle lors de l'événement le plus prestigieux de Belgique.
-            </p>
-            <div className="bg-gradient-to-br from-gold/10 to-transparent border border-gold/30 rounded-lg p-8 mb-8">
-              <h3 className="text-2xl font-bold text-gold mb-4">Avantages Sponsors</h3>
-              <ul className="text-left text-gray-300 space-y-3 max-w-2xl mx-auto">
-                <li className="flex items-start gap-3">
-                  <span className="text-gold">✓</span>
-                  <span>Logo affiché sur tous les supports de communication (site web, réseaux sociaux, affiches)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gold">✓</span>
-                  <span>Mention lors de la soirée de couronnement (avril 2026)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gold">✓</span>
-                  <span>Accès VIP à l'événement avec places réservées</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gold">✓</span>
-                  <span>Visibilité internationale (diffusion en direct, médias européens)</span>
-                </li>
-              </ul>
-            </div>
-            <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
-                Nous Contacter
-                <ExternalLink className="w-5 h-5" />
+        <section className="px-4 py-20 md:py-28">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[34px] border border-[#d9b978]/22 bg-[linear-gradient(135deg,rgba(217,185,120,.12),rgba(255,255,255,.025))] p-8 md:p-14">
+            <Sparkles className="h-6 w-6 text-[#d9b978]" />
+            <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[.22em] text-[#d9b978]">Édition 2027</span>
+                <h2 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.02] md:text-6xl">
+                  Associez votre image à une expérience qui vit avant, pendant et après l’événement.
+                </h2>
+              </div>
+              <Link
+                href="/contact"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#d9b978]/45 px-6 text-xs font-bold uppercase tracking-[.08em] text-[#f5efe5] hover:bg-[#d9b978] hover:text-black"
+              >
+                Parler du partenariat <ArrowRight className="h-4 w-4" />
               </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }
