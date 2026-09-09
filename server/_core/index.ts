@@ -11,12 +11,27 @@ import { domainRedirectMiddleware } from "./domain-redirect";
 import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { apiLimiter } from "./rateLimit";
-import { serveStatic, setupVite } from "./vite";
+import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { registerUser } from "./auth-password";
+import { registerDropboxIntegrationRoutes } from "./dropbox-integration";
+import { startDropboxLowCostAutoSync } from "./dropbox-auto-sync-lowcost";
+import { serveStatic, setupVite } from "./vite";
+import { registerCockpitRegistrationRoutes } from "./cockpit-registrations";
+import { ensureSchema } from "./ensure-schema";
 
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // 🗄️ Ensure database schema is initialized (non-destructive)
+  try {
+    await ensureSchema();
+  } catch (error) {
+    console.error("[Init] Schema check failed, continuing anyway:", error);
+  }
+
+  // Railway terminates TLS and forwards the real client IP through one trusted proxy.
+  app.set("trust proxy", 1);
 
   // 🔁 Redirection domaine
   app.use(domainRedirectMiddleware);
@@ -24,15 +39,6 @@ async function startServer() {
   // 📦 Body parser (upload fichiers)
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
-
-  // 🔐 OAuth
-  registerOAuthRoutes(app);
-
-  // 🖼️ Image countdown
-  app.get("/api/countdown-image", generateCountdownImage);
-
-  // 📸 Upload photo candidat
-  app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, any]));
 
   // ============================================================
   // ⚠️  TEMPORARY ENDPOINT - DELETE AFTER USE
@@ -97,6 +103,18 @@ async function startServer() {
   // ⚠️  FIN TEMPORARY ENDPOINT
   // ============================================================
 
+  // 🔐 Auth locale et OAuth
+  registerLocalAuthRoutes(app);
+  registerOAuthRoutes(app);
+  registerDropboxIntegrationRoutes(app);
+  registerCockpitRegistrationRoutes(app);
+
+  // 🖼️ Image countdown
+  app.get("/api/countdown-image", generateCountdownImage);
+
+  // 📸 Upload photo candidat
+  app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, any]));
+
   // 📄 Sitemap
   app.get("/sitemap.xml", async (req, res) => {
     try {
@@ -141,7 +159,9 @@ async function startServer() {
 
   server.listen(port, "0.0.0.0", () => {
     console.log(`✅ Server running on port ${port}`);
+    startDropboxLowCostAutoSync();
   });
 }
 
 startServer().catch(console.error);
+

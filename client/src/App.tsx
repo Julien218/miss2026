@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import Contests from "./pages/Contests";
 import Gallery from "./pages/Gallery";
 import Candidates from "./pages/Candidates";
+import Login from "./pages/Login";
+import AdminActivate from "./pages/AdminActivate";
 import MyProfile from "./pages/MyProfile";
 import CandidateRegister from "./pages/CandidateRegister";
 import Vote from "./pages/Vote";
@@ -40,6 +42,7 @@ import AdminInvitations from "./pages/admin/AdminInvitations";
 import AdminUsers from "./pages/AdminUsers";
 import CandidateOnboarding from "./pages/admin/CandidateOnboarding";
 import AdminCandidates from "./pages/admin/AdminCandidates";
+import AdminDropbox from "./pages/admin/AdminDropbox";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminComments from "./pages/admin/AdminComments";
 import AdminVotes from "./pages/admin/AdminVotes";
@@ -78,6 +81,9 @@ function Router() {
     <Switch>
       {/* ========== PAGES PUBLIQUES ========== */}
       <Route path="/" component={Homepage} />
+      <Route path="/login" component={Login} />
+      <Route path="/voter" component={Candidates} />
+      <Route path="/admin/activate" component={AdminActivate} />
       <Route path="/about" component={About} />
       <Route path="/press" component={Press} />
       <Route path="/sponsors" component={Sponsors} />
@@ -166,6 +172,11 @@ function Router() {
       <Route path="/admin/votes">
         <RoleGuard requiredRole="admin">
           <AdminVotes />
+        </RoleGuard>
+      </Route>
+      <Route path="/admin/dropbox">
+        <RoleGuard requiredRole="admin">
+          <AdminDropbox />
         </RoleGuard>
       </Route>
       <Route path="/admin/events">

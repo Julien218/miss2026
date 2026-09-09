@@ -14,11 +14,11 @@ export function getPublicBaseUrl(): string {
 /**
  * Génère l'URL complète d'un candidat
  * @param candidateId ID du candidat
- * @returns URL complète: https://missetmisterdour.be/candidate/123
+ * @returns URL complète: https://missetmisterdour.be/candidat/123
  */
 export function getCandidateUrl(candidateId: number): string {
   const baseUrl = getPublicBaseUrl();
-  return `${baseUrl}/candidate/${candidateId}`;
+  return `${baseUrl}/candidat/${candidateId}`;
 }
 
 /**

@@ -7,8 +7,7 @@ import { Users, Trophy, Vote, TrendingUp, AlertTriangle, Calendar, Briefcase, Fi
 import ExportVotesDialog from "@/components/ExportVotesDialog";
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
-  const authLoading = false; // useAuth doesn't expose isLoading
+  const { user, loading: authLoading } = useAuth();
   
   // Fetch statistics
   // Mock stats for now - will be replaced with real data
@@ -23,7 +22,7 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   
   // Redirect if not admin
-  if (!authLoading && user?.role !== "admin" && user?.role !== "owner") {
+  if (!authLoading && user?.role !== "admin" && user?.role !== "super_admin" && user?.role !== "owner") {
     setLocation("/");
     return null;
   }

@@ -21,6 +21,7 @@ import { whatsappRouter } from "./routers/whatsapp";
 import { videoGeneratorRouter } from "./routers/videoGenerator";
 import { validationRouter } from "./routers/validation";
 import { checkRateLimit, rateLimitConfigs } from "./_core/rateLimit";
+import { schemaFixRouter } from "./routers/schema-fix";
 
 // Admin-only procedure (admin + super_admin)
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -87,6 +88,7 @@ async function sendInvitationEmail(to: string, inviteUrl: string, role: string, 
 
 export const appRouter = router({
   system: systemRouter,
+  schemaFix: schemaFixRouter,
   
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

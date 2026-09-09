@@ -27,7 +27,7 @@ import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
-import { Crown, Calendar, Camera, Music, Star, MessageSquare, Bell, Settings, Image, Trophy, UserCircle, TrendingUp, MessageCircle, UserPlus, Vote, Briefcase, Brain, Smartphone, Clapperboard, ShieldCheck } from "lucide-react";
+import { Crown, Calendar, Camera, Music, Star, MessageSquare, Bell, Settings, Image, Trophy, UserCircle, TrendingUp, MessageCircle, UserPlus, Vote, Briefcase, Brain, Smartphone, Clapperboard, ShieldCheck, Cloud } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { BRANDING } from "@/config/branding";
@@ -56,6 +56,7 @@ const getMenuItems = (userRole: string | null | undefined, unreadCount: number) 
   { icon: Brain, label: "Assistant IA", path: "/admin/assistant", roles: ['admin'] },
   { icon: Smartphone, label: "Centre WhatsApp", path: "/admin/whatsapp", roles: ['admin'] },
   { icon: ShieldCheck, label: "Validation", path: "/admin/validation", roles: ['admin'] },
+  { icon: Cloud, label: "Dropbox officiel", path: "/admin/dropbox", roles: ['admin'] },
   { icon: Clapperboard, label: "Générateur Vidéo IA", path: "/admin/video-generator", roles: ['super_admin'] },
   { icon: Settings, label: "Paramètres", path: "/settings" },
 ];

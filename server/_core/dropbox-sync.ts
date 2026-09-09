@@ -1,0 +1,495 @@
+import crypto from "crypto";
+import mysql, { type Connection } from "mysql2/promise";
+import sharp from "sharp";
+import { storagePut } from "../storage";
+
+type IntegrationRow = {
+  organization_id: number;
+  connected_by_user_id: number;
+  refresh_token_encrypted: string;
+  source_shared_link: string | null;
+};
+
+function key() {
+  const value = process.env.DROPBOX_TOKEN_ENCRYPTION_KEY || process.env.JWT_SECRET || "";
+  return crypto.createHash("sha256").update(value).digest();
+}
+
+function decrypt(value: string) {
+  const [iv, tag, data] = value.split(".");
+  const decipher = crypto.createDecipheriv("aes-256-gcm", key(), Buffer.from(iv, "base64url"));
+  decipher.setAuthTag(Buffer.from(tag, "base64url"));
+  return Buffer.concat([decipher.update(Buffer.from(data, "base64url")), decipher.final()]).toString("utf8");
+}
+
+async function dbConnection() {
+  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL absent");
+  return mysql.createConnection(process.env.DATABASE_URL);
+}
+
+async function ensureSyncTable(db: Connection) {
+  await db.execute(`CREATE TABLE IF NOT EXISTS dropbox_media_sync (
+    source_file_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    source_rev VARCHAR(255) NULL,
+    source_path TEXT NOT NULL,
+    media_kind VARCHAR(20) NOT NULL,
+    storage_key TEXT NULL,
+    sha256 VARCHAR(64) NULL,
+    photo_id INT NULL,
+    media_id INT NULL,
+    candidate_id INT NULL,
+    metadata_json LONGTEXT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'pending',
+    error_message TEXT NULL,
+    processed_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  )`);
+}
+
+async function accessToken(refreshToken: string) {
+  const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: process.env.DROPBOX_APP_KEY || "",
+      client_secret: process.env.DROPBOX_APP_SECRET || "",
+    }),
+  });
+  if (!response.ok) throw new Error(`Dropbox refresh token: ${response.status}`);
+  return ((await response.json()) as any).access_token as string;
+}
+
+async function listSharedFiles(token: string, sharedLink: string) {
+  const files: any[] = [];
+  const folders = [""];
+  const visitedFolders = new Set<string>();
+  const seenFiles = new Set<string>();
+  const headers = { authorization: `Bearer ${token}`, "content-type": "application/json" };
+
+  // Dropbox does not support recursive=true for shared links. Walk every
+  // directory explicitly while keeping pagination for folders with many files.
+  while (folders.length) {
+    const folderPath = folders.shift() || "";
+    const folderKey = folderPath.toLowerCase();
+    if (visitedFolders.has(folderKey)) continue;
+    visitedFolders.add(folderKey);
+    if (visitedFolders.size > 100) throw new Error("Dropbox: plus de 100 dossiers détectés, parcours interrompu");
+    if (visitedFolders.size === 1 || visitedFolders.size % 10 === 0) console.info("[Dropbox Sync] dossiers parcourus:", visitedFolders.size);
+    const seenCursors = new Set<string>();
+    let pageCount = 0;
+    let response = await fetch("https://api.dropboxapi.com/2/files/list_folder", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        path: folderPath,
+        recursive: false,
+        include_deleted: false,
+        shared_link: { url: sharedLink },
+      }),
+    });
+
+    while (true) {
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(`Dropbox list_folder ${response.status}: ${detail.slice(0, 300)}`);
+      }
+      const payload = await response.json() as any;
+      pageCount++;
+      if (pageCount > 200) throw new Error(`Dropbox: pagination anormale pour ${folderPath || "/"}`);
+      for (const entry of payload.entries) {
+        const joinedPath = `${folderPath.replace(/\/$/, "")}/${entry.name}`;
+        // The content endpoint expects a path relative to the shared-link root.
+        // Dropbox may return an account-absolute path here, so keep our own path.
+        const sharedPath = joinedPath;
+        if (entry[".tag"] === "file" && !seenFiles.has(entry.id || sharedPath)) {
+          seenFiles.add(entry.id || sharedPath);
+          files.push({ ...entry, _shared_path: sharedPath });
+        }
+        if (entry[".tag"] === "folder" && !visitedFolders.has(sharedPath.toLowerCase())) folders.push(sharedPath);
+      }
+      if (!payload.has_more) break;
+      if (!payload.cursor || seenCursors.has(payload.cursor)) {
+        throw new Error(`Dropbox: curseur de pagination répété pour ${folderPath || "/"}`);
+      }
+      seenCursors.add(payload.cursor);
+      response = await fetch("https://api.dropboxapi.com/2/files/list_folder/continue", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ cursor: payload.cursor }),
+      });
+    }
+  }
+  return files;
+}
+
+async function downloadSharedFile(token: string, sharedLink: string, path: string) {
+  const response = await fetch("https://content.dropboxapi.com/2/sharing/get_shared_link_file", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${token}`,
+      "Dropbox-API-Arg": JSON.stringify({ url: sharedLink, path }),
+    },
+  });
+  if (!response.ok) throw new Error(`Dropbox shared file download ${response.status}: ${(await response.text()).slice(0, 250)}`);
+  return Buffer.from(await response.arrayBuffer());
+}
+
+function normalize(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function inferCategory(path: string) {
+  const p = normalize(path);
+  if (p.includes("portrait")) return "portrait";
+  if (p.includes("coulisse") || p.includes("backstage")) return "backstage";
+  if (p.includes("performance") || p.includes("danse") || p.includes("scene")) return "performance";
+  return "event";
+}
+
+type CandidateMatch = {
+  candidate: any;
+  method: "first_last" | "last_first" | "name_tokens" | "unique_first_name" | "unique_last_name";
+  confidence: number;
+};
+
+function inferCandidateFromPath(sourcePath: string, candidates: any[]): CandidateMatch | null {
+  const normalizedPath = normalize(sourcePath);
+  const pathTokens = new Set(normalizedPath.split(" ").filter(Boolean));
+  const firstNameCounts = new Map<string, number>();
+  const lastNameCounts = new Map<string, number>();
+
+  for (const candidate of candidates) {
+    firstNameCounts.set(candidate.firstNormalized, (firstNameCounts.get(candidate.firstNormalized) || 0) + 1);
+    lastNameCounts.set(candidate.lastNormalized, (lastNameCounts.get(candidate.lastNormalized) || 0) + 1);
+  }
+
+  const matches: Array<CandidateMatch & { score: number }> = [];
+  for (const candidate of candidates) {
+    const firstLast = `${candidate.firstNormalized} ${candidate.lastNormalized}`.trim();
+    const lastFirst = `${candidate.lastNormalized} ${candidate.firstNormalized}`.trim();
+    const firstTokens = candidate.firstNormalized.split(" ").filter(Boolean);
+    const lastTokens = candidate.lastNormalized.split(" ").filter(Boolean);
+    const allNameTokensPresent = [...firstTokens, ...lastTokens].every(token => pathTokens.has(token));
+
+    if (firstLast && normalizedPath.includes(firstLast)) {
+      matches.push({ candidate, method: "first_last", confidence: 1, score: 100 });
+    } else if (lastFirst && normalizedPath.includes(lastFirst)) {
+      matches.push({ candidate, method: "last_first", confidence: 0.98, score: 98 });
+    } else if (allNameTokensPresent && firstTokens.length && lastTokens.length) {
+      matches.push({ candidate, method: "name_tokens", confidence: 0.94, score: 94 });
+    } else if (
+      candidate.firstNormalized.length >= 3 &&
+      pathTokens.has(candidate.firstNormalized) &&
+      firstNameCounts.get(candidate.firstNormalized) === 1
+    ) {
+      matches.push({ candidate, method: "unique_first_name", confidence: 0.78, score: 78 });
+    } else if (
+      candidate.lastNormalized.length >= 3 &&
+      pathTokens.has(candidate.lastNormalized) &&
+      lastNameCounts.get(candidate.lastNormalized) === 1
+    ) {
+      matches.push({ candidate, method: "unique_last_name", confidence: 0.76, score: 76 });
+    }
+  }
+
+  matches.sort((a, b) => b.score - a.score);
+  if (!matches.length || (matches[1] && matches[1].score === matches[0].score)) return null;
+  const { candidate, method, confidence } = matches[0];
+  return { candidate, method, confidence };
+}
+
+function watermarkSvg(width: number, height: number) {
+  const fontSize = Math.max(16, Math.round(Math.min(width, height) * 0.026));
+  const pad = Math.max(18, Math.round(fontSize * 1.2));
+  const boxWidth = Math.round(fontSize * 17.5);
+  const boxHeight = Math.round(fontSize * 3.1);
+  const x = Math.max(0, width - boxWidth - pad);
+  const y = Math.max(0, height - boxHeight - pad);
+  return Buffer.from(`<svg width="${width}" height="${height}">
+    <rect x="${x}" y="${y}" width="${boxWidth}" height="${boxHeight}" rx="${Math.round(fontSize * .5)}" fill="rgba(0,0,0,.34)"/>
+    <text x="${x + fontSize}" y="${y + fontSize * 1.35}" fill="rgba(255,255,255,.90)" font-family="Arial,sans-serif" font-size="${fontSize}" font-weight="700">MISS &amp; MISTER DOUR · 2026</text>
+    <text x="${x + fontSize}" y="${y + fontSize * 2.35}" fill="rgba(255,255,255,.68)" font-family="Arial,sans-serif" font-size="${Math.round(fontSize * .68)}">JS-Innov.IA · Média officiel</text>
+  </svg>`);
+}
+
+async function processImage(buffer: Buffer, sourcePath: string, candidateName: string | null) {
+  const input = sharp(buffer, { failOn: "none" }).rotate();
+  const meta = await input.metadata();
+  const maxWidth = 2200;
+  const width = Math.min(meta.width || maxWidth, maxWidth);
+  const ratio = (meta.height || width) / (meta.width || width);
+  const height = Math.max(1, Math.round(width * ratio));
+  const description = `Photo officielle Miss & Mister Dour 2026${candidateName ? ` — ${candidateName}` : ""} — JS-Innov.IA`;
+  const full = await input.resize({ width: maxWidth, withoutEnlargement: true })
+    .composite([{ input: watermarkSvg(width, height), top: 0, left: 0 }])
+    .withMetadata({ exif: { IFD0: {
+      Copyright: "© 2026 Miss & Mister Dour · JS-Innov.IA",
+      Artist: "JS-Innov.IA",
+      ImageDescription: description,
+      Software: "Miss & Mister Dour Media Pipeline",
+    } } })
+    .webp({ quality: 88 }).toBuffer();
+  const thumb = await sharp(full).resize({ width: 640, withoutEnlargement: true }).webp({ quality: 78 }).toBuffer();
+  const outMeta = await sharp(full).metadata();
+  return { full, thumb, width: outMeta.width || width, height: outMeta.height || height, description };
+}
+
+let syncInProgress = false;
+
+export async function syncDropboxMedia(organizationId = 1) {
+  if (syncInProgress) {
+    return { imported: 0, skipped: 0, failed: 0, total: 0, summary: "Une synchronisation Dropbox est déjà en cours" };
+  }
+  syncInProgress = true;
+  const db = await dbConnection();
+  let imported = 0, skipped = 0, failed = 0, total = 0;
+  try {
+    await ensureSyncTable(db);
+    const [rows] = await db.execute<any[]>("SELECT * FROM dropbox_integrations WHERE organization_id=? LIMIT 1", [organizationId]);
+    const integration = rows[0] as IntegrationRow | undefined;
+    if (!integration?.source_shared_link) throw new Error("Dossier partagé Dropbox non configuré");
+    await db.execute("UPDATE dropbox_integrations SET last_sync_status='running', last_sync_message=NULL WHERE organization_id=?", [organizationId]);
+    const token = await accessToken(decrypt(integration.refresh_token_encrypted));
+    const entries = await listSharedFiles(token, integration.source_shared_link);
+    total = entries.length;
+    console.info("[Dropbox Sync] fichiers détectés:", total);
+    const [candidateRows] = await db.execute<any[]>("SELECT id, firstName, lastName FROM candidates");
+    const candidates = candidateRows.map((row: any) => ({
+      ...row,
+      firstNormalized: normalize(row.firstName || ""),
+      lastNormalized: normalize(row.lastName || ""),
+    }));
+    const supported = /\.(jpe?g|png|webp|heic|avif|mp4|mov|m4v|webm)$/i;
+    const configuredBatchSize = Number(process.env.DROPBOX_SYNC_BATCH_SIZE || "25");
+    const batchSize = Number.isFinite(configuredBatchSize) && configuredBatchSize > 0
+      ? Math.min(Math.floor(configuredBatchSize), 100)
+      : 25;
+
+    let processed = 0;
+    let attempted = 0;
+    for (const entry of entries) {
+      processed++;
+      if (processed === 1 || processed % 25 === 0) {
+        await db.execute(
+          "UPDATE dropbox_integrations SET last_sync_message=? WHERE organization_id=?",
+          [`${processed}/${total} fichier(s) analysé(s) · ${imported} importé(s) · ${failed} erreur(s)`, organizationId]
+        );
+      }
+      const sourcePath = entry.path_display || entry.path_lower || entry.name;
+      if (!supported.test(entry.name || "")) { skipped++; continue; }
+      const candidateMatch = inferCandidateFromPath(sourcePath, candidates);
+      const candidate = candidateMatch?.candidate || null;
+      const [existingRows] = await db.execute<any[]>(
+        "SELECT source_rev, status, candidate_id, metadata_json, photo_id, media_id FROM dropbox_media_sync WHERE source_file_id=? LIMIT 1",
+        [entry.id]
+      );
+      const existing = existingRows[0];
+      const sameRevision = (existing?.source_rev ?? null) === (entry.rev ?? null);
+      if (sameRevision && ["imported", "inaccessible"].includes(existing?.status)) {
+        if (existing.status === "imported" && candidate && !existing.candidate_id) {
+          let previousMetadata: Record<string, unknown> = {};
+          try { previousMetadata = existing.metadata_json ? JSON.parse(existing.metadata_json) : {}; } catch {}
+          const enrichedMetadata = {
+            ...previousMetadata,
+            candidateId: candidate.id,
+            person: `${candidate.firstName} ${candidate.lastName}`,
+            personFirstName: candidate.firstName,
+            personLastName: candidate.lastName,
+            personFullName: `${candidate.firstName} ${candidate.lastName}`,
+            candidateMatchMethod: candidateMatch?.method,
+            candidateMatchConfidence: candidateMatch?.confidence,
+            metadataUpdatedAt: new Date().toISOString(),
+          };
+          await db.execute(
+            "UPDATE dropbox_media_sync SET candidate_id=?, metadata_json=? WHERE source_file_id=?",
+            [candidate.id, JSON.stringify(enrichedMetadata), entry.id]
+          );
+          if (existing.photo_id) {
+            await db.execute("UPDATE photos SET candidateId=? WHERE id=? AND candidateId IS NULL", [candidate.id, existing.photo_id]);
+          }
+          if (existing.media_id) {
+            await db.execute("UPDATE media SET candidateId=? WHERE id=? AND candidateId IS NULL", [candidate.id, existing.media_id]);
+          }
+        }
+        skipped++;
+        continue;
+      }
+      if (attempted >= batchSize) break;
+      attempted++;
+      try {
+        const kind = /\.(mp4|mov|m4v|webm)$/i.test(entry.name) ? "video" : "photo";
+        const original = await downloadSharedFile(token, integration.source_shared_link, entry._shared_path || entry.path_lower || sourcePath);
+        const digest = crypto.createHash("sha256").update(original).digest("hex");
+        const slug = entry.id.replace(/[^a-zA-Z0-9_-]/g, "_");
+        const year = 2026;
+        let photoId: number | null = null, mediaId: number | null = null, storageKey = "";
+
+        const trace = {
+          source: "dropbox_shared_folder", sourceFileId: entry.id, sourceRevision: entry.rev,
+          sourcePath, sourceModified: entry.server_modified, sha256: digest,
+          edition: year,
+          candidateId: candidate?.id || null,
+          person: candidate ? `${candidate.firstName} ${candidate.lastName}` : null,
+          personFirstName: candidate?.firstName || null,
+          personLastName: candidate?.lastName || null,
+          personFullName: candidate ? `${candidate.firstName} ${candidate.lastName}` : null,
+          candidateMatchMethod: candidateMatch?.method || null,
+          candidateMatchConfidence: candidateMatch?.confidence || null,
+          brand: "Miss & Mister Dour",
+          technologyPartner: "JS-Innov.IA",
+          seoTitle: candidate
+            ? `${candidate.firstName} ${candidate.lastName} — Miss & Mister Dour 2026 — JS-Innov.IA`
+            : "Miss & Mister Dour 2026 — Média officiel — JS-Innov.IA",
+          seoKeywords: ["Miss et Mister Dour", "Miss Mister Dour", "Dour", "2026", "JS-Innov.IA", candidate?.firstName, candidate?.lastName].filter(Boolean),
+          importedAt: new Date().toISOString(),
+        };
+
+        if (kind === "photo") {
+          const candidateName = trace.person;
+          const processed = await processImage(original, sourcePath, candidateName);
+          storageKey = `official/2026/photos/${slug}.webp`;
+          const thumbKey = `official/2026/thumbnails/${slug}.webp`;
+          const [fullUpload, thumbUpload] = await Promise.all([
+            storagePut(storageKey, processed.full, "image/webp"),
+            storagePut(thumbKey, processed.thumb, "image/webp"),
+          ]);
+          const title = candidateName ? `${candidateName} — Miss & Mister Dour 2026` : "Miss & Mister Dour 2026 — Photo officielle";
+          const tags = JSON.stringify(["Miss Mister Dour", "Miss et Mister Dour", "Dour", "2026", "JS-Innov.IA", candidateName].filter(Boolean));
+          const [insert] = await db.execute<any>(
+            `INSERT INTO photos (url, thumbnail, title, description, filename, mimeType, sizeBytes, width, height, category, tags, candidateId, uploadedBy, status, approvedBy, approvedAt)
+             VALUES (?, ?, ?, ?, ?, 'image/webp', ?, ?, ?, ?, ?, ?, ?, 'approved', ?, NOW())`,
+            [fullUpload.url, thumbUpload.url, title, processed.description, entry.name, processed.full.length,
+             processed.width, processed.height, inferCategory(sourcePath), tags, candidate?.id || null,
+             integration.connected_by_user_id, integration.connected_by_user_id]
+          );
+          photoId = Number(insert.insertId);
+        } else {
+          storageKey = `official/2026/videos/${slug}-${entry.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+          const upload = await storagePut(storageKey, original, entry.name.toLowerCase().endsWith(".webm") ? "video/webm" : "video/mp4");
+          const [insert] = await db.execute<any>(
+            `INSERT INTO media (candidateId, uploadedBy, type, url, fileKey, title, description, mimeType, fileSize, contestId, sessionName, isPublic)
+             VALUES (?, ?, 'video', ?, ?, ?, ?, ?, ?, 1, 'Dropbox officiel 2026', 1)`,
+            [candidate?.id || null, integration.connected_by_user_id, upload.url, storageKey,
+             trace.person ? `${trace.person} — Vidéo officielle 2026` : "Miss & Mister Dour 2026 — Vidéo officielle",
+             "Média officiel Miss & Mister Dour 2026 · JS-Innov.IA", "video/mp4", original.length]
+          );
+          mediaId = Number(insert.insertId);
+        }
+
+        await db.execute(
+          `INSERT INTO dropbox_media_sync (source_file_id, source_rev, source_path, media_kind, storage_key, sha256, photo_id, media_id, candidate_id, metadata_json, status, processed_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'imported', NOW())
+           ON DUPLICATE KEY UPDATE source_rev=VALUES(source_rev), source_path=VALUES(source_path), storage_key=VALUES(storage_key),
+           sha256=VALUES(sha256), photo_id=VALUES(photo_id), media_id=VALUES(media_id), candidate_id=VALUES(candidate_id),
+           metadata_json=VALUES(metadata_json), status='imported', error_message=NULL, processed_at=NOW()`,
+          [entry.id, entry.rev || null, sourcePath, kind, storageKey, digest, photoId, mediaId, candidate?.id || null, JSON.stringify(trace)]
+        );
+        imported++;
+      } catch (error) {
+        failed++;
+        const message = error instanceof Error ? error.message : String(error);
+        if (failed <= 3) console.warn("[Dropbox Sync] erreur média:", message.slice(0, 500));
+        const inaccessible = message.includes("Dropbox shared file download 409") && message.includes("shared_link_access_denied");
+        const failureStatus = inaccessible ? "inaccessible" : "failed";
+        await db.execute(
+          `INSERT INTO dropbox_media_sync (source_file_id, source_rev, source_path, media_kind, status, error_message)
+           VALUES (?, ?, ?, 'unknown', ?, ?)
+           ON DUPLICATE KEY UPDATE source_rev=VALUES(source_rev), status=VALUES(status), error_message=VALUES(error_message)`,
+          [entry.id, entry.rev || null, sourcePath, failureStatus, message.slice(0, 1000)]
+        );
+        if (message.includes("Dropbox shared file download 401")) {
+          throw new Error("Dropbox exige l’autorisation sharing.read. Activez-la dans l’application Dropbox puis reconnectez le compte.");
+        }
+      }
+    }
+    const remaining = Math.max(0, total - skipped - attempted);
+    const summary = `${imported} importé(s), ${skipped} ignoré(s), ${failed} erreur(s), ${total} fichier(s) détecté(s) · lot ${attempted}/${batchSize}${remaining ? ` · ${remaining} restant(s)` : ""}`;
+    await db.execute("UPDATE dropbox_integrations SET last_sync_at=NOW(), last_sync_status=?, last_sync_message=? WHERE organization_id=?",
+      [failed ? "partial" : "success", summary, organizationId]);
+    return { imported, skipped, failed, total, summary };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await db.execute("UPDATE dropbox_integrations SET last_sync_at=NOW(), last_sync_status='failed', last_sync_message=? WHERE organization_id=?",
+      [message.slice(0, 1000), organizationId]).catch(() => {});
+    throw error;
+  } finally {
+    await db.end();
+    syncInProgress = false;
+  }
+}
+
+
+export async function cleanupDuplicateDropboxPhotos() {
+  const migrationKey = "2026-08-22-dropbox-photo-url-dedupe-v1";
+  const db = await dbConnection();
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS maintenance_migrations (
+      migration_key VARCHAR(191) NOT NULL PRIMARY KEY,
+      applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      details_json LONGTEXT NULL
+    )`);
+    await db.beginTransaction();
+    const [claim] = await db.execute<any>(
+      "INSERT IGNORE INTO maintenance_migrations (migration_key) VALUES (?)",
+      [migrationKey]
+    );
+    if (!claim.affectedRows) {
+      await db.rollback();
+      return { deleted: 0, groups: 0, alreadyApplied: true };
+    }
+
+    const publicBase = (process.env.R2_PUBLIC_URL || "").replace(/\/+$/, "");
+    if (!publicBase) throw new Error("R2_PUBLIC_URL absent pour le nettoyage des doublons");
+    const pattern = `${publicBase}/official/2026/photos/%`;
+    const [groups] = await db.execute<any[]>(
+      `SELECT url, MAX(id) AS keep_id, COUNT(*) AS row_count
+       FROM photos
+       WHERE url LIKE ?
+       GROUP BY url
+       HAVING COUNT(*) > 1`,
+      [pattern]
+    );
+
+    let deleted = 0;
+    for (const group of groups) {
+      await db.execute(
+        `UPDATE dropbox_media_sync d
+         INNER JOIN photos p ON p.id=d.photo_id
+         SET d.photo_id=?
+         WHERE p.url=? AND p.id<>?`,
+        [group.keep_id, group.url, group.keep_id]
+      );
+      const [result] = await db.execute<any>(
+        "DELETE FROM photos WHERE url=? AND id<>?",
+        [group.url, group.keep_id]
+      );
+      deleted += Number(result.affectedRows || 0);
+    }
+
+    await db.execute(
+      "UPDATE maintenance_migrations SET details_json=? WHERE migration_key=?",
+      [JSON.stringify({ deleted, groups: groups.length, completedAt: new Date().toISOString() }), migrationKey]
+    );
+    await db.commit();
+    return { deleted, groups: groups.length, alreadyApplied: false };
+  } catch (error) {
+    await db.rollback().catch(() => {});
+    throw error;
+  } finally {
+    await db.end();
+  }
+}
+
+let timerStarted = false;
+export function startDropboxAutoSync() {
+  // Keep automatic imports paused until the low-cost R2 destination is configured.
+  // Manual admin sync remains available for controlled verification.
+  if (process.env.DROPBOX_SYNC_ENABLED !== "true") return;
+  if (timerStarted || process.env.NODE_ENV !== "production") return;
+  timerStarted = true;
+  setTimeout(() => syncDropboxMedia().catch(error => console.warn("[Dropbox Sync]", error instanceof Error ? error.message : String(error))), 30_000);
+  setInterval(() => syncDropboxMedia().catch(error => console.warn("[Dropbox Sync]", error instanceof Error ? error.message : String(error))), 10 * 60_000);
+}
