@@ -1,340 +1,455 @@
 import { Link } from "wouter";
 import { useState as useMenuState } from "react";
-import { Crown, Calendar, Users, Award, Newspaper, Mail, ArrowRight, Sparkles, LogIn, Menu, X, Heart, Camera } from "lucide-react";
+import {
+  ArrowRight,
+  Award,
+  Camera,
+  Crown,
+  LogIn,
+  Menu,
+  Sparkles,
+  Users,
+  X,
+} from "lucide-react";
 import { BRANDING } from "@/config/branding";
 import { useAuth } from "@/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { SEOHead } from "@/components/SEOHead";
 import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
 
+const NAV_LINKS = [
+  { href: "/about", label: "À propos" },
+  { href: "/candidates", label: "Candidats" },
+  { href: "/ranking", label: "Classement" },
+  { href: "/gallery", label: "Galerie" },
+  { href: "/sponsors", label: "Sponsors" },
+  { href: "/press", label: "Presse" },
+];
+
+const MARQUEE_ITEMS = [
+  "Édition 2027",
+  "Inscriptions ouvertes",
+  "Miss & Mister Dour",
+  "Profils officiels",
+  "Expérience digitale",
+  "Dour · Belgique",
+];
+
+const JOURNEY = [
+  {
+    phase: "01 · Candidater",
+    title: "Entrez dans l’aventure",
+    text: "Une inscription simple, un profil personnel et un parcours pensé pour valoriser chaque personnalité.",
+  },
+  {
+    phase: "02 · Sélection",
+    title: "Rencontrer le comité",
+    text: "Présentation, échanges et sélection des profils qui porteront l’édition 2027.",
+  },
+  {
+    phase: "03 · Expérience",
+    title: "Vivre la campagne",
+    text: "Shooting, contenus, événements, rencontres et visibilité digitale tout au long de l’aventure.",
+  },
+  {
+    phase: "04 · Gala",
+    title: "Monter sur scène",
+    text: "Le point culminant de l’expérience : une soirée de gala conçue comme un véritable événement.",
+  },
+];
+
+function SectionLabel({ index, children }: { index: string; children: string }) {
+  return (
+    <div className="mmd-section-label">
+      <span>{index}</span>
+      <i aria-hidden="true" />
+      <strong>{children}</strong>
+    </div>
+  );
+}
+
+function Marquee() {
+  const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+
+  return (
+    <div className="mmd-marquee" aria-hidden="true">
+      <div className="mmd-marquee-track">
+        {items.map((item, index) => (
+          <span key={`${item}-${index}`}>
+            {item}
+            <i />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Homepage() {
   const { isAuthenticated, user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useMenuState(false);
-  
-  // Redirection intelligente selon rôle
+
   const getDashboardUrl = () => {
-    if (!user) return '/dashboard';
-    
+    if (!user) return "/dashboard";
+
     switch (user.role) {
-      case 'super_admin':
-      case 'admin':
-        return '/admin';
-      case 'staff':
-      case 'organizer':
-        return '/choreographer';
-      case 'photographer':
-        return '/photographer';
-      case 'press':
-        return '/presse';
+      case "super_admin":
+      case "admin":
+        return "/admin";
+      case "staff":
+      case "organizer":
+        return "/choreographer";
+      case "photographer":
+        return "/photographer";
+      case "press":
+        return "/press";
       default:
-        return '/dashboard';
+        return "/dashboard";
     }
   };
-  
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
+    <div className="editorial-home min-h-screen bg-black text-white">
       <SEOHead
-        title="Miss &amp; Mister Dour 2026 — Dour, Belgique"
-        description="Concours de beauté officiel de Dour. Gala le 19 avril 2026. Inscriptions ouvertes — Votez pour vos candidats !"
+        title="Miss & Mister Dour 2027 — L'expérience officielle"
+        description="Découvrez Miss & Mister Dour 2027 : candidats, galerie, classement, inscriptions et partenaires de l'expérience officielle à Dour."
         url="https://missetmisterdour.be"
-        tags={["Miss Dour", "Mister Dour", "concours beauté Belgique", "gala Dour", "recrutement 2027", "Hainaut", "Starlight ASBL"]}
+        tags={[
+          "Miss Dour",
+          "Mister Dour",
+          "Miss Mister Dour 2027",
+          "Dour",
+          "Hainaut",
+          "Starlight ASBL",
+          "JS-Innov.IA",
+        ]}
       />
-      {/* Header/Navigation */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/80 border-b border-gold/20">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img
-                src={BRANDING.logoIdentity}
-                alt="Logo officiel Miss & Mister Dour 2026"
-                className="h-14 max-[640px]:h-10 object-contain drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
-                loading="eager"
-              />
+
+      <div className="mmd-topline">
+        <span>ÉDITION 2027</span>
+        <span>DOUR · HAINAUT · BELGIQUE</span>
+        <span>DIGITAL EXPERIENCE</span>
+      </div>
+
+      <header className="mmd-nav-shell sticky top-0 z-50">
+        <div className="mmd-nav">
+          <Link href="/" className="mmd-brand" aria-label="Accueil Miss & Mister Dour">
+            <img
+              src={BRANDING.logoIdentity}
+              alt="Logo officiel Miss & Mister Dour"
+              loading="eager"
+            />
+          </Link>
+
+          <nav className="mmd-desktop-nav" aria-label="Navigation principale">
+            {NAV_LINKS.map((item) => (
+              <Link key={item.href} href={item.href}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="mmd-nav-actions">
+            {isAuthenticated ? (
+              <Link href={getDashboardUrl()} className="mmd-account-button">
+                <Crown className="h-4 w-4" />
+                {user?.role === "admin" || user?.role === "super_admin"
+                  ? "Espace Admin"
+                  : "Mon espace"}
+              </Link>
+            ) : (
+              <a href={getLoginUrl()} className="mmd-login-button">
+                <LogIn className="h-4 w-4" />
+                Connexion
+              </a>
+            )}
+            <Link href="/inscription-candidat" className="mmd-primary-button mmd-nav-cta">
+              Candidater
             </Link>
-            {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/about" className="text-gray-300 hover:text-gold transition-colors">À Propos</Link>
-              <Link href="/candidates" className="text-gray-300 hover:text-gold transition-colors">Candidats</Link>
-              <Link href="/ranking" className="text-gray-300 hover:text-gold transition-colors">Classement</Link>
-              <Link href="/gallery" className="text-gray-300 hover:text-gold transition-colors">Galerie</Link>
-              <Link href="/sponsors" className="text-gray-300 hover:text-gold transition-colors">Sponsors</Link>
-              <Link href="/press" className="text-gray-300 hover:text-gold transition-colors">Presse</Link>
-              <Link href="/contact" className="px-4 py-2 bg-transparent border border-gold text-gold font-medium rounded-lg hover:bg-gold/10 transition-colors">Contact</Link>
-              {isAuthenticated ? (
-                <Link href={getDashboardUrl()} className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
-                  <Crown className="w-4 h-4" />
-                  {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
-                </Link>
-              ) : (
-                <a href={getLoginUrl()} className="px-4 py-2 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors flex items-center gap-2">
-                  <LogIn className="w-4 h-4" />
-                  Se connecter
-                </a>
-              )}
-            </nav>
-            {/* Hamburger mobile */}
-            <button
-              className="md:hidden p-2 text-gold hover:bg-gold/10 rounded-lg transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
-          {/* Mobile menu dropdown */}
-          {mobileMenuOpen && (
-            <nav className="md:hidden py-4 border-t border-gold/20 flex flex-col gap-3">
-              <Link href="/about" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>À Propos</Link>
-              <Link href="/candidates" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Candidats</Link>
-              <Link href="/ranking" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Classement</Link>
-              <Link href="/gallery" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Galerie</Link>
-              <Link href="/sponsors" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Sponsors</Link>
-              <Link href="/press" className="block py-2 px-3 text-gray-300 hover:text-gold hover:bg-gold/5 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Presse</Link>
-              <Link href="/contact" className="block py-2 px-3 border border-gold text-gold rounded-lg hover:bg-gold/10 transition-colors text-center" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-              {isAuthenticated ? (
-                <Link href={getDashboardUrl()} className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  <Crown className="w-4 h-4" />
-                  {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin' : 'Dashboard'}
-                </Link>
-              ) : (
-                <a href={getLoginUrl()} className="flex items-center justify-center gap-2 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  <LogIn className="w-4 h-4" />
-                  Se connecter
-                </a>
-              )}
-            </nav>
-          )}
+
+          <button
+            type="button"
+            className="mmd-menu-button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-label="Ouvrir le menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <nav className="mmd-mobile-menu" aria-label="Navigation mobile">
+            {NAV_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/inscription-candidat"
+              className="mmd-primary-button"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Candidater 2027
+            </Link>
+            {isAuthenticated ? (
+              <Link
+                href={getDashboardUrl()}
+                className="mmd-mobile-account"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Mon espace
+              </Link>
+            ) : (
+              <a href={getLoginUrl()} className="mmd-mobile-account">
+                Connexion
+              </a>
+            )}
+          </nav>
+        )}
       </header>
 
-      {/* Section 1: Candidats directement visibles */}
-      <section className="relative pt-8 pb-12 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/10" />
+      <main>
+        <section className="mmd-hero">
+          <div className="mmd-hero-ambient" aria-hidden="true" />
+          <div className="mmd-hero-frame" aria-hidden="true" />
 
-        {/* Cartes flottantes des candidats */}
-        <div className="relative z-10">
-          <FloatingCandidateCards />
-        </div>
-
-        <div className="container mx-auto px-4 text-center relative z-10 mt-8">
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/inscription-candidat" className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105 flex items-center gap-2">
-              Devenir Candidat
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/voter" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all flex items-center gap-2">
-              Voter pour vos favoris
-              <Heart className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 2: À Propos (Résumé) */}
-      <section className="py-20 bg-gradient-to-b from-transparent to-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <Sparkles className="w-12 h-12 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl md:text-5xl font-bold text-gold mb-6">Une Expérience Unique</h2>
-            <p className="text-xl text-gray-300 leading-relaxed mb-8">
-              <strong className="text-gold">Miss & Mister Dour</strong> est bien plus qu'un simple concours de beauté. 
-              C'est une plateforme événementielle nationale belge qui célèbre l'excellence, la diversité et le talent 
-              sous toutes ses formes. Grâce à une technologie de pointe développée par <strong className="text-gold">Js-Innov.IA</strong>, 
-              nous offrons une expérience immersive unique : votes en temps réel, génération de contenu vidéo par IA, 
-              certificats blockchain, et bien plus encore.
-            </p>
-            <Link href="/about" className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium text-lg">
-              En savoir plus sur notre concept
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3: Galerie & Candidats */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Camera className="w-12 h-12 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl md:text-5xl font-bold text-gold mb-4">Galerie & Candidats</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Découvrez les candidats exceptionnels et les moments forts de l'édition 2026
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            <Link href="/candidates" className="group bg-gray-800/50 border border-gold/20 rounded-xl overflow-hidden hover:border-gold/50 transition-all">
-              <div className="aspect-video bg-gradient-to-br from-pink-500/20 via-gold/10 to-blue-500/20 flex items-center justify-center">
-                <Users className="w-16 h-16 text-gold/60 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-gold transition-colors">Nos Candidats</h3>
-                <p className="text-gray-400 mb-4">13 Miss et 6 Mister en compétition pour le titre 2026</p>
-                <span className="text-gold font-medium flex items-center gap-2">
-                  Voir les profils <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
-            <Link href="/gallery" className="group bg-gray-800/50 border border-gold/20 rounded-xl overflow-hidden hover:border-gold/50 transition-all">
-              <div className="aspect-video bg-gradient-to-br from-gold/20 via-copper/10 to-champagne/20 flex items-center justify-center">
-                <Camera className="w-16 h-16 text-gold/60 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-gold transition-colors">Galerie Photos</h3>
-                <p className="text-gray-400 mb-4">Shooting officiel, coulisses et moments de prestige</p>
-                <span className="text-gold font-medium flex items-center gap-2">
-                  Voir la galerie <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 4: Timeline / Dates Clés */}
-      <section className="py-20 bg-gradient-to-b from-transparent to-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <Calendar className="w-12 h-12 mx-auto mb-6 text-gold" />
-              <h2 className="text-4xl md:text-5xl font-bold text-gold mb-4">Dates Clés</h2>
-              <p className="text-xl text-gray-300">Ne manquez aucune étape de l'événement</p>
+          <div className="mmd-container mmd-hero-content">
+            <div className="mmd-hero-kicker">
+              <span>Nouvelle génération</span>
+              <i />
+              <span>2027</span>
             </div>
-            <div className="space-y-6">
-              {[
-                { date: "1er Février 2026", title: "Clôture des inscriptions", description: "Dernière chance de devenir candidat" },
-                { date: "15 Mars 2026", title: "Ouverture des votes", description: "Le public peut commencer à voter pour ses candidats préférés" },
-                { date: "10 Avril 2026", title: "Clôture des votes", description: "Fin de la période de vote en ligne" },
-                { date: "19 Avril 2026", title: "Soirée de Couronnement", description: "Grande finale au Centre Sportif d'Elouges, Rue de la Tournelle 10, 7370 Elouges" }
-              ].map((event, index) => (
-                <div key={index} className="flex gap-6 items-start bg-gray-800/50 border border-gold/20 rounded-lg p-6 hover:border-gold/40 transition-colors">
-                  <div className="flex-shrink-0 w-32 text-right">
-                    <span className="text-2xl font-bold text-gold">{event.date.split(' ')[0]}</span>
-                    <br />
-                    <span className="text-sm text-gray-400">{event.date.split(' ').slice(1).join(' ')}</span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
-                    <p className="text-gray-300">{event.description}</p>
-                  </div>
-                </div>
+
+            <h1 className="mmd-display-title" aria-label="Miss & Mister Dour">
+              <span className="mmd-title-miss">Miss</span>
+              <span className="mmd-title-middle">
+                <em>&amp;</em>
+                <strong>Mister</strong>
+              </span>
+              <span className="mmd-title-dour">Dour</span>
+            </h1>
+
+            <div className="mmd-hero-bottom">
+              <p>
+                Plus qu’une élection : une <strong>expérience humaine, scénique et digitale</strong>
+                pensée pour révéler des personnalités, créer des souvenirs et faire vivre Dour autrement.
+              </p>
+
+              <div className="mmd-hero-actions">
+                <Link href="/inscription-candidat" className="mmd-primary-button mmd-large-button">
+                  Devenir candidat
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
+                <Link href="/candidates" className="mmd-secondary-button mmd-large-button">
+                  Découvrir les candidats
+                </Link>
+              </div>
+            </div>
+
+            <div className="mmd-hero-signature">
+              <span>Une expérience digitale</span>
+              <strong>amplifiée par l’humain.</strong>
+            </div>
+          </div>
+        </section>
+
+        <Marquee />
+
+        <section className="mmd-section mmd-candidates-section">
+          <div className="mmd-container">
+            <SectionLabel index="01">Les visages</SectionLabel>
+            <div className="mmd-section-heading">
+              <h2>
+                Découvrez celles et ceux qui donnent un visage à <em>l’aventure.</em>
+              </h2>
+              <Link href="/candidates" className="mmd-text-link">
+                Tous les profils
+                <ArrowRight />
+              </Link>
+            </div>
+          </div>
+
+          <div className="mmd-candidate-stage">
+            <FloatingCandidateCards />
+          </div>
+
+          <div className="mmd-container mmd-candidate-cta">
+            <Link href="/inscription-candidat" className="mmd-primary-button">
+              Rejoindre l’édition 2027
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
+        <section className="mmd-section mmd-manifesto-section">
+          <div className="mmd-container">
+            <SectionLabel index="02">Le concours, autrement</SectionLabel>
+            <div className="mmd-manifesto-grid">
+              <p className="mmd-manifesto-copy">
+                Une scène où chaque personnalité peut <em>prendre sa place</em>, où le digital
+                prolonge l’émotion et où l’innovation reste au service de <em>l’humain.</em>
+              </p>
+              <div className="mmd-manifesto-note">
+                <Sparkles />
+                <span>Direction digitale</span>
+                <strong>JS-Innov.IA®</strong>
+                <p>Technologie, contenus et expérience connectée au service de l’événement.</p>
+              </div>
+            </div>
+
+            <div className="mmd-stat-strip">
+              <div>
+                <strong>2027</strong>
+                <span>Nouvelle édition</span>
+              </div>
+              <div>
+                <strong>LIVE</strong>
+                <span>Actualités & profils</span>
+              </div>
+              <div>
+                <strong>HUMAIN</strong>
+                <span>Au centre de l’expérience</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mmd-section">
+          <div className="mmd-container">
+            <SectionLabel index="03">Explorer</SectionLabel>
+            <div className="mmd-bento">
+              <Link href="/candidates" className="mmd-bento-card mmd-bento-card--hero">
+                <div className="mmd-bento-icon"><Users /></div>
+                <span className="mmd-bento-eyebrow">Profils officiels</span>
+                <h3>Les candidats</h3>
+                <p>Portraits, parcours, personnalité et actualités de l’édition.</p>
+                <span className="mmd-bento-link">Découvrir <ArrowRight /></span>
+                <strong className="mmd-bento-number">01</strong>
+              </Link>
+
+              <Link href="/gallery" className="mmd-bento-card mmd-bento-card--gallery">
+                <div className="mmd-bento-icon"><Camera /></div>
+                <span className="mmd-bento-eyebrow">Backstage</span>
+                <h3>La galerie</h3>
+                <p>Shooting, coulisses et moments forts.</p>
+                <span className="mmd-bento-link">Explorer <ArrowRight /></span>
+                <strong className="mmd-bento-number">02</strong>
+              </Link>
+
+              <Link href="/ranking" className="mmd-bento-card mmd-bento-card--compact">
+                <div className="mmd-bento-icon"><Crown /></div>
+                <span className="mmd-bento-eyebrow">En direct</span>
+                <h3>Classement</h3>
+                <p>Suivez l’évolution de l’édition.</p>
+                <span className="mmd-bento-link">Voir <ArrowRight /></span>
+              </Link>
+
+              <Link href="/sponsors" className="mmd-bento-card mmd-bento-card--compact">
+                <div className="mmd-bento-icon"><Award /></div>
+                <span className="mmd-bento-eyebrow">Partenaires</span>
+                <h3>Devenir sponsor</h3>
+                <p>Associez votre image à l’aventure.</p>
+                <span className="mmd-bento-link">Découvrir <ArrowRight /></span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mmd-section mmd-journey-section">
+          <div className="mmd-container">
+            <SectionLabel index="04">Le parcours 2027</SectionLabel>
+            <div className="mmd-section-heading mmd-journey-heading">
+              <h2>
+                De la première candidature jusqu’aux <em>lumières du gala.</em>
+              </h2>
+            </div>
+
+            <div className="mmd-journey-grid">
+              {JOURNEY.map((step) => (
+                <article key={step.phase}>
+                  <span>{step.phase}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </article>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Section 5: Sponsors (Aperçu) */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Award className="w-12 h-12 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl md:text-5xl font-bold text-gold mb-4">Nos Partenaires</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Ils nous font confiance et soutiennent l'excellence
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            <div className="bg-gray-800/50 border border-gold/30 rounded-lg p-8 text-center flex flex-col items-center justify-center">
-              <div className="bg-black rounded-xl p-4 mb-4 h-32 flex items-center justify-center border border-white/10">
-                <img
-                  src={BRANDING.logoIdentity}
-                  alt="Miss & Mister Dour 2026"
-                  className="h-20 w-auto object-contain"
-                />
-              </div>
-              <p className="text-gold font-bold text-lg">Miss & Mister Dour</p>
-              <p className="text-gray-400 text-sm">Partenaire Officiel</p>
-            </div>
-            <div className="bg-gray-800/50 border border-gold/30 rounded-lg p-8 text-center flex flex-col items-center justify-center">
-              <div className="bg-black rounded-xl p-4 mb-4 h-32 flex items-center justify-center border border-white/10">
-                <img
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/Logo_JS-Innov.IA_EvoluTion_Autonome_02-26_85ca048d.png"
-                  alt="JS-Innov.IA® - Julien Pagin"
-                  className="h-20 w-auto object-contain"
-                />
-              </div>
-              <p className="text-gold font-bold text-lg">JS-Innov.IA®</p>
-              <p className="text-gray-400 text-sm">Créateur & Partenaire Technologique</p>
-            </div>
-          </div>
-          <div className="text-center">
-            <Link href="/sponsors" className="inline-flex items-center gap-2 text-gold hover:text-gold/80 transition-colors font-medium text-lg">
-              Découvrir tous nos sponsors
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 6: Presse / Actualités */}
-      <section className="py-20 bg-gradient-to-b from-transparent to-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Newspaper className="w-12 h-12 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl md:text-5xl font-bold text-gold mb-4">Espace Presse</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Ressources officielles pour les médias et journalistes
-            </p>
-          </div>
-          <div className="max-w-4xl mx-auto bg-gradient-to-br from-gold/10 to-transparent border border-gold/30 rounded-lg p-8">
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gold/20 rounded-full flex items-center justify-center">
-                  <Newspaper className="w-8 h-8 text-gold" />
+        <section className="mmd-section mmd-partners-section">
+          <div className="mmd-container">
+            <SectionLabel index="05">Écosystème</SectionLabel>
+            <div className="mmd-partner-layout">
+              <Link href="/sponsors" className="mmd-partner-card">
+                <img src={BRANDING.logoIdentity} alt="Miss & Mister Dour" />
+                <div>
+                  <span>Organisation</span>
+                  <strong>Miss & Mister Dour</strong>
                 </div>
-                <h3 className="font-bold text-white mb-2">Kit Presse</h3>
-                <p className="text-gray-400 text-sm">Logos, photos, dossier de presse</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gold/20 rounded-full flex items-center justify-center">
-                  <Mail className="w-8 h-8 text-gold" />
+              </Link>
+
+              <div className="mmd-partner-plus" aria-hidden="true">×</div>
+
+              <Link href="/sponsors" className="mmd-partner-card">
+                <div className="mmd-js-mark">JS</div>
+                <div>
+                  <span>Partenaire technologique</span>
+                  <strong>JS-Innov.IA®</strong>
                 </div>
-                <h3 className="font-bold text-white mb-2">Contact Presse</h3>
-                <p className="text-gray-400 text-sm">presse@miss-mister-dour.be</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gold/20 rounded-full flex items-center justify-center">
-                  <Award className="w-8 h-8 text-gold" />
-                </div>
-                <h3 className="font-bold text-white mb-2">Accréditation</h3>
-                <p className="text-gray-400 text-sm">Demande d'accréditation média</p>
-              </div>
-            </div>
-            <div className="text-center">
-              <Link href="/press" className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-black font-bold rounded-lg hover:bg-gold/90 transition-colors">
-                Accéder à l'espace presse
-                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Section 7: CTA Final */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-gold/20 to-transparent border-2 border-gold/40 rounded-lg p-12">
-            <Crown className="w-16 h-16 mx-auto mb-6 text-gold" />
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Rejoignez l'Aventure</h2>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-              Que vous soyez candidat, sponsor, partenaire ou simplement passionné, 
-              il y a une place pour vous dans l'univers Miss & Mister Dour 2026.
+        <section className="mmd-final-cta">
+          <div className="mmd-final-year" aria-hidden="true">27</div>
+          <div className="mmd-container mmd-final-content">
+            <span className="mmd-final-eyebrow">Et si la prochaine histoire était la vôtre ?</span>
+            <h2>
+              Votre place<br />
+              <em>sur la scène.</em>
+            </h2>
+            <p>
+              Candidat, partenaire ou simplement curieux : entrez dans l’univers Miss & Mister Dour 2027.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/inscription-candidat" className="px-8 py-4 bg-gold text-black text-lg font-bold rounded-lg hover:bg-gold/90 transition-all hover:scale-105">
-                Devenir Candidat
+            <div className="mmd-final-actions">
+              <Link href="/inscription-candidat" className="mmd-final-dark-button">
+                Devenir candidat
               </Link>
-              <Link href="/sponsors" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all">
-                Devenir Sponsor
+              <Link href="/sponsors" className="mmd-final-outline-button">
+                Devenir sponsor
               </Link>
-              <Link href="/contact" className="px-8 py-4 bg-transparent border-2 border-gold text-gold text-lg font-bold rounded-lg hover:bg-gold/10 transition-all">
-                Nous Contacter
+              <Link href="/contact" className="mmd-final-text-button">
+                Nous contacter
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
+      <footer className="mmd-editorial-footer">
+        <div className="mmd-container">
+          <div className="mmd-footer-main">
+            <img src={BRANDING.logoIdentity} alt="Miss & Mister Dour" />
+            <nav aria-label="Navigation pied de page">
+              {NAV_LINKS.map((item) => (
+                <Link key={item.href} href={item.href}>{item.label}</Link>
+              ))}
+              <Link href="/contact">Contact</Link>
+            </nav>
+          </div>
+          <div className="mmd-footer-bottom">
+            <span>Miss & Mister Dour · Dour, Belgique</span>
+            <span>Expérience digitale par JS-Innov.IA®</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

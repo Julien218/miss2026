@@ -7,6 +7,8 @@ import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
+import "./editorial-2027.css";
+import "./editorial-2027-refinements.css";
 
 const queryClient = new QueryClient();
 
