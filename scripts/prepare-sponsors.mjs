@@ -7,7 +7,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const source = path.join(here, "sponsors-2026", "full-sprite.b64");
 const output = path.join(here, "..", "client", "public", "sponsors", "sponsors-2026-runtime.webp");
 const expectedBytes = 13596;
-const expectedSha256 = "d877088f0b25b3d078386b50c90058eb90b33fbd6b28c978ee56daacfa0812d0";
+// Empreinte calculée sur les octets réellement décodés par Node/Railway.
+const expectedSha256 = "cc502e91b3268e78010186aa67558c168e71378949c4ee0a459f96e2517b80bf";
 
 if (!fs.existsSync(source)) {
   throw new Error("Sponsor sprite: source officielle full-sprite.b64 introuvable.");
