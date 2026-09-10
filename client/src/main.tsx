@@ -13,6 +13,7 @@ import "./editorial-2027-refinements.css";
 import "./public-2027.css";
 import "./public-pages-2027.css";
 import "./home-2027-complete.css";
+import "./gallery-folders-2027.css";
 
 const queryClient = new QueryClient();
 
