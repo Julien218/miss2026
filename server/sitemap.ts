@@ -1,96 +1,96 @@
-/**
- * Générateur de sitemap.xml pour le domaine officiel https://missetmisterdour.be
- * Permet aux moteurs de recherche de découvrir toutes les pages du site
- */
-
-import { getCandidatesByContest } from "./db";
+import { getAllContests, getArticles, getCandidatesByContest } from "./db";
 import type { Candidate } from "../drizzle/schema";
-import { getPublicBaseUrl, getCandidateUrl, getCanonicalUrl } from "./url-helpers";
+import { getPublicBaseUrl } from "./url-helpers";
 
-/**
- * Génère le contenu XML du sitemap
- * @returns XML string du sitemap
- */
-export async function generateSitemap(): Promise<string> {
-  const baseUrl = getPublicBaseUrl();
-  const now = new Date().toISOString();
-  
-  // Pages statiques du site
-  const staticPages = [
-    { url: baseUrl, priority: "1.0", changefreq: "daily" },
-    { url: getCanonicalUrl("/about"), priority: "0.8", changefreq: "monthly" },
-    { url: getCanonicalUrl("/press"), priority: "0.7", changefreq: "weekly" },
-    { url: getCanonicalUrl("/sponsors"), priority: "0.7", changefreq: "monthly" },
-    { url: getCanonicalUrl("/contact"), priority: "0.6", changefreq: "monthly" },
-    { url: getCanonicalUrl("/legal/cgu"), priority: "0.3", changefreq: "yearly" },
-    { url: getCanonicalUrl("/legal/privacy"), priority: "0.3", changefreq: "yearly" },
-    { url: getCanonicalUrl("/legal/cookies"), priority: "0.3", changefreq: "yearly" },
-  ];
-  
-  // Récupérer tous les candidats approuvés (contest ID 1 = Miss & Mister Dour 2026)
-  let candidateUrls: string[] = [];
-  try {
-    const candidates = await getCandidatesByContest(1);
-    candidateUrls = candidates
-      .filter((c: Candidate) => c.status === "approved" || c.status === "finalist" || c.status === "winner")
-      .map((c: Candidate) => getCandidateUrl(c.id));
-  } catch (error) {
-    console.error("Error fetching candidates for sitemap:", error);
-  }
-  
-  // Générer le XML
-  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-  
-  // Ajouter les pages statiques
-  for (const page of staticPages) {
-    xml += "  <url>\n";
-    xml += `    <loc>${page.url}</loc>\n`;
-    xml += `    <lastmod>${now}</lastmod>\n`;
-    xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
-    xml += `    <priority>${page.priority}</priority>\n`;
-    xml += "  </url>\n";
-  }
-  
-  // Ajouter les pages candidats
-  for (const url of candidateUrls) {
-    xml += "  <url>\n";
-    xml += `    <loc>${url}</loc>\n`;
-    xml += `    <lastmod>${now}</lastmod>\n`;
-    xml += `    <changefreq>weekly</changefreq>\n`;
-    xml += `    <priority>0.9</priority>\n`;
-    xml += "  </url>\n";
-  }
-  
-  xml += "</urlset>";
-  
-  return xml;
+function escapeXml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
 
-/**
- * Génère le contenu du fichier robots.txt
- * @returns Contenu du robots.txt
- */
-export function generateRobotsTxt(): string {
-  const baseUrl = getPublicBaseUrl();
-  const sitemapUrl = `${baseUrl}/sitemap.xml`;
-  
-  return `# Robots.txt pour Miss & Mister Dour 2026
-# Domaine officiel: ${baseUrl}
+function absolute(path = "/") {
+  return new URL(path, `${getPublicBaseUrl().replace(/\/$/, "")}/`).toString();
+}
 
+export async function generateSitemap(): Promise<string> {
+  const now = new Date().toISOString();
+  const urls = new Map<string, { changefreq: string; priority: string }>();
+  const add = (url: string, changefreq: string, priority: string) => urls.set(url, { changefreq, priority });
+
+  add(absolute("/"), "daily", "1.0");
+  add(absolute("/candidates"), "daily", "0.95");
+  add(absolute("/ranking"), "daily", "0.9");
+  add(absolute("/gallery"), "weekly", "0.9");
+  add(absolute("/inscription-candidat"), "weekly", "0.9");
+  add(absolute("/public"), "weekly", "0.85");
+  add(absolute("/about"), "monthly", "0.8");
+  add(absolute("/sponsors"), "monthly", "0.8");
+  add(absolute("/press"), "monthly", "0.7");
+  add(absolute("/contact"), "monthly", "0.7");
+  add(absolute("/legal/cgu"), "yearly", "0.2");
+  add(absolute("/legal/privacy"), "yearly", "0.2");
+  add(absolute("/legal/cookies"), "yearly", "0.2");
+  add(absolute("/mentions-legales"), "yearly", "0.2");
+
+  try {
+    const editions = await getAllContests();
+    for (const edition of editions) {
+      const candidates = await getCandidatesByContest(edition.id);
+      for (const candidate of candidates as Candidate[]) {
+        if (["approved", "finalist", "winner"].includes(candidate.status)) {
+          add(absolute(`/candidat/${candidate.id}`), "weekly", "0.85");
+        }
+      }
+    }
+  } catch (error) {
+    console.error("[Sitemap] candidates unavailable", error);
+  }
+
+  try {
+    const articles = await getArticles({ status: "published", limit: 500, offset: 0 });
+    for (const article of articles) {
+      const identifier = article.slug || article.id;
+      if (identifier) add(absolute(`/article/${identifier}`), "monthly", "0.7");
+    }
+  } catch (error) {
+    console.error("[Sitemap] articles unavailable", error);
+  }
+
+  const body = Array.from(urls.entries()).map(([url, meta]) => [
+    "  <url>",
+    `    <loc>${escapeXml(url)}</loc>`,
+    `    <lastmod>${now}</lastmod>`,
+    `    <changefreq>${meta.changefreq}</changefreq>`,
+    `    <priority>${meta.priority}</priority>`,
+    "  </url>",
+  ].join("\n")).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`;
+}
+
+export function generateRobotsTxt(): string {
+  return `# Miss & Mister Dour 2027 — robots.txt
 User-agent: *
 Allow: /
-
-# Pages à ne pas indexer
-Disallow: /admin/
 Disallow: /api/
-Disallow: /dashboard-internal/
-Disallow: /video-factory/
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /dashboard-internal
+Disallow: /login
+Disallow: /settings
+Disallow: /notifications
+Disallow: /candidate/
+Disallow: /candidate/register
+Disallow: /my-profile
+Disallow: /profile/edit/
+Disallow: /invite/
+Disallow: /invitation/
+Disallow: /onboarding/
+Disallow: /jury/
+Disallow: /choreographer
+Disallow: /photographer
+Disallow: /video-factory
+Disallow: /intro
+Disallow: /miss-mister-dour-2026
 
-# Sitemap
-Sitemap: ${sitemapUrl}
-
-# Crawl-delay pour éviter surcharge serveur
-Crawl-delay: 1
+Sitemap: ${absolute("/sitemap.xml")}
 `;
 }
