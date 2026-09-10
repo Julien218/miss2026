@@ -1,70 +1,78 @@
-// Preconfigured storage helpers for Manus WebDev templates
-// Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
+// Stockage production Miss & Mister Dour
+// Cloudflare R2 est S3-compatible et déjà configuré dans Railway.
 
-import { ENV } from './_core/env';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-type StorageConfig = { baseUrl: string; apiKey: string };
+type R2Config = {
+  endpoint: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  bucket: string;
+  publicUrl?: string;
+};
 
-function getStorageConfig(): StorageConfig {
-  const baseUrl = ENV.forgeApiUrl;
-  const apiKey = ENV.forgeApiKey;
-
-  if (!baseUrl || !apiKey) {
-    throw new Error(
-      "Storage proxy credentials missing: set BUILT_IN_FORGE_API_URL and BUILT_IN_FORGE_API_KEY"
-    );
-  }
-
-  return { baseUrl: baseUrl.replace(/\/+$/, ""), apiKey };
-}
-
-function buildUploadUrl(baseUrl: string, relKey: string): URL {
-  const url = new URL("v1/storage/upload", ensureTrailingSlash(baseUrl));
-  url.searchParams.set("path", normalizeKey(relKey));
-  return url;
-}
-
-async function buildDownloadUrl(
-  baseUrl: string,
-  relKey: string,
-  apiKey: string
-): Promise<string> {
-  const downloadApiUrl = new URL(
-    "v1/storage/downloadUrl",
-    ensureTrailingSlash(baseUrl)
-  );
-  downloadApiUrl.searchParams.set("path", normalizeKey(relKey));
-  const response = await fetch(downloadApiUrl, {
-    method: "GET",
-    headers: buildAuthHeaders(apiKey),
-  });
-  return (await response.json()).url;
-}
-
-function ensureTrailingSlash(value: string): string {
-  return value.endsWith("/") ? value : `${value}/`;
-}
+let cachedClient: S3Client | null = null;
+let cachedSignature = "";
 
 function normalizeKey(relKey: string): string {
   return relKey.replace(/^\/+/, "");
 }
 
-function toFormData(
-  data: Buffer | Uint8Array | string,
-  contentType: string,
-  fileName: string
-): FormData {
-  const blob =
-    typeof data === "string"
-      ? new Blob([data], { type: contentType })
-      : new Blob([data as any], { type: contentType });
-  const form = new FormData();
-  form.append("file", blob, fileName || "file");
-  return form;
+function getR2Config(): R2Config {
+  const endpoint = process.env.R2_ENDPOINT?.trim();
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim();
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
+  const bucket = process.env.R2_BUCKET?.trim();
+  const publicUrl = process.env.R2_PUBLIC_URL?.trim();
+
+  if (!endpoint || !accessKeyId || !secretAccessKey || !bucket) {
+    throw new Error(
+      "R2 storage is not configured: R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY and R2_BUCKET are required"
+    );
+  }
+
+  return {
+    endpoint: endpoint.replace(/\/+$/, ""),
+    accessKeyId,
+    secretAccessKey,
+    bucket,
+    publicUrl: publicUrl ? publicUrl.replace(/\/+$/, "") : undefined,
+  };
 }
 
-function buildAuthHeaders(apiKey: string): HeadersInit {
-  return { Authorization: `Bearer ${apiKey}` };
+function getR2Client(config: R2Config): S3Client {
+  const signature = `${config.endpoint}|${config.accessKeyId}`;
+  if (!cachedClient || cachedSignature !== signature) {
+    cachedClient = new S3Client({
+      region: "auto",
+      endpoint: config.endpoint,
+      credentials: {
+        accessKeyId: config.accessKeyId,
+        secretAccessKey: config.secretAccessKey,
+      },
+    });
+    cachedSignature = signature;
+  }
+  return cachedClient;
+}
+
+function buildPublicUrl(publicUrl: string, key: string): string {
+  const encodedKey = key
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `${publicUrl}/${encodedKey}`;
+}
+
+function toBody(data: Buffer | Uint8Array | string): Buffer | Uint8Array | string {
+  if (typeof data === "string") return data;
+  if (Buffer.isBuffer(data)) return data;
+  return new Uint8Array(data);
 }
 
 export async function storagePut(
@@ -72,31 +80,49 @@ export async function storagePut(
   data: Buffer | Uint8Array | string,
   contentType = "application/octet-stream"
 ): Promise<{ key: string; url: string }> {
-  const { baseUrl, apiKey } = getStorageConfig();
+  const config = getR2Config();
+  const client = getR2Client(config);
   const key = normalizeKey(relKey);
-  const uploadUrl = buildUploadUrl(baseUrl, key);
-  const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
-  const response = await fetch(uploadUrl, {
-    method: "POST",
-    headers: buildAuthHeaders(apiKey),
-    body: formData,
-  });
 
-  if (!response.ok) {
-    const message = await response.text().catch(() => response.statusText);
-    throw new Error(
-      `Storage upload failed (${response.status} ${response.statusText}): ${message}`
-    );
+  await client.send(
+    new PutObjectCommand({
+      Bucket: config.bucket,
+      Key: key,
+      Body: toBody(data),
+      ContentType: contentType,
+      CacheControl: "public, max-age=31536000, immutable",
+    })
+  );
+
+  if (config.publicUrl) {
+    return { key, url: buildPublicUrl(config.publicUrl, key) };
   }
-  const url = (await response.json()).url;
+
+  const url = await getSignedUrl(
+    client,
+    new GetObjectCommand({ Bucket: config.bucket, Key: key }),
+    { expiresIn: 60 * 60 * 24 * 7 }
+  );
   return { key, url };
 }
 
-export async function storageGet(relKey: string): Promise<{ key: string; url: string; }> {
-  const { baseUrl, apiKey } = getStorageConfig();
+export async function storageGet(
+  relKey: string
+): Promise<{ key: string; url: string }> {
+  const config = getR2Config();
+  const client = getR2Client(config);
   const key = normalizeKey(relKey);
+
+  if (config.publicUrl) {
+    return { key, url: buildPublicUrl(config.publicUrl, key) };
+  }
+
   return {
     key,
-    url: await buildDownloadUrl(baseUrl, key, apiKey),
+    url: await getSignedUrl(
+      client,
+      new GetObjectCommand({ Bucket: config.bucket, Key: key }),
+      { expiresIn: 60 * 60 }
+    ),
   };
 }

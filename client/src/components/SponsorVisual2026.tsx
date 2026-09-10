@@ -72,7 +72,7 @@ export function SponsorVisual2026({
   const backgroundPositionY = (row / (SPRITE_ROWS - 1)) * 100;
 
   const style: CSSProperties = {
-    backgroundImage: 'url("/sponsors/sponsors-2026.webp")',
+    backgroundImage: 'url("/sponsors/sponsors-2026-runtime.webp")',
     backgroundSize: `${SPRITE_COLUMNS * 100}% ${SPRITE_ROWS * 100}%`,
     backgroundPosition: `${backgroundPositionX}% ${backgroundPositionY}%`,
     backgroundRepeat: "no-repeat",

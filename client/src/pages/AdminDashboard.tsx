@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Users, Trophy, Vote, TrendingUp, AlertTriangle, Calendar, Briefcase, FileText } from "lucide-react";
+import { Users, Trophy, Vote, TrendingUp, AlertTriangle, Calendar, Briefcase, FileText, Inbox } from "lucide-react";
 import ExportVotesDialog from "@/components/ExportVotesDialog";
 
 export default function AdminDashboard() {
@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   
   // Redirect if not admin
-  if (!authLoading && user?.role !== "admin" && user?.role !== "owner") {
+  if (!authLoading && user?.role !== "admin" && user?.role !== "owner" && user?.role !== "super_admin") {
     setLocation("/");
     return null;
   }
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">Dashboard Administrateur</h1>
-              <p className="text-gray-400 text-sm">Miss & Mister Dour 2026</p>
+              <p className="text-gray-400 text-sm">Miss & Mister Dour 2027</p>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-400">
@@ -112,6 +112,17 @@ export default function AdminDashboard() {
             );
           })}
         </div>
+
+        <Button
+          onClick={() => setLocation("/admin/applications")}
+          className="mb-6 w-full min-h-20 justify-start gap-4 border border-amber-300/35 bg-amber-300/10 px-6 text-left text-white hover:bg-amber-300/15"
+        >
+          <Inbox className="h-7 w-7 text-amber-300" />
+          <span>
+            <strong className="block text-base">Nouvelles candidatures</strong>
+            <small className="block text-white/55">Voir, valider ou refuser les formulaires reçus</small>
+          </span>
+        </Button>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

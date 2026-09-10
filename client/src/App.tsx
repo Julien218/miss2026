@@ -36,10 +36,12 @@ import { Ranking } from "./pages/Ranking";
 import VideoFactory2026 from "./pages/VideoFactory2026";
 import InternalDashboard from "./pages/InternalDashboard";
 import Homepage from "./pages/Homepage";
+import Login from "./pages/Login";
 import AdminInvitations from "./pages/admin/AdminInvitations";
 import AdminUsers from "./pages/AdminUsers";
 import CandidateOnboarding from "./pages/admin/CandidateOnboarding";
 import AdminCandidates from "./pages/admin/AdminCandidates";
+import AdminApplications from "./pages/admin/AdminApplications";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminComments from "./pages/admin/AdminComments";
 import AdminVotes from "./pages/admin/AdminVotes";
@@ -63,9 +65,7 @@ import LegalNotice from "./pages/LegalNotice";
 import { Footer } from "./components/Footer";
 import { SplashScreen } from "./components/SplashScreen";
 import CookieBanner from "./components/CookieBanner";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RoleGuard } from "./components/RoleGuard";
-import { Permission } from "../../server/permissions";
 import Choreographer from "./pages/Choreographer";
 import CandidateProfileEdit from "./pages/CandidateProfileEdit";
 import CandidatePublicProfile from "./pages/CandidatePublicProfile";
@@ -78,6 +78,7 @@ function Router() {
     <Switch>
       {/* ========== PAGES PUBLIQUES ========== */}
       <Route path="/" component={Homepage} />
+      <Route path="/login" component={Login} />
       <Route path="/about" component={About} />
       <Route path="/press" component={Press} />
       <Route path="/sponsors" component={Sponsors} />
@@ -151,6 +152,11 @@ function Router() {
       <Route path="/admin/candidates">
         <RoleGuard requiredRole="admin">
           <AdminCandidates />
+        </RoleGuard>
+      </Route>
+      <Route path="/admin/applications">
+        <RoleGuard requiredRole="admin">
+          <AdminApplications />
         </RoleGuard>
       </Route>
       <Route path="/admin/notifications">
@@ -308,15 +314,9 @@ function Router() {
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   const [location] = useLocation();
   const [showSplash, setShowSplash] = useState(() => {
-    // Afficher le splash uniquement à la première visite de la session
     if (typeof window !== 'undefined') {
       const seen = sessionStorage.getItem('splash_seen');
       return !seen;
@@ -329,8 +329,8 @@ function App() {
     setShowSplash(false);
   };
 
-  // La homepage possède son footer éditorial dédié.
   const hideFooter = location === '/' ||
+                     location.startsWith('/login') ||
                      location.startsWith('/dashboard') || 
                      location.startsWith('/admin') || 
                      location.startsWith('/my-profile') ||
@@ -345,10 +345,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
           <div className="flex flex-col min-h-screen">
