@@ -4,11 +4,11 @@
  */
 
 export const BRANDING = {
-  // Les logos officiels sont servis localement avec l'application afin de ne
-  // plus dépendre d'un CDN externe pour l'identité principale du concours.
-  logoHologram: "/logo/miss-mister-dour-logo.png",
-  logoIdentity: "/logo/miss-mister-dour-logo.png",
-  logoIdentityCompressed: "/logo/miss-mister-dour-logo.png",
+  // Logo officiel local avec transparence réelle pour éviter tout bloc noir
+  // dans le hero et la navigation.
+  logoHologram: "/logo/miss-mister-dour-logo-transparent.webp",
+  logoIdentity: "/logo/miss-mister-dour-logo-transparent.webp",
+  logoIdentityCompressed: "/logo/miss-mister-dour-logo-transparent.webp",
 
   creator: "JS-Innov.IA",
   creatorEmail: "paginjulien@gmail.com",
