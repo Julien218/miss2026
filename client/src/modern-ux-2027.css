@@ -1,0 +1,54 @@
+/* Progressive enhancement — Miss & Mister Dour 2027 */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overscroll-behavior-x:none}
+
+/* Watermark hero : logo réellement transparent, intégré à la lumière. */
+.mmd-home-hero-logo{
+  position:absolute!important;
+  right:clamp(28px,7vw,112px)!important;
+  top:clamp(120px,16vh,190px)!important;
+  width:clamp(170px,18vw,280px)!important;
+  height:auto!important;
+  opacity:.075!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  mix-blend-mode:screen;
+  filter:saturate(.9) brightness(1.06) drop-shadow(0 0 34px rgba(215,174,105,.11))!important;
+  transform:translate3d(0,0,0);
+  pointer-events:none;
+  user-select:none;
+}
+
+/* Le logo de navigation reste net et sans cartouche. */
+.mmd-brand img{background:transparent;border:0;box-shadow:none}
+
+/* Le navigateur peut différer le rendu des longues sections hors écran. */
+@supports (content-visibility:auto){
+  .editorial-home main>.mmd-section:not(.mmd-hero),
+  .editorial-home main>.mmd-final-cta{
+    content-visibility:auto;
+    contain-intrinsic-size:700px;
+  }
+}
+
+/* Navigation cross-document moderne lorsque le navigateur la supporte. */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.24s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+
+@media (hover:hover) and (pointer:fine){
+  .mmd-candidate-card,.mmd-bento-card,.mmd-home-gallery-grid a,.mmd-home-media-strip a{will-change:transform}
+}
+
+@media (max-width:680px){
+  /* Sur téléphone le watermark est retiré : le logo du header suffit. */
+  .mmd-home-hero-logo{display:none!important}
+  .mmd-nav-shell{padding-top:max(8px,env(safe-area-inset-top))}
+  .mmd-mobile-menu{max-height:calc(100dvh - 92px - env(safe-area-inset-top));overflow:auto;-webkit-overflow-scrolling:touch}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}

@@ -19,6 +19,7 @@ import "./gallery-folders-2027.css";
 import "./sponsor-sprite-2027.css";
 import "./login-2027.css";
 import "./mobile-2027.css";
+import "./modern-ux-2027.css";
 
 const queryClient = new QueryClient();
 const redirectToLoginIfUnauthorized = (error: unknown) => {
