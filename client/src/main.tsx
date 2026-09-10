@@ -7,6 +7,7 @@ import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import { PublicSiteChrome } from "./components/PublicSiteChrome";
+import Login from "./pages/Login";
 import "./index.css";
 import "./editorial-2027.css";
 import "./editorial-2027-refinements.css";
@@ -15,6 +16,7 @@ import "./public-pages-2027.css";
 import "./home-2027-complete.css";
 import "./gallery-folders-2027.css";
 import "./sponsor-sprite-2027.css";
+import "./login-2027.css";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +26,9 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
   if (!isUnauthorized) return;
-  window.location.href = getLoginUrl();
+  const currentPath = `${window.location.pathname}${window.location.search}`;
+  if (window.location.pathname === "/login") return;
+  window.location.href = getLoginUrl(currentPath);
 };
 
 queryClient.getQueryCache().subscribe(event => {
@@ -67,6 +71,8 @@ const PUBLIC_CHROME_PREFIXES = [
 
 function RootExperience() {
   const path = window.location.pathname;
+  if (path === "/login") return <Login />;
+
   const usePublicChrome = path !== "/" && PUBLIC_CHROME_PREFIXES.some(prefix => path.startsWith(prefix));
   return usePublicChrome ? <PublicSiteChrome><App /></PublicSiteChrome> : <App />;
 }
