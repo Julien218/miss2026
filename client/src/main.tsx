@@ -17,13 +17,13 @@ import "./home-2027-complete.css";
 import "./gallery-folders-2027.css";
 import "./sponsor-sprite-2027.css";
 import "./login-2027.css";
+import "./mobile-2027.css";
 
 const queryClient = new QueryClient();
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
-
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
   if (!isUnauthorized) return;
   const currentPath = `${window.location.pathname}${window.location.search}`;
@@ -47,20 +47,7 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
-const trpcClient = trpc.createClient({
-  links: [
-    httpBatchLink({
-      url: "/api/trpc",
-      transformer: superjson,
-      fetch(input, init) {
-        return globalThis.fetch(input, {
-          ...(init ?? {}),
-          credentials: "include",
-        });
-      },
-    }),
-  ],
-});
+const trpcClient = trpc.createClient({ links: [httpBatchLink({ url: "/api/trpc", transformer: superjson, fetch(input, init) { return globalThis.fetch(input, { ...(init ?? {}), credentials: "include" }); } })] });
 
 const PUBLIC_CHROME_PREFIXES = [
   "/about", "/press", "/sponsors", "/contact", "/legal/", "/mentions-legales",
@@ -72,15 +59,16 @@ const PUBLIC_CHROME_PREFIXES = [
 function RootExperience() {
   const path = window.location.pathname;
   if (path === "/login") return <Login />;
-
   const usePublicChrome = path !== "/" && PUBLIC_CHROME_PREFIXES.some(prefix => path.startsWith(prefix));
   return usePublicChrome ? <PublicSiteChrome><App /></PublicSiteChrome> : <App />;
 }
 
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
-    <QueryClientProvider client={queryClient}>
-      <RootExperience />
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}><RootExperience /></QueryClientProvider>
   </trpc.Provider>
 );
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(error => console.warn('[PWA] Service worker non enregistré', error)));
+}
