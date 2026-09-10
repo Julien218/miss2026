@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Redirect } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { hasRoleLevel, type Role } from "../../../shared/roles";
+import { getLoginUrl } from "@/const";
 
 interface RoleGuardProps {
   children: ReactNode;
@@ -10,14 +11,13 @@ interface RoleGuardProps {
 }
 
 /**
- * Composant de protection par rôle
- * Vérifie que l'utilisateur a au moins le niveau de rôle requis
- * Redirige vers fallbackPath si accès refusé
+ * Composant de protection par rôle.
+ * Les visiteurs non authentifiés sont redirigés vers le login local en
+ * conservant la route qu'ils voulaient ouvrir.
  */
 export function RoleGuard({ children, requiredRole, fallbackPath = "/" }: RoleGuardProps) {
   const { user, isLoading } = useAuth();
 
-  // Afficher loading pendant la vérification auth
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -26,12 +26,13 @@ export function RoleGuard({ children, requiredRole, fallbackPath = "/" }: RoleGu
     );
   }
 
-  // Rediriger si non connecté
   if (!user) {
-    return <Redirect to={fallbackPath} />;
+    const returnTo = typeof window !== "undefined"
+      ? `${window.location.pathname}${window.location.search}`
+      : undefined;
+    return <Redirect to={getLoginUrl(returnTo)} />;
   }
 
-  // Vérifier le niveau de rôle
   const userRole = user.role as Role;
   if (!hasRoleLevel(userRole, requiredRole)) {
     return (
