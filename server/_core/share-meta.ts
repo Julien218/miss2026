@@ -1,8 +1,3 @@
-/**
- * Génération des meta OG pour la route /share/:candidateId/:assetId
- * Permet de partager des photos/vidéos spécifiques avec previews optimisées
- */
-
 import { getShareUrl } from "../url-helpers";
 
 export interface ShareAsset {
@@ -15,54 +10,35 @@ export interface ShareAsset {
   caption?: string | null;
 }
 
-/**
- * Génère les meta tags OG/Twitter pour une page de partage d'asset
- */
+function escapeHtml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
 export function generateShareAssetOGMeta(asset: ShareAsset) {
-  const candidateTitle = `${asset.candidateName} - ${asset.candidateCategory}`;
   const assetTypeLabel = asset.assetType === "photo" ? "Photo" : "Vidéo";
-  const title = `${assetTypeLabel} de ${asset.candidateName} | Miss & Mister Dour 2026`;
-  const description = asset.caption || `Découvrez cette ${asset.assetType === "photo" ? "photo" : "vidéo"} de ${asset.candidateName}, candidat${asset.candidateCategory === "miss" ? "e" : ""} ${asset.candidateCategory} pour Miss & Mister Dour 2026. 🚀 by JS-INNOV.IA`;
-  const image = asset.assetUrl;
+  const category = asset.candidateCategory === "miss" ? "Miss" : asset.candidateCategory === "mister" ? "Mister" : asset.candidateCategory;
+  const title = `${assetTypeLabel} de ${asset.candidateName} — Miss & Mister Dour 2027`;
+  const description = asset.caption || `Découvrez ${asset.candidateName}, ${category}, dans l’expérience Miss & Mister Dour 2027.`;
   const url = getShareUrl(asset.candidateId, asset.id);
-  
-  // Pour les vidéos, utiliser og:video
-  const videoMeta = asset.assetType === "video" ? `
-    <meta property="og:video" content="${asset.assetUrl}" />
-    <meta property="og:video:type" content="video/mp4" />
-    <meta property="og:video:width" content="1280" />
-    <meta property="og:video:height" content="720" />
-  ` : "";
+  const safeTitle = escapeHtml(title), safeDescription = escapeHtml(description), safeUrl = escapeHtml(url), safeAsset = escapeHtml(asset.assetUrl);
+  const videoMeta = asset.assetType === "video" ? `<meta property="og:video" content="${safeAsset}" /><meta property="og:video:type" content="video/mp4" />` : "";
 
   return `
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="${description}" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="${url}" />
-    
-    <!-- Open Graph / Facebook -->
+    <meta name="description" content="${safeDescription}" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="${safeUrl}" />
     <meta property="og:type" content="${asset.assetType === "video" ? "video.other" : "article"}" />
-    <meta property="og:url" content="${url}" />
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
-    <meta property="og:image" content="${image}" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Miss & Mister Dour 2026" />
-    ${videoMeta}
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="${url}" />
-    <meta name="twitter:title" content="${title}" />
-    <meta name="twitter:description" content="${description}" />
-    <meta name="twitter:image" content="${image}" />
-    
-    <!-- LinkedIn -->
+    <meta property="og:url" content="${safeUrl}" />
+    <meta property="og:title" content="${safeTitle}" />
+    <meta property="og:description" content="${safeDescription}" />
+    <meta property="og:image" content="${safeAsset}" />
+    <meta property="og:image:alt" content="${safeTitle}" />
+    <meta property="og:site_name" content="Miss &amp; Mister Dour 2027" />
     <meta property="og:locale" content="fr_BE" />
-    <meta property="og:updated_time" content="${new Date().toISOString()}" />
-    
-    <!-- Author -->
-    <meta name="author" content="JS-Innov.IA - Pagin Julien" />
+    ${videoMeta}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${safeTitle}" />
+    <meta name="twitter:description" content="${safeDescription}" />
+    <meta name="twitter:image" content="${safeAsset}" />
   `;
 }
