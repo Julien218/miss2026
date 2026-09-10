@@ -1,0 +1,50 @@
+/* Mobile-first refinements — Miss & Mister Dour 2027 */
+@media (max-width: 680px) {
+  html { scroll-padding-top: 82px; }
+  body { overflow-x: hidden; }
+  .editorial-home { padding-bottom: env(safe-area-inset-bottom); }
+  .mmd-container { width: min(100% - 28px, 1280px); }
+  .mmd-topline { min-height: 25px; gap: 10px; padding: 0 12px; overflow: hidden; white-space: nowrap; font-size: 7px; letter-spacing: .17em; }
+  .mmd-topline span:nth-child(2) { display:none; }
+  .mmd-nav-shell { padding: 8px 10px 0; }
+  .mmd-nav { min-height: 58px; padding: 6px 8px 6px 12px; gap: 8px; border-radius: 20px; grid-template-columns: auto 1fr auto; }
+  .mmd-brand img { height: 38px; max-width: 76px; }
+  .mmd-desktop-nav,.mmd-nav-actions { display:none; }
+  .mmd-menu-button { display:grid; place-items:center; justify-self:end; width:44px; height:44px; border:1px solid rgba(234,211,165,.18); border-radius:14px; color:#f7efe1; background:rgba(255,255,255,.035); }
+  .mmd-mobile-menu { display:flex; position:absolute; top:74px; left:10px; right:10px; flex-direction:column; gap:4px; padding:14px; border:1px solid rgba(234,211,165,.16); border-radius:22px; background:rgba(8,6,5,.97); box-shadow:0 24px 70px rgba(0,0,0,.6); backdrop-filter:blur(22px); }
+  .mmd-mobile-menu>a:not(.mmd-primary-button) { min-height:44px; display:flex; align-items:center; padding:0 12px; color:#f7efe1; border-bottom:1px solid rgba(255,255,255,.06); }
+  .mmd-hero { min-height:auto; padding:46px 0 54px; align-items:flex-start; }
+  .mmd-hero-frame { inset:16px 10px 12px; border-radius:24px; }
+  .mmd-hero-content { padding-top:16px; }
+  .mmd-hero-kicker { gap:9px; font-size:8px; letter-spacing:.22em; }
+  .mmd-hero-kicker i { width:28px; }
+  .mmd-home-hero-logo { width:62px !important; top:28px !important; right:12px !important; opacity:.13 !important; }
+  .mmd-display-title { width:100%; margin-top:28px; line-height:.82; letter-spacing:-.06em; }
+  .mmd-title-miss,.mmd-title-dour,.mmd-title-middle strong { font-size:clamp(66px,21vw,94px); }
+  .mmd-title-middle em { font-size:clamp(38px,12vw,56px); }
+  .mmd-title-middle { gap:10px; }
+  .mmd-display-title::after { width:58%; margin-top:24px; }
+  .mmd-hero-bottom { margin-top:28px; grid-template-columns:1fr; gap:24px; }
+  .mmd-hero-bottom>p { font-size:15px; line-height:1.55; max-width:95%; }
+  .mmd-hero-actions { justify-content:stretch; display:grid; grid-template-columns:1fr; gap:9px; }
+  .mmd-hero-actions a,.mmd-home-participate-actions a,.mmd-final-actions a { width:100%; min-height:52px; }
+  .mmd-section { padding-block:64px; }
+  .mmd-home-intro-grid h2 { font-size:clamp(38px,12vw,52px); line-height:1.02; }
+  .mmd-home-intro-grid p { font-size:15px; line-height:1.6; }
+  .mmd-section-heading { gap:18px; }
+  .mmd-section-heading h2 { font-size:clamp(36px,11vw,50px); }
+  .mmd-home-participate-card { padding:26px 20px; }
+  .mmd-home-participate-card h2 { font-size:clamp(38px,11vw,50px); }
+  .mmd-home-sponsor-preview>div { min-height:104px; padding:10px; }
+  .mmd-home-sponsor-preview img { height:66px; }
+  .mmd-home-gallery-grid { gap:7px; grid-auto-rows:145px; }
+  .mmd-home-gallery-grid a { border-radius:15px; }
+  .mmd-final-cta { overflow:hidden; }
+  .mmd-final-content { padding-bottom:max(50px, env(safe-area-inset-bottom)); }
+  button,a,input,select,textarea { touch-action:manipulation; }
+}
+@media (max-width: 390px) {
+  .mmd-title-miss,.mmd-title-dour,.mmd-title-middle strong { font-size:64px; }
+  .mmd-title-middle em { font-size:38px; }
+  .mmd-container { width:calc(100% - 22px); }
+}
