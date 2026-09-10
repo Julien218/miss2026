@@ -4,8 +4,9 @@ import { ArrowLeft, Check, Clock3, Mail, MapPin, Phone, RefreshCw, UserRound, X 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
- type CandidateApplication = {
+type CandidateApplication = {
   id: number;
+  contestId?: number | null;
   firstName: string;
   lastName: string;
   email: string;
@@ -34,7 +35,9 @@ export default function AdminApplications() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/admin/candidate-applications?contestId=1", {
+      // Ne pas figer un ancien contestId : le cockpit doit voir toutes les
+      // inscriptions reçues, y compris les nouvelles éditions.
+      const response = await fetch("/api/admin/candidate-applications", {
         credentials: "include",
       });
       if (response.status === 401) {
@@ -179,6 +182,7 @@ export default function AdminApplications() {
                       <div className="mb-2 flex flex-wrap items-center gap-2">
                         <span className="rounded-full border border-[#d7ae69]/35 px-2.5 py-1 text-[11px] uppercase tracking-wider text-[#ead3a5]">{application.category}</span>
                         <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/55">#{application.id}</span>
+                        {application.contestId ? <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/45">Édition #{application.contestId}</span> : null}
                       </div>
                       <CardTitle className="text-xl text-[#f7efe1]">{application.firstName} {application.lastName}</CardTitle>
                       <CardDescription className="mt-1 text-white/50">{application.profession || "Profession / études non renseignées"}</CardDescription>
