@@ -1,0 +1,28 @@
+.mmd-sponsor-sprite {
+  display: block;
+  width: 100%;
+  aspect-ratio: 140 / 95;
+  background-color: #f5f1e9;
+  background-origin: border-box;
+}
+
+.mmd-sponsor-tile .mmd-sponsor-sprite {
+  width: min(100%, 190px);
+  border-radius: 8px;
+}
+
+.mmd-home-sponsor-preview .mmd-sponsor-sprite {
+  width: 100%;
+  min-height: 78px;
+  border-radius: 10px;
+}
+
+@media (max-width: 640px) {
+  .mmd-sponsor-tile .mmd-sponsor-sprite {
+    width: 100%;
+  }
+
+  .mmd-home-sponsor-preview .mmd-sponsor-sprite {
+    min-height: 64px;
+  }
+}
