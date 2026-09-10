@@ -4,9 +4,11 @@
  */
 
 export const BRANDING = {
-  logoHologram: "https://files.manuscdn.com/user_upload_by_module/session_file/87304619/QqoPYFovLiObmUny.png",
-  logoIdentity: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
-  logoIdentityCompressed: "https://d2xsxph8kpxj0f.cloudfront.net/87304619/ikVKix4dpn7zVKKnzoiv6V/miss-mister-dour-logo-transparent_68980609.png",
+  // Les logos officiels sont servis localement avec l'application afin de ne
+  // plus dépendre d'un CDN externe pour l'identité principale du concours.
+  logoHologram: "/logo/miss-mister-dour-logo.png",
+  logoIdentity: "/logo/miss-mister-dour-logo.png",
+  logoIdentityCompressed: "/logo/miss-mister-dour-logo.png",
 
   creator: "JS-Innov.IA",
   creatorEmail: "paginjulien@gmail.com",
