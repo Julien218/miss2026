@@ -39,8 +39,8 @@ export const BRANDING = {
   },
 
   contact: {
-    phone: "+32 475 42 60 42",
-    email: "Olivier.trevis@outlook.com",
+    phone: "+32 475 42 69 42",
+    email: "olivier.trevis@outlook.be",
     address: "Grand Place, 9, 7370 Dour, Belgique",
     organizer: "STARLIGHT asbl",
     responsible: "Olivier Trevis",
