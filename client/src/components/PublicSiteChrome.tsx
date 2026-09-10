@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { BRANDING } from "@/config/branding";
@@ -12,7 +12,7 @@ const NAV = [
   { href: "/press", label: "Presse" },
 ];
 
-export function PublicSiteChrome({ children }: { children: React.ReactNode }) {
+export function PublicSiteChrome({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
