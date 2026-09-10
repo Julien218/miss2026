@@ -1,216 +1,76 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Check, Home, Share2, Instagram, Facebook } from "lucide-react";
+import { ArrowRight, Check, Facebook, Home, Instagram, Share2 } from "lucide-react";
+import { BRANDING } from "@/config/branding";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function RegistrationThankYou() {
+  const share = async () => {
+    const payload = {
+      title: "Miss & Mister Dour 2027",
+      text: "Je viens d'envoyer ma candidature pour Miss & Mister Dour 2027.",
+      url: window.location.origin,
+    };
+    if (navigator.share) {
+      await navigator.share(payload).catch(() => undefined);
+      return;
+    }
+    await navigator.clipboard?.writeText(window.location.origin).catch(() => undefined);
+  };
+
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white flex items-center justify-center px-4 py-20">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-2xl w-full"
-      >
-        {/* Icône de succès */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="w-24 h-24 mx-auto mb-8 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] flex items-center justify-center"
-        >
-          <Check className="w-12 h-12 text-black" strokeWidth={3} />
-        </motion.div>
-
-        {/* Message principal */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-center mb-8"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Candidature{" "}
-            <span className="bg-gradient-to-r from-[#E8C547] via-[#D4AF37] to-[#B8941E] bg-clip-text text-transparent">
-              Enregistrée !
-            </span>
-          </h1>
-          <p className="text-xl text-[#C0C0C0]">
-            Merci pour votre inscription à Miss & Mister Dour 2026
-          </p>
-        </motion.div>
-
-        {/* Card d'information */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-black/40 backdrop-blur-xl rounded-3xl border border-[#D4AF37]/30 p-8 mb-8"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-center">Prochaines étapes</h2>
-          
-          <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center flex-shrink-0 font-bold text-black">
-                1
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Vérification de votre candidature</h3>
-                <p className="text-sm text-[#C0C0C0]">
-                  Notre équipe va examiner votre dossier dans les prochains jours. Vous recevrez un email de confirmation.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center flex-shrink-0 font-bold text-black">
-                2
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Approbation et publication</h3>
-                <p className="text-sm text-[#C0C0C0]">
-                  Une fois approuvée, votre profil sera publié sur notre site web et nos réseaux sociaux.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center flex-shrink-0 font-bold text-black">
-                3
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Début des votes</h3>
-                <p className="text-sm text-[#C0C0C0]">
-                  Les votes du public ouvriront prochainement. Mobilisez vos proches et partagez votre profil !
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center flex-shrink-0 font-bold text-black">
-                4
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Grande soirée - 19 avril 2026</h3>
-                <p className="text-sm text-[#C0C0C0]">
-                  Rejoignez-nous à la Salle des Fêtes de Dour pour la soirée de gala et l'élection des gagnants !
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Conseils */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-gradient-to-r from-[#D4AF37]/10 to-[#E8C547]/10 rounded-2xl border border-[#D4AF37]/30 p-6 mb-8"
-        >
-          <h3 className="font-bold mb-3 flex items-center gap-2">
-            <Share2 className="w-5 h-5 text-[#D4AF37]" />
-            Maximisez vos chances !
-          </h3>
-          <ul className="space-y-2 text-sm text-[#C0C0C0]">
-            <li className="flex items-start gap-2">
-              <span className="text-[#D4AF37] mt-1">•</span>
-              <span>Partagez votre candidature sur vos réseaux sociaux dès maintenant</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#D4AF37] mt-1">•</span>
-              <span>Mobilisez votre famille, vos amis et vos followers pour voter</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#D4AF37] mt-1">•</span>
-              <span>Suivez-nous sur Instagram et Facebook pour ne rien manquer</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#D4AF37] mt-1">•</span>
-              <span>Utilisez le hashtag #MissMisterDour2026 dans vos publications</span>
-            </li>
-          </ul>
-        </motion.div>
-
-        {/* Boutons d'action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4"
-        >
-          <Link href="/miss-mister-dour-2026">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex-1 px-6 py-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8C547] to-[#D4AF37] text-black font-bold hover:shadow-lg hover:shadow-[#D4AF37]/50 transition-all flex items-center justify-center gap-2"
-            >
-              <Home className="w-5 h-5" />
-              Retour à l'accueil
-            </motion.button>
-          </Link>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({
-                  title: "Miss & Mister Dour 2026",
-                  text: "Je participe à Miss & Mister Dour 2026 ! Votez pour moi 🎭✨",
-                  url: window.location.origin + "/miss-mister-dour-2026",
-                });
-              } else {
-                alert("Partagez ce lien : " + window.location.origin + "/miss-mister-dour-2026");
-              }
-            }}
-            className="flex-1 px-6 py-4 rounded-xl bg-black/60 border border-[#D4AF37]/30 text-white hover:border-[#D4AF37] transition-colors flex items-center justify-center gap-2"
+    <div className="mmd-public-page mmd-thankyou-page">
+      <SEOHead
+        title="Candidature enregistrée — Miss & Mister Dour 2027"
+        description="Confirmation de candidature à Miss & Mister Dour 2027."
+        url="https://missetmisterdour.be/inscription-merci"
+      />
+      <section className="mmd-public-hero mmd-thankyou-hero">
+        <div className="mmd-container mmd-thankyou-wrap">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="mmd-thankyou-check"
           >
-            <Share2 className="w-5 h-5" />
-            Partager
-          </motion.button>
-        </motion.div>
+            <Check />
+          </motion.div>
+          <div className="mmd-public-kicker"><span>2027</span><i/>CANDIDATURE REÇUE</div>
+          <h1>Votre candidature est <em>enregistrée.</em></h1>
+          <p>Merci d’avoir rejoint l’aventure Miss & Mister Dour 2027. L’équipe examinera votre dossier et vous contactera pour la suite.</p>
+        </div>
+      </section>
 
-        {/* Réseaux sociaux */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="mt-8 text-center"
-        >
-          <p className="text-sm text-[#C0C0C0] mb-4">Suivez-nous sur les réseaux sociaux</p>
-          <div className="flex justify-center gap-4">
-            <motion.a
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              href="https://instagram.com/missmisterdour"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E4405F] to-[#F77737] flex items-center justify-center hover:shadow-lg hover:shadow-[#E4405F]/50 transition-all"
-            >
-              <Instagram className="w-6 h-6 text-white" />
-            </motion.a>
-            <motion.a
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              href="https://facebook.com/missmisterdour"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 h-12 rounded-full bg-[#3B82F6] flex items-center justify-center hover:shadow-lg hover:shadow-[#3B82F6]/50 transition-all"
-            >
-              <Facebook className="w-6 h-6 text-white" />
-            </motion.a>
+      <section className="mmd-section">
+        <div className="mmd-container mmd-thankyou-grid">
+          <article><span>01</span><h2>Vérification</h2><p>L’équipe contrôle les informations et les éléments nécessaires à votre candidature.</p></article>
+          <article><span>02</span><h2>Validation</h2><p>Après validation, votre profil pourra être complété et préparé pour sa publication officielle.</p></article>
+          <article><span>03</span><h2>Publication</h2><p>Les profils approuvés apparaissent dans l’expérience publique Miss & Mister Dour.</p></article>
+          <article><span>04</span><h2>La suite</h2><p>Les dates, rendez-vous et informations de l’édition 2027 vous seront communiqués lorsqu’ils seront confirmés.</p></article>
+        </div>
+      </section>
+
+      <section className="mmd-section mmd-thankyou-actions-section">
+        <div className="mmd-container mmd-thankyou-actions">
+          <div><span className="mmd-overline">RESTEZ CONNECTÉ</span><h2>Suivez <em>l’aventure.</em></h2></div>
+          <div className="mmd-thankyou-buttons">
+            <Link href="/" className="mmd-primary-button"><Home />Retour à l’accueil</Link>
+            <button type="button" onClick={share} className="mmd-secondary-button"><Share2 />Partager</button>
           </div>
-        </motion.div>
+          <div className="mmd-social-links">
+            <a href={BRANDING.socialMedia.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram /></a>
+            <a href={BRANDING.socialMedia.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Facebook /></a>
+          </div>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-12 text-center text-sm text-[#C0C0C0]"
-        >
-          <p>Des questions ? Contactez-nous à <a href="mailto:contact@miss-mister-dour.be" className="text-[#D4AF37] hover:underline">contact@miss-mister-dour.be</a></p>
-          <p className="mt-2">© 2026 Miss & Mister Dour - Créé par JS-Innov.IA</p>
-        </motion.div>
-      </motion.div>
+      <section className="mmd-final-cta mmd-final-cta--compact">
+        <div className="mmd-container mmd-final-content">
+          <span className="mmd-final-eyebrow">DÉCOUVRIR L’ÉDITION</span>
+          <h2>Les autres <em>candidats.</em></h2>
+          <p>Découvrez les profils déjà validés et publiés.</p>
+          <div className="mmd-final-actions"><Link href="/candidates" className="mmd-final-dark-button">Voir les profils <ArrowRight /></Link></div>
+        </div>
+      </section>
     </div>
   );
 }
