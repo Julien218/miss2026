@@ -1,0 +1,32 @@
+name: Production smoke — Miss Mister Dour
+
+on:
+  push:
+    branches:
+      - rescue/recovered-production-source
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mmd-production-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Wait for Railway and test production
+        env:
+          MMD_BASE_URL: https://missetmisterdour.be
+        run: node .github/scripts/production-smoke.mjs
