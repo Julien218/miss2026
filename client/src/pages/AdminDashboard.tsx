@@ -1,278 +1,72 @@
+import { useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Users, Trophy, Vote, TrendingUp, AlertTriangle, Calendar, Briefcase, FileText, Inbox } from "lucide-react";
+import { Users, Trophy, Vote, TrendingUp, ShieldCheck, Calendar, Briefcase, FileText, Inbox, UserPlus, Bell } from "lucide-react";
 import ExportVotesDialog from "@/components/ExportVotesDialog";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const authLoading = false; // useAuth doesn't expose isLoading
-  
-  // Fetch statistics
-  // Mock stats for now - will be replaced with real data
-  const stats = {
-    totalVotes: 127,
-    totalCandidates: 24,
-    votesToday: 15,
-    fraudRate: 2.3,
-  };
-  const { data: leaderboard } = trpc.votes.getLeaderboard.useQuery({ contestId: 1, limit: 5 });
-  
   const [, setLocation] = useLocation();
-  
-  // Redirect if not admin
-  if (!authLoading && user?.role !== "admin" && user?.role !== "owner" && user?.role !== "super_admin") {
-    setLocation("/");
+  const { data: contests, isLoading: contestsLoading } = trpc.contests.list.useQuery();
+  const contest2027 = useMemo(() => contests?.find((contest) => contest.year === 2027), [contests]);
+  const contestId = contest2027?.id ?? 0;
+  const { data: candidates, isLoading: candidatesLoading } = trpc.candidates.listByContest.useQuery(
+    { contestId },
+    { enabled: contestId > 0 }
+  );
+
+  if (user?.role !== "admin" && user?.role !== "owner" && user?.role !== "super_admin") {
+    setLocation("/login?returnTo=/admin");
     return null;
   }
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-white">Chargement...</div>
-      </div>
-    );
-  }
+  const realCandidates = candidates ?? [];
+  const totalVotes = realCandidates.reduce((sum, candidate) => sum + Number(candidate.voteCount || 0), 0);
+  const leaderboard = [...realCandidates]
+    .filter((candidate) => ["approved", "finalist", "winner"].includes(candidate.status))
+    .sort((a, b) => Number(b.voteCount || 0) - Number(a.voteCount || 0))
+    .slice(0, 5);
+  const loading = contestsLoading || (contestId > 0 && candidatesLoading);
 
   const statsCards = [
-    {
-      title: "Total Votes",
-      value: stats?.totalVotes || 0,
-      icon: Vote,
-      description: "Votes enregistrés",
-      color: "text-blue-500",
-    },
-    {
-      title: "Candidats",
-      value: stats?.totalCandidates || 0,
-      icon: Users,
-      description: "Candidats inscrits",
-      color: "text-purple-500",
-    },
-    {
-      title: "Votes Aujourd'hui",
-      value: stats?.votesToday || 0,
-      icon: TrendingUp,
-      description: "Votes des dernières 24h",
-      color: "text-green-500",
-    },
-    {
-      title: "Taux de Fraude",
-      value: `${stats?.fraudRate || 0}%`,
-      icon: AlertTriangle,
-      description: "Votes suspects détectés",
-      color: "text-red-500",
-    },
+    { title: "Votes 2027", value: loading ? "…" : totalVotes, icon: Vote, description: "Total réel des votes publiés" },
+    { title: "Candidats 2027", value: loading ? "…" : realCandidates.length, icon: Users, description: "Dossiers créés dans l’édition" },
+    { title: "Édition", value: contest2027 ? "2027" : "—", icon: Calendar, description: contest2027 ? contest2027.status : "Créée au premier dossier valide" },
+    { title: "Anti-double-vote", value: "Actif", icon: ShieldCheck, description: "Contrôle concours + appareil" },
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
-      {/* Header */}
-      <div className="border-b border-gray-800 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Dashboard Administrateur</h1>
-              <p className="text-gray-400 text-sm">Miss & Mister Dour 2027</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-400">
-                Connecté en tant que <span className="text-white font-medium">{user?.name}</span>
-              </span>
-              <ExportVotesDialog />
-              <Button variant="outline" size="sm" onClick={() => setLocation("/admin/events")}>
-                <Calendar className="w-4 h-4 mr-2" />
-                Événements
-              </Button>
-            </div>
-          </div>
-        </div>
+  return <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black text-white">
+    <header className="border-b border-white/10 bg-black/65 backdrop-blur-xl sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div><h1 className="text-2xl font-semibold">Cockpit Miss & Mister Dour</h1><p className="text-white/45 text-sm">Édition 2027 · données réelles</p></div>
+        <div className="flex flex-wrap items-center gap-2"><span className="text-xs text-white/40">{user?.name || user?.email}</span><ExportVotesDialog/><Button variant="outline" size="sm" onClick={() => setLocation("/admin/events")}><Calendar className="w-4 h-4 mr-2"/>Événements</Button></div>
+      </div>
+    </header>
+
+    <main className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        {statsCards.map(({ title, value, icon: Icon, description }) => <Card key={title} className="bg-white/[.035] border-white/10"><CardHeader className="pb-2"><div className="flex items-center justify-between"><CardTitle className="text-xs text-white/50">{title}</CardTitle><Icon className="w-4 h-4 text-amber-200"/></div></CardHeader><CardContent><div className="text-2xl md:text-3xl font-semibold text-white">{value}</div><p className="text-[11px] text-white/35 mt-1">{description}</p></CardContent></Card>)}
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statsCards.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={index} className="bg-gray-900/50 border-gray-800 backdrop-blur-sm hover:bg-gray-900/70 transition-all">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-400">
-                    {stat.title}
-                  </CardTitle>
-                  <Icon className={`w-5 h-5 ${stat.color}`} />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                  <p className="text-xs text-gray-500">{stat.description}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        <Button
-          onClick={() => setLocation("/admin/applications")}
-          className="mb-6 w-full min-h-20 justify-start gap-4 border border-amber-300/35 bg-amber-300/10 px-6 text-left text-white hover:bg-amber-300/15"
-        >
-          <Inbox className="h-7 w-7 text-amber-300" />
-          <span>
-            <strong className="block text-base">Nouvelles candidatures</strong>
-            <small className="block text-white/55">Voir, valider ou refuser les formulaires reçus</small>
-          </span>
-        </Button>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Top 5 Candidates */}
-          <Card className="bg-gray-900/50 border-gray-800 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                Top 5 Candidats
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                Classement en temps réel
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {leaderboard?.map((candidate, index) => (
-                  <div
-                    key={candidate.candidateId}
-                    className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-                          index === 0
-                            ? "bg-yellow-500 text-black"
-                            : index === 1
-                            ? "bg-gray-400 text-black"
-                            : index === 2
-                            ? "bg-orange-600 text-white"
-                            : "bg-gray-700 text-gray-300"
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                      <div>
-                        <div className="font-medium text-white">{candidate.candidateName}</div>
-                        <div className="text-sm text-gray-400">{candidate.category}</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-white">{candidate.voteCount} votes</div>
-                      <div className="text-sm text-gray-400">
-                        {Math.round((candidate.voteCount / (stats?.totalVotes || 1)) * 100)}%
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card className="bg-gray-900/50 border-gray-800 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white">Actions Rapides</CardTitle>
-              <CardDescription className="text-gray-400">
-                Gestion du concours
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation("/admin/candidates")}
-                  className="h-24 flex flex-col items-center justify-center gap-2 bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-purple-500/50 transition-all cursor-pointer"
-                >
-                  <Users className="w-6 h-6 text-purple-400" />
-                  <span className="text-sm text-white">Candidats</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation("/admin/votes")}
-                  className="h-24 flex flex-col items-center justify-center gap-2 bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-blue-500/50 transition-all cursor-pointer"
-                >
-                  <Vote className="w-6 h-6 text-blue-400" />
-                  <span className="text-sm text-white">Votes</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation("/admin/events")}
-                  className="h-24 flex flex-col items-center justify-center gap-2 bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-green-500/50 transition-all cursor-pointer"
-                >
-                  <Calendar className="w-6 h-6 text-green-400" />
-                  <span className="text-sm text-white">Événements</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation("/admin/partners")}
-                  className="h-24 flex flex-col items-center justify-center gap-2 bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-yellow-500/50 transition-all cursor-pointer"
-                >
-                  <Briefcase className="w-6 h-6 text-yellow-400" />
-                  <span className="text-sm text-white">Partenaires</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation("/admin/articles")}
-                  className="h-24 flex flex-col items-center justify-center gap-2 bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-pink-500/50 transition-all cursor-pointer"
-                >
-                  <FileText className="w-6 h-6 text-pink-400" />
-                  <span className="text-sm text-white">Articles</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setLocation("/admin/analytics")}
-                  className="h-24 flex flex-col items-center justify-center gap-2 bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-orange-500/50 transition-all cursor-pointer"
-                >
-                  <TrendingUp className="w-6 h-6 text-orange-400" />
-                  <span className="text-sm text-white">Analytics</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* System Status */}
-        <Card className="mt-6 bg-gray-900/50 border-gray-800 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-white">État du Système</CardTitle>
-            <CardDescription className="text-gray-400">
-              Statut des services et fonctionnalités
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-                <div>
-                  <div className="text-sm font-medium text-white">Votes en ligne</div>
-                  <div className="text-xs text-gray-400">Système opérationnel</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-                <div>
-                  <div className="text-sm font-medium text-white">Anti-fraude actif</div>
-                  <div className="text-xs text-gray-400">Protection activée</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-                <div>
-                  <div className="text-sm font-medium text-white">Base de données</div>
-                  <div className="text-xs text-gray-400">Connectée</div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid md:grid-cols-2 gap-3 mb-6">
+        <Button onClick={() => setLocation("/admin/applications")} className="min-h-20 justify-start gap-4 border border-amber-300/35 bg-amber-300/10 px-6 text-left text-white hover:bg-amber-300/15"><Inbox className="h-7 w-7 text-amber-300"/><span><strong className="block text-base">Nouvelles candidatures</strong><small className="block text-white/55">Voir, valider ou refuser les formulaires reçus</small></span></Button>
+        <Button onClick={() => setLocation("/admin/notifications")} className="min-h-20 justify-start gap-4 border border-white/12 bg-white/[.035] px-6 text-left text-white hover:bg-white/[.07]"><Bell className="h-7 w-7 text-amber-200"/><span><strong className="block text-base">Messages & notifications</strong><small className="block text-white/55">Les formulaires Contact arrivent ici</small></span></Button>
       </div>
-    </div>
-  );
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="bg-white/[.035] border-white/10"><CardHeader><CardTitle className="text-white flex items-center gap-2"><Trophy className="w-5 h-5 text-amber-300"/>Top 5 candidats 2027</CardTitle><CardDescription>{contest2027 ? "Classement calculé sur les données de l’édition 2027" : "L’édition 2027 sera créée lors de la première candidature valide"}</CardDescription></CardHeader><CardContent>
+          {leaderboard.length ? <div className="space-y-3">{leaderboard.map((candidate, index) => <button type="button" key={candidate.id} onClick={() => setLocation(`/admin/candidates`)} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/[.035] hover:bg-white/[.06] text-left"><div className="flex items-center gap-3"><span className="w-8 h-8 rounded-full grid place-items-center border border-amber-200/20 text-amber-200 text-xs">{index + 1}</span><div><strong className="block text-sm">{candidate.firstName} {candidate.lastName}</strong><small className="text-white/40">{candidate.category === "miss" ? "Miss" : candidate.category === "mister" ? "Mister" : candidate.category}</small></div></div><span className="font-semibold">{candidate.voteCount || 0} votes</span></button>)}</div> : <div className="py-10 text-center text-white/40"><Trophy className="w-8 h-8 mx-auto mb-3 opacity-40"/><p>Aucun classement 2027 pour le moment.</p></div>}
+        </CardContent></Card>
+
+        <Card className="bg-white/[.035] border-white/10"><CardHeader><CardTitle className="text-white">Actions rapides</CardTitle><CardDescription>Gestion de l’édition et du site</CardDescription></CardHeader><CardContent><div className="grid grid-cols-2 gap-3">
+          {[
+            ["Candidats", Users, "/admin/candidates"], ["Invitations", UserPlus, "/admin/invitations"], ["Votes", Vote, "/admin/votes"], ["Événements", Calendar, "/admin/events"], ["Partenaires", Briefcase, "/admin/partners"], ["Articles", FileText, "/admin/articles"], ["Analytics", TrendingUp, "/admin/analytics"], ["Notifications", Bell, "/admin/notifications"],
+          ].map(([label, Icon, path]) => <Button key={String(label)} variant="outline" onClick={() => setLocation(String(path))} className="h-20 flex flex-col gap-2 bg-white/[.025] border-white/10 hover:bg-white/[.06]"><Icon className="w-5 h-5 text-amber-200"/><span className="text-xs text-white">{String(label)}</span></Button>)}
+        </div></CardContent></Card>
+      </div>
+    </main>
+  </div>;
 }
