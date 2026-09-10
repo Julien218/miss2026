@@ -6,9 +6,11 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
+import { PublicSiteChrome } from "./components/PublicSiteChrome";
 import "./index.css";
 import "./editorial-2027.css";
 import "./editorial-2027-refinements.css";
+import "./public-2027.css";
 
 const queryClient = new QueryClient();
 
@@ -17,9 +19,7 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (typeof window === "undefined") return;
 
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
-
   if (!isUnauthorized) return;
-
   window.location.href = getLoginUrl();
 };
 
@@ -54,10 +54,23 @@ const trpcClient = trpc.createClient({
   ],
 });
 
+const PUBLIC_CHROME_PREFIXES = [
+  "/about", "/press", "/sponsors", "/contact", "/legal/", "/mentions-legales",
+  "/ranking", "/gallery", "/candidates", "/candidat/", "/public", "/article/",
+  "/inscription-candidat", "/inscription-merci", "/onboarding/candidate/", "/invite/",
+  "/invitation/", "/verify/", "/profile/edit/",
+];
+
+function RootExperience() {
+  const path = window.location.pathname;
+  const usePublicChrome = path !== "/" && PUBLIC_CHROME_PREFIXES.some(prefix => path.startsWith(prefix));
+  return usePublicChrome ? <PublicSiteChrome><App /></PublicSiteChrome> : <App />;
+}
+
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RootExperience />
     </QueryClientProvider>
   </trpc.Provider>
 );
