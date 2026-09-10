@@ -11,6 +11,7 @@ import { generateSitemap, generateRobotsTxt } from "../sitemap";
 import { domainRedirectMiddleware } from "./domain-redirect";
 import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
+import { registerCandidateApplicationAdminRoutes } from "../routes/candidateApplicationsAdmin";
 import { apiLimiter } from "./rateLimit";
 import { serveStatic, setupVite } from "./vite";
 
@@ -37,6 +38,10 @@ async function startServer() {
   if (process.env.OAUTH_SERVER_URL) {
     registerOAuthRoutes(app);
   }
+
+  // 📥 Boîte de réception des candidatures du formulaire public.
+  // Les routes sont protégées côté serveur par la session + le rôle admin.
+  registerCandidateApplicationAdminRoutes(app);
 
   // 🖼️ Image countdown
   app.get("/api/countdown-image", generateCountdownImage);
