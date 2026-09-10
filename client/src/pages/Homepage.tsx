@@ -2,15 +2,12 @@ import { Link } from "wouter";
 import { useMemo, useState as useMenuState } from "react";
 import {
   ArrowRight,
-  Award,
   Camera,
   Crown,
   History,
   LogIn,
   Menu,
   PlayCircle,
-  Sparkles,
-  Users,
   X,
 } from "lucide-react";
 import { BRANDING } from "@/config/branding";
@@ -18,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { SEOHead } from "@/components/SEOHead";
 import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
+import { SponsorVisual2026 } from "@/components/SponsorVisual2026";
 import { trpc } from "@/lib/trpc";
 
 const NAV_LINKS = [
@@ -63,15 +61,13 @@ const ARCHIVES = [
 ];
 
 const SPONSOR_PREVIEW = [
-  ["belfius.jpg", "Belfius"],
-  ["beobank.png", "Beobank"],
-  ["fun-zone.png", "Fun Zone Dour"],
-  ["dour-materiaux.jpg", "Dour Matériaux"],
-  ["la-perla.png", "La Perla"],
-  ["publidesign.png", "PubliDesign"],
+  { index: 3, name: "Belfius" },
+  { index: 28, name: "Beobank" },
+  { index: 29, name: "Fun Zone Dour" },
+  { index: 21, name: "Dour Matériaux" },
+  { index: 0, name: "La Perla" },
+  { index: 38, name: "PubliDesign" },
 ] as const;
-
-const SPONSOR_ASSET_BASE = "https://raw.githubusercontent.com/Julien218/miss-mister-dour-web/main/client/public/sponsors";
 
 function SectionLabel({ index, children }: { index: string; children: string }) {
   return <div className="mmd-section-label"><span>{index}</span><i aria-hidden="true"/><strong>{children}</strong></div>;
@@ -167,7 +163,7 @@ export default function Homepage() {
       <section className="mmd-section mmd-home-archives"><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map(edition=><article key={edition.year}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span><div className="mmd-archive-titles"><div><small>MISS DOUR</small><strong className={edition.miss.includes("relier")?"is-pending":""}>{edition.miss}</strong></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("Archive")||edition.mister.includes("relier")?"is-pending":""}>{edition.mister}</strong></div></div><p>{edition.note}</p></article>)}</div><p className="mmd-archive-disclaimer">Aucun nom n’est publié comme lauréat sans source vérifiée. Le palmarès historique sera complété au fur et à mesure de sa récupération.</p></div></section>
 
       {/* 08 — PARTENAIRES */}
-      <section className="mmd-section mmd-home-partners"><div className="mmd-container"><SectionLabel index="08">Partenaires</SectionLabel><div className="mmd-section-heading"><h2>Ils ont accompagné <em>l’aventure.</em></h2><Link href="/sponsors" className="mmd-text-link">Tous les partenaires <ArrowRight/></Link></div><div className="mmd-home-sponsor-preview">{SPONSOR_PREVIEW.map(([file,name])=><div key={file}><img src={`${SPONSOR_ASSET_BASE}/${file}`} alt={`Logo ${name}`} loading="lazy"/></div>)}</div><p className="mmd-home-partner-note">Aperçu des partenaires de l’édition 2026. Les partenaires 2027 seront identifiés séparément.</p></div></section>
+      <section className="mmd-section mmd-home-partners"><div className="mmd-container"><SectionLabel index="08">Partenaires</SectionLabel><div className="mmd-section-heading"><h2>Ils ont accompagné <em>l’aventure.</em></h2><Link href="/sponsors" className="mmd-text-link">Tous les partenaires <ArrowRight/></Link></div><div className="mmd-home-sponsor-preview">{SPONSOR_PREVIEW.map((sponsor)=><div key={sponsor.index}><SponsorVisual2026 index={sponsor.index} label={sponsor.name}/></div>)}</div><p className="mmd-home-partner-note">Aperçu des partenaires de l’édition 2026. Les partenaires 2027 seront identifiés séparément.</p></div></section>
 
       {/* 09 — GALERIE */}
       <section className="mmd-section mmd-home-gallery"><div className="mmd-container"><SectionLabel index="09">Galerie</SectionLabel><div className="mmd-section-heading"><h2>Portraits, scène et <em>moments forts.</em></h2><Link href="/gallery" className="mmd-text-link">Explorer la galerie <ArrowRight/></Link></div>{galleryPreview.length>0?<div className="mmd-home-gallery-grid">{galleryPreview.map((photo,index)=><Link href="/gallery" key={photo.id} className={index===0||index===3?"is-large":""}><img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||"Galerie Miss & Mister Dour"} loading="lazy"/></Link>)}</div>:<div className="mmd-home-gallery-placeholder"><Camera/><span>La galerie se remplira automatiquement avec les médias validés.</span></div>}</div></section>
