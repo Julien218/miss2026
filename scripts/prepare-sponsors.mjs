@@ -6,8 +6,8 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = path.join(here, "sponsors-2026", "full-sprite.b64");
 const output = path.join(here, "..", "client", "public", "sponsors", "sponsors-2026-runtime.webp");
-const expectedBytes = 67092;
-const expectedSha256 = "eb6a529174902af153c5c08db8fcb11dc5371388814714adec8595b1744f8c26";
+const expectedBytes = 13596;
+const expectedSha256 = "d877088f0b25b3d078386b50c90058eb90b33fbd6b28c978ee56daacfa0812d0";
 
 if (!fs.existsSync(source)) {
   throw new Error("Sponsor sprite: source officielle full-sprite.b64 introuvable.");
@@ -25,4 +25,4 @@ if (buffer.length !== expectedBytes || sha256 !== expectedSha256) {
 
 fs.mkdirSync(path.dirname(output), { recursive: true });
 fs.writeFileSync(output, buffer);
-console.log(`[Sponsors 2026] Sprite officiel généré: ${buffer.length} octets · ${sha256.slice(0, 12)}…`);
+console.log(`[Sponsors 2026] Sprite officiel web généré: ${buffer.length} octets · ${sha256.slice(0, 12)}…`);
