@@ -1,19 +1,20 @@
 export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
-// Generate login URL at runtime so redirect URI reflects the current origin.
-// The server OAuth SDK expects `state` to decode directly to the callback URL,
-// so keep the payload compatible with that contract.
-export const getLoginUrl = (_returnPath?: string) => {
-  const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
-  const appId = import.meta.env.VITE_APP_ID;
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const state = btoa(redirectUri);
+/**
+ * Canonical login entry point for protected areas.
+ *
+ * Authentication is local (email/password) and does not depend on an external
+ * OAuth portal. A relative return path can be preserved after a successful
+ * login.
+ */
+export const getLoginUrl = (returnPath?: string) => {
+  if (typeof window === "undefined") return "/login";
 
-  const url = new URL(`${oauthPortalUrl}/app-auth`);
-  url.searchParams.set("appId", appId);
-  url.searchParams.set("redirectUri", redirectUri);
-  url.searchParams.set("state", state);
-  url.searchParams.set("type", "signIn");
+  const params = new URLSearchParams();
+  if (returnPath && returnPath.startsWith("/") && !returnPath.startsWith("//")) {
+    params.set("returnTo", returnPath);
+  }
 
-  return url.toString();
+  const query = params.toString();
+  return query ? `/login?${query}` : "/login";
 };
