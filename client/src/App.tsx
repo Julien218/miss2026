@@ -36,6 +36,7 @@ import { Ranking } from "./pages/Ranking";
 import VideoFactory2026 from "./pages/VideoFactory2026";
 import InternalDashboard from "./pages/InternalDashboard";
 import Homepage from "./pages/Homepage";
+import Login from "./pages/Login";
 import AdminInvitations from "./pages/admin/AdminInvitations";
 import AdminUsers from "./pages/AdminUsers";
 import CandidateOnboarding from "./pages/admin/CandidateOnboarding";
@@ -64,9 +65,7 @@ import LegalNotice from "./pages/LegalNotice";
 import { Footer } from "./components/Footer";
 import { SplashScreen } from "./components/SplashScreen";
 import CookieBanner from "./components/CookieBanner";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RoleGuard } from "./components/RoleGuard";
-import { Permission } from "../../server/permissions";
 import Choreographer from "./pages/Choreographer";
 import CandidateProfileEdit from "./pages/CandidateProfileEdit";
 import CandidatePublicProfile from "./pages/CandidatePublicProfile";
@@ -79,6 +78,7 @@ function Router() {
     <Switch>
       {/* ========== PAGES PUBLIQUES ========== */}
       <Route path="/" component={Homepage} />
+      <Route path="/login" component={Login} />
       <Route path="/about" component={About} />
       <Route path="/press" component={Press} />
       <Route path="/sponsors" component={Sponsors} />
@@ -330,6 +330,7 @@ function App() {
   };
 
   const hideFooter = location === '/' ||
+                     location.startsWith('/login') ||
                      location.startsWith('/dashboard') || 
                      location.startsWith('/admin') || 
                      location.startsWith('/my-profile') ||
