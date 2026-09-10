@@ -3,6 +3,7 @@ import express from "express";
 import { createServer } from "http";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
+import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { ogMetaMiddleware } from "./og-meta";
@@ -18,8 +19,7 @@ async function startServer() {
   const server = createServer(app);
 
   // Railway terminates HTTP(S) behind a reverse proxy. Trust exactly one proxy
-  // hop so req.ip and express-rate-limit use the real client address from
-  // X-Forwarded-For instead of raising ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+  // hop so req.ip and express-rate-limit use the real client address.
   app.set("trust proxy", 1);
 
   // 🔁 Redirection domaine
@@ -29,8 +29,14 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-  // 🔐 OAuth
-  registerOAuthRoutes(app);
+  // 🔐 Auth locale — chemin canonique pour les espaces protégés.
+  registerLocalAuthRoutes(app);
+
+  // OAuth externe conservé uniquement en compatibilité lorsqu'un vrai serveur
+  // OAuth est explicitement configuré.
+  if (process.env.OAUTH_SERVER_URL) {
+    registerOAuthRoutes(app);
+  }
 
   // 🖼️ Image countdown
   app.get("/api/countdown-image", generateCountdownImage);
