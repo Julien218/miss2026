@@ -1,4 +1,5 @@
-/* Final layout refinements for the 2027 editorial homepage. */
+/* Final layout refinements for the 2027 editorial experience. */
+@import "./profile-2027.css";
 
 @media (min-width: 768px) {
   .mmd-bento {
