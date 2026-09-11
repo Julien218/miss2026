@@ -1,118 +1,100 @@
-/**
- * profilePhotoUpload.ts
- * Route Express POST /api/upload/profile-photo
- * Permet aux candidats d'uploader leur photo de profil via leur token unique.
- * - Valide le token (table profileEditTokens)
- * - Accepte les images JPG, PNG, WebP (max 5MB)
- * - Upload vers S3 via storagePut
- * - Met à jour candidates.profilePhoto
- */
-
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import rateLimit from "express-rate-limit";
 import multer from "multer";
+import sharp from "sharp";
+import crypto from "node:crypto";
 import { getDb } from "../db";
 import { candidates, profileEditTokens } from "../../drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { storagePut } from "../storage";
-import crypto from "crypto";
 
-// ─── Multer : stockage en mémoire (max 5MB) ──────────────────────────────────
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 12,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Trop d’envois de photo. Réessayez dans une heure." },
+});
+
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10 },
   fileFilter: (_req, file, cb) => {
-    const allowed = ["image/jpeg", "image/png", "image/webp"];
-    if (allowed.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Format non supporté. Utilisez JPG, PNG ou WebP."));
-    }
+    const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
+    if (allowed.has(file.mimetype.toLowerCase())) cb(null, true);
+    else cb(new Error("Format non supporté. Utilisez JPG, PNG ou WebP."));
   },
 });
 
-// ─── Handler principal ────────────────────────────────────────────────────────
+async function normalizeProfileImage(buffer: Buffer) {
+  try {
+    const source = sharp(buffer, { failOn: "error", limitInputPixels: 50_000_000 });
+    const metadata = await source.metadata();
+    if (!metadata.width || !metadata.height) throw new Error("Dimensions de photo invalides");
+    if (metadata.width > 10_000 || metadata.height > 10_000) {
+      throw new Error("La résolution de la photo est trop élevée");
+    }
+    return await source
+      .rotate()
+      .resize({ width: 1600, height: 2000, fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 86, effort: 4 })
+      .toBuffer();
+  } catch (error) {
+    console.warn("[ProfilePhotoUpload] invalid image", error);
+    throw new Error("La photo est invalide ou endommagée. Utilisez une image JPG, PNG ou WebP valide.");
+  }
+}
+
 async function handleProfilePhotoUpload(req: Request, res: Response) {
   try {
     const token = req.body?.token || req.query?.token;
-
-    if (!token || typeof token !== "string") {
-      return res.status(400).json({ error: "Token manquant" });
+    if (!token || typeof token !== "string" || token.length > 512) {
+      return res.status(400).json({ error: "Token manquant ou invalide" });
     }
+    if (!req.file) return res.status(400).json({ error: "Aucun fichier reçu" });
 
-    if (!req.file) {
-      return res.status(400).json({ error: "Aucun fichier reçu" });
-    }
+    const database = await getDb();
+    if (!database) return res.status(500).json({ error: "Base de données indisponible" });
 
-    const db = await getDb();
-    if (!db) {
-      return res.status(500).json({ error: "Base de données indisponible" });
-    }
-
-    // 1. Valider le token
-    const [tokenRow] = await db
+    const [tokenRow] = await database
       .select()
       .from(profileEditTokens)
-      .where(
-        and(
-          eq(profileEditTokens.token, token),
-          eq(profileEditTokens.isActive, 1)
-        )
-      )
+      .where(and(eq(profileEditTokens.token, token), eq(profileEditTokens.isActive, 1)))
       .limit(1);
 
-    if (!tokenRow) {
-      return res.status(403).json({ error: "Lien invalide ou expiré" });
-    }
-
+    if (!tokenRow) return res.status(403).json({ error: "Lien invalide ou expiré" });
     if (tokenRow.expiresAt && new Date() > tokenRow.expiresAt) {
       return res.status(403).json({ error: "Ce lien a expiré" });
     }
 
-    // 2. Générer une clé S3 unique
-    const ext = req.file.mimetype === "image/png" ? "png"
-      : req.file.mimetype === "image/webp" ? "webp"
-      : "jpg";
-    const randomSuffix = crypto.randomBytes(8).toString("hex");
-    const s3Key = `profile-photos/candidate-${tokenRow.candidateId}-${randomSuffix}.${ext}`;
+    // Sharp décode réellement les octets, corrige l'orientation et réencode sans EXIF.
+    const normalized = await normalizeProfileImage(req.file.buffer);
+    const randomSuffix = crypto.randomBytes(12).toString("hex");
+    const objectKey = `profile-photos/candidate-${tokenRow.candidateId}-${randomSuffix}.webp`;
+    const { url: photoUrl } = await storagePut(objectKey, normalized, "image/webp");
 
-    // 3. Upload vers S3
-    const { url: photoUrl } = await storagePut(
-      s3Key,
-      req.file.buffer,
-      req.file.mimetype
-    );
-
-    // 4. Mettre à jour la table candidates
-    await db
+    await database
       .update(candidates)
-      .set({
-        profilePhoto: photoUrl,
-        updatedAt: new Date(),
-      })
+      .set({ profilePhoto: photoUrl, updatedAt: new Date() })
       .where(eq(candidates.id, tokenRow.candidateId));
 
-    // 5. Incrémenter le compteur d'utilisation du token
-    await db
+    await database
       .update(profileEditTokens)
-      .set({
-        usedCount: tokenRow.usedCount + 1,
-        lastUsedAt: new Date(),
-      })
+      .set({ usedCount: tokenRow.usedCount + 1, lastUsedAt: new Date() })
       .where(eq(profileEditTokens.token, token));
 
-    return res.json({
-      success: true,
-      photoUrl,
-      candidateId: tokenRow.candidateId,
-    });
-  } catch (err: any) {
-    console.error("[ProfilePhotoUpload] Error:", err);
-    return res.status(500).json({ error: err?.message || "Erreur interne" });
+    return res.json({ success: true, photoUrl, candidateId: tokenRow.candidateId });
+  } catch (error: any) {
+    console.error("[ProfilePhotoUpload] Error:", error);
+    const message = typeof error?.message === "string" && error.message.toLowerCase().includes("photo")
+      ? error.message
+      : "Impossible de traiter la photo pour le moment.";
+    return res.status(400).json({ error: message });
   }
 }
 
-// ─── Export : middleware multer + handler ─────────────────────────────────────
 export const profilePhotoUploadRoute = [
+  uploadLimiter,
   upload.single("photo"),
   handleProfilePhotoUpload,
 ] as const;
