@@ -7,6 +7,14 @@ import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { injectOGMetaIntoHTML } from "./og-meta";
 
+function rejectUnknownApi(req: any, res: any) {
+  if (req.path?.startsWith("/api/")) {
+    res.status(404).json({ error: "API endpoint not found" });
+    return true;
+  }
+  return false;
+}
+
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
@@ -24,6 +32,7 @@ export async function setupVite(app: Express, server: Server) {
   app.use(vite.middlewares);
 
   app.use("*", async (req, res, next) => {
+    if (rejectUnknownApi(req, res)) return;
     const url = req.originalUrl;
 
     try {
@@ -67,9 +76,21 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, {
+    index: false,
+    setHeaders(res, filePath) {
+      if (/\.(?:js|css|webp|png|jpg|jpeg|svg|woff2?)$/i.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=604800, stale-while-revalidate=86400");
+      }
+      if (filePath.endsWith("sw.js") || filePath.endsWith("manifest.webmanifest")) {
+        res.setHeader("Cache-Control", "no-cache");
+      }
+    },
+  }));
 
-  app.use("*", (_req, res) => {
+  app.use("*", (req, res) => {
+    if (rejectUnknownApi(req, res)) return;
+    res.setHeader("Cache-Control", "no-cache");
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
