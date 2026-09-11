@@ -1,13 +1,15 @@
 import type { Express, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./cookies";
 import { verifyPasswordUser } from "./auth-password";
 import { sdk } from "./sdk";
 
+const LOCAL_SESSION_MS = 1000 * 60 * 60 * 24 * 30; // 30 jours
+
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 12,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true,
@@ -20,26 +22,26 @@ export function registerLocalAuthRoutes(app: Express) {
       const email = String(req.body?.email ?? "").toLowerCase().trim();
       const password = String(req.body?.password ?? "");
 
-      if (!email || !password) {
+      if (!email || !password || email.length > 320 || password.length > 512) {
         res.status(400).json({ error: "Adresse email et mot de passe requis." });
         return;
       }
 
       const user = await verifyPasswordUser(email, password);
       if (!user) {
-        // Intentionally generic: never disclose whether an account exists.
+        // Message volontairement générique : ne jamais révéler l'existence d'un compte.
         res.status(401).json({ error: "Email ou mot de passe incorrect." });
         return;
       }
 
       const token = await sdk.createSessionToken(user.openId, {
         name: user.name || user.email || "Utilisateur",
-        expiresInMs: ONE_YEAR_MS,
+        expiresInMs: LOCAL_SESSION_MS,
       });
 
       res.cookie(COOKIE_NAME, token, {
         ...getSessionCookieOptions(req),
-        maxAge: ONE_YEAR_MS,
+        maxAge: LOCAL_SESSION_MS,
       });
 
       res.json({ success: true, role: user.role });

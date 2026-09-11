@@ -1,69 +1,44 @@
-/**
- * Middleware pour rediriger automatiquement l'ancien domaine manus.space
- * vers le domaine officiel https://missetmisterdour.be
- * 
- * Redirection 301 (permanente) pour SEO
- */
-
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { getPublicBaseUrl } from "../url-helpers";
 
-/**
- * Middleware de redirection 301 pour forcer le domaine officiel
- * 
- * Si le site est accessible sur manus.space ou manus.computer,
- * redirige automatiquement vers missetmisterdour.be
- */
-export function domainRedirectMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const host = req.get("host") || "";
-  const officialDomain = getPublicBaseUrl().replace(/^https?:\/\//, "");
-  
-  // Vérifier si on est sur un domaine non-officiel
-  const isManusSpace = host.includes("manus.space");
-  const isManusComputer = host.includes("manus.computer");
-  const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
-  
-  // Si on est sur manus.space (mais pas localhost ou manus.computer pour le dev)
-  if (isManusSpace && !isLocalhost) {
-    // Construire l'URL de redirection vers le domaine officiel
-    const officialUrl = `https://${officialDomain}${req.originalUrl}`;
-    
-    // Log pour debugging
-    console.log(`[Domain Redirect] ${host}${req.originalUrl} → ${officialUrl}`);
-    
-    // Redirection 301 (permanente)
-    return res.redirect(301, officialUrl);
-  }
-  
-  // Continuer normalement si on est déjà sur le bon domaine
-  next();
+function hostname(value: string) {
+  return value.toLowerCase().split(":")[0];
 }
 
-/**
- * Alternative: Ajouter meta noindex sur les domaines non-officiels
- * Empêche l'indexation sans rediriger
- */
-export function addNoindexForNonOfficialDomains(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const host = req.get("host") || "";
-  const officialDomain = getPublicBaseUrl().replace(/^https?:\/\//, "");
-  
-  const isManusSpace = host.includes("manus.space");
-  const isManusComputer = host.includes("manus.computer");
-  const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
-  
-  // Si on est sur un domaine non-officiel (mais pas localhost)
-  if ((isManusSpace || isManusComputer) && !isLocalhost) {
-    // Stocker dans res.locals pour injection dans le HTML
+export function domainRedirectMiddleware(req: Request, res: Response, next: NextFunction) {
+  const host = hostname(req.get("host") || "");
+  const official = new URL(getPublicBaseUrl()).hostname.toLowerCase();
+  const isLocalhost = host === "localhost" || host === "127.0.0.1" || host === "::1";
+  if (isLocalhost || !host) return next();
+
+  // Ne jamais rediriger les API : les redirections cross-origin peuvent supprimer
+  // Authorization et casser les webhooks/intégrations serveur-à-serveur.
+  if (req.path.startsWith("/api/")) {
+    if (host !== official) res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    return next();
+  }
+
+  const shouldCanonicalize =
+    host !== official &&
+    (host === `www.${official}` ||
+      host.endsWith(".up.railway.app") ||
+      host.endsWith(".manus.space") ||
+      host.endsWith(".manus.computer"));
+
+  if (shouldCanonicalize) {
+    return res.redirect(301, `${getPublicBaseUrl()}${req.originalUrl}`);
+  }
+
+  if (host !== official) res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  return next();
+}
+
+export function addNoindexForNonOfficialDomains(req: Request, res: Response, next: NextFunction) {
+  const host = hostname(req.get("host") || "");
+  const official = new URL(getPublicBaseUrl()).hostname.toLowerCase();
+  if (host && host !== official && host !== "localhost" && host !== "127.0.0.1") {
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
     res.locals.noindex = true;
   }
-  
   next();
 }

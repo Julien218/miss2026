@@ -1,36 +1,48 @@
-/**
- * comments.ts — Router tRPC pour les commentaires sur les profils candidats
- * - Public : lire et poster des commentaires (sans connexion)
- * - Public : liker un commentaire (anti-doublon par IP)
- * - Admin : modérer (approuver/rejeter/supprimer) les commentaires
- */
+import crypto from "node:crypto";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { sql } from "drizzle-orm";
 import { sendEmail, buildCommentNotificationEmail } from "../helpers/email";
+import { getPublicBaseUrl } from "../url-helpers";
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 function hashIp(ip: string): string {
-  const crypto = require("crypto");
-  return crypto.createHash("sha256").update(ip + "salt_mmd2026").digest("hex").slice(0, 16);
+  const secret = process.env.COMMENT_HASH_SECRET || process.env.COOKIE_SECRET;
+  if (!secret) {
+    // On ne persiste jamais l'IP brute ; le fallback est spécifique au runtime.
+    return crypto.createHash("sha256").update(`mmd:${ip}`).digest("hex").slice(0, 32);
+  }
+  return crypto.createHmac("sha256", secret).update(ip).digest("hex").slice(0, 32);
 }
 
-// ─── Router ──────────────────────────────────────────────────────────────────
-export const commentsRouter = router({
+async function assertPublicCandidate(database: any, candidateId: number) {
+  const [rows] = await database.execute(sql`
+    SELECT id, firstName, lastName, status
+    FROM candidates
+    WHERE id = ${candidateId}
+      AND status IN ('approved', 'finalist', 'winner')
+    LIMIT 1
+  `) as any;
+  const candidate = (rows as any[])[0];
+  if (!candidate) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Profil candidat indisponible." });
+  }
+  return candidate;
+}
 
-  // ─── PUBLIC : Récupérer les commentaires d'un candidat ─────────────────
+export const commentsRouter = router({
   getByCandidate: publicProcedure
     .input(z.object({
       candidateId: z.number().int().positive(),
       limit: z.number().int().min(1).max(100).default(50),
     }))
     .query(async ({ input }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
+      const database = await getDb();
+      if (!database) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
+      await assertPublicCandidate(database, input.candidateId);
 
-      const rows = await db.execute(sql`
+      const rows = await database.execute(sql`
         SELECT
           c.id,
           c.candidate_id AS candidateId,
@@ -48,137 +60,134 @@ export const commentsRouter = router({
       `);
 
       const comments = (rows as any[])[0] as any[];
-
-      // Organiser en arbre (parent → enfants)
-      const topLevel = comments.filter((c: any) => !c.parentId);
-      const replies = comments.filter((c: any) => !!c.parentId);
+      const topLevel = comments.filter((comment: any) => !comment.parentId);
+      const replies = comments.filter((comment: any) => !!comment.parentId);
 
       return topLevel.map((comment: any) => ({
         ...comment,
         createdAt: new Date(comment.createdAt),
         replies: replies
-          .filter((r: any) => r.parentId === comment.id)
-          .map((r: any) => ({ ...r, createdAt: new Date(r.createdAt) })),
+          .filter((reply: any) => reply.parentId === comment.id)
+          .map((reply: any) => ({ ...reply, createdAt: new Date(reply.createdAt) })),
       }));
     }),
 
-  // ─── PUBLIC : Poster un commentaire ────────────────────────────────────
   add: publicProcedure
     .input(z.object({
       candidateId: z.number().int().positive(),
       parentId: z.number().int().positive().optional(),
-      authorName: z.string().min(2).max(100),
-      authorEmail: z.string().email().optional(),
-      content: z.string().min(3).max(1000),
+      authorName: z.string().trim().min(2).max(100),
+      authorEmail: z.string().trim().email().max(320).optional(),
+      content: z.string().trim().min(3).max(1000),
     }))
     .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
+      const database = await getDb();
+      if (!database) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
+      const candidate = await assertPublicCandidate(database, input.candidateId);
 
-      // Anti-spam basique : max 5 commentaires par IP par heure
-      const ip = (ctx as any).req?.ip || (ctx as any).req?.headers?.["x-forwarded-for"] || "unknown";
+      const ip = ctx.req.ip || ctx.req.socket?.remoteAddress || "unknown";
       const ipHash = hashIp(String(ip));
 
-      const [spamCheck] = await db.execute(sql`
+      const [spamCheck] = await database.execute(sql`
         SELECT COUNT(*) AS cnt
         FROM candidate_comments
         WHERE ip_hash = ${ipHash}
           AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
       `) as any;
-      const spamCount = (spamCheck as any[])[0]?.cnt ?? 0;
-      if (Number(spamCount) >= 5) {
+      if (Number((spamCheck as any[])[0]?.cnt ?? 0) >= 5) {
         throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Trop de commentaires. Réessayez dans une heure." });
       }
 
-      // Filtrage contenu basique (mots interdits)
-      const forbidden = ["spam", "pub", "promo", "http://", "https://"];
       const lowerContent = input.content.toLowerCase();
-      if (forbidden.some(w => lowerContent.includes(w))) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Contenu non autorisé dans le commentaire." });
+      const forbidden = ["http://", "https://", "javascript:", "data:text/html"];
+      if (forbidden.some((term) => lowerContent.includes(term))) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Les liens ne sont pas autorisés dans les commentaires." });
       }
 
-      await db.execute(sql`
+      if (input.parentId) {
+        const [parentRows] = await database.execute(sql`
+          SELECT id FROM candidate_comments
+          WHERE id = ${input.parentId}
+            AND candidate_id = ${input.candidateId}
+            AND status = 'approved'
+          LIMIT 1
+        `) as any;
+        if (!(parentRows as any[]).length) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Commentaire parent invalide." });
+        }
+      }
+
+      // Toute publication publique passe d'abord en modération humaine.
+      await database.execute(sql`
         INSERT INTO candidate_comments
           (candidate_id, parent_id, author_name, author_email, content, status, ip_hash)
         VALUES
           (${input.candidateId}, ${input.parentId ?? null}, ${input.authorName},
-           ${input.authorEmail ?? null}, ${input.content}, 'approved', ${ipHash})
+           ${input.authorEmail ?? null}, ${input.content}, 'pending', ${ipHash})
       `);
 
-      // ── Notification email admin (non bloquante) ─────────────────────────
-      (async () => {
+      // Notification non bloquante ; aucune donnée sensible n'est exposée au visiteur.
+      void (async () => {
         try {
-          const db2 = await getDb();
-          if (!db2) return;
-          // Nom du candidat
-          const [candRows] = await db2.execute(sql`
-            SELECT CONCAT(firstName, ' ', lastName) AS fullName FROM candidates WHERE id = ${input.candidateId} LIMIT 1
+          const [adminRows] = await database.execute(sql`
+            SELECT email FROM users
+            WHERE role IN ('admin', 'super_admin') AND email IS NOT NULL
+            LIMIT 10
           `) as any;
-          const candidateName = (candRows as any[])[0]?.fullName ?? `Candidat #${input.candidateId}`;
-          // Emails des admins
-          const [adminRows] = await db2.execute(sql`
-            SELECT email FROM users WHERE role IN ('admin', 'super_admin') AND email IS NOT NULL LIMIT 10
-          `) as any;
-          const adminEmails: string[] = (adminRows as any[]).map((r: any) => r.email).filter(Boolean);
-          const recipients = adminEmails.length > 0 ? adminEmails : ['Olivier.trevis@outlook.be'];
-          const baseUrl = 'https://missdourweb-fqsyubas.manus.space';
-          const subject = `💬 Nouveau commentaire • ${candidateName} • Miss & Mister Dour 2026`;
+          const adminEmails: string[] = (adminRows as any[]).map((row: any) => row.email).filter(Boolean);
+          if (!adminEmails.length) return;
+          const candidateName = `${candidate.firstName} ${candidate.lastName}`.trim();
+          const candidateUrl = `${getPublicBaseUrl().replace(/\/$/, "")}/candidat/${input.candidateId}`;
           const emailData = buildCommentNotificationEmail({
             commenterName: input.authorName,
             commentContent: input.content,
             candidateName,
-            candidateUrl: `${baseUrl}/candidates/${input.candidateId}`,
+            candidateUrl,
           });
-          await Promise.allSettled(recipients.map(email => sendEmail({ to: email, subject: emailData.subject, html: emailData.html, text: emailData.text })));
-        } catch { /* silencieux */ }
+          const subject = `Nouveau commentaire à modérer · ${candidateName} · Miss & Mister Dour 2027`;
+          await Promise.allSettled(
+            adminEmails.map((email) => sendEmail({ to: email, subject, html: emailData.html, text: emailData.text }))
+          );
+        } catch (error) {
+          console.warn("[Comments] Admin notification failed", error);
+        }
       })();
 
-      return { success: true };
+      return { success: true, pendingModeration: true };
     }),
 
-  // ─── PUBLIC : Liker un commentaire ─────────────────────────────────────
   like: publicProcedure
     .input(z.object({ commentId: z.number().int().positive() }))
     .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
+      const database = await getDb();
+      if (!database) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB indisponible" });
 
-      const ip = (ctx as any).req?.ip || (ctx as any).req?.headers?.["x-forwarded-for"] || "unknown";
+      const [commentRows] = await database.execute(sql`
+        SELECT id FROM candidate_comments WHERE id = ${input.commentId} AND status = 'approved' LIMIT 1
+      `) as any;
+      if (!(commentRows as any[]).length) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Commentaire indisponible." });
+      }
+
+      const ip = ctx.req.ip || ctx.req.socket?.remoteAddress || "unknown";
       const ipHash = hashIp(String(ip));
-
-      // Vérifier si déjà liké
-      const [existing] = await db.execute(sql`
+      const [existing] = await database.execute(sql`
         SELECT id FROM comment_likes
         WHERE comment_id = ${input.commentId} AND ip_hash = ${ipHash}
         LIMIT 1
       `) as any;
-      const existingRows = (existing as any[]);
 
-      if (existingRows.length > 0) {
-        // Retirer le like
-        await db.execute(sql`
-          DELETE FROM comment_likes
-          WHERE comment_id = ${input.commentId} AND ip_hash = ${ipHash}
-        `);
-        await db.execute(sql`
-          UPDATE candidate_comments
-          SET likes = GREATEST(0, likes - 1)
-          WHERE id = ${input.commentId}
-        `);
+      if ((existing as any[]).length > 0) {
+        await database.execute(sql`DELETE FROM comment_likes WHERE comment_id = ${input.commentId} AND ip_hash = ${ipHash}`);
+        await database.execute(sql`UPDATE candidate_comments SET likes = GREATEST(0, likes - 1) WHERE id = ${input.commentId}`);
         return { liked: false };
-      } else {
-        // Ajouter le like
-        await db.execute(sql`
-          INSERT INTO comment_likes (comment_id, ip_hash) VALUES (${input.commentId}, ${ipHash})
-        `);
-        await db.execute(sql`
-          UPDATE candidate_comments SET likes = likes + 1 WHERE id = ${input.commentId}
-        `);
-        return { liked: true };
       }
+
+      await database.execute(sql`INSERT INTO comment_likes (comment_id, ip_hash) VALUES (${input.commentId}, ${ipHash})`);
+      await database.execute(sql`UPDATE candidate_comments SET likes = likes + 1 WHERE id = ${input.commentId}`);
+      return { liked: true };
     }),
 
-  // ─── ADMIN : Lister tous les commentaires pour modération ──────────────
   listForModeration: protectedProcedure
     .input(z.object({
       status: z.enum(["all", "pending", "approved", "rejected"]).default("all"),
@@ -188,14 +197,11 @@ export const commentsRouter = router({
       if (ctx.user.role !== "admin" && ctx.user.role !== "super_admin") {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const database = await getDb();
+      if (!database) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
-      const whereClause = input.status === "all"
-        ? sql``
-        : sql`AND c.status = ${input.status}`;
-
-      const rows = await db.execute(sql`
+      const whereClause = input.status === "all" ? sql`` : sql`AND c.status = ${input.status}`;
+      const rows = await database.execute(sql`
         SELECT
           c.id,
           c.candidate_id AS candidateId,
@@ -214,12 +220,10 @@ export const commentsRouter = router({
         ORDER BY c.created_at DESC
         LIMIT ${input.limit}
       `);
-
       const comments = (rows as any[])[0] as any[];
-      return comments.map((c: any) => ({ ...c, createdAt: new Date(c.createdAt) }));
+      return comments.map((comment: any) => ({ ...comment, createdAt: new Date(comment.createdAt) }));
     }),
 
-  // ─── ADMIN : Modérer un commentaire ────────────────────────────────────
   moderate: protectedProcedure
     .input(z.object({
       commentId: z.number().int().positive(),
@@ -229,32 +233,25 @@ export const commentsRouter = router({
       if (ctx.user.role !== "admin" && ctx.user.role !== "super_admin") {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const database = await getDb();
+      if (!database) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
       if (input.action === "delete") {
-        await db.execute(sql`
-          DELETE FROM candidate_comments WHERE id = ${input.commentId}
-        `);
+        await database.execute(sql`DELETE FROM candidate_comments WHERE id = ${input.commentId}`);
       } else {
         const newStatus = input.action === "approve" ? "approved" : "rejected";
-        await db.execute(sql`
-          UPDATE candidate_comments SET status = ${newStatus} WHERE id = ${input.commentId}
-        `);
+        await database.execute(sql`UPDATE candidate_comments SET status = ${newStatus} WHERE id = ${input.commentId}`);
       }
-
       return { success: true };
     }),
 
-  // ─── ADMIN : Statistiques commentaires ─────────────────────────────────
   getStats: protectedProcedure.query(async ({ ctx }) => {
     if (ctx.user.role !== "admin" && ctx.user.role !== "super_admin") {
       throw new TRPCError({ code: "FORBIDDEN" });
     }
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-
-    const [stats] = await db.execute(sql`
+    const database = await getDb();
+    if (!database) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [stats] = await database.execute(sql`
       SELECT
         COUNT(*) AS total,
         SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved,
@@ -263,7 +260,6 @@ export const commentsRouter = router({
         SUM(likes) AS totalLikes
       FROM candidate_comments
     `) as any;
-
     const row = (stats as any[])[0] ?? {};
     return {
       total: Number(row.total ?? 0),

@@ -1,16 +1,33 @@
+import crypto from "node:crypto";
 import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import * as db from "../db";
 import { checkRateLimit, rateLimitConfigs } from "../_core/rateLimit";
 
+function voteIdentity(ctx: any) {
+  const ip = ctx.req?.ip || ctx.req?.socket?.remoteAddress || "unknown";
+  const userAgent = String(ctx.req?.get?.("user-agent") || ctx.req?.headers?.["user-agent"] || "unknown").slice(0, 500);
+  const secret = process.env.VOTE_HASH_SECRET || process.env.JWT_SECRET || "mmd-runtime";
+  const stable = ctx.user?.id ? `user:${ctx.user.id}` : `network:${ip}|ua:${userAgent}`;
+  return crypto.createHmac("sha256", secret).update(stable).digest("hex");
+}
+
+function hashedIp(ctx: any) {
+  const ip = ctx.req?.ip || ctx.req?.socket?.remoteAddress || "unknown";
+  const secret = process.env.VOTE_HASH_SECRET || process.env.JWT_SECRET || "mmd-runtime";
+  return crypto.createHmac("sha256", secret).update(String(ip)).digest("hex");
+}
+
 export const votesRouter = router({
   cast: publicProcedure
     .input(z.object({
       contestId: z.number().int().positive(),
       candidateId: z.number().int().positive(),
-      fingerprint: z.string().min(16).max(128),
-      email: z.string().email().optional(),
+      // Conservé pour compatibilité avec les anciens clients ; la décision
+      // anti-fraude ne fait plus confiance à une valeur contrôlée par le navigateur.
+      fingerprint: z.string().min(8).max(128).optional(),
+      email: z.string().email().max(320).optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       const candidate = await db.getCandidateById(input.candidateId);
@@ -18,22 +35,23 @@ export const votesRouter = router({
         throw new TRPCError({ code: "BAD_REQUEST", message: "Ce profil n’est pas disponible pour ce vote." });
       }
 
-      const rateLimit = checkRateLimit("vote", input.fingerprint, rateLimitConfigs.vote);
+      const identity = voteIdentity(ctx);
+      const rateLimit = checkRateLimit("vote", identity, rateLimitConfigs.vote);
       if (rateLimit.limited) {
         throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: rateLimit.message });
       }
 
-      const existingVote = await db.hasVoted(input.contestId, input.fingerprint);
+      const existingVote = await db.hasVoted(input.contestId, identity);
       if (existingVote) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Vous avez déjà voté pour cette édition." });
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Un vote a déjà été enregistré depuis cette session/appareil pour cette édition." });
       }
 
       const voteId = await db.createVote({
         contestId: input.contestId,
         candidateId: input.candidateId,
         userId: ctx.user?.id,
-        voterIp: ctx.req.ip || "unknown",
-        voterFingerprint: input.fingerprint,
+        voterIp: hashedIp(ctx),
+        voterFingerprint: identity,
         voterEmail: input.email,
         voteCategory: "public_choice",
         voteWeight: 1,
@@ -46,9 +64,13 @@ export const votesRouter = router({
     }),
 
   checkCanVote: publicProcedure
-    .input(z.object({ contestId: z.number().int().positive(), fingerprint: z.string().min(16).max(128) }))
-    .query(async ({ input }) => {
-      const hasVoted = await db.hasVoted(input.contestId, input.fingerprint);
+    .input(z.object({
+      contestId: z.number().int().positive(),
+      fingerprint: z.string().min(8).max(128).optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      const identity = voteIdentity(ctx);
+      const hasVoted = await db.hasVoted(input.contestId, identity);
       return { canVote: !hasVoted, hasVoted };
     }),
 
