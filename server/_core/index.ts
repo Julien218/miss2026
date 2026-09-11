@@ -4,6 +4,7 @@ import { createServer } from "http";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerLocalAuthRoutes } from "./auth-local-routes";
+import { ensureLocalCredentialsStorage } from "./auth-password";
 import { registerCockpitRegistrationRoutes } from "./cockpit-registrations";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -24,6 +25,9 @@ import {
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
+  // Sépare les anciens hash bcrypt du JSON de permissions avant d'accepter des connexions.
+  await ensureLocalCredentialsStorage();
+
   const app = express();
   const server = createServer(app);
 
@@ -48,7 +52,6 @@ async function startServer() {
 
   registerPublicFormRoutes(app);
   registerCandidateApplicationAdminRoutes(app);
-  // Lecture seule, authentifiée par Bearer token pour le cockpit JS-Innov.IA.
   registerCockpitRegistrationRoutes(app);
 
   app.get("/api/countdown-image", generateCountdownImage);
@@ -88,4 +91,7 @@ async function startServer() {
   server.listen(port, "0.0.0.0", () => console.log(`✅ Server running on port ${port}`));
 }
 
-startServer().catch(console.error);
+startServer().catch((error) => {
+  console.error("[Startup] Fatal initialization error", error);
+  process.exitCode = 1;
+});
