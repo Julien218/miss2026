@@ -55,8 +55,10 @@ const contactSchema = z.object({
   message: z.string().trim().min(10).max(5000),
 });
 
-function getClientIp(req: Request) {
-  return req.ip || req.socket.remoteAddress || "unknown";
+function hashClientIp(req: Request) {
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
+  const secret = process.env.COMMENT_HASH_SECRET || process.env.JWT_SECRET || "mmd-runtime";
+  return crypto.createHmac("sha256", secret).update(ip).digest("hex").slice(0, 64);
 }
 
 function calculateAge(dateText: string) {
@@ -76,9 +78,7 @@ function decodeImageDataUrl(dataUrl: string) {
   const allowed = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
   if (!allowed.has(contentType)) throw new Error("Format de photo non supporté. Utilisez JPG, PNG, WebP ou une photo mobile compatible.");
   const buffer = Buffer.from(match[2].replace(/\s/g, ""), "base64");
-  if (!buffer.length || buffer.length > 5 * 1024 * 1024) {
-    throw new Error("La photo doit peser au maximum 5 Mo");
-  }
+  if (!buffer.length || buffer.length > 5 * 1024 * 1024) throw new Error("La photo doit peser au maximum 5 Mo");
   return buffer;
 }
 
@@ -88,11 +88,7 @@ async function normalizeCandidateImage(buffer: Buffer) {
     const metadata = await source.metadata();
     if (!metadata.width || !metadata.height) throw new Error("Dimensions invalides");
     if (metadata.width > 10_000 || metadata.height > 10_000) throw new Error("Résolution trop élevée");
-    return await source
-      .rotate()
-      .resize({ width: 1600, height: 2000, fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 86, effort: 4 })
-      .toBuffer();
+    return await source.rotate().resize({ width: 1600, height: 2000, fit: "inside", withoutEnlargement: true }).webp({ quality: 86, effort: 4 }).toBuffer();
   } catch (error) {
     console.warn("[Public forms] image decode rejected", error);
     throw new Error("La photo est invalide ou endommagée. Essayez une photo JPG, PNG ou WebP valide.");
@@ -111,13 +107,7 @@ async function getOrCreateContest2027() {
   if (!database) throw new Error("Base de données indisponible");
   const existing = await findContest2027();
   if (existing) return existing.id;
-  const result = await (database.insert(contests) as any).values({
-    title: "Miss & Mister Dour 2027",
-    year: 2027,
-    description: "Édition 2027 de Miss & Mister Dour",
-    status: "registration",
-    location: "Dour, Belgique",
-  });
+  const result = await (database.insert(contests) as any).values({ title: "Miss & Mister Dour 2027", year: 2027, description: "Édition 2027 de Miss & Mister Dour", status: "registration", location: "Dour, Belgique" });
   const contestId = Number(result?.[0]?.insertId);
   if (!contestId) throw new Error("Impossible de créer l’édition 2027");
   return contestId;
@@ -126,9 +116,7 @@ async function getOrCreateContest2027() {
 async function notifyAdmins(title: string, content: string, type: "info" | "message" = "info") {
   const admins = await db.getAllAdmins();
   if (!admins.length) throw new Error("Aucun administrateur destinataire n’est configuré");
-  await Promise.all(
-    admins.map((admin) => db.createNotification({ userId: admin.id, type, title, content, isRead: 0 } as any))
-  );
+  await Promise.all(admins.map((admin) => db.createNotification({ userId: admin.id, type, title, content, isRead: 0 } as any)));
   return admins.length;
 }
 
@@ -139,21 +127,9 @@ export function registerPublicFormRoutes(app: Express) {
       if (!database) return res.status(503).json({ ok: false, database: false });
       const contest = await findContest2027();
       const admins = await db.getAllAdmins();
-      const r2Configured = Boolean(
-        process.env.R2_ENDPOINT &&
-        process.env.R2_ACCESS_KEY_ID &&
-        process.env.R2_SECRET_ACCESS_KEY &&
-        process.env.R2_BUCKET
-      );
+      const r2Configured = Boolean(process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID && process.env.R2_SECRET_ACCESS_KEY && process.env.R2_BUCKET);
       const ok = admins.length > 0 && r2Configured;
-      return res.status(ok ? 200 : 503).json({
-        ok,
-        database: true,
-        contest2027: Boolean(contest),
-        adminsAvailable: admins.length > 0,
-        storageConfigured: r2Configured,
-        storage: "r2",
-      });
+      return res.status(ok ? 200 : 503).json({ ok, database: true, contest2027: Boolean(contest), adminsAvailable: admins.length > 0, storageConfigured: r2Configured, storage: "r2" });
     } catch (error) {
       console.error("[Forms health]", error);
       return res.status(503).json({ ok: false, error: "Forms dependencies unavailable" });
@@ -162,30 +138,20 @@ export function registerPublicFormRoutes(app: Express) {
 
   app.post("/api/public/candidate-applications", candidateLimiter, async (req, res) => {
     const parsed = candidateSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ error: "Certaines informations sont invalides ou incomplètes." });
-    }
+    if (!parsed.success) return res.status(400).json({ error: "Certaines informations sont invalides ou incomplètes." });
 
     try {
       const input = parsed.data;
       const age = calculateAge(input.birthDate);
-      if (age < 18 || age > 35) {
-        return res.status(400).json({ error: "Vous devez avoir entre 18 et 35 ans à la date de l’inscription." });
-      }
+      if (age < 18 || age > 35) return res.status(400).json({ error: "Vous devez avoir entre 18 et 35 ans à la date de l’inscription." });
 
       const contestId = await getOrCreateContest2027();
       const database = await db.getDb();
       if (!database) return res.status(503).json({ error: "Base de données momentanément indisponible." });
 
       const normalizedEmail = input.email.toLowerCase();
-      const [duplicate] = await database
-        .select({ id: candidateApplications.id })
-        .from(candidateApplications)
-        .where(and(eq(candidateApplications.email, normalizedEmail), eq(candidateApplications.contestId, contestId)))
-        .limit(1);
-      if (duplicate) {
-        return res.status(409).json({ error: "Une candidature existe déjà avec cette adresse email pour l’édition 2027." });
-      }
+      const [duplicate] = await database.select({ id: candidateApplications.id }).from(candidateApplications).where(and(eq(candidateApplications.email, normalizedEmail), eq(candidateApplications.contestId, contestId))).limit(1);
+      if (duplicate) return res.status(409).json({ error: "Une candidature existe déjà avec cette adresse email pour l’édition 2027." });
 
       const decoded = decodeImageDataUrl(input.photoBase64);
       const normalized = await normalizeCandidateImage(decoded);
@@ -213,25 +179,17 @@ export function registerPublicFormRoutes(app: Express) {
         acceptedTerms: input.acceptRules && input.acceptCGU,
         acceptedMedia: input.acceptMedia,
         acceptedNewsletter: input.acceptNewsletter,
-        ipAddress: getClientIp(req),
+        ipAddress: hashClientIp(req),
         contestId,
         status: "pending",
       });
 
-      await notifyAdmins(
-        "Nouvelle candidature 2027",
-        `${application.firstName} ${application.lastName} (${application.category}) · ${application.city} · ${application.email}. À examiner dans /admin/applications.`,
-        "info"
-      );
+      await notifyAdmins("Nouvelle candidature 2027", `${application.firstName} ${application.lastName} (${application.category}) · ${application.city} · ${application.email}. À examiner dans /admin/applications.`, "info");
       return res.status(201).json({ success: true, applicationId: application.id, contestId });
     } catch (error) {
       console.error("[Public candidate application]", error);
       const message = error instanceof Error ? error.message : "Impossible d’enregistrer la candidature.";
-      return res.status(500).json({
-        error: /photo|image|Mo|format/i.test(message)
-          ? message
-          : "Impossible d’enregistrer la candidature pour le moment.",
-      });
+      return res.status(500).json({ error: /photo|image|Mo|format/i.test(message) ? message : "Impossible d’enregistrer la candidature pour le moment." });
     }
   });
 
@@ -240,11 +198,7 @@ export function registerPublicFormRoutes(app: Express) {
     if (!parsed.success) return res.status(400).json({ error: "Veuillez vérifier les champs du formulaire." });
     try {
       const input = parsed.data;
-      const recipients = await notifyAdmins(
-        `Nouveau message site — ${input.subject}`,
-        `De : ${input.name} <${input.email}>\n\n${input.message}`,
-        "message"
-      );
+      const recipients = await notifyAdmins(`Nouveau message site — ${input.subject}`, `De : ${input.name} <${input.email}>\n\n${input.message}`, "message");
       return res.status(201).json({ success: true, recipients });
     } catch (error) {
       console.error("[Public contact]", error);
