@@ -1,244 +1,158 @@
 /**
- * Système de permissions fines pour Miss & Mister Dour
- * 
- * Architecture:
- * - Chaque rôle a des permissions par défaut
- * - Chaque utilisateur peut avoir des overrides (add/remove)
- * - permissions_effectives = permissions_role + overrides.add - overrides.remove
+ * Permissions fines Miss & Mister Dour.
+ * Les rôles du schéma 2027 et les anciens alias sont maintenus ici afin
+ * qu'un changement de nom de rôle ne retire pas silencieusement des droits.
  */
-
-// ========== ENUM PERMISSIONS ==========
 export enum Permission {
-  // Gestion utilisateurs
   CAN_MANAGE_USERS = "can_manage_users",
   CAN_MANAGE_INVITATIONS = "can_manage_invitations",
-  
-  // Gestion candidats
   CAN_VIEW_CANDIDATES = "can_view_candidates",
   CAN_CREATE_CANDIDATES = "can_create_candidates",
   CAN_EDIT_CANDIDATES = "can_edit_candidates",
-  
-  // Gestion médias
   CAN_UPLOAD_MEDIA = "can_upload_media",
   CAN_VIEW_MEDIA = "can_view_media",
   CAN_DELETE_MEDIA = "can_delete_media",
-  
-  // Génération IA
   CAN_GENERATE_VIDEO = "can_generate_video",
   CAN_GENERATE_VOICE = "can_generate_voice",
-  
-  // Jury
   CAN_VIEW_JURY_AREA = "can_view_jury_area",
   CAN_SUBMIT_SCORES = "can_submit_scores",
-  
-  // Publication
   CAN_PUBLISH_CONTENT = "can_publish_content",
-  
-  // Admin global
   CAN_VIEW_AUDIT_LOGS = "can_view_audit_logs",
 }
 
-// ========== MAPPING RÔLES → PERMISSIONS PAR DÉFAUT ==========
+const FULL_ADMIN: Permission[] = Object.values(Permission);
+
+const ORGANIZER: Permission[] = [
+  Permission.CAN_VIEW_CANDIDATES,
+  Permission.CAN_CREATE_CANDIDATES,
+  Permission.CAN_EDIT_CANDIDATES,
+  Permission.CAN_UPLOAD_MEDIA,
+  Permission.CAN_VIEW_MEDIA,
+  Permission.CAN_DELETE_MEDIA,
+  Permission.CAN_GENERATE_VIDEO,
+  Permission.CAN_GENERATE_VOICE,
+  Permission.CAN_VIEW_JURY_AREA,
+  Permission.CAN_PUBLISH_CONTENT,
+];
+
+const STAFF: Permission[] = [
+  Permission.CAN_VIEW_CANDIDATES,
+  Permission.CAN_EDIT_CANDIDATES,
+  Permission.CAN_UPLOAD_MEDIA,
+  Permission.CAN_VIEW_MEDIA,
+  Permission.CAN_VIEW_JURY_AREA,
+];
+
+const PHOTOGRAPHER: Permission[] = [
+  Permission.CAN_VIEW_CANDIDATES,
+  Permission.CAN_UPLOAD_MEDIA,
+  Permission.CAN_VIEW_MEDIA,
+];
+
+const MARKETING: Permission[] = [
+  Permission.CAN_VIEW_CANDIDATES,
+  Permission.CAN_VIEW_MEDIA,
+  Permission.CAN_PUBLISH_CONTENT,
+];
+
+const READ_ONLY: Permission[] = [
+  Permission.CAN_VIEW_CANDIDATES,
+  Permission.CAN_VIEW_MEDIA,
+];
+
 export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
-  // Super admin: toutes les permissions
-  admin: [
-    Permission.CAN_MANAGE_USERS,
-    Permission.CAN_MANAGE_INVITATIONS,
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_CREATE_CANDIDATES,
-    Permission.CAN_EDIT_CANDIDATES,
-    Permission.CAN_UPLOAD_MEDIA,
-    Permission.CAN_VIEW_MEDIA,
-    Permission.CAN_DELETE_MEDIA,
-    Permission.CAN_GENERATE_VIDEO,
-    Permission.CAN_GENERATE_VOICE,
-    Permission.CAN_VIEW_JURY_AREA,
-    Permission.CAN_SUBMIT_SCORES,
-    Permission.CAN_PUBLISH_CONTENT,
-    Permission.CAN_VIEW_AUDIT_LOGS,
-  ],
-  
-  // Owner: toutes les permissions (alias admin)
-  owner: [
-    Permission.CAN_MANAGE_USERS,
-    Permission.CAN_MANAGE_INVITATIONS,
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_CREATE_CANDIDATES,
-    Permission.CAN_EDIT_CANDIDATES,
-    Permission.CAN_UPLOAD_MEDIA,
-    Permission.CAN_VIEW_MEDIA,
-    Permission.CAN_DELETE_MEDIA,
-    Permission.CAN_GENERATE_VIDEO,
-    Permission.CAN_GENERATE_VOICE,
-    Permission.CAN_VIEW_JURY_AREA,
-    Permission.CAN_SUBMIT_SCORES,
-    Permission.CAN_PUBLISH_CONTENT,
-    Permission.CAN_VIEW_AUDIT_LOGS,
-  ],
-  
-  // Directeur: gestion complète sauf admin système
-  directeur: [
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_CREATE_CANDIDATES,
-    Permission.CAN_EDIT_CANDIDATES,
-    Permission.CAN_UPLOAD_MEDIA,
-    Permission.CAN_VIEW_MEDIA,
-    Permission.CAN_DELETE_MEDIA,
-    Permission.CAN_GENERATE_VIDEO,
-    Permission.CAN_GENERATE_VOICE,
-    Permission.CAN_PUBLISH_CONTENT,
-  ],
-  
-  // Manager: gestion candidats + médias
-  manager: [
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_EDIT_CANDIDATES,
-    Permission.CAN_UPLOAD_MEDIA,
-    Permission.CAN_VIEW_MEDIA,
-    Permission.CAN_GENERATE_VIDEO,
-    Permission.CAN_GENERATE_VOICE,
-  ],
-  
-  // Photographe: upload médias uniquement
-  photographe: [
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_UPLOAD_MEDIA,
-    Permission.CAN_VIEW_MEDIA,
-  ],
-  
-  // Candidat: voir son profil uniquement
-  candidat: [
-    Permission.CAN_VIEW_CANDIDATES, // Limité à son propre profil (logique métier)
-    Permission.CAN_VIEW_MEDIA, // Limité à ses propres médias
-  ],
-  
-  // Candidate (alias candidat)
-  candidate: [
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_VIEW_MEDIA,
-  ],
-  
-  // Jury: évaluation uniquement
+  // Rôles actuels du schéma.
+  super_admin: FULL_ADMIN,
+  admin: FULL_ADMIN,
+  organizer: ORGANIZER,
+  staff: STAFF,
+  photographer: PHOTOGRAPHER,
+  marketing: MARKETING,
+  press: READ_ONLY,
+  candidate: READ_ONLY,
+  user: [Permission.CAN_VIEW_CANDIDATES],
+
+  // Rôles encore présents dans d'anciennes données/invitations.
+  owner: FULL_ADMIN,
+  directeur: ORGANIZER,
+  manager: STAFF,
+  photographe: PHOTOGRAPHER,
+  candidat: READ_ONLY,
   jury: [
     Permission.CAN_VIEW_CANDIDATES,
     Permission.CAN_VIEW_JURY_AREA,
     Permission.CAN_SUBMIT_SCORES,
   ],
-  
-  // Viewer: lecture seule
-  viewer: [
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_VIEW_MEDIA,
-  ],
-  
-  // User: permissions minimales
-  user: [
-    Permission.CAN_VIEW_CANDIDATES,
-  ],
-  
-  // Partner: partenaire commercial
-  partner: [
-    Permission.CAN_VIEW_CANDIDATES,
-    Permission.CAN_VIEW_MEDIA,
-  ],
+  viewer: READ_ONLY,
+  partner: READ_ONLY,
 };
 
-// ========== TYPES ==========
 export interface PermissionOverrides {
   add?: Permission[];
   remove?: Permission[];
 }
 
-// ========== FONCTIONS UTILITAIRES ==========
-
-/**
- * Récupère les permissions par défaut d'un rôle
- */
 export function getRoleDefaultPermissions(role: string): Permission[] {
   return ROLE_PERMISSIONS[role] || [];
 }
 
-/**
- * Calcule les permissions effectives d'un utilisateur
- * @param role Rôle de l'utilisateur
- * @param overrides Overrides JSON (add/remove)
- * @returns Liste des permissions effectives
- */
 export function getEffectivePermissions(
   role: string,
   overrides?: string | null
 ): Permission[] {
-  // 1. Récupérer permissions par défaut du rôle
   const defaultPermissions = getRoleDefaultPermissions(role);
-  
-  // 2. Si pas d'overrides, retourner permissions par défaut
-  if (!overrides) {
-    return defaultPermissions;
-  }
-  
-  // 3. Parser overrides JSON
+  if (!overrides) return [...defaultPermissions];
+
   let parsedOverrides: PermissionOverrides;
   try {
-    parsedOverrides = JSON.parse(overrides);
+    const parsed = JSON.parse(overrides);
+    // permissionOverrides contient aussi le hash des comptes locaux historiques.
+    // Seules les propriétés add/remove participent au calcul des droits.
+    parsedOverrides = {
+      add: Array.isArray(parsed?.add) ? parsed.add : undefined,
+      remove: Array.isArray(parsed?.remove) ? parsed.remove : undefined,
+    };
   } catch (error) {
     console.error("Failed to parse permission overrides:", error);
-    return defaultPermissions;
+    return [...defaultPermissions];
   }
-  
-  // 4. Appliquer overrides
+
   let effectivePermissions = [...defaultPermissions];
-  
-  // Ajouter permissions (add)
-  if (parsedOverrides.add && Array.isArray(parsedOverrides.add)) {
-    for (const permission of parsedOverrides.add) {
-      if (!effectivePermissions.includes(permission)) {
-        effectivePermissions.push(permission);
-      }
+  for (const permission of parsedOverrides.add || []) {
+    if (Object.values(Permission).includes(permission) && !effectivePermissions.includes(permission)) {
+      effectivePermissions.push(permission);
     }
   }
-  
-  // Retirer permissions (remove)
-  if (parsedOverrides.remove && Array.isArray(parsedOverrides.remove)) {
+  if (parsedOverrides.remove?.length) {
     effectivePermissions = effectivePermissions.filter(
-      (p) => !parsedOverrides.remove!.includes(p)
+      (permission) => !parsedOverrides.remove!.includes(permission)
     );
   }
-  
   return effectivePermissions;
 }
 
-/**
- * Vérifie si un utilisateur a une permission spécifique
- */
 export function hasPermission(
   role: string,
   permission: Permission,
   overrides?: string | null
 ): boolean {
-  const effectivePermissions = getEffectivePermissions(role, overrides);
-  return effectivePermissions.includes(permission);
+  return getEffectivePermissions(role, overrides).includes(permission);
 }
 
-/**
- * Vérifie si un utilisateur a toutes les permissions spécifiées
- */
 export function hasAllPermissions(
   role: string,
   permissions: Permission[],
   overrides?: string | null
 ): boolean {
-  const effectivePermissions = getEffectivePermissions(role, overrides);
-  return permissions.every((p) => effectivePermissions.includes(p));
+  const effective = getEffectivePermissions(role, overrides);
+  return permissions.every((permission) => effective.includes(permission));
 }
 
-/**
- * Vérifie si un utilisateur a au moins une des permissions spécifiées
- */
 export function hasAnyPermission(
   role: string,
   permissions: Permission[],
   overrides?: string | null
 ): boolean {
-  const effectivePermissions = getEffectivePermissions(role, overrides);
-  return permissions.some((p) => effectivePermissions.includes(p));
+  const effective = getEffectivePermissions(role, overrides);
+  return permissions.some((permission) => effective.includes(permission));
 }
