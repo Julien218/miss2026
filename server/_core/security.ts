@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
+import { sdk } from "./sdk";
 
 const CANONICAL_ORIGINS = new Set([
   "https://missetmisterdour.be",
@@ -24,25 +25,18 @@ function isAllowedBrowserOrigin(req: Request, value: string) {
   }
 }
 
-/** Défense en profondeur pour les mutations exécutées depuis un navigateur. */
 export function sameOriginMutationGuard(req: Request, res: Response, next: NextFunction) {
   if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) return next();
   if (!req.path.startsWith("/api/")) return next();
-  // Les intégrations serveur-à-serveur disposent de leur propre authentification.
   if (req.path.startsWith("/api/integrations/")) return next();
 
   const origin = req.get("origin");
   const referer = req.get("referer");
-  if (origin && !isAllowedBrowserOrigin(req, origin)) {
-    return res.status(403).json({ error: "Origine de requête non autorisée." });
-  }
-  if (!origin && referer && !isAllowedBrowserOrigin(req, referer)) {
-    return res.status(403).json({ error: "Origine de requête non autorisée." });
-  }
+  if (origin && !isAllowedBrowserOrigin(req, origin)) return res.status(403).json({ error: "Origine de requête non autorisée." });
+  if (!origin && referer && !isAllowedBrowserOrigin(req, referer)) return res.status(403).json({ error: "Origine de requête non autorisée." });
   return next();
 }
 
-/** Headers de sécurité compatibles avec la PWA, R2 et Google Fonts. */
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -65,27 +59,62 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
       process.env.NODE_ENV === "production" ? "upgrade-insecure-requests" : "",
     ].filter(Boolean).join("; ")
   );
-
-  if (process.env.NODE_ENV === "production") {
-    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-  }
-  if (req.path.startsWith("/api/")) {
-    res.setHeader("Cache-Control", "no-store");
-  }
+  if (process.env.NODE_ENV === "production") res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  if (req.path.startsWith("/api/")) res.setHeader("Cache-Control", "no-store");
   next();
 }
 
-/** L'ancien endpoint tRPC d'inscription ne doit plus contourner la route 2027 sécurisée. */
 export function blockLegacyPublicRegistration(req: Request, res: Response, next: NextFunction) {
   if (req.method === "POST" && req.path.includes("candidates.registerPublic")) {
-    return res.status(410).json({
-      error: "Cette ancienne route d'inscription est désactivée. Utilisez le formulaire officiel 2027.",
-    });
+    return res.status(410).json({ error: "Cette ancienne route d'inscription est désactivée. Utilisez le formulaire officiel 2027." });
   }
   next();
 }
 
-/** Limite dédiée aux compteurs de partage publics afin d'éviter leur manipulation. */
+/**
+ * Défense en profondeur autour de procédures tRPC héritées du prototype.
+ * Les vérifications métier dans les routers restent la première couche ; ce
+ * middleware empêche qu'une procédure sensible mal déclarée `publicProcedure`
+ * redevienne exploitable à l'avenir.
+ */
+export async function sensitiveTrpcGuard(req: Request, res: Response, next: NextFunction) {
+  const url = decodeURIComponent(req.originalUrl || req.url || "");
+
+  if (req.method === "POST" && url.includes("invitations.markUsed")) {
+    return res.status(410).json({ error: "Cette ancienne action d'invitation est désactivée." });
+  }
+
+  const adminOnly = [
+    "analytics.updateInfluenceIndex",
+    "permissions.getEffective",
+    "permissions.checkPermission",
+  ];
+  const contentTeam = [
+    "photos.upload",
+    "flowithos.createMission",
+    "flowithos.getJob",
+    "flowithos.getJobsByCandidate",
+    "flowithos.getKnowledgeDocs",
+    "elevenlabs.generateTTS",
+    "elevenlabs.getVoices",
+  ];
+
+  const needsAdmin = adminOnly.some((name) => url.includes(name));
+  const needsContentRole = contentTeam.some((name) => url.includes(name));
+  if (!needsAdmin && !needsContentRole) return next();
+
+  try {
+    const user = await sdk.authenticateRequest(req);
+    const adminRoles = new Set(["super_admin", "admin", "owner"]);
+    const contentRoles = new Set(["super_admin", "admin", "owner", "organizer", "staff", "photographer", "photographe"]);
+    if (needsAdmin && !adminRoles.has(user.role)) return res.status(403).json({ error: "Accès administrateur requis." });
+    if (needsContentRole && !contentRoles.has(user.role)) return res.status(403).json({ error: "Accès équipe requis." });
+    return next();
+  } catch {
+    return res.status(401).json({ error: "Authentification requise." });
+  }
+}
+
 export const publicShareLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
