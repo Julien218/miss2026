@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "prepare:sponsors": "node scripts/prepare-sponsors.mjs",
-    "build": "node scripts/prepare-sponsors.mjs && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist/server",
+    "build": "pnpm up multer@2.3.0 --lockfile-only && pnpm install --prefer-offline && node -e \"const p=require('multer/package.json'); if(p.version!=='2.3.0') throw new Error('multer 2.3.0 requis, version='+p.version); console.log('[Security] multer '+p.version+' actif')\" && node scripts/prepare-sponsors.mjs && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist/server",
     "start": "NODE_ENV=production node dist/server/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
@@ -97,7 +97,7 @@
     "superjson": "^1.13.3",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^1.1.2",
+    "vaul": "^1.2.2",
     "wouter": "^3.3.5",
     "xlsx": "^0.18.5",
     "zod": "^4.1.12"
