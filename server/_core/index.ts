@@ -20,12 +20,12 @@ import {
   securityHeaders,
   sameOriginMutationGuard,
   blockLegacyPublicRegistration,
+  sensitiveTrpcGuard,
   publicShareLimiter,
 } from "./security";
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
-  // Sépare les anciens hash bcrypt du JSON de permissions avant d'accepter des connexions.
   await ensureLocalCredentialsStorage();
 
   const app = express();
@@ -38,7 +38,6 @@ async function startServer() {
   app.use(sameOriginMutationGuard);
   app.use(domainRedirectMiddleware);
 
-  // Les anciennes expériences 2026 ne doivent plus concurrencer l'édition 2027.
   app.get("/intro", (_req, res) => res.redirect(301, "/"));
   app.get("/miss-mister-dour-2026", (_req, res) => res.redirect(301, "/about"));
   app.get("/miss-mister", (_req, res) => res.redirect(301, "/candidates"));
@@ -77,6 +76,7 @@ async function startServer() {
   app.use(
     "/api/trpc",
     blockLegacyPublicRegistration,
+    sensitiveTrpcGuard,
     publicShareLimiter,
     apiLimiter,
     createExpressMiddleware({ router: appRouter, createContext })
