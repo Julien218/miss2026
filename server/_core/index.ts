@@ -4,6 +4,7 @@ import { createServer } from "http";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerLocalAuthRoutes } from "./auth-local-routes";
+import { registerCockpitRegistrationRoutes } from "./cockpit-registrations";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { ogMetaMiddleware } from "./og-meta";
@@ -26,14 +27,11 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // Railway termine HTTPS derrière un reverse proxy de confiance.
+  app.disable("x-powered-by");
   app.set("trust proxy", 1);
 
-  // Sécurité HTTP commune à toutes les réponses et défense CSRF en profondeur.
   app.use(securityHeaders);
   app.use(sameOriginMutationGuard);
-
-  // Domaine canonique.
   app.use(domainRedirectMiddleware);
 
   // Les anciennes expériences 2026 ne doivent plus concurrencer l'édition 2027.
@@ -42,27 +40,18 @@ async function startServer() {
   app.get("/miss-mister", (_req, res) => res.redirect(301, "/candidates"));
   app.get("/video-factory", (_req, res) => res.redirect(302, "/login?returnTo=/admin/video-generator"));
 
-  // Le formulaire candidat transporte temporairement une photo encodée ; la route
-  // applique ensuite sa propre limite stricte de 5 Mo sur l'image décodée.
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-  // Auth locale — chemin canonique pour les espaces protégés.
   registerLocalAuthRoutes(app);
-
-  // OAuth externe seulement si un fournisseur valide est explicitement configuré.
   if (process.env.OAUTH_SERVER_URL) registerOAuthRoutes(app);
 
-  // Formulaires publics -> MySQL/R2/cockpit.
   registerPublicFormRoutes(app);
-
-  // Boîte de réception admin des candidatures.
   registerCandidateApplicationAdminRoutes(app);
+  // Lecture seule, authentifiée par Bearer token pour le cockpit JS-Innov.IA.
+  registerCockpitRegistrationRoutes(app);
 
-  // Image countdown legacy encore utilisée par certains partages internes.
   app.get("/api/countdown-image", generateCountdownImage);
-
-  // Upload photo candidat par lien/token contrôlé.
   app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, ...any[]]));
 
   app.get("/sitemap.xml", async (_req, res) => {
@@ -82,8 +71,6 @@ async function startServer() {
     res.send(generateRobotsTxt());
   });
 
-  // API tRPC : ancienne inscription bloquée, compteur de partage limité,
-  // puis protection globale anti-abus.
   app.use(
     "/api/trpc",
     blockLegacyPublicRegistration,
@@ -92,7 +79,6 @@ async function startServer() {
     createExpressMiddleware({ router: appRouter, createContext })
   );
 
-  // OG meta SSR.
   app.use(ogMetaMiddleware);
 
   if (process.env.NODE_ENV === "development") await setupVite(app, server);
