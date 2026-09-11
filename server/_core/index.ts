@@ -14,33 +14,43 @@ import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { registerCandidateApplicationAdminRoutes } from "../routes/candidateApplicationsAdmin";
 import { registerPublicFormRoutes } from "../routes/publicForms";
 import { apiLimiter } from "./rateLimit";
+import {
+  securityHeaders,
+  sameOriginMutationGuard,
+  blockLegacyPublicRegistration,
+  publicShareLimiter,
+} from "./security";
 import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // Railway termine HTTP(S) derrière un reverse proxy.
+  // Railway termine HTTPS derrière un reverse proxy de confiance.
   app.set("trust proxy", 1);
+
+  // Sécurité HTTP commune à toutes les réponses et défense CSRF en profondeur.
+  app.use(securityHeaders);
+  app.use(sameOriginMutationGuard);
 
   // Domaine canonique.
   app.use(domainRedirectMiddleware);
 
-  // Les anciennes expériences 2026 ne doivent plus concurrencer l'édition 2027
-  // dans les moteurs ni dans les anciens favoris/liens partagés.
+  // Les anciennes expériences 2026 ne doivent plus concurrencer l'édition 2027.
   app.get("/intro", (_req, res) => res.redirect(301, "/"));
   app.get("/miss-mister-dour-2026", (_req, res) => res.redirect(301, "/about"));
   app.get("/miss-mister", (_req, res) => res.redirect(301, "/candidates"));
   app.get("/video-factory", (_req, res) => res.redirect(302, "/login?returnTo=/admin/video-generator"));
 
-  // Body parser : le formulaire candidat transporte une photo en data URL, limitée à 5 Mo côté route.
+  // Le formulaire candidat transporte temporairement une photo encodée ; la route
+  // applique ensuite sa propre limite stricte de 5 Mo sur l'image décodée.
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
   // Auth locale — chemin canonique pour les espaces protégés.
   registerLocalAuthRoutes(app);
 
-  // OAuth externe conservé uniquement si un vrai serveur OAuth est configuré.
+  // OAuth externe seulement si un fournisseur valide est explicitement configuré.
   if (process.env.OAUTH_SERVER_URL) registerOAuthRoutes(app);
 
   // Formulaires publics -> MySQL/R2/cockpit.
@@ -52,10 +62,9 @@ async function startServer() {
   // Image countdown legacy encore utilisée par certains partages internes.
   app.get("/api/countdown-image", generateCountdownImage);
 
-  // Upload photo candidat authentifié.
-  app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, any]));
+  // Upload photo candidat par lien/token contrôlé.
+  app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, ...any[]]));
 
-  // Sitemap dynamique.
   app.get("/sitemap.xml", async (_req, res) => {
     try {
       const xml = await generateSitemap();
@@ -68,15 +77,17 @@ async function startServer() {
     }
   });
 
-  // Robots dynamique.
   app.get("/robots.txt", (_req, res) => {
     res.header("Content-Type", "text/plain; charset=utf-8");
     res.send(generateRobotsTxt());
   });
 
-  // API tRPC + rate limit global.
+  // API tRPC : ancienne inscription bloquée, compteur de partage limité,
+  // puis protection globale anti-abus.
   app.use(
     "/api/trpc",
+    blockLegacyPublicRegistration,
+    publicShareLimiter,
     apiLimiter,
     createExpressMiddleware({ router: appRouter, createContext })
   );
