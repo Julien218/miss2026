@@ -1,4 +1,389 @@
-.mmd-sponsor-orbit{position:relative;min-height:calc(100svh - 98px);overflow:hidden;background:#f8f5ee;color:#17110c;isolation:isolate}.mmd-sponsor-orbit::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 52%,rgba(196,151,71,.15),transparent 24%),linear-gradient(90deg,rgba(23,17,12,.035) 1px,transparent 1px),linear-gradient(rgba(23,17,12,.035) 1px,transparent 1px);background-size:auto,70px 70px,70px 70px;mask-image:linear-gradient(to bottom,transparent,black 18%,black 82%,transparent)}.mmd-sponsor-orbit-copy{position:absolute;z-index:8;top:clamp(28px,5vh,64px);left:clamp(24px,5vw,78px);max-width:560px;pointer-events:none}.mmd-sponsor-orbit-copy>span{display:block;color:#9b742d;font-size:9px;font-weight:700;letter-spacing:.3em}.mmd-sponsor-orbit-copy h1{margin:12px 0 0;font:500 clamp(35px,4.4vw,68px)/.94 'Playfair Display',Georgia,serif;letter-spacing:-.045em}.mmd-sponsor-orbit-copy h1 em{color:#9b742d;font-weight:400}.mmd-sponsor-orbit-actions{position:absolute;z-index:12;top:clamp(28px,5vh,58px);right:clamp(20px,4vw,62px);display:flex;gap:8px}.mmd-sponsor-orbit-actions button{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(23,17,12,.18);border-radius:50%;background:rgba(248,245,238,.76);color:#17110c;box-shadow:0 8px 30px rgba(48,35,18,.08);backdrop-filter:blur(12px);transition:transform .25s ease,background .25s ease}.mmd-sponsor-orbit-actions button:hover{transform:translateY(-2px);background:#fff}.mmd-sponsor-orbit-actions svg{width:17px;height:17px}.mmd-sponsor-orbit-viewport{position:absolute;inset:0;display:grid;place-items:center;perspective:1100px;touch-action:pan-y;cursor:grab;user-select:none}.mmd-sponsor-orbit-viewport:active{cursor:grabbing}.mmd-sponsor-orbit-scene{position:absolute;left:50%;top:54%;width:1px;height:1px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-2deg)}.mmd-sponsor-orbit-ring{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}.mmd-sponsor-orbit-card{position:absolute;left:-78px;top:-53px;width:156px;height:106px;overflow:hidden;border:1px solid rgba(36,27,20,.17);border-radius:13px;background:#fff;box-shadow:0 18px 45px rgba(47,35,18,.13);backface-visibility:hidden;transform:rotateY(var(--orbit-angle)) translateZ(470px) translateY(var(--orbit-y))}.mmd-sponsor-orbit-card .mmd-sponsor-sprite{width:100%;height:100%;aspect-ratio:auto;background-color:#fff}.mmd-sponsor-orbit-hero{position:absolute;z-index:7;left:50%;top:54%;width:clamp(190px,18vw,270px);aspect-ratio:.76;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;padding:11px;border:1px solid rgba(175,132,54,.42);border-radius:8px;background:#17110c;box-shadow:0 34px 90px rgba(35,25,13,.28),0 0 0 10px rgba(255,255,255,.82);transform:translate(-50%,-50%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}.mmd-sponsor-orbit-hero:hover{transform:translate(-50%,-50%) scale(1.025)}.mmd-sponsor-orbit-hero-inner{min-height:0;flex:1;display:grid;place-items:center;overflow:hidden;border-radius:4px;background:linear-gradient(145deg,#0b0907,#282016)}.mmd-sponsor-orbit-hero-inner img{width:70%;height:70%;object-fit:contain;filter:drop-shadow(0 10px 28px rgba(215,174,105,.22))}.mmd-sponsor-orbit-hero-inner .mmd-sponsor-sprite{width:100%;height:100%;aspect-ratio:auto;background-color:#fff;background-origin:border-box}.mmd-sponsor-orbit-hero small{padding:12px 8px 3px;overflow:hidden;color:#f1dfb0;font:600 11px/1.25 'Playfair Display',Georgia,serif;letter-spacing:.04em;text-overflow:ellipsis;white-space:nowrap}.mmd-sponsor-orbit-hint{position:absolute;z-index:8;bottom:25px;left:50%;display:flex;align-items:center;gap:12px;color:#9b742d;font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;transform:translateX(-50%);white-space:nowrap}.mmd-sponsor-orbit-hint i{width:24px;height:1px;background:currentColor}.mmd-sponsor-orbit-panel{position:absolute;inset:0;z-index:30;display:grid;place-items:center;padding:24px;background:rgba(248,245,238,.93);backdrop-filter:blur(18px);animation:mmd-sponsor-panel-in .35s ease both}.mmd-sponsor-orbit-panel>div{position:relative;width:min(540px,100%);padding:clamp(34px,6vw,64px);border:1px solid rgba(23,17,12,.15);background:#fff;text-align:center;box-shadow:0 30px 100px rgba(23,17,12,.12)}.mmd-sponsor-orbit-panel>div>button{position:absolute;top:14px;right:14px;width:42px;height:42px;display:grid;place-items:center;border:0;background:transparent;color:#17110c}.mmd-sponsor-orbit-panel>div>button svg{width:18px}.mmd-sponsor-orbit-panel span{color:#9b742d;font-size:9px;letter-spacing:.25em}.mmd-sponsor-orbit-panel h2{margin:18px 0;font:500 clamp(34px,5vw,54px)/1 'Playfair Display',Georgia,serif}.mmd-sponsor-orbit-panel p{margin:0;color:rgba(23,17,12,.65);font-size:16px;line-height:1.7}@keyframes mmd-sponsor-panel-in{from{opacity:0}to{opacity:1}}
-.mmd-sponsor-below{background:#090706}.mmd-sponsor-featured-intro{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:clamp(36px,8vw,120px);align-items:end}.mmd-sponsor-featured-intro h2{margin:0;font:500 clamp(42px,6vw,78px)/.98 'Playfair Display',Georgia,serif;letter-spacing:-.04em}.mmd-sponsor-featured-intro h2 em{color:#ead3a5;font-weight:400}.mmd-sponsor-featured-intro p{margin:0;color:rgba(247,239,225,.55);font-size:17px;line-height:1.7}
-@media(max-width:760px){.mmd-sponsor-orbit{min-height:calc(100svh - 83px)}.mmd-sponsor-orbit::before{background-size:auto,42px 42px,42px 42px}.mmd-sponsor-orbit-copy{top:22px;left:18px;right:88px}.mmd-sponsor-orbit-copy h1{font-size:clamp(31px,10vw,44px);max-width:330px}.mmd-sponsor-orbit-copy>span{font-size:7px;letter-spacing:.22em}.mmd-sponsor-orbit-actions{top:18px;right:14px;flex-direction:column}.mmd-sponsor-orbit-actions button{width:38px;height:38px}.mmd-sponsor-orbit-scene,.mmd-sponsor-orbit-hero{top:57%}.mmd-sponsor-orbit-scene{transform:translate(-50%,-50%) rotateX(-4deg) scale(.78)}.mmd-sponsor-orbit-card{left:-68px;top:-46px;width:136px;height:92px;transform:rotateY(var(--orbit-angle)) translateZ(350px) translateY(calc(var(--orbit-y) * .82))}.mmd-sponsor-orbit-hero{width:min(47vw,190px);padding:8px;box-shadow:0 26px 70px rgba(35,25,13,.27),0 0 0 7px rgba(255,255,255,.84)}.mmd-sponsor-orbit-hero small{padding:9px 4px 1px;font-size:9px}.mmd-sponsor-orbit-hint{bottom:max(17px,env(safe-area-inset-bottom));font-size:7px;letter-spacing:.18em}.mmd-sponsor-featured-intro{grid-template-columns:1fr}.mmd-sponsor-orbit-panel>div{padding:46px 24px 34px}}
-@media(prefers-reduced-motion:reduce){.mmd-sponsor-orbit-hint{display:none}.mmd-sponsor-orbit-card{transition:none}.mmd-sponsor-orbit-panel{animation:none}}
+.mmd-sponsor-orbit {
+  position: relative;
+  min-height: calc(100svh - 98px);
+  overflow: hidden;
+  background: #f8f5ee;
+  color: #17110c;
+  isolation: isolate;
+}
+.mmd-sponsor-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at 50% 52%,
+      rgba(196, 151, 71, 0.15),
+      transparent 24%
+    ),
+    linear-gradient(90deg, rgba(23, 17, 12, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(23, 17, 12, 0.035) 1px, transparent 1px);
+  background-size:
+    auto,
+    70px 70px,
+    70px 70px;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 18%,
+    black 82%,
+    transparent
+  );
+}
+.mmd-sponsor-orbit-copy {
+  position: absolute;
+  z-index: 40;
+  top: clamp(28px, 5vh, 64px);
+  left: clamp(24px, 5vw, 78px);
+  max-width: 560px;
+  pointer-events: none;
+}
+.mmd-sponsor-orbit-copy > span {
+  display: block;
+  color: #9b742d;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+}
+.mmd-sponsor-orbit-copy h1 {
+  margin: 12px 0 0;
+  font:
+    500 clamp(35px, 4.4vw, 68px) / 0.94 "Playfair Display",
+    Georgia,
+    serif;
+  letter-spacing: -0.045em;
+}
+.mmd-sponsor-orbit-copy h1 em {
+  color: #9b742d;
+  font-weight: 400;
+}
+.mmd-sponsor-orbit-actions {
+  position: absolute;
+  z-index: 12;
+  top: clamp(28px, 5vh, 58px);
+  right: clamp(20px, 4vw, 62px);
+  display: flex;
+  gap: 8px;
+}
+.mmd-sponsor-orbit-actions button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(23, 17, 12, 0.18);
+  border-radius: 50%;
+  background: rgba(248, 245, 238, 0.76);
+  color: #17110c;
+  box-shadow: 0 8px 30px rgba(48, 35, 18, 0.08);
+  backdrop-filter: blur(12px);
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+.mmd-sponsor-orbit-actions button:hover {
+  transform: translateY(-2px);
+  background: #fff;
+}
+.mmd-sponsor-orbit-actions svg {
+  width: 17px;
+  height: 17px;
+}
+.mmd-sponsor-orbit-viewport {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  perspective: 1100px;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+.mmd-sponsor-orbit-viewport:active {
+  cursor: grabbing;
+}
+.mmd-sponsor-orbit-scene {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 54%;
+  width: 1px;
+  height: 1px;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateX(-2deg);
+}
+.mmd-sponsor-orbit-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.mmd-sponsor-orbit-card {
+  position: absolute;
+  left: -78px;
+  top: -53px;
+  width: 156px;
+  height: 106px;
+  overflow: hidden;
+  border: 1px solid rgba(36, 27, 20, 0.17);
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(47, 35, 18, 0.13);
+  backface-visibility: hidden;
+  transform: rotateY(var(--orbit-angle)) translateZ(470px)
+    translateY(var(--orbit-y));
+}
+.mmd-sponsor-orbit-card .mmd-sponsor-sprite {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  background-color: #fff;
+}
+.mmd-sponsor-orbit-hero {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  top: 54%;
+  width: clamp(190px, 18vw, 270px);
+  aspect-ratio: 0.76;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 11px;
+  border: 1px solid rgba(175, 132, 54, 0.42);
+  border-radius: 8px;
+  background: #17110c;
+  box-shadow:
+    0 34px 90px rgba(35, 25, 13, 0.28),
+    0 0 0 10px rgba(255, 255, 255, 0.82);
+  transform: translate(-50%, -50%);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mmd-sponsor-orbit-hero:hover {
+  transform: translate(-50%, -50%) scale(1.025);
+}
+.mmd-sponsor-orbit-hero-inner {
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 4px;
+  background: linear-gradient(145deg, #0b0907, #282016);
+}
+.mmd-sponsor-orbit-hero-inner img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 28px rgba(215, 174, 105, 0.22));
+}
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-sprite {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  background-color: #fff;
+  background-origin: border-box;
+}
+.mmd-sponsor-orbit-hero small {
+  padding: 12px 8px 3px;
+  overflow: hidden;
+  color: #f1dfb0;
+  font:
+    600 11px/1.25 "Playfair Display",
+    Georgia,
+    serif;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mmd-sponsor-orbit-hint {
+  position: absolute;
+  z-index: 8;
+  bottom: 25px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9b742d;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.mmd-sponsor-orbit-hint i {
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+}
+.mmd-sponsor-orbit-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(248, 245, 238, 0.93);
+  backdrop-filter: blur(18px);
+  animation: mmd-sponsor-panel-in 0.35s ease both;
+}
+.mmd-sponsor-orbit-panel > div {
+  position: relative;
+  width: min(540px, 100%);
+  padding: clamp(34px, 6vw, 64px);
+  border: 1px solid rgba(23, 17, 12, 0.15);
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 30px 100px rgba(23, 17, 12, 0.12);
+}
+.mmd-sponsor-orbit-panel > div > button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #17110c;
+}
+.mmd-sponsor-orbit-panel > div > button svg {
+  width: 18px;
+}
+.mmd-sponsor-orbit-panel span {
+  color: #9b742d;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+}
+.mmd-sponsor-orbit-panel h2 {
+  margin: 18px 0;
+  font:
+    500 clamp(34px, 5vw, 54px) / 1 "Playfair Display",
+    Georgia,
+    serif;
+}
+.mmd-sponsor-orbit-panel p {
+  margin: 0;
+  color: rgba(23, 17, 12, 0.65);
+  font-size: 16px;
+  line-height: 1.7;
+}
+@keyframes mmd-sponsor-panel-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.mmd-sponsor-below {
+  background: #090706;
+}
+.mmd-sponsor-featured-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  gap: clamp(36px, 8vw, 120px);
+  align-items: end;
+}
+.mmd-sponsor-featured-intro h2 {
+  margin: 0;
+  font:
+    500 clamp(42px, 6vw, 78px) / 0.98 "Playfair Display",
+    Georgia,
+    serif;
+  letter-spacing: -0.04em;
+}
+.mmd-sponsor-featured-intro h2 em {
+  color: #ead3a5;
+  font-weight: 400;
+}
+.mmd-sponsor-featured-intro p {
+  margin: 0;
+  color: rgba(247, 239, 225, 0.55);
+  font-size: 17px;
+  line-height: 1.7;
+}
+@media (max-width: 760px) {
+  .mmd-sponsor-orbit {
+    min-height: calc(100svh - 83px);
+  }
+  .mmd-sponsor-orbit::before {
+    background-size:
+      auto,
+      42px 42px,
+      42px 42px;
+  }
+  .mmd-sponsor-orbit-copy {
+    top: 22px;
+    left: 18px;
+    right: 88px;
+  }
+  .mmd-sponsor-orbit-copy h1 {
+    font-size: clamp(31px, 10vw, 44px);
+    max-width: 330px;
+  }
+  .mmd-sponsor-orbit-copy > span {
+    font-size: 7px;
+    letter-spacing: 0.22em;
+  }
+  .mmd-sponsor-orbit-actions {
+    top: 18px;
+    right: 14px;
+    flex-direction: column;
+  }
+  .mmd-sponsor-orbit-actions button {
+    width: 38px;
+    height: 38px;
+  }
+  .mmd-sponsor-orbit-scene,
+  .mmd-sponsor-orbit-hero {
+    top: 57%;
+  }
+  .mmd-sponsor-orbit-scene {
+    transform: translate(-50%, -50%) rotateX(-4deg) scale(0.78);
+  }
+  .mmd-sponsor-orbit-card {
+    left: -68px;
+    top: -46px;
+    width: 136px;
+    height: 92px;
+    transform: rotateY(var(--orbit-angle)) translateZ(350px)
+      translateY(calc(var(--orbit-y) * 0.82));
+  }
+  .mmd-sponsor-orbit-hero {
+    width: min(47vw, 190px);
+    padding: 8px;
+    box-shadow:
+      0 26px 70px rgba(35, 25, 13, 0.27),
+      0 0 0 7px rgba(255, 255, 255, 0.84);
+  }
+  .mmd-sponsor-orbit-hero small {
+    padding: 9px 4px 1px;
+    font-size: 9px;
+  }
+  .mmd-sponsor-orbit-hint {
+    bottom: max(17px, env(safe-area-inset-bottom));
+    font-size: 7px;
+    letter-spacing: 0.18em;
+  }
+  .mmd-sponsor-featured-intro {
+    grid-template-columns: 1fr;
+  }
+  .mmd-sponsor-orbit-panel > div {
+    padding: 46px 24px 34px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mmd-sponsor-orbit-hint {
+    display: none;
+  }
+  .mmd-sponsor-orbit-card {
+    transition: none;
+  }
+  .mmd-sponsor-orbit-panel {
+    animation: none;
+  }
+}
