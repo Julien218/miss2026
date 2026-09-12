@@ -131,19 +131,37 @@
 }
 .mmd-sponsor-orbit-card {
   position: absolute;
-  left: -78px;
-  top: -53px;
-  width: 156px;
-  height: 106px;
+  left: -72px;
+  top: -90px;
+  width: 144px;
+  height: 180px;
+  display: grid;
+  place-items: center;
+  padding: 12px;
   overflow: hidden;
   border: 1px solid rgba(234, 211, 165, 0.24);
-  border-radius: 13px;
-  background: #fff;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.48);
+  border-radius: 11px;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(183, 110, 77, 0.14), transparent 48%),
+    linear-gradient(155deg, #1b1510, #090706 72%);
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.5),
+    inset 0 1px rgba(255, 255, 255, 0.035);
   backface-visibility: hidden;
   will-change: transform, opacity;
 }
-.mmd-sponsor-orbit-card .mmd-sponsor-sprite {
+.mmd-sponsor-orbit-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.47;
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+}
+.mmd-sponsor-orbit-card-media .mmd-sponsor-sprite {
+  display: block;
   width: 100%;
   height: 100%;
   aspect-ratio: auto;
@@ -154,7 +172,7 @@
   z-index: 7;
   left: 50%;
   top: 54%;
-  width: clamp(154px, 14vw, 210px);
+  width: clamp(148px, 12vw, 178px);
   aspect-ratio: 0.76;
   display: flex;
   flex-direction: column;
@@ -375,13 +393,14 @@
     transform: translate(-50%, -50%) rotateX(-4deg) scale(0.78);
   }
   .mmd-sponsor-orbit-card {
-    left: -68px;
-    top: -46px;
-    width: 136px;
-    height: 92px;
+    left: -64px;
+    top: -79px;
+    width: 128px;
+    height: 158px;
+    padding: 10px;
   }
   .mmd-sponsor-orbit-hero {
-    width: min(42vw, 166px);
+    width: min(37vw, 146px);
     padding: 8px;
     box-shadow:
       0 26px 70px rgba(0, 0, 0, 0.6),
