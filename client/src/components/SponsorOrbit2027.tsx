@@ -1,17 +1,13 @@
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Info, Pause, Play, X } from "lucide-react";
 import { BRANDING } from "@/config/branding";
 import { SPONSORS_2026, SponsorVisual2026 } from "@/components/SponsorVisual2026";
 
-type OrbitStyle = CSSProperties & {
-  "--orbit-angle": string;
-  "--orbit-y": string;
-};
-
 export function SponsorOrbit2027() {
-  const orbitRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<Array<HTMLSpanElement | null>>([]);
   const dragRef = useRef({ active: false, x: 0, angle: 0 });
   const angleRef = useRef(0);
+  const dropRef = useRef(0);
   const velocityRef = useRef(0.018);
   const [paused, setPaused] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -28,12 +24,37 @@ export function SponsorOrbit2027() {
 
       if (!paused && !dragRef.current.active && !reduceMotion) {
         angleRef.current += velocityRef.current * delta;
+        dropRef.current += delta * 0.018;
         velocityRef.current += (0.018 - velocityRef.current) * 0.025;
       }
 
-      if (orbitRef.current) {
-        orbitRef.current.style.transform = `rotateY(${angleRef.current}deg)`;
-      }
+      const mobile = window.innerWidth <= 760;
+      const radius = mobile ? 350 : 470;
+      const rowGap = mobile ? 146 : 178;
+      const ySpan = rowGap * 4;
+      const halfY = ySpan / 2;
+      const cameraZ = mobile ? 850 : 1100;
+      const frontLimit = mobile ? 115 : 170;
+      const fadeStart = frontLimit - 95;
+
+      cardsRef.current.forEach((card, index) => {
+        if (!card) return;
+        const column = index % 12;
+        const row = Math.floor(index / 12);
+        const degrees = column * 30 + row * 7.5 + angleRef.current;
+        const radians = degrees * Math.PI / 180;
+        const x = Math.sin(radians) * radius;
+        const z = Math.cos(radians) * radius;
+        let y = (row - 1.5) * rowGap - (dropRef.current % ySpan);
+        while (y < -halfY) y += ySpan;
+        while (y > halfY) y -= ySpan;
+
+        const facing = Math.atan2(-x, cameraZ - z) * 180 / Math.PI;
+        const opacity = z >= frontLimit ? 0 : z > fadeStart ? (frontLimit - z) / 95 : 1;
+        card.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${facing}deg)`;
+        card.style.opacity = `${Math.max(0, Math.min(1, opacity))}`;
+        card.style.visibility = opacity <= 0 ? "hidden" : "visible";
+      });
       frame = requestAnimationFrame(animate);
     };
 
@@ -42,12 +63,12 @@ export function SponsorOrbit2027() {
   }, [paused]);
 
   useEffect(() => {
-    if (focusedIndex !== null || paused) return;
+    if (paused) return;
     const timer = window.setInterval(() => {
       setFocusedIndex((current) => current === null ? 0 : (current + 1) % SPONSORS_2026.length);
     }, 2800);
     return () => window.clearInterval(timer);
-  }, [focusedIndex, paused]);
+  }, [paused]);
 
   const startDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
     dragRef.current = { active: true, x: event.clientX, angle: angleRef.current };
@@ -94,20 +115,16 @@ export function SponsorOrbit2027() {
         onPointerCancel={endDrag}
       >
         <div className="mmd-sponsor-orbit-scene" aria-hidden="true">
-          <div className="mmd-sponsor-orbit-ring" ref={orbitRef}>
-            {SPONSORS_2026.map((sponsor, index) => {
-              const column = index % 12;
-              const row = Math.floor(index / 12);
-              const style: OrbitStyle = {
-                "--orbit-angle": `${column * 30 + row * 7.5}deg`,
-                "--orbit-y": `${(row - 1.5) * 178}px`,
-              };
-              return (
-                <span className="mmd-sponsor-orbit-card" style={style} key={sponsor.index}>
-                  <SponsorVisual2026 index={sponsor.index} label={sponsor.name} />
-                </span>
-              );
-            })}
+          <div className="mmd-sponsor-orbit-ring">
+            {SPONSORS_2026.map((sponsor, index) => (
+              <span
+                className="mmd-sponsor-orbit-card"
+                ref={(element) => { cardsRef.current[index] = element; }}
+                key={sponsor.index}
+              >
+                <SponsorVisual2026 index={sponsor.index} label={sponsor.name} />
+              </span>
+            ))}
           </div>
         </div>
 
