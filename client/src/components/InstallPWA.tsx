@@ -33,7 +33,8 @@ export function InstallPWA() {
     };
   }, []);
 
-  if (location.startsWith("/gallery") || installed || (!prompt && !isiOS)) return null;
+  const immersiveRoute = location.startsWith("/gallery") || location.startsWith("/sponsors");
+  if (immersiveRoute || installed || (!prompt && !isiOS)) return null;
 
   const install = async () => {
     if (prompt) {
