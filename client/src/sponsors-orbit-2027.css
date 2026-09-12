@@ -185,6 +185,19 @@
   aspect-ratio: auto;
   background-color: #fff;
   background-origin: border-box;
+  animation: mmd-sponsor-focus-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes mmd-sponsor-focus-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
 }
 .mmd-sponsor-orbit-hero small {
   padding: 12px 8px 3px;
@@ -385,6 +398,9 @@
     transition: none;
   }
   .mmd-sponsor-orbit-panel {
+    animation: none;
+  }
+  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-sprite {
     animation: none;
   }
 }
