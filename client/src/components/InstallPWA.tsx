@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Download, Share, X } from "lucide-react";
+import { useLocation } from "wouter";
 
 type InstallPromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
 
 export function InstallPWA() {
+  const [location] = useLocation();
   const [prompt, setPrompt] = useState<InstallPromptEvent | null>(null);
   const [showIOS, setShowIOS] = useState(false);
   const [installed, setInstalled] = useState(false);
@@ -31,7 +33,7 @@ export function InstallPWA() {
     };
   }, []);
 
-  if (installed || (!prompt && !isiOS)) return null;
+  if (location.startsWith("/gallery") || installed || (!prompt && !isiOS)) return null;
 
   const install = async () => {
     if (prompt) {

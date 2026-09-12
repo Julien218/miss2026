@@ -36,7 +36,7 @@ export function GalleryDepthStage({
   const velocityRef = useRef(0);
   const pausedRef = useRef(false);
   const draggingRef = useRef(false);
-  const dragStartRef = useRef({ y: 0, position: 0 });
+  const dragStartRef = useRef({ x: 0, y: 0, position: 0 });
   const lastFocusRef = useRef(-1);
   const [paused, setPaused] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
@@ -156,12 +156,16 @@ export function GalleryDepthStage({
       aria-label="Galerie immersive Miss & Mister Dour"
       onPointerDown={(event) => {
         draggingRef.current = true;
-        dragStartRef.current = { y: event.clientY, position: positionRef.current };
+        dragStartRef.current = { x: event.clientX, y: event.clientY, position: positionRef.current };
         event.currentTarget.setPointerCapture(event.pointerId);
       }}
       onPointerMove={(event) => {
         if (!draggingRef.current) return;
-        positionRef.current = dragStartRef.current.position - (event.clientY - dragStartRef.current.y) / 105;
+        const isMobile = event.currentTarget.clientWidth <= 820;
+        const delta = isMobile
+          ? event.clientX - dragStartRef.current.x
+          : event.clientY - dragStartRef.current.y;
+        positionRef.current = dragStartRef.current.position - delta / (isMobile ? 82 : 105);
       }}
       onPointerUp={(event) => {
         draggingRef.current = false;
@@ -195,7 +199,11 @@ export function GalleryDepthStage({
             className="mmd-depth-gallery-card"
             aria-label={`Ouvrir ${photo.candidateName || photo.title || "la photo"}`}
             onClick={(event) => {
-              if (Math.abs(event.clientY - dragStartRef.current.y) > 8) return;
+              const moved = Math.hypot(
+                event.clientX - dragStartRef.current.x,
+                event.clientY - dragStartRef.current.y
+              );
+              if (moved > 8) return;
               onOpen(index);
             }}
           >
