@@ -54,7 +54,7 @@ async function startServer() {
   registerCockpitRegistrationRoutes(app);
 
   app.get("/api/countdown-image", generateCountdownImage);
-  app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as [any, ...any[]]));
+  app.post("/api/upload/profile-photo", ...(profilePhotoUploadRoute as unknown as [any, ...any[]]));
 
   app.get("/sitemap.xml", async (_req, res) => {
     try {
