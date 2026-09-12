@@ -136,7 +136,7 @@ export function SponsorOrbit2027() {
         >
           <span className="mmd-sponsor-orbit-hero-inner">
             {focusedSponsor ? (
-              <SponsorVisual2026 index={focusedSponsor.index} label={focusedSponsor.name} />
+              <SponsorVisual2026 key={focusedSponsor.index} index={focusedSponsor.index} label={focusedSponsor.name} />
             ) : (
               <img src={BRANDING.logoIdentity} alt="" />
             )}
