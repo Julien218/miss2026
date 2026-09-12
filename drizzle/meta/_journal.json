@@ -29,6 +29,13 @@
       "when": 1788859427115,
       "tag": "0003_event_proposals",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1789161600000,
+      "tag": "0004_candidate_contract_2027",
+      "breakpoints": true
     }
   ]
 }

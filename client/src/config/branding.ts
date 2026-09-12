@@ -6,9 +6,9 @@
 export const BRANDING = {
   // Logo officiel local avec transparence réelle pour éviter tout bloc noir
   // dans le hero et la navigation.
-  logoHologram: "/logo/miss-mister-dour-logo-transparent.webp",
-  logoIdentity: "/logo/miss-mister-dour-logo-transparent.webp",
-  logoIdentityCompressed: "/logo/miss-mister-dour-logo-transparent.webp",
+  logoHologram: "/logo/miss-mister-dour-logo-transparent.png",
+  logoIdentity: "/logo/miss-mister-dour-logo-transparent.png",
+  logoIdentityCompressed: "/logo/miss-mister-dour-logo-transparent.png",
 
   creator: "JS-Innov.IA",
   creatorEmail: "paginjulien@gmail.com",

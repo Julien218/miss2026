@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Check, Clock3, Mail, MapPin, Phone, RefreshCw, UserRound, X } from "lucide-react";
+import { ArrowLeft, Check, Clock3, ExternalLink, FileSignature, Mail, MapPin, Phone, RefreshCw, Ruler, ShieldCheck, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -11,7 +11,12 @@ type CandidateApplication = {
   lastName: string;
   email: string;
   phone: string;
+  street?: string | null;
+  houseNumber?: string | null;
+  postalCode?: string | null;
   city: string;
+  height?: number | null;
+  weight?: number | null;
   country?: string | null;
   category: string;
   profilePhoto?: string | null;
@@ -21,6 +26,12 @@ type CandidateApplication = {
   rejectionReason?: string | null;
   createdAt?: string | Date | null;
   reviewedAt?: string | Date | null;
+  contractVersion?: string | null;
+  contractStatus?: "not_started" | "candidate_signed" | "guardian_signed" | "completed" | "generation_failed" | null;
+  contractPdfKey?: string | null;
+  candidateSignatureName?: string | null;
+  guardianFullName?: string | null;
+  organizationSignatureName?: string | null;
 };
 
 export default function AdminApplications() {
@@ -117,6 +128,64 @@ export default function AdminApplications() {
     }
   }
 
+  function openUrl(url: string) {
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  }
+
+  async function openContract(application: CandidateApplication) {
+    setBusyId(application.id);
+    setError("");
+    try {
+      const response = await fetch(`/api/admin/candidate-applications/${application.id}/contract`, { credentials: "include" });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body?.error || "Contrat indisponible");
+      openUrl(body.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Contrat indisponible");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function signContract(application: CandidateApplication) {
+    const signatureName = window.prompt(
+      `Signature Starlight pour le contrat de ${application.firstName} ${application.lastName}.\n\nSaisissez le nom complet du signataire :`,
+      application.organizationSignatureName || "Olivier Trevis"
+    );
+    if (signatureName === null) return;
+    const trimmed = signatureName.trim();
+    if (trimmed.length < 3) {
+      setError("Le nom complet du signataire est requis.");
+      return;
+    }
+    if (!window.confirm(`Confirmer la signature électronique simple au nom de « ${trimmed} » ?`)) return;
+
+    setBusyId(application.id);
+    setError("");
+    try {
+      const response = await fetch(`/api/admin/candidate-applications/${application.id}/sign-contract`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ signatureName: trimmed, confirm: true }),
+      });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body?.error || "Signature impossible");
+      await loadApplications();
+      if (body.url) openUrl(body.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Signature impossible");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#050403] text-[#f7efe1]">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050403]/95 backdrop-blur-xl">
@@ -183,6 +252,7 @@ export default function AdminApplications() {
                         <span className="rounded-full border border-[#d7ae69]/35 px-2.5 py-1 text-[11px] uppercase tracking-wider text-[#ead3a5]">{application.category}</span>
                         <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/55">#{application.id}</span>
                         {application.contestId ? <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/45">Édition #{application.contestId}</span> : null}
+                        {application.contractVersion ? <span className={`rounded-full border px-2.5 py-1 text-[11px] ${application.contractStatus === "completed" ? "border-emerald-400/35 text-emerald-200" : application.contractStatus === "generation_failed" ? "border-red-400/35 text-red-200" : "border-violet-300/35 text-violet-200"}`}>{application.contractStatus === "completed" ? "Contrat signé" : application.contractStatus === "generation_failed" ? "PDF à régénérer" : "Signature Starlight requise"}</span> : null}
                       </div>
                       <CardTitle className="text-xl text-[#f7efe1]">{application.firstName} {application.lastName}</CardTitle>
                       <CardDescription className="mt-1 text-white/50">{application.profession || "Profession / études non renseignées"}</CardDescription>
@@ -193,8 +263,10 @@ export default function AdminApplications() {
                   <div className="grid gap-2 text-sm text-white/65 sm:grid-cols-2">
                     <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-[#d7ae69]" /> {application.email}</div>
                     <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-[#d7ae69]" /> {application.phone}</div>
-                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[#d7ae69]" /> {application.city}{application.country ? `, ${application.country}` : ""}</div>
+                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[#d7ae69]" /> {[application.street && `${application.street} ${application.houseNumber || ""}`.trim(), application.postalCode, application.city, application.country].filter(Boolean).join(", ")}</div>
                     <div className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#d7ae69]" /> {application.createdAt ? new Date(application.createdAt).toLocaleString("fr-BE") : "Date indisponible"}</div>
+                    {application.height && application.weight ? <div className="flex items-center gap-2"><Ruler className="h-4 w-4 text-[#d7ae69]" /> {application.height} cm · {application.weight} kg</div> : null}
+                    {application.guardianFullName ? <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-violet-300" /> Représentant : {application.guardianFullName}</div> : null}
                   </div>
 
                   {application.motivation && (
@@ -204,9 +276,14 @@ export default function AdminApplications() {
                     </div>
                   )}
 
+                  {application.contractVersion ? <div className="flex flex-wrap gap-3 rounded-2xl border border-violet-300/15 bg-violet-300/[0.035] p-3">
+                    {application.contractPdfKey ? <Button variant="outline" onClick={() => void openContract(application)} disabled={busyId === application.id} className="border-violet-300/35 bg-transparent text-violet-100 hover:bg-violet-300/10"><ExternalLink className="mr-2 h-4 w-4" /> Ouvrir le contrat</Button> : <span className="px-2 py-2 text-xs text-red-200">Le PDF contractuel doit être régénéré.</span>}
+                    {application.status === "pending" && application.contractPdfKey && application.contractStatus !== "completed" ? <Button variant="outline" onClick={() => void signContract(application)} disabled={busyId === application.id} className="border-[#d7ae69]/45 bg-transparent text-[#ead3a5] hover:bg-[#d7ae69]/10"><FileSignature className="mr-2 h-4 w-4" /> Signer pour Starlight</Button> : null}
+                  </div> : null}
+
                   {application.status === "pending" ? (
                     <div className="flex flex-wrap gap-3 pt-1">
-                      <Button onClick={() => void approve(application)} disabled={busyId === application.id} className="bg-[#d7ae69] text-black hover:bg-[#ead3a5]">
+                      <Button onClick={() => void approve(application)} disabled={busyId === application.id || Boolean(application.contractVersion && application.contractStatus !== "completed")} title={application.contractVersion && application.contractStatus !== "completed" ? "Le contrat doit être signé par Starlight avant validation" : undefined} className="bg-[#d7ae69] text-black hover:bg-[#ead3a5]">
                         <Check className="mr-2 h-4 w-4" /> Valider et créer le candidat
                       </Button>
                       <Button variant="outline" onClick={() => void reject(application)} disabled={busyId === application.id} className="border-red-500/35 bg-transparent text-red-200 hover:bg-red-500/10">

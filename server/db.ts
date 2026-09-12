@@ -3020,9 +3020,12 @@ export async function createCandidateApplication(data: {
   lastName: string;
   phone: string;
   dateOfBirth: Date;
-  address?: string;
+  street?: string;
+  houseNumber?: string;
   city: string;
   postalCode?: string;
+  height?: number;
+  weight?: number;
   country?: string;
   region?: string;
   category: string;
@@ -3040,6 +3043,21 @@ export async function createCandidateApplication(data: {
   acceptedTerms: boolean;
   acceptedMedia?: boolean;
   acceptedNewsletter?: boolean;
+  acceptedEligibility?: boolean;
+  acceptedCGU?: boolean;
+  consentVersion?: string;
+  consentedAt?: Date;
+  candidateSignatureName?: string;
+  candidateSignedAt?: Date;
+  guardianFullName?: string;
+  guardianEmail?: string;
+  guardianPhone?: string;
+  guardianSignatureName?: string;
+  guardianSignedAt?: Date;
+  contractVersion?: string;
+  contractStatus?: "not_started" | "candidate_signed" | "guardian_signed" | "completed" | "generation_failed";
+  contractPdfKey?: string;
+  contractPdfSha256?: string;
   ipAddress?: string;
   contestId?: number;
   status?: "pending" | "approved" | "rejected";
@@ -3059,9 +3077,14 @@ export async function createCandidateApplication(data: {
     lastName: data.lastName,
     phone: data.phone,
     dateOfBirth: data.dateOfBirth,
+    street: data.street,
+    houseNumber: data.houseNumber,
+    postalCode: data.postalCode,
     city: data.city,
     country: data.country || "Belgique",
     region: data.region,
+    height: data.height,
+    weight: data.weight,
     category: data.category,
     profilePhoto: data.photoProfile,
     galleryPhotos: data.photoFullBody,
@@ -3077,6 +3100,21 @@ export async function createCandidateApplication(data: {
     acceptedTerms: data.acceptedTerms ? 1 : 0,
     acceptedMedia: data.acceptedMedia ? 1 : 0,
     acceptedNewsletter: data.acceptedNewsletter ? 1 : 0,
+    acceptedEligibility: data.acceptedEligibility ? 1 : 0,
+    acceptedCGU: data.acceptedCGU ? 1 : 0,
+    consentVersion: data.consentVersion || "v1.0",
+    consentedAt: data.consentedAt,
+    candidateSignatureName: data.candidateSignatureName,
+    candidateSignedAt: data.candidateSignedAt,
+    guardianFullName: data.guardianFullName,
+    guardianEmail: data.guardianEmail,
+    guardianPhone: data.guardianPhone,
+    guardianSignatureName: data.guardianSignatureName,
+    guardianSignedAt: data.guardianSignedAt,
+    contractVersion: data.contractVersion,
+    contractStatus: data.contractStatus || "not_started",
+    contractPdfKey: data.contractPdfKey,
+    contractPdfSha256: data.contractPdfSha256,
     ipAddressHash: ipAddressHash,
     contestId: data.contestId || 1,
     status: data.status || "pending",
@@ -3142,6 +3180,27 @@ export async function getAllCandidateApplications(contestId?: number) {
   return results;
 }
 
+export async function updateCandidateApplicationContract(
+  id: number,
+  data: {
+    contractStatus?: "not_started" | "candidate_signed" | "guardian_signed" | "completed" | "generation_failed";
+    contractPdfKey?: string | null;
+    contractPdfSha256?: string | null;
+    organizationSignatureName?: string | null;
+    organizationSignedAt?: Date | null;
+  }
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(candidateApplications)
+    .set(data)
+    .where(eq(candidateApplications.id, id));
+
+  return getCandidateApplicationById(id);
+}
+
 export async function updateCandidateApplicationStatus(
   id: number,
   status: "pending" | "approved" | "rejected",
@@ -3201,6 +3260,9 @@ export async function approveCandidateApplication(id: number, reviewedBy: number
   if (!application) {
     throw new Error("Candidature non trouvée");
   }
+  if (application.contractVersion && application.contractStatus !== "completed") {
+    throw new Error("Le contrat doit être signé par Starlight avant la validation de la candidature");
+  }
 
   // 1. Créer un utilisateur avec rôle candidat
   // Générer un openId unique basé sur l'email
@@ -3229,8 +3291,11 @@ export async function approveCandidateApplication(id: number, reviewedBy: number
     lastName: application.lastName,
     dateOfBirth: application.dateOfBirth,
     phone: application.phone,
+    address: [application.street, application.houseNumber].filter(Boolean).join(" ") || undefined,
     city: application.city,
     country: application.country,
+    height: application.height,
+    weight: application.weight,
     profilePhoto: application.profilePhoto,
     bio: application.bio,
     instagram: application.instagram,

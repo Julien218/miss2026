@@ -126,3 +126,48 @@ export async function storageGet(
     ),
   };
 }
+
+/**
+ * Store a non-public document. Unlike media assets, this helper never builds a
+ * permanent public URL; callers must request a short-lived signed URL.
+ */
+export async function storagePutPrivate(
+  relKey: string,
+  data: Buffer | Uint8Array | string,
+  contentType = "application/octet-stream"
+): Promise<{ key: string }> {
+  const config = getR2Config();
+  const client = getR2Client(config);
+  const key = normalizeKey(relKey);
+
+  await client.send(
+    new PutObjectCommand({
+      Bucket: config.bucket,
+      Key: key,
+      Body: toBody(data),
+      ContentType: contentType,
+      CacheControl: "private, no-store",
+    })
+  );
+
+  return { key };
+}
+
+export async function storageGetPrivate(
+  relKey: string,
+  expiresInSeconds = 15 * 60
+): Promise<{ key: string; url: string }> {
+  const config = getR2Config();
+  const client = getR2Client(config);
+  const key = normalizeKey(relKey);
+  const expiresIn = Math.min(60 * 60, Math.max(60, Math.round(expiresInSeconds)));
+
+  return {
+    key,
+    url: await getSignedUrl(
+      client,
+      new GetObjectCommand({ Bucket: config.bucket, Key: key }),
+      { expiresIn }
+    ),
+  };
+}
