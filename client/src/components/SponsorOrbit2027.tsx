@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Info, Pause, Play, X } from "lucide-react";
-import { BRANDING } from "@/config/branding";
 import { SPONSORS_2026, SponsorVisual2026 } from "@/components/SponsorVisual2026";
 
 export function SponsorOrbit2027() {
@@ -11,7 +10,7 @@ export function SponsorOrbit2027() {
   const velocityRef = useRef(0.018);
   const [paused, setPaused] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState(0);
 
   useEffect(() => {
     let frame = 0;
@@ -29,8 +28,8 @@ export function SponsorOrbit2027() {
       }
 
       const mobile = window.innerWidth <= 760;
-      const radius = mobile ? 350 : 470;
-      const rowGap = mobile ? 146 : 178;
+      const radius = mobile ? 360 : 500;
+      const rowGap = mobile ? 164 : 198;
       const ySpan = rowGap * 4;
       const halfY = ySpan / 2;
       const cameraZ = mobile ? 850 : 1100;
@@ -41,7 +40,7 @@ export function SponsorOrbit2027() {
         if (!card) return;
         const column = index % 12;
         const row = Math.floor(index / 12);
-        const degrees = column * 30 + row * 7.5 + angleRef.current;
+        const degrees = column * 30 + (row % 2) * 15 + angleRef.current;
         const radians = degrees * Math.PI / 180;
         const x = Math.sin(radians) * radius;
         const z = Math.cos(radians) * radius;
@@ -65,7 +64,7 @@ export function SponsorOrbit2027() {
   useEffect(() => {
     if (paused) return;
     const timer = window.setInterval(() => {
-      setFocusedIndex((current) => current === null ? 0 : (current + 1) % SPONSORS_2026.length);
+      setFocusedIndex((current) => (current + 1) % SPONSORS_2026.length);
     }, 2800);
     return () => window.clearInterval(timer);
   }, [paused]);
@@ -89,7 +88,7 @@ export function SponsorOrbit2027() {
     }
   };
 
-  const focusedSponsor = focusedIndex === null ? null : SPONSORS_2026[focusedIndex];
+  const focusedSponsor = SPONSORS_2026[focusedIndex];
 
   return (
     <section className="mmd-sponsor-orbit" aria-labelledby="sponsor-orbit-title">
@@ -122,7 +121,9 @@ export function SponsorOrbit2027() {
                 ref={(element) => { cardsRef.current[index] = element; }}
                 key={sponsor.index}
               >
-                <SponsorVisual2026 index={sponsor.index} label={sponsor.name} />
+                <span className="mmd-sponsor-orbit-card-media">
+                  <SponsorVisual2026 index={sponsor.index} label={sponsor.name} />
+                </span>
               </span>
             ))}
           </div>
@@ -131,17 +132,13 @@ export function SponsorOrbit2027() {
         <button
           className="mmd-sponsor-orbit-hero"
           type="button"
-          onClick={() => setFocusedIndex((current) => current === null ? 0 : (current + 1) % SPONSORS_2026.length)}
-          aria-label={focusedSponsor ? `${focusedSponsor.name}. Afficher le partenaire suivant.` : "Découvrir les partenaires"}
+          onClick={() => setFocusedIndex((current) => (current + 1) % SPONSORS_2026.length)}
+          aria-label={`${focusedSponsor.name}. Afficher le partenaire suivant.`}
         >
           <span className="mmd-sponsor-orbit-hero-inner">
-            {focusedSponsor ? (
-              <SponsorVisual2026 key={focusedSponsor.index} index={focusedSponsor.index} label={focusedSponsor.name} />
-            ) : (
-              <img src={BRANDING.logoIdentity} alt="" />
-            )}
+            <SponsorVisual2026 key={focusedSponsor.index} index={focusedSponsor.index} label={focusedSponsor.name} />
           </span>
-          <small>{focusedSponsor?.name ?? "Miss & Mister Dour 2027"}</small>
+          <small>{focusedSponsor.name}</small>
         </button>
       </div>
 
