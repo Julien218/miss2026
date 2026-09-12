@@ -41,6 +41,15 @@
   max-width: 560px;
   pointer-events: none;
 }
+.mmd-sponsor-orbit-copy::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -18px -64px -22px -78px;
+  border-radius: 0 34px 34px 0;
+  background: linear-gradient(90deg, #080605 18%, rgba(8, 6, 5, 0.92) 68%, transparent);
+  backdrop-filter: blur(5px);
+}
 .mmd-sponsor-orbit-copy > span {
   display: block;
   color: #b76e4d;
@@ -336,6 +345,10 @@
     top: 22px;
     left: 18px;
     right: 88px;
+  }
+  .mmd-sponsor-orbit-copy::before {
+    inset: -12px -28px -16px -18px;
+    border-radius: 22px;
   }
   .mmd-sponsor-orbit-copy h1 {
     font-size: clamp(31px, 10vw, 44px);
