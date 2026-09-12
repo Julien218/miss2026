@@ -4,6 +4,7 @@ import {
   ChevronRight,
   FolderOpen,
   Image as ImageIcon,
+  Orbit,
   Sparkles,
   Users,
   X,
@@ -13,6 +14,7 @@ import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { SEOHead } from "@/components/SEOHead";
 import { BRANDING } from "@/config/branding";
+import { GalleryDepthStage } from "@/components/GalleryDepthStage";
 
 type CandidateFilter = "all" | "miss" | "mister";
 
@@ -72,6 +74,7 @@ export default function Gallery() {
   const [candidateFilter, setCandidateFilter] = useState<CandidateFilter>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(40);
+  const [galleryView, setGalleryView] = useState<"depth" | "grid">("depth");
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribeName, setSubscribeName] = useState("");
 
@@ -300,7 +303,25 @@ export default function Gallery() {
             </div>
           ) : (
             <>
-              <div className="mmd-gallery-grid">
+              {galleryView === "depth" ? (
+                <GalleryDepthStage
+                  photos={filtered}
+                  categoryLabel={categoryLabel}
+                  onOpen={setLightboxIndex}
+                  onShowGrid={() => setGalleryView("grid")}
+                />
+              ) : (
+                <div className="mmd-gallery-view-switch">
+                  <button type="button" onClick={() => setGalleryView("depth")}>
+                    <Orbit /> Vue immersive
+                  </button>
+                </div>
+              )}
+              <div
+                className={`mmd-gallery-grid ${
+                  galleryView === "depth" ? "mmd-gallery-grid--depth-fallback" : ""
+                }`}
+              >
                 {filtered.slice(0, visibleCount).map((photo, index) => (
                   <button
                     type="button"
