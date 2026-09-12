@@ -2,8 +2,8 @@
   position: relative;
   min-height: calc(100svh - 98px);
   overflow: hidden;
-  background: #f8f5ee;
-  color: #17110c;
+  background: #080605;
+  color: #f7efe1;
   isolation: isolate;
 }
 .mmd-sponsor-orbit::before {
@@ -14,12 +14,14 @@
   background:
     radial-gradient(
       circle at 50% 52%,
-      rgba(196, 151, 71, 0.15),
-      transparent 24%
+      rgba(215, 174, 105, 0.16),
+      transparent 32%
     ),
-    linear-gradient(90deg, rgba(23, 17, 12, 0.035) 1px, transparent 1px),
-    linear-gradient(rgba(23, 17, 12, 0.035) 1px, transparent 1px);
+    radial-gradient(circle at 12% 15%, rgba(183, 110, 77, 0.11), transparent 26%),
+    linear-gradient(90deg, rgba(234, 211, 165, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(234, 211, 165, 0.035) 1px, transparent 1px);
   background-size:
+    auto,
     auto,
     70px 70px,
     70px 70px;
@@ -41,7 +43,7 @@
 }
 .mmd-sponsor-orbit-copy > span {
   display: block;
-  color: #9b742d;
+  color: #b76e4d;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.3em;
@@ -53,9 +55,10 @@
     Georgia,
     serif;
   letter-spacing: -0.045em;
+  color: #fffaf1;
 }
 .mmd-sponsor-orbit-copy h1 em {
-  color: #9b742d;
+  color: #ead3a5;
   font-weight: 400;
 }
 .mmd-sponsor-orbit-actions {
@@ -71,11 +74,11 @@
   height: 44px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(23, 17, 12, 0.18);
+  border: 1px solid rgba(234, 211, 165, 0.2);
   border-radius: 50%;
-  background: rgba(248, 245, 238, 0.76);
-  color: #17110c;
-  box-shadow: 0 8px 30px rgba(48, 35, 18, 0.08);
+  background: rgba(14, 10, 8, 0.76);
+  color: #f7efe1;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(12px);
   transition:
     transform 0.25s ease,
@@ -83,7 +86,7 @@
 }
 .mmd-sponsor-orbit-actions button:hover {
   transform: translateY(-2px);
-  background: #fff;
+  background: rgba(234, 211, 165, 0.12);
 }
 .mmd-sponsor-orbit-actions svg {
   width: 17px;
@@ -116,7 +119,6 @@
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  will-change: transform;
 }
 .mmd-sponsor-orbit-card {
   position: absolute;
@@ -125,13 +127,12 @@
   width: 156px;
   height: 106px;
   overflow: hidden;
-  border: 1px solid rgba(36, 27, 20, 0.17);
+  border: 1px solid rgba(234, 211, 165, 0.24);
   border-radius: 13px;
   background: #fff;
-  box-shadow: 0 18px 45px rgba(47, 35, 18, 0.13);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.48);
   backface-visibility: hidden;
-  transform: rotateY(var(--orbit-angle)) translateZ(470px)
-    translateY(var(--orbit-y));
+  will-change: transform, opacity;
 }
 .mmd-sponsor-orbit-card .mmd-sponsor-sprite {
   width: 100%;
@@ -144,7 +145,7 @@
   z-index: 7;
   left: 50%;
   top: 54%;
-  width: clamp(190px, 18vw, 270px);
+  width: clamp(154px, 14vw, 210px);
   aspect-ratio: 0.76;
   display: flex;
   flex-direction: column;
@@ -155,8 +156,8 @@
   border-radius: 8px;
   background: #17110c;
   box-shadow:
-    0 34px 90px rgba(35, 25, 13, 0.28),
-    0 0 0 10px rgba(255, 255, 255, 0.82);
+    0 34px 90px rgba(0, 0, 0, 0.62),
+    0 0 0 8px rgba(234, 211, 165, 0.12);
   transform: translate(-50%, -50%);
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -184,6 +185,19 @@
   aspect-ratio: auto;
   background-color: #fff;
   background-origin: border-box;
+  animation: mmd-sponsor-focus-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes mmd-sponsor-focus-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
 }
 .mmd-sponsor-orbit-hero small {
   padding: 12px 8px 3px;
@@ -205,7 +219,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #9b742d;
+  color: #ead3a5;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.24em;
@@ -225,7 +239,7 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(248, 245, 238, 0.93);
+  background: rgba(8, 6, 5, 0.94);
   backdrop-filter: blur(18px);
   animation: mmd-sponsor-panel-in 0.35s ease both;
 }
@@ -233,8 +247,9 @@
   position: relative;
   width: min(540px, 100%);
   padding: clamp(34px, 6vw, 64px);
-  border: 1px solid rgba(23, 17, 12, 0.15);
-  background: #fff;
+  border: 1px solid rgba(234, 211, 165, 0.18);
+  background: #100c09;
+  color: #fffaf1;
   text-align: center;
   box-shadow: 0 30px 100px rgba(23, 17, 12, 0.12);
 }
@@ -248,13 +263,13 @@
   place-items: center;
   border: 0;
   background: transparent;
-  color: #17110c;
+  color: #fffaf1;
 }
 .mmd-sponsor-orbit-panel > div > button svg {
   width: 18px;
 }
 .mmd-sponsor-orbit-panel span {
-  color: #9b742d;
+  color: #b76e4d;
   font-size: 9px;
   letter-spacing: 0.25em;
 }
@@ -267,7 +282,7 @@
 }
 .mmd-sponsor-orbit-panel p {
   margin: 0;
-  color: rgba(23, 17, 12, 0.65);
+  color: rgba(247, 239, 225, 0.62);
   font-size: 16px;
   line-height: 1.7;
 }
@@ -313,6 +328,7 @@
   .mmd-sponsor-orbit::before {
     background-size:
       auto,
+      auto,
       42px 42px,
       42px 42px;
   }
@@ -350,15 +366,13 @@
     top: -46px;
     width: 136px;
     height: 92px;
-    transform: rotateY(var(--orbit-angle)) translateZ(350px)
-      translateY(calc(var(--orbit-y) * 0.82));
   }
   .mmd-sponsor-orbit-hero {
-    width: min(47vw, 190px);
+    width: min(42vw, 166px);
     padding: 8px;
     box-shadow:
-      0 26px 70px rgba(35, 25, 13, 0.27),
-      0 0 0 7px rgba(255, 255, 255, 0.84);
+      0 26px 70px rgba(0, 0, 0, 0.6),
+      0 0 0 7px rgba(234, 211, 165, 0.12);
   }
   .mmd-sponsor-orbit-hero small {
     padding: 9px 4px 1px;
@@ -384,6 +398,9 @@
     transition: none;
   }
   .mmd-sponsor-orbit-panel {
+    animation: none;
+  }
+  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-sprite {
     animation: none;
   }
 }
