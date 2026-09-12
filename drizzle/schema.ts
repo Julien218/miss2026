@@ -953,9 +953,14 @@ export const candidateApplications = mysqlTable("candidateApplications", {
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 50 }),
   dateOfBirth: date("dateOfBirth").notNull(),
+  street: varchar("street", { length: 255 }),
+  houseNumber: varchar("houseNumber", { length: 20 }),
+  postalCode: varchar("postalCode", { length: 10 }),
   city: varchar("city", { length: 100 }).notNull(),
   country: varchar("country", { length: 100 }).default("Belgique").notNull(),
   region: mysqlEnum("region", ["wallonie", "flandre", "bruxelles"]),
+  height: int("height"),
+  weight: int("weight"),
   
   // Category
   category: mysqlEnum("category", ["miss", "mister", "teen_miss", "teen_mister"]),
@@ -983,6 +988,26 @@ export const candidateApplications = mysqlTable("candidateApplications", {
   acceptedTerms: int("acceptedTerms").default(0).notNull(), // 0 = false, 1 = true
   acceptedMedia: int("acceptedMedia").default(0).notNull(),
   acceptedNewsletter: int("acceptedNewsletter").default(0).notNull(),
+  acceptedEligibility: int("acceptedEligibility").default(0).notNull(),
+  acceptedCGU: int("acceptedCGU").default(0).notNull(),
+  consentVersion: varchar("consentVersion", { length: 40 }).default("v1.0").notNull(),
+  consentedAt: timestamp("consentedAt"),
+
+  // Contract signature trail. Typed names are recorded with a server timestamp;
+  // the generated PDF remains private and is exposed only through an admin URL.
+  candidateSignatureName: varchar("candidateSignatureName", { length: 200 }),
+  candidateSignedAt: timestamp("candidateSignedAt"),
+  guardianFullName: varchar("guardianFullName", { length: 200 }),
+  guardianEmail: varchar("guardianEmail", { length: 320 }),
+  guardianPhone: varchar("guardianPhone", { length: 50 }),
+  guardianSignatureName: varchar("guardianSignatureName", { length: 200 }),
+  guardianSignedAt: timestamp("guardianSignedAt"),
+  contractVersion: varchar("contractVersion", { length: 40 }),
+  contractStatus: mysqlEnum("contractStatus", ["not_started", "candidate_signed", "guardian_signed", "completed", "generation_failed"]).default("not_started").notNull(),
+  contractPdfKey: text("contractPdfKey"),
+  contractPdfSha256: varchar("contractPdfSha256", { length: 64 }),
+  organizationSignatureName: varchar("organizationSignatureName", { length: 200 }),
+  organizationSignedAt: timestamp("organizationSignedAt"),
   
   // RGPD
   ipAddressHash: varchar("ipAddressHash", { length: 64 }), // SHA256 hash of IP address

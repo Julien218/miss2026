@@ -11,6 +11,11 @@ export function domainRedirectMiddleware(req: Request, res: Response, next: Next
   const isLocalhost = host === "localhost" || host === "127.0.0.1" || host === "::1";
   if (isLocalhost || !host) return next();
 
+  // Le domaine Railway doit rester utilisable tant que le DNS et le certificat
+  // du domaine officiel ne sont pas prêts. La canonicalisation ne s'active
+  // qu'explicitement après validation du domaine personnalisé.
+  const canonicalRedirectEnabled = process.env.CANONICAL_DOMAIN_REDIRECT_ENABLED === "true";
+
   // Ne jamais rediriger les API : les redirections cross-origin peuvent supprimer
   // Authorization et casser les webhooks/intégrations serveur-à-serveur.
   if (req.path.startsWith("/api/")) {
@@ -19,6 +24,7 @@ export function domainRedirectMiddleware(req: Request, res: Response, next: Next
   }
 
   const shouldCanonicalize =
+    canonicalRedirectEnabled &&
     host !== official &&
     (host === `www.${official}` ||
       host.endsWith(".up.railway.app") ||

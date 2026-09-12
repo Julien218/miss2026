@@ -254,7 +254,8 @@ export const appRouter = router({
         return await db.searchCandidates(input.contestId, input.search, input.category, input.status);
       }),
     
-    // Public registration for Miss & Mister Dour 2026
+    // Legacy public registration endpoint. The 2027 website uses the audited
+    // REST flow in routes/publicForms.ts, which also records contract fields.
     registerPublic: publicProcedure
       .input(z.object({
         // Étape 1: Informations personnelles
@@ -290,10 +291,10 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         // Validation de l'âge
         const age = new Date().getFullYear() - new Date(input.birthDate).getFullYear();
-        if (age < 18 || age > 35) {
+        if (age < 16 || age > 26) {
           throw new TRPCError({ 
             code: 'BAD_REQUEST', 
-            message: 'Vous devez avoir entre 18 et 35 ans' 
+            message: 'Le contrat 2027 prévoit un âge de 16 à 26 ans'
           });
         }
 

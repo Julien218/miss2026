@@ -112,6 +112,7 @@ function Router() {
       <Route path="/profile/edit/:token" component={CandidateProfileEdit} />
       
       {/* Inscription candidat (public) */}
+      <Route path="/inscription" component={CandidateRegistration} />
       <Route path="/inscription-candidat" component={CandidateRegistration} />
       <Route path="/inscription-merci" component={RegistrationThankYou} />
       <Route path="/onboarding/candidate/:token" component={CandidateOnboardingForm} />

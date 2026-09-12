@@ -16,6 +16,7 @@ import "./public-2027.css";
 import "./public-pages-2027.css";
 import "./home-2027-complete.css";
 import "./gallery-folders-2027.css";
+import "./gallery-depth-2027.css";
 import "./sponsor-sprite-2027.css";
 import "./login-2027.css";
 import "./mobile-2027.css";
@@ -24,6 +25,7 @@ import "./forms-2027.css";
 import "./articles-2027.css";
 import "./legal-2027.css";
 import "./cookie-2027.css";
+import "./immersive-2027.css";
 
 const queryClient = new QueryClient();
 const redirectToLoginIfUnauthorized = (error: unknown) => {
@@ -34,7 +36,7 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 queryClient.getQueryCache().subscribe(event => { if (event.type === "updated" && event.action.type === "error") redirectToLoginIfUnauthorized(event.query.state.error); });
 queryClient.getMutationCache().subscribe(event => { if (event.type === "updated" && event.action.type === "error") redirectToLoginIfUnauthorized(event.mutation.state.error); });
 const trpcClient = trpc.createClient({ links: [httpBatchLink({ url: "/api/trpc", transformer: superjson, fetch(input, init) { return globalThis.fetch(input, { ...(init ?? {}), credentials: "include" }); } })] });
-const PUBLIC_CHROME_PREFIXES = ["/about","/press","/sponsors","/contact","/legal/","/mentions-legales","/ranking","/gallery","/candidates","/candidat/","/public","/article/","/inscription-candidat","/inscription-merci","/onboarding/candidate/","/invite/","/invitation/","/verify/","/profile/edit/"];
+const PUBLIC_CHROME_PREFIXES = ["/about","/press","/sponsors","/contact","/legal/","/mentions-legales","/ranking","/gallery","/candidates","/candidat/","/public","/article/","/inscription","/inscription-candidat","/inscription-merci","/onboarding/candidate/","/invite/","/invitation/","/verify/","/profile/edit/"];
 function RootExperience() {
   const path = window.location.pathname;
   if (path === "/login") return <Login />;

@@ -6,7 +6,8 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { candidateApplications, contests } from "../../drizzle/schema";
 import * as db from "../db";
-import { storagePut } from "../storage";
+import { CANDIDATE_CONTRACT_VERSION, generateCandidateContract2027 } from "../helpers/candidateContract2027";
+import { storagePut, storagePutPrivate } from "../storage";
 
 const candidateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -29,7 +30,12 @@ const candidateSchema = z.object({
   email: z.string().trim().email().max(320),
   phone: z.string().trim().min(8).max(50),
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  street: z.string().trim().min(2).max(255),
+  houseNumber: z.string().trim().min(1).max(20),
+  postalCode: z.string().regex(/^\d{4}$/),
   city: z.string().trim().min(2).max(100),
+  heightCm: z.number().int().min(120).max(230),
+  weightKg: z.number().int().min(35).max(250),
   category: z.enum(["miss", "mister"]),
   photoBase64: z.string().min(32).max(7_200_000),
   photoFilename: z.string().trim().min(1).max(255),
@@ -41,11 +47,17 @@ const candidateSchema = z.object({
   facebook: z.string().trim().max(100).optional().default(""),
   tiktok: z.string().trim().max(100).optional().default(""),
   linkedin: z.string().trim().max(100).optional().default(""),
+  candidateSignatureName: z.string().trim().min(3).max(200),
+  guardianFullName: z.string().trim().min(3).max(200).optional(),
+  guardianEmail: z.string().trim().email().max(320).optional(),
+  guardianPhone: z.string().trim().min(8).max(50).optional(),
+  guardianSignatureName: z.string().trim().min(3).max(200).optional(),
+  acceptEligibility: z.literal(true),
   acceptRules: z.literal(true),
   acceptMedia: z.literal(true),
   acceptNewsletter: z.boolean().default(false),
   acceptCGU: z.literal(true),
-  consentVersion: z.string().trim().max(20).default("v1.0"),
+  consentVersion: z.string().trim().max(40).default(CANDIDATE_CONTRACT_VERSION),
 });
 
 const contactSchema = z.object({
@@ -69,6 +81,21 @@ function calculateAge(dateText: string) {
   const month = today.getMonth() - birth.getMonth();
   if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) age--;
   return age;
+}
+
+function normalizeSignedName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase("fr-BE");
+}
+
+function signatureMatches(signature: string, firstName: string, lastName: string) {
+  const normalized = normalizeSignedName(signature);
+  return normalized === normalizeSignedName(`${firstName} ${lastName}`)
+    || normalized === normalizeSignedName(`${lastName} ${firstName}`);
 }
 
 function decodeImageDataUrl(dataUrl: string) {
@@ -143,7 +170,19 @@ export function registerPublicFormRoutes(app: Express) {
     try {
       const input = parsed.data;
       const age = calculateAge(input.birthDate);
-      if (age < 18 || age > 35) return res.status(400).json({ error: "Vous devez avoir entre 18 et 35 ans à la date de l’inscription." });
+      if (age < 16 || age > 26) return res.status(400).json({ error: "Le contrat 2027 prévoit un âge de 16 à 26 ans à la date de l’inscription." });
+      if (!signatureMatches(input.candidateSignatureName, input.firstName, input.lastName)) {
+        return res.status(400).json({ error: "La signature du candidat doit correspondre à son nom complet." });
+      }
+      const isMinor = age < 18;
+      if (isMinor) {
+        if (!input.guardianFullName || !input.guardianEmail || !input.guardianPhone || !input.guardianSignatureName) {
+          return res.status(400).json({ error: "La signature et les coordonnées du représentant légal sont obligatoires pour un candidat mineur." });
+        }
+        if (normalizeSignedName(input.guardianSignatureName) !== normalizeSignedName(input.guardianFullName)) {
+          return res.status(400).json({ error: "La signature du représentant légal doit correspondre à son nom complet." });
+        }
+      }
 
       const contestId = await getOrCreateContest2027();
       const database = await db.getDb();
@@ -157,6 +196,7 @@ export function registerPublicFormRoutes(app: Express) {
       const normalized = await normalizeCandidateImage(decoded);
       const key = `candidate-applications/2027/${Date.now()}-${crypto.randomUUID()}.webp`;
       const uploaded = await storagePut(key, normalized, "image/webp");
+      const signedAt = new Date();
 
       const application = await db.createCandidateApplication({
         email: normalizedEmail,
@@ -164,7 +204,12 @@ export function registerPublicFormRoutes(app: Express) {
         lastName: input.lastName,
         phone: input.phone,
         dateOfBirth: new Date(`${input.birthDate}T00:00:00`),
+        street: input.street,
+        houseNumber: input.houseNumber,
+        postalCode: input.postalCode,
         city: input.city,
+        height: input.heightCm,
+        weight: input.weightKg,
         country: "Belgique",
         category: input.category,
         photoProfile: uploaded.url,
@@ -179,13 +224,67 @@ export function registerPublicFormRoutes(app: Express) {
         acceptedTerms: input.acceptRules && input.acceptCGU,
         acceptedMedia: input.acceptMedia,
         acceptedNewsletter: input.acceptNewsletter,
+        acceptedEligibility: input.acceptEligibility,
+        acceptedCGU: input.acceptCGU,
+        consentVersion: CANDIDATE_CONTRACT_VERSION,
+        consentedAt: signedAt,
+        candidateSignatureName: input.candidateSignatureName,
+        candidateSignedAt: signedAt,
+        guardianFullName: isMinor ? input.guardianFullName : undefined,
+        guardianEmail: isMinor ? input.guardianEmail?.toLowerCase() : undefined,
+        guardianPhone: isMinor ? input.guardianPhone : undefined,
+        guardianSignatureName: isMinor ? input.guardianSignatureName : undefined,
+        guardianSignedAt: isMinor ? signedAt : undefined,
+        contractVersion: CANDIDATE_CONTRACT_VERSION,
+        contractStatus: isMinor ? "guardian_signed" : "candidate_signed",
         ipAddress: hashClientIp(req),
         contestId,
         status: "pending",
       });
 
-      await notifyAdmins("Nouvelle candidature 2027", `${application.firstName} ${application.lastName} (${application.category}) · ${application.city} · ${application.email}. À examiner dans /admin/applications.`, "info");
-      return res.status(201).json({ success: true, applicationId: application.id, contestId });
+      let contractReady = false;
+      try {
+        const contract = await generateCandidateContract2027({
+          applicationId: application.id,
+          firstName: input.firstName,
+          lastName: input.lastName,
+          dateOfBirth: input.birthDate,
+          street: input.street,
+          houseNumber: input.houseNumber,
+          postalCode: input.postalCode,
+          city: input.city,
+          height: input.heightCm,
+          weight: input.weightKg,
+          email: normalizedEmail,
+          phone: input.phone,
+          category: input.category,
+          candidateSignatureName: input.candidateSignatureName,
+          candidateSignedAt: signedAt,
+          guardianFullName: isMinor ? input.guardianFullName : null,
+          guardianEmail: isMinor ? input.guardianEmail : null,
+          guardianPhone: isMinor ? input.guardianPhone : null,
+          guardianSignatureName: isMinor ? input.guardianSignatureName : null,
+          guardianSignedAt: isMinor ? signedAt : null,
+        });
+        const contractKey = `candidate-contracts/2027/${application.id}-${crypto.randomUUID()}.pdf`;
+        await storagePutPrivate(contractKey, contract, "application/pdf");
+        await db.updateCandidateApplicationContract(application.id, {
+          contractPdfKey: contractKey,
+          contractPdfSha256: crypto.createHash("sha256").update(contract).digest("hex"),
+          contractStatus: isMinor ? "guardian_signed" : "candidate_signed",
+        });
+        contractReady = true;
+      } catch (contractError) {
+        console.error("[Public candidate application] contract generation failed", contractError);
+        try {
+          await db.updateCandidateApplicationContract(application.id, { contractStatus: "generation_failed" });
+        } catch (statusError) {
+          console.error("[Public candidate application] contract status update failed", statusError);
+        }
+      }
+
+      await notifyAdmins("Nouvelle candidature 2027", `${application.firstName} ${application.lastName} (${application.category}) · ${application.city} · ${application.email}. Dossier contractuel ${contractReady ? "généré" : "à régénérer"} · à examiner dans /admin/applications.`, "info");
+      return res.status(201).json({ success: true, applicationId: application.id, contestId, contractReady });
     } catch (error) {
       console.error("[Public candidate application]", error);
       const message = error instanceof Error ? error.message : "Impossible d’enregistrer la candidature.";

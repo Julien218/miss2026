@@ -8,6 +8,7 @@ import {
   LogIn,
   Menu,
   PlayCircle,
+  Sparkles,
   X,
 } from "lucide-react";
 import { BRANDING } from "@/config/branding";
@@ -17,6 +18,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
 import { SponsorVisual2026 } from "@/components/SponsorVisual2026";
 import { trpc } from "@/lib/trpc";
+import { ImmersiveHero2027, useDepthReveals } from "@/components/ImmersiveHero2027";
 
 const NAV_LINKS = [
   { href: "/about", label: "À propos" },
@@ -69,6 +71,13 @@ const SPONSOR_PREVIEW = [
   { index: 38, name: "PubliDesign" },
 ] as const;
 
+const EXPERIENCE_PORTALS = [
+  { href: "/about", index: "01", label: "L’élection", detail: "Découvrir l’histoire", Icon: Crown },
+  { href: "/candidates", index: "02", label: "Les candidats", detail: "Rencontrer les profils", Icon: Camera },
+  { href: "/inscription", index: "03", label: "Votre candidature", detail: "Commencer le parcours", Icon: Sparkles },
+  { href: "/gallery", index: "04", label: "Les coulisses", detail: "Entrer dans le backstage", Icon: PlayCircle },
+] as const;
+
 function SectionLabel({ index, children }: { index: string; children: string }) {
   return <div className="mmd-section-label"><span>{index}</span><i aria-hidden="true"/><strong>{children}</strong></div>;
 }
@@ -84,6 +93,7 @@ export default function Homepage() {
   const { isAuthenticated, user } = useAuth();
   const [mobileMenuOpen,setMobileMenuOpen]=useMenuState(false);
   const { data: photos } = trpc.photos.listPublic.useQuery();
+  useDepthReveals();
 
   const backstage = useMemo(() => {
     const all = photos ?? [];
@@ -117,59 +127,54 @@ export default function Homepage() {
       <nav className="mmd-desktop-nav" aria-label="Navigation principale">{NAV_LINKS.map(item=><Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>
       <div className="mmd-nav-actions">
         {isAuthenticated?<Link href={getDashboardUrl()} className="mmd-account-button"><Crown className="h-4 w-4"/>{user?.role==="admin"||user?.role==="super_admin"?"Espace Admin":"Mon espace"}</Link>:<a href={getLoginUrl()} className="mmd-login-button"><LogIn className="h-4 w-4"/>Connexion</a>}
-        <Link href="/inscription-candidat" className="mmd-primary-button mmd-nav-cta">Candidater</Link>
+        <Link href="/inscription" className="mmd-primary-button mmd-nav-cta">Candidater</Link>
       </div>
       <button type="button" className="mmd-menu-button" onClick={()=>setMobileMenuOpen(open=>!open)} aria-label="Ouvrir le menu" aria-expanded={mobileMenuOpen}>{mobileMenuOpen?<X/>:<Menu/>}</button>
     </div>{mobileMenuOpen&&<nav className="mmd-mobile-menu" aria-label="Navigation mobile">
       {NAV_LINKS.map(item=><Link key={item.href} href={item.href} onClick={()=>setMobileMenuOpen(false)}>{item.label}</Link>)}
-      <Link href="/inscription-candidat" className="mmd-primary-button" onClick={()=>setMobileMenuOpen(false)}>Candidater 2027</Link>
+      <Link href="/inscription" className="mmd-primary-button" onClick={()=>setMobileMenuOpen(false)}>Candidater 2027</Link>
       {isAuthenticated?<Link href={getDashboardUrl()} className="mmd-mobile-account" onClick={()=>setMobileMenuOpen(false)}>Mon espace</Link>:<a href={getLoginUrl()} className="mmd-mobile-account">Connexion</a>}
     </nav>}</header>
 
     <main>
-      {/* 01 — HERO */}
-      <section className="mmd-hero">
-        <div className="mmd-hero-ambient" aria-hidden="true"/><div className="mmd-hero-frame" aria-hidden="true"/>
-        <div className="mmd-container mmd-hero-content">
-          <div className="mmd-hero-kicker"><span>Nouvelle génération</span><i/><span>2027</span></div>
-          <img src={BRANDING.logoIdentity} alt="" className="mmd-home-hero-logo" aria-hidden="true"/>
-          <h1 className="mmd-display-title" aria-label="Miss & Mister Dour"><span className="mmd-title-miss">Miss</span><span className="mmd-title-middle"><em>&amp;</em><strong>Mister</strong></span><span className="mmd-title-dour">Dour</span></h1>
-          <div className="mmd-hero-bottom"><p>Une <strong>expérience humaine, scénique et digitale</strong> pensée pour révéler des personnalités, créer des souvenirs et faire vivre Dour autrement.</p><div className="mmd-hero-actions"><Link href="/inscription-candidat" className="mmd-primary-button mmd-large-button">Devenir candidat <ArrowRight className="h-5 w-5"/></Link><Link href="/candidates" className="mmd-secondary-button mmd-large-button">Découvrir les candidats</Link></div></div>
-        </div>
-      </section>
+      {/* 01 — HERO IMMERSIF */}
+      <ImmersiveHero2027 />
       <Marquee/>
 
       {/* 02 — INTRO */}
-      <section className="mmd-section mmd-home-intro"><div className="mmd-container">
+      <section id="experience" className="mmd-section mmd-home-intro" data-depth-reveal><div className="mmd-container">
         <SectionLabel index="02">L’expérience</SectionLabel>
         <div className="mmd-home-intro-grid"><h2>Plus qu’une élection.<br/><em>Une aventure humaine.</em></h2><p>Une scène où chaque personnalité peut prendre sa place, où le digital prolonge l’émotion et où l’innovation reste au service de l’humain.</p></div>
+        <div className="mmd-experience-portals" aria-label="Explorer l’expérience">
+          {EXPERIENCE_PORTALS.map(({href,index,label,detail,Icon})=><Link key={href} href={href} className="mmd-experience-portal"><span>{index}</span><Icon/><strong>{label}</strong><small>{detail}<ArrowRight/></small></Link>)}
+        </div>
       </div></section>
 
       {/* 03 — CANDIDATS */}
-      <section className="mmd-section mmd-candidates-section"><div className="mmd-container"><SectionLabel index="03">Les candidats</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui donnent vie à <em>l’édition 2027.</em></h2><Link href="/candidates" className="mmd-text-link">Tous les profils <ArrowRight/></Link></div></div><div className="mmd-candidate-stage"><FloatingCandidateCards/></div><div className="mmd-container mmd-candidate-cta"><Link href="/inscription-candidat" className="mmd-primary-button">Rejoindre l’édition 2027 <ArrowRight className="h-4 w-4"/></Link></div></section>
+      <section className="mmd-section mmd-candidates-section" data-depth-reveal><div className="mmd-container"><SectionLabel index="03">Les candidats</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui donnent vie à <em>l’édition 2027.</em></h2><Link href="/candidates" className="mmd-text-link">Tous les profils <ArrowRight/></Link></div></div><div className="mmd-candidate-stage"><FloatingCandidateCards/></div><div className="mmd-container mmd-candidate-cta"><Link href="/inscription" className="mmd-primary-button">Rejoindre l’édition 2027 <ArrowRight className="h-4 w-4"/></Link></div></section>
 
       {/* 04 — JOURNEY */}
-      <section className="mmd-section mmd-journey-section"><div className="mmd-container"><SectionLabel index="04">The Journey</SectionLabel><div className="mmd-section-heading mmd-journey-heading"><h2>De la première candidature aux <em>lumières du gala.</em></h2></div><div className="mmd-journey-grid">{JOURNEY.map(step=><article key={step.phase}><span>{step.phase}</span><h3>{step.title}</h3><p>{step.text}</p></article>)}</div></div></section>
+      <section className="mmd-section mmd-journey-section" data-depth-reveal><div className="mmd-container"><SectionLabel index="04">The Journey</SectionLabel><div className="mmd-section-heading mmd-journey-heading"><h2>De la première candidature aux <em>lumières du gala.</em></h2></div><div className="mmd-journey-grid">{JOURNEY.map(step=><article key={step.phase}><span>{step.phase}</span><h3>{step.title}</h3><p>{step.text}</p></article>)}</div></div></section>
 
       {/* 05 — BACKSTAGE */}
-      <section className="mmd-section mmd-home-backstage"><div className="mmd-container"><SectionLabel index="05">Backstage</SectionLabel><div className="mmd-section-heading"><h2>Ce qui se passe <em>hors champ.</em></h2><Link href="/gallery" className="mmd-text-link">Voir tout <ArrowRight/></Link></div>
+      <section className="mmd-section mmd-home-backstage" data-depth-reveal><div className="mmd-container"><SectionLabel index="05">Backstage</SectionLabel><div className="mmd-section-heading"><h2>Ce qui se passe <em>hors champ.</em></h2><Link href="/gallery" className="mmd-text-link">Voir tout <ArrowRight/></Link></div>
         {backstage.length>0?<div className="mmd-home-media-strip">{backstage.map((photo,index)=><Link href="/gallery" key={photo.id} className={index===0?"is-featured":""}><img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||"Backstage Miss & Mister Dour"} loading="lazy"/><span><PlayCircle/>{photo.candidateName||"Backstage"}</span></Link>)}</div>:<Link href="/gallery" className="mmd-home-empty-media"><Camera/><strong>Le backstage arrive ici</strong><span>Les premiers contenus apparaîtront automatiquement dès leur publication.</span></Link>}
       </div></section>
 
       {/* 06 — PARTICIPER */}
-      <section className="mmd-section mmd-home-participate"><div className="mmd-container"><SectionLabel index="06">Participer</SectionLabel><div className="mmd-home-participate-card"><div><span>ÉDITION 2027</span><h2>Votre candidature.<br/><em>Votre histoire.</em></h2><p>Le formulaire accompagne chaque candidat étape par étape et permet ensuite de compléter son profil officiel.</p></div><div className="mmd-home-participate-actions"><Link href="/inscription-candidat" className="mmd-primary-button mmd-large-button">Commencer ma candidature <ArrowRight/></Link><small>Date de clôture communiquée prochainement</small></div></div></div></section>
+      <section className="mmd-section mmd-home-participate" data-depth-reveal><div className="mmd-container"><SectionLabel index="06">Participer</SectionLabel><div className="mmd-home-participate-card"><div><span>ÉDITION 2027</span><h2>Votre candidature.<br/><em>Votre histoire.</em></h2><p>Le formulaire accompagne chaque candidat étape par étape et permet ensuite de compléter son profil officiel.</p></div><div className="mmd-home-participate-actions"><Link href="/inscription" className="mmd-primary-button mmd-large-button">Commencer ma candidature <ArrowRight/></Link><small>Date de clôture communiquée prochainement</small></div></div></div></section>
 
       {/* 07 — ARCHIVES */}
-      <section className="mmd-section mmd-home-archives"><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map(edition=><article key={edition.year}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span><div className="mmd-archive-titles"><div><small>MISS DOUR</small><strong className={edition.miss.includes("relier")?"is-pending":""}>{edition.miss}</strong></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("Archive")||edition.mister.includes("relier")?"is-pending":""}>{edition.mister}</strong></div></div><p>{edition.note}</p></article>)}</div><p className="mmd-archive-disclaimer">Aucun nom n’est publié comme lauréat sans source vérifiée. Le palmarès historique sera complété au fur et à mesure de sa récupération.</p></div></section>
+      <section className="mmd-section mmd-home-archives" data-depth-reveal><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map(edition=><article key={edition.year}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span><div className="mmd-archive-titles"><div><small>MISS DOUR</small><strong className={edition.miss.includes("relier")?"is-pending":""}>{edition.miss}</strong></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("Archive")||edition.mister.includes("relier")?"is-pending":""}>{edition.mister}</strong></div></div><p>{edition.note}</p></article>)}</div><p className="mmd-archive-disclaimer">Aucun nom n’est publié comme lauréat sans source vérifiée. Le palmarès historique sera complété au fur et à mesure de sa récupération.</p></div></section>
 
       {/* 08 — PARTENAIRES */}
-      <section className="mmd-section mmd-home-partners"><div className="mmd-container"><SectionLabel index="08">Partenaires</SectionLabel><div className="mmd-section-heading"><h2>Ils ont accompagné <em>l’aventure.</em></h2><Link href="/sponsors" className="mmd-text-link">Tous les partenaires <ArrowRight/></Link></div><div className="mmd-home-sponsor-preview">{SPONSOR_PREVIEW.map((sponsor)=><div key={sponsor.index}><SponsorVisual2026 index={sponsor.index} label={sponsor.name}/></div>)}</div><p className="mmd-home-partner-note">Aperçu des partenaires de l’édition 2026. Les partenaires 2027 seront identifiés séparément.</p></div></section>
+      <section className="mmd-section mmd-home-partners" data-depth-reveal><div className="mmd-container"><SectionLabel index="08">Partenaires</SectionLabel><div className="mmd-section-heading"><h2>Ils ont accompagné <em>l’aventure.</em></h2><Link href="/sponsors" className="mmd-text-link">Tous les partenaires <ArrowRight/></Link></div><div className="mmd-home-sponsor-preview">{SPONSOR_PREVIEW.map((sponsor)=><div key={sponsor.index}><SponsorVisual2026 index={sponsor.index} label={sponsor.name}/></div>)}</div><p className="mmd-home-partner-note">Aperçu des partenaires de l’édition 2026. Les partenaires 2027 seront identifiés séparément.</p></div></section>
 
       {/* 09 — GALERIE */}
-      <section className="mmd-section mmd-home-gallery"><div className="mmd-container"><SectionLabel index="09">Galerie</SectionLabel><div className="mmd-section-heading"><h2>Portraits, scène et <em>moments forts.</em></h2><Link href="/gallery" className="mmd-text-link">Explorer la galerie <ArrowRight/></Link></div>{galleryPreview.length>0?<div className="mmd-home-gallery-grid">{galleryPreview.map((photo,index)=><Link href="/gallery" key={photo.id} className={index===0||index===3?"is-large":""}><img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||"Galerie Miss & Mister Dour"} loading="lazy"/></Link>)}</div>:<div className="mmd-home-gallery-placeholder"><Camera/><span>La galerie se remplira automatiquement avec les médias validés.</span></div>}</div></section>
+      <section className="mmd-section mmd-home-gallery" data-depth-reveal><div className="mmd-container"><SectionLabel index="09">Galerie</SectionLabel><div className="mmd-section-heading"><h2>Portraits, scène et <em>moments forts.</em></h2><Link href="/gallery" className="mmd-text-link">Explorer la galerie <ArrowRight/></Link></div>{galleryPreview.length>0?<div className="mmd-home-gallery-grid">{galleryPreview.map((photo,index)=><Link href="/gallery" key={photo.id} className={index===0||index===3?"is-large":""}><img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||"Galerie Miss & Mister Dour"} loading="lazy"/></Link>)}</div>:<div className="mmd-home-gallery-placeholder"><Camera/><span>La galerie se remplira automatiquement avec les médias validés.</span></div>}</div></section>
 
       {/* 10 — FINAL CTA */}
-      <section className="mmd-final-cta"><div className="mmd-final-year" aria-hidden="true">27</div><div className="mmd-container mmd-final-content"><span className="mmd-final-eyebrow">Et si le prochain visage de Dour était le vôtre ?</span><h2>Votre place<br/><em>sur la scène.</em></h2><p>Candidat, partenaire ou simplement curieux : entrez dans l’univers Miss & Mister Dour 2027.</p><div className="mmd-final-actions"><Link href="/inscription-candidat" className="mmd-final-dark-button">Devenir candidat</Link><Link href="/sponsors" className="mmd-final-outline-button">Devenir partenaire</Link><Link href="/contact" className="mmd-final-text-button">Nous contacter</Link></div></div></section>
+      <section className="mmd-final-cta" data-depth-reveal><div className="mmd-final-year" aria-hidden="true">27</div><div className="mmd-container mmd-final-content"><span className="mmd-final-eyebrow">Et si le prochain visage de Dour était le vôtre ?</span><h2>Votre place<br/><em>sur la scène.</em></h2><p>Candidat, partenaire ou simplement curieux : entrez dans l’univers Miss & Mister Dour 2027.</p><div className="mmd-final-actions"><Link href="/inscription" className="mmd-final-dark-button">Devenir candidat</Link><Link href="/sponsors" className="mmd-final-outline-button">Devenir partenaire</Link><Link href="/contact" className="mmd-final-text-button">Nous contacter</Link></div></div></section>
     </main>
 
     <footer className="mmd-editorial-footer"><div className="mmd-container"><div className="mmd-footer-main"><img src={BRANDING.logoIdentity} alt="Miss & Mister Dour"/><nav aria-label="Navigation pied de page">{NAV_LINKS.map(item=><Link key={item.href} href={item.href}>{item.label}</Link>)}<Link href="/contact">Contact</Link></nav></div><div className="mmd-footer-bottom"><span>Miss & Mister Dour · Dour, Belgique</span><span>Expérience digitale par JS-Innov.IA®</span></div></div></footer>

@@ -372,40 +372,13 @@ export const candidateOnboardingRouter = router({
         });
       }
 
-      // Créer le profil candidat dans la table candidates
-      // Note: userId est requis mais on n'a pas de compte utilisateur pour le candidat
-      // On va créer un userId temporaire ou utiliser un userId par défaut
-      const result = await db.createCandidate({
-        userId: 1, // TODO: Créer un compte utilisateur pour le candidat
-        contestId: application.contestId,
-        category: application.category || 'miss',
-        firstName: application.firstName,
-        lastName: application.lastName,
-        dateOfBirth: application.dateOfBirth,
-        phone: application.phone || undefined,
-        city: application.city,
-        country: application.country,
-        profilePhoto: application.profilePhoto || undefined,
-        bio: application.bio || undefined,
-        motivation: application.motivation || undefined,
-        status: 'approved', // Statut valide du schéma candidates
-      });
-
-      const candidateId = Number(result);
-
-      // Mettre à jour la candidature
-      await db.updateCandidateApplicationStatus(
-        input.applicationId,
-        'approved',
-        ctx.user.id
-      );
-
-      // Lier la candidature au profil créé
-      await db.linkApplicationToCandidate(input.applicationId, candidateId);
+      // Utiliser l'unique transition d'approbation afin d'appliquer le verrou
+      // contractuel 2027 sur tous les cockpits administratifs.
+      const result = await db.approveCandidateApplication(input.applicationId, ctx.user.id);
 
       return {
         success: true,
-        candidateId,
+        candidateId: result.candidateId,
         message: 'Candidature approuvée et profil créé avec succès',
       };
     }),

@@ -36,16 +36,16 @@ export default function RegistrationThankYou() {
           </motion.div>
           <div className="mmd-public-kicker"><span>2027</span><i/>CANDIDATURE REÇUE</div>
           <h1>Votre candidature est <em>enregistrée.</em></h1>
-          <p>Merci d’avoir rejoint l’aventure Miss & Mister Dour 2027. L’équipe examinera votre dossier et vous contactera pour la suite.</p>
+          <p>Merci d’avoir rejoint l’aventure Miss & Mister Dour 2027. Vos informations, consentements et signatures ont été transmis à l’équipe pour validation.</p>
         </div>
       </section>
 
       <section className="mmd-section">
         <div className="mmd-container mmd-thankyou-grid">
-          <article><span>01</span><h2>Vérification</h2><p>L’équipe contrôle les informations et les éléments nécessaires à votre candidature.</p></article>
-          <article><span>02</span><h2>Validation</h2><p>Après validation, votre profil pourra être complété et préparé pour sa publication officielle.</p></article>
-          <article><span>03</span><h2>Publication</h2><p>Les profils approuvés apparaissent dans l’expérience publique Miss & Mister Dour.</p></article>
-          <article><span>04</span><h2>La suite</h2><p>Les dates, rendez-vous et informations de l’édition 2027 vous seront communiqués lorsqu’ils seront confirmés.</p></article>
+          <article><span>01</span><h2>Vérification</h2><p>L’équipe contrôle les informations, la photo et la conformité du dossier contractuel.</p></article>
+          <article><span>02</span><h2>Signature Starlight</h2><p>L’organisation valide et signe le contrat depuis son cockpit sécurisé.</p></article>
+          <article><span>03</span><h2>Validation</h2><p>Après validation, votre profil pourra être complété et préparé pour sa publication officielle.</p></article>
+          <article><span>04</span><h2>La suite</h2><p>Les rendez-vous et informations de l’édition 2027 vous seront communiqués par l’équipe.</p></article>
         </div>
       </section>
 
