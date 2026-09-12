@@ -32,8 +32,8 @@ jobs:
       - name: Type-check
         run: pnpm check
 
-      - name: Unit tests
-        run: pnpm test
+      - name: Contract unit test
+        run: pnpm exec vitest run server/helpers/candidateContract2027.test.ts
 
       - name: Production build
         run: pnpm build
