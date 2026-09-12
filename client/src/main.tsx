@@ -18,6 +18,7 @@ import "./home-2027-complete.css";
 import "./gallery-folders-2027.css";
 import "./gallery-depth-2027.css";
 import "./sponsor-sprite-2027.css";
+import "./sponsors-orbit-2027.css";
 import "./login-2027.css";
 import "./mobile-2027.css";
 import "./modern-ux-2027.css";
