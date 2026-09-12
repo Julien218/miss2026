@@ -7,6 +7,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
 
 type R2Config = {
   endpoint: string;
@@ -75,6 +76,41 @@ function toBody(data: Buffer | Uint8Array | string): Buffer | Uint8Array | strin
   return new Uint8Array(data);
 }
 
+const PRIVATE_MAGIC = Buffer.from("MMDPRIV1", "ascii");
+const PRIVATE_IV_LENGTH = 12;
+const PRIVATE_TAG_LENGTH = 16;
+
+function getPrivateStorageKey(): Buffer {
+  const secret = process.env.PRIVATE_STORAGE_KEY?.trim();
+  if (!secret || secret.length < 32) {
+    throw new Error("PRIVATE_STORAGE_KEY must be configured with at least 32 characters");
+  }
+  return createHash("sha256").update(secret, "utf8").digest();
+}
+
+function encryptPrivateData(data: Buffer | Uint8Array | string): Buffer {
+  const clear = typeof data === "string" ? Buffer.from(data) : Buffer.from(data);
+  const iv = randomBytes(PRIVATE_IV_LENGTH);
+  const cipher = createCipheriv("aes-256-gcm", getPrivateStorageKey(), iv);
+  cipher.setAAD(PRIVATE_MAGIC);
+  const encrypted = Buffer.concat([cipher.update(clear), cipher.final()]);
+  return Buffer.concat([PRIVATE_MAGIC, iv, cipher.getAuthTag(), encrypted]);
+}
+
+function decryptPrivateData(payload: Buffer): Buffer {
+  const header = payload.subarray(0, PRIVATE_MAGIC.length);
+  if (!header.equals(PRIVATE_MAGIC)) {
+    throw new Error("Private object is not encrypted with the expected format");
+  }
+  const ivStart = PRIVATE_MAGIC.length;
+  const tagStart = ivStart + PRIVATE_IV_LENGTH;
+  const dataStart = tagStart + PRIVATE_TAG_LENGTH;
+  const decipher = createDecipheriv("aes-256-gcm", getPrivateStorageKey(), payload.subarray(ivStart, tagStart));
+  decipher.setAAD(PRIVATE_MAGIC);
+  decipher.setAuthTag(payload.subarray(tagStart, dataStart));
+  return Buffer.concat([decipher.update(payload.subarray(dataStart)), decipher.final()]);
+}
+
 export async function storagePut(
   relKey: string,
   data: Buffer | Uint8Array | string,
@@ -128,8 +164,8 @@ export async function storageGet(
 }
 
 /**
- * Store a non-public document. Unlike media assets, this helper never builds a
- * permanent public URL; callers must request a short-lived signed URL.
+ * Store an encrypted document. The media bucket may have a public URL, so
+ * confidentiality is provided by AES-256-GCM before the object reaches R2.
  */
 export async function storagePutPrivate(
   relKey: string,
@@ -144,9 +180,10 @@ export async function storagePutPrivate(
     new PutObjectCommand({
       Bucket: config.bucket,
       Key: key,
-      Body: toBody(data),
-      ContentType: contentType,
+      Body: encryptPrivateData(data),
+      ContentType: "application/octet-stream",
       CacheControl: "private, no-store",
+      Metadata: { originalContentType: contentType },
     })
   );
 
@@ -154,20 +191,17 @@ export async function storagePutPrivate(
 }
 
 export async function storageGetPrivate(
-  relKey: string,
-  expiresInSeconds = 15 * 60
-): Promise<{ key: string; url: string }> {
+  relKey: string
+): Promise<{ key: string; data: Buffer; contentType: string }> {
   const config = getR2Config();
   const client = getR2Client(config);
   const key = normalizeKey(relKey);
-  const expiresIn = Math.min(60 * 60, Math.max(60, Math.round(expiresInSeconds)));
-
+  const object = await client.send(new GetObjectCommand({ Bucket: config.bucket, Key: key }));
+  if (!object.Body) throw new Error("Private object has no content");
+  const encrypted = Buffer.from(await object.Body.transformToByteArray());
   return {
     key,
-    url: await getSignedUrl(
-      client,
-      new GetObjectCommand({ Bucket: config.bucket, Key: key }),
-      { expiresIn }
-    ),
+    data: decryptPrivateData(encrypted),
+    contentType: object.Metadata?.originalcontenttype || "application/octet-stream",
   };
 }

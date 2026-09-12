@@ -139,18 +139,7 @@ export default function AdminApplications() {
   }
 
   async function openContract(application: CandidateApplication) {
-    setBusyId(application.id);
-    setError("");
-    try {
-      const response = await fetch(`/api/admin/candidate-applications/${application.id}/contract`, { credentials: "include" });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body?.error || "Contrat indisponible");
-      openUrl(body.url);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Contrat indisponible");
-    } finally {
-      setBusyId(null);
-    }
+    openUrl(`/api/admin/candidate-applications/${application.id}/contract`);
   }
 
   async function signContract(application: CandidateApplication) {
@@ -278,7 +267,7 @@ export default function AdminApplications() {
 
                   {application.contractVersion ? <div className="flex flex-wrap gap-3 rounded-2xl border border-violet-300/15 bg-violet-300/[0.035] p-3">
                     {application.contractPdfKey ? <Button variant="outline" onClick={() => void openContract(application)} disabled={busyId === application.id} className="border-violet-300/35 bg-transparent text-violet-100 hover:bg-violet-300/10"><ExternalLink className="mr-2 h-4 w-4" /> Ouvrir le contrat</Button> : <span className="px-2 py-2 text-xs text-red-200">Le PDF contractuel doit être régénéré.</span>}
-                    {application.status === "pending" && application.contractPdfKey && application.contractStatus !== "completed" ? <Button variant="outline" onClick={() => void signContract(application)} disabled={busyId === application.id} className="border-[#d7ae69]/45 bg-transparent text-[#ead3a5] hover:bg-[#d7ae69]/10"><FileSignature className="mr-2 h-4 w-4" /> Signer pour Starlight</Button> : null}
+                    {application.status === "pending" && application.contractStatus !== "completed" ? <Button variant="outline" onClick={() => void signContract(application)} disabled={busyId === application.id} className="border-[#d7ae69]/45 bg-transparent text-[#ead3a5] hover:bg-[#d7ae69]/10"><FileSignature className="mr-2 h-4 w-4" /> {application.contractStatus === "generation_failed" ? "Régénérer et signer" : "Signer pour Starlight"}</Button> : null}
                   </div> : null}
 
                   {application.status === "pending" ? (

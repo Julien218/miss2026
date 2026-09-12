@@ -90,8 +90,11 @@ export function registerCandidateApplicationAdminRoutes(app: Express) {
       const application = await db.getCandidateApplicationById(id);
       if (!application) return res.status(404).json({ error: "Candidature non trouvée" });
       if (!application.contractPdfKey) return res.status(404).json({ error: "Le PDF contractuel n’a pas encore été généré" });
-      const contract = await storageGetPrivate(application.contractPdfKey, 15 * 60);
-      return res.json({ url: contract.url, expiresIn: 900, status: application.contractStatus });
+      const contract = await storageGetPrivate(application.contractPdfKey);
+      res.setHeader("Content-Type", contract.contentType === "application/pdf" ? contract.contentType : "application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename="contrat-candidat-${application.id}.pdf"`);
+      res.setHeader("Cache-Control", "private, no-store");
+      return res.send(contract.data);
     } catch (error) {
       console.error("[CandidateApplications] contract access failed", error);
       return res.status(500).json({ error: "Impossible d’ouvrir le contrat" });
@@ -124,8 +127,11 @@ export function registerCandidateApplicationAdminRoutes(app: Express) {
         organizationSignatureName: signatureName,
         organizationSignedAt: signedAt,
       });
-      const access = await storageGetPrivate(contractKey, 15 * 60);
-      return res.json({ success: true, application: updated, url: access.url, expiresIn: 900 });
+      return res.json({
+        success: true,
+        application: updated,
+        url: `/api/admin/candidate-applications/${application.id}/contract`,
+      });
     } catch (error) {
       console.error("[CandidateApplications] contract signature failed", error);
       return res.status(400).json({ error: error instanceof Error ? error.message : "Signature du contrat impossible" });
