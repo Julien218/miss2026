@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   FolderOpen,
   Image as ImageIcon,
   Orbit,
@@ -148,6 +149,13 @@ export default function Gallery() {
     setVisibleCount(40);
   };
 
+  const chooseEventFilter = (category: string) => {
+    setEventFilter(category);
+    setCandidateFilter("all");
+    setVisibleCount(40);
+    setLightboxIndex(null);
+  };
+
   const close = useCallback(() => {
     setLightboxIndex(null);
     document.body.style.overflow = "";
@@ -184,7 +192,7 @@ export default function Gallery() {
   }, [lightboxIndex, close, next, prev]);
 
   return (
-    <div className="mmd-public-page">
+    <div className="mmd-public-page mmd-gallery-page">
       <SEOHead
         title="Galerie & backstage — Miss & Mister Dour 2027"
         description="Explorez les shootings, coulisses, événements et archives de Miss & Mister Dour, organisés par catégories."
@@ -222,7 +230,21 @@ export default function Gallery() {
                 <FolderOpen className="h-4 w-4" />
                 <span>Dossiers & catégories</span>
               </div>
-              <div className="mmd-gallery-filter-scroll" role="tablist" aria-label="Catégories de galerie">
+              <label className="mmd-gallery-mobile-folder">
+                <select
+                  value={eventFilter}
+                  aria-label="Choisir un dossier de la galerie"
+                  onChange={(event) => chooseEventFilter(event.target.value)}
+                >
+                  {categories.map(({ category, count }) => (
+                    <option key={category} value={category}>
+                      {categoryLabel(category)} · {count}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown aria-hidden="true" />
+              </label>
+              <div className="mmd-gallery-filter-scroll mmd-gallery-filter-scroll--desktop" role="tablist" aria-label="Catégories de galerie">
                 {categories.map(({ category, count }) => (
                   <button
                     key={category}
@@ -230,11 +252,7 @@ export default function Gallery() {
                     role="tab"
                     aria-selected={eventFilter === category}
                     className={eventFilter === category ? "is-active" : ""}
-                    onClick={() => {
-                      setEventFilter(category);
-                      setVisibleCount(40);
-                      setLightboxIndex(null);
-                    }}
+                    onClick={() => chooseEventFilter(category)}
                   >
                     <span>{categoryLabel(category)}</span>
                     <small>{count}</small>
@@ -243,7 +261,7 @@ export default function Gallery() {
               </div>
             </div>
 
-            <div className="mmd-gallery-filter-block mmd-gallery-filter-block--people">
+            {(candidateCounts.miss > 0 || candidateCounts.mister > 0) && <div className="mmd-gallery-filter-block mmd-gallery-filter-block--people">
               <div className="mmd-gallery-filter-title">
                 <Users className="h-4 w-4" />
                 <span>Profils</span>
@@ -267,7 +285,7 @@ export default function Gallery() {
                   </button>
                 ))}
               </div>
-            </div>
+            </div>}
           </div>
 
           <div className="mmd-gallery-count">
@@ -339,7 +357,7 @@ export default function Gallery() {
                       loading="lazy"
                     />
                     <div className="mmd-gallery-shade" />
-                    <span className="mmd-gallery-tag">{categoryLabel(photo.category || "other")}</span>
+                    {eventFilter === "all" && <span className="mmd-gallery-tag">{categoryLabel(photo.category || "other")}</span>}
                     <ZoomIn className="mmd-gallery-zoom" />
                     {(photo.candidateName || photo.title) && (
                       <div className="mmd-gallery-caption">
