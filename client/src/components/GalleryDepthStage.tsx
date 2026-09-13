@@ -19,6 +19,7 @@ type GalleryDepthStageProps = {
 };
 
 const MAX_DEPTH_PHOTOS = 42;
+const AUTO_DRIFT_ACCELERATION = 0.075;
 
 function wrap(value: number, length: number) {
   return ((value % length) + length) % length;
@@ -86,7 +87,7 @@ export function GalleryDepthStage({
 
       if (visible) {
         if (!pausedRef.current && !draggingRef.current) {
-          velocityRef.current += delta * 0.065;
+          velocityRef.current += delta * AUTO_DRIFT_ACCELERATION;
         }
         velocityRef.current *= Math.pow(0.9, delta * 60);
         positionRef.current += velocityRef.current * delta * 5.2;
