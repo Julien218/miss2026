@@ -10,6 +10,7 @@ interface EmailOptions {
   subject: string;
   html: string;
   text?: string;
+  attachments?: Array<{ filename: string; content: string; contentType: string }>;
 }
 
 interface CommentNotificationData {
@@ -43,6 +44,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
         to: options.to,
         subject: options.subject,
         html: options.html,
+        ...(options.attachments?.length ? { attachments: options.attachments } : {}),
       }),
     });
 
