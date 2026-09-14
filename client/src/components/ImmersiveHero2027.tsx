@@ -88,13 +88,21 @@ export function ImmersiveHero2027() {
             poster="/immersive/miss-mister-dour-intro-2027-poster.jpg"
             aria-hidden="true"
           >
+            <source src="/immersive/miss-mister-dour-intro-2027-mobile.mp4" type="video/mp4" media="(max-width: 720px)" />
             <source src="/immersive/miss-mister-dour-intro-2027.mp4" type="video/mp4" />
           </video>
           <img
-            className="mmd-depth-stage-image"
+            className="mmd-depth-stage-image mmd-depth-stage-image--desktop"
             src="/immersive/miss-mister-dour-intro-2027-poster.jpg"
             alt=""
             fetchPriority="high"
+            decoding="async"
+          />
+          <img
+            className="mmd-depth-stage-image mmd-depth-stage-image--mobile"
+            src="/immersive/miss-mister-dour-intro-2027-mobile-poster.jpg"
+            alt=""
+            aria-hidden="true"
             decoding="async"
           />
           <div className="mmd-depth-stage-light" />
