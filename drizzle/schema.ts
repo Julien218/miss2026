@@ -19,6 +19,7 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", [
+    "client",         // Niveau client: accès limité à son organisation
     "user",           // Niveau 1: Utilisateur basique
     "candidate",      // Niveau 2: Candidat
     "press",          // Niveau 3: Presse
@@ -946,6 +947,7 @@ export type InsertPhoto = typeof photos.$inferInsert;
 // ========== CANDIDATE APPLICATIONS ==========
 export const candidateApplications = mysqlTable("candidateApplications", {
   id: int("id").autoincrement().primaryKey(),
+  organizationId: int("organizationId").notNull().default(1),
   
   // Personal Information
   firstName: varchar("firstName", { length: 100 }).notNull(),
