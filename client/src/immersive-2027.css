@@ -53,6 +53,8 @@
   animation: mmd-stage-arrival 1.8s cubic-bezier(.18,.88,.24,1) both;
 }
 
+.mmd-depth-stage-image--mobile { display: none; }
+
 .mmd-depth-stage-video {
   z-index: 1;
   width: 100%;
@@ -388,6 +390,8 @@
   .mmd-immersive-hero { min-height: 760px; }
   .mmd-depth-camera { inset: -1%; transform: scale(1.02); }
   .mmd-depth-stage-video, .mmd-depth-stage-image { object-position: 68% center; filter: saturate(.82) contrast(1.03) brightness(.7); }
+  .mmd-depth-stage-image--desktop { display: none; }
+  .mmd-depth-stage-image--mobile { display: block; object-position: center; }
   .mmd-depth-shade { background: linear-gradient(180deg, rgba(2,2,7,.44) 0%, rgba(2,2,7,.18) 30%, rgba(2,2,7,.88) 68%, #020207 100%), linear-gradient(90deg, rgba(2,2,7,.64), transparent 76%); }
   .mmd-depth-floor, .mmd-depth-orbit { opacity: .5; }
   .mmd-depth-particles i:nth-child(n+10) { display: none; }
