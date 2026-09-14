@@ -78,9 +78,21 @@ export function ImmersiveHero2027() {
     <section ref={heroRef} className="mmd-hero mmd-immersive-hero" aria-labelledby="mmd-immersive-title">
       <div className="mmd-depth-world" aria-hidden="true">
         <div className="mmd-depth-camera">
+          <video
+            className="mmd-depth-stage-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/immersive/miss-mister-dour-intro-2027-poster.jpg"
+            aria-hidden="true"
+          >
+            <source src="/immersive/miss-mister-dour-intro-2027.mp4" type="video/mp4" />
+          </video>
           <img
             className="mmd-depth-stage-image"
-            src="/immersive/jsinnovia-companion-stage-2027.webp"
+            src="/immersive/miss-mister-dour-intro-2027-poster.jpg"
             alt=""
             fetchPriority="high"
             decoding="async"
