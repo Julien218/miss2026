@@ -7,7 +7,7 @@
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "prepare:sponsors": "node scripts/prepare-sponsors.mjs",
     "build": "node -e \"const p=require('multer/package.json'); if(p.version!=='2.3.0') throw new Error('multer 2.3.0 requis, version='+p.version); console.log('[Security] multer '+p.version+' actif')\" && node scripts/prepare-sponsors.mjs && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist/server",
-    "start": "NODE_ENV=production node dist/server/index.js",
+    "start": "node scripts/ensure-candidate-application-schema.mjs && NODE_ENV=production node dist/server/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
