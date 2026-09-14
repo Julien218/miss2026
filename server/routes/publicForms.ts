@@ -239,6 +239,7 @@ export function registerPublicFormRoutes(app: Express) {
         contractStatus: isMinor ? "guardian_signed" : "candidate_signed",
         ipAddress: hashClientIp(req),
         contestId,
+        organizationId: 1,
         status: "pending",
       });
 
