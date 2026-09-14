@@ -156,8 +156,9 @@ export function registerPublicFormRoutes(app: Express) {
       const contest = await findContest2027();
       const admins = await db.getAllAdmins();
       const r2Configured = Boolean(process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID && process.env.R2_SECRET_ACCESS_KEY && process.env.R2_BUCKET);
-      const ok = admins.length > 0 && r2Configured;
-      return res.status(ok ? 200 : 503).json({ ok, database: true, contest2027: Boolean(contest), adminsAvailable: admins.length > 0, storageConfigured: r2Configured, storage: "r2" });
+      const emailConfigured = Boolean(process.env.BUILT_IN_FORGE_API_URL && process.env.BUILT_IN_FORGE_API_KEY);
+      const ok = admins.length > 0 && r2Configured && emailConfigured;
+      return res.status(ok ? 200 : 503).json({ ok, database: true, contest2027: Boolean(contest), adminsAvailable: admins.length > 0, storageConfigured: r2Configured, emailConfigured, storage: "r2" });
     } catch (error) {
       console.error("[Forms health]", error);
       return res.status(503).json({ ok: false, error: "Forms dependencies unavailable" });
@@ -290,8 +291,8 @@ export function registerPublicFormRoutes(app: Express) {
       await notifyAdmins("Nouvelle candidature 2027", `${application.firstName} ${application.lastName} (${application.category}) · ${application.city} · ${application.email}. Dossier contractuel ${contractReady ? "généré" : "à régénérer"} · à examiner dans /admin/applications.`, "info");
       const adminEmail = process.env.CANDIDATE_APPLICATION_ADMIN_EMAIL || "olivier.trevis@outlook.be";
       const attachments = contractPdf ? [{ filename: `contrat-candidat-${application.id}-2027.pdf`, content: contractPdf.toString("base64"), contentType: "application/pdf" }] : undefined;
-      const legalLinks = `<p style="font-size:13px;color:#666;line-height:1.6">Mentions légales : <a href="https://www.missetmisterdour.be/mentions-legales">mentions légales</a> · <a href="https://www.missetmisterdour.be/confidentialite">confidentialité</a> · <a href="https://www.missetmisterdour.be/cgu">conditions d’utilisation</a>.</p>`;
-      await Promise.allSettled([
+      const legalLinks = `<p style="font-size:13px;color:#666;line-height:1.6">Mentions légales : <a href="https://www.missetmisterdour.be/legal/mentions-legales">mentions légales</a> · <a href="https://www.missetmisterdour.be/legal/privacy">confidentialité</a> · <a href="https://www.missetmisterdour.be/legal/cgu">conditions d’utilisation</a>.</p>`;
+      const emailResults = await Promise.all([
         sendEmail({
           to: normalizedEmail,
           subject: "Préinscription reçue — Miss & Mister Dour 2027",
@@ -307,7 +308,9 @@ export function registerPublicFormRoutes(app: Express) {
           attachments,
         }),
       ]);
-      return res.status(201).json({ success: true, applicationId: application.id, contestId, contractReady });
+      const emailsSent = emailResults.every(Boolean);
+      if (!emailsSent) console.error("[Public candidate application] candidature enregistrée mais un ou plusieurs emails n’ont pas été envoyés");
+      return res.status(201).json({ success: true, applicationId: application.id, contestId, contractReady, emailsSent });
     } catch (error) {
       console.error("[Public candidate application]", error);
       const message = error instanceof Error ? error.message : "Impossible d’enregistrer la candidature.";
