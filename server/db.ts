@@ -2245,7 +2245,6 @@ export async function getHeatmapData(params: {
   eventType?: "view" | "click" | "share" | "qr_scan" | "all";
   candidateId?: number;
   contestId?: number;
-  organizationId?: number;
 }) {
   const db = await getDb();
   if (!db) return [];
@@ -2771,7 +2770,6 @@ export async function createInvitation(data: {
   const result = await db.insert(invitations).values({
     role: data.role as any,
     email: data.email,
-    organizationId: data.organizationId || 1,
     token,
     expiresAt: data.expiresAt,
     maxUses: data.maxUses || 1,
@@ -3062,6 +3060,7 @@ export async function createCandidateApplication(data: {
   contractPdfSha256?: string;
   ipAddress?: string;
   contestId?: number;
+  organizationId?: number;
   status?: "pending" | "approved" | "rejected";
 }) {
   const db = await getDb();
@@ -3075,6 +3074,7 @@ export async function createCandidateApplication(data: {
 
   const result = await (db.insert(candidateApplications) as any).values({
     email: data.email,
+    organizationId: data.organizationId || 1,
     firstName: data.firstName,
     lastName: data.lastName,
     phone: data.phone,
