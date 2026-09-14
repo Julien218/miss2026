@@ -8,6 +8,7 @@ if (!connectionUrl) {
 
 const columns = [
   ["street", "`street` varchar(255)"], ["houseNumber", "`houseNumber` varchar(20)"],
+  ["organizationId", "`organizationId` int NOT NULL DEFAULT 1"],
   ["postalCode", "`postalCode` varchar(10)"], ["height", "`height` int"], ["weight", "`weight` int"],
   ["acceptedEligibility", "`acceptedEligibility` int NOT NULL DEFAULT 0"],
   ["acceptedCGU", "`acceptedCGU` int NOT NULL DEFAULT 0"],
@@ -34,6 +35,7 @@ try {
   } else {
     console.log("[DB] Schéma candidat déjà à jour.");
   }
+  await connection.query("ALTER TABLE `users` MODIFY COLUMN `role` enum('client','user','candidate','press','photographer','staff','marketing','organizer','admin','super_admin','owner','jury','partner') NOT NULL DEFAULT 'user'");
 } catch (error) {
   console.error("[DB] Vérification du schéma candidat échouée:", error?.message || error);
   process.exit(1);

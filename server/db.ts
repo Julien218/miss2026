@@ -3060,6 +3060,7 @@ export async function createCandidateApplication(data: {
   contractPdfSha256?: string;
   ipAddress?: string;
   contestId?: number;
+  organizationId?: number;
   status?: "pending" | "approved" | "rejected";
 }) {
   const db = await getDb();
@@ -3073,6 +3074,7 @@ export async function createCandidateApplication(data: {
 
   const result = await (db.insert(candidateApplications) as any).values({
     email: data.email,
+    organizationId: data.organizationId || 1,
     firstName: data.firstName,
     lastName: data.lastName,
     phone: data.phone,
@@ -3166,15 +3168,15 @@ export async function getCandidateApplicationByEmail(email: string) {
   return results[0] || null;
 }
 
-export async function getAllCandidateApplications(contestId?: number) {
+export async function getAllCandidateApplications(contestId?: number, organizationId?: number) {
   const db = await getDb();
   if (!db) return [];
 
+  const filters = [];
+  if (contestId) filters.push(eq(candidateApplications.contestId, contestId));
+  if (organizationId) filters.push(eq(candidateApplications.organizationId, organizationId));
   let query = db.select().from(candidateApplications);
-
-  if (contestId) {
-    query = query.where(eq(candidateApplications.contestId, contestId)) as any;
-  }
+  if (filters.length) query = query.where(and(...filters)) as any;
 
   const results = await query.orderBy(desc(candidateApplications.createdAt));
   return results;
