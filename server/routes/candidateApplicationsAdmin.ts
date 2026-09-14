@@ -6,7 +6,7 @@ import { generateCandidateContract2027 } from "../helpers/candidateContract2027"
 import { storageGetPrivate, storagePutPrivate } from "../storage";
 
 function canManageApplications(role: string | null | undefined) {
-  return role === "admin" || role === "super_admin" || role === "owner" || role === "organizer";
+  return role === "client" || role === "admin" || role === "super_admin" || role === "owner" || role === "organizer";
 }
 
 async function requireAdmin(req: Request, res: Response) {
@@ -71,7 +71,8 @@ export function registerCandidateApplicationAdminRoutes(app: Express) {
     try {
       const contestIdRaw = typeof req.query.contestId === "string" ? Number(req.query.contestId) : undefined;
       const contestId = contestIdRaw && Number.isFinite(contestIdRaw) ? contestIdRaw : undefined;
-      const applications = await db.getAllCandidateApplications(contestId);
+      const isGlobal = user.role === "admin" || user.role === "super_admin" || user.role === "owner";
+      const applications = await db.getAllCandidateApplications(contestId, isGlobal ? undefined : user.organizationId);
       res.json({ applications });
     } catch (error) {
       console.error("[CandidateApplications] list failed", error);
