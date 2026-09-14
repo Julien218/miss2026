@@ -157,7 +157,7 @@
   display: block;
   overflow: hidden;
   border-radius: 6px;
-  background: #fff;
+  background: transparent;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
 }
 .mmd-sponsor-orbit-card-media .mmd-sponsor-sprite {
@@ -165,7 +165,9 @@
   width: 100%;
   height: 100%;
   aspect-ratio: 140 / 95;
-  background-color: #fff;
+  background-color: transparent;
+  /* Neutralise les éventuels pixels blancs résiduels sans déformer le logo. */
+  mix-blend-mode: multiply;
 }
 .mmd-sponsor-orbit-hero {
   position: absolute;
@@ -211,7 +213,8 @@
   height: auto;
   aspect-ratio: 140 / 95;
   flex: none;
-  background-color: #fff;
+  background-color: transparent;
+  mix-blend-mode: multiply;
   background-origin: border-box;
   animation: mmd-sponsor-focus-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
