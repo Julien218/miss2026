@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const sourceDir = path.join(here, "sponsors-2026", "original");
@@ -42,5 +43,67 @@ if (buffer.length !== expectedBytes || sha256 !== expectedSha256) {
 }
 
 fs.mkdirSync(path.dirname(output), { recursive: true });
-fs.writeFileSync(output, buffer);
-console.log(`[Sponsors 2026] Source officielle générée : ${buffer.length} octets · ${sha256.slice(0, 12)}…`);
+
+// Les logos sont fournis dans une planche avec des cartons blancs. On retire
+// uniquement les pixels blancs connectés au bord de chaque tuile : les zones
+// blanches faisant partie d'un logo restent donc intactes et les proportions
+// originales ne changent pas.
+const { data, info } = await sharp(buffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const columns = 5;
+const rows = 9;
+const tileWidth = Math.floor(info.width / columns);
+const tileHeight = Math.floor(info.height / rows);
+const isBackgroundWhite = (offset) => {
+  const r = data[offset];
+  const g = data[offset + 1];
+  const b = data[offset + 2];
+  return r >= 245 && g >= 245 && b >= 245 && Math.max(r, g, b) - Math.min(r, g, b) <= 16;
+};
+
+for (let row = 0; row < rows; row += 1) {
+  for (let column = 0; column < columns; column += 1) {
+    const left = column * tileWidth;
+    const top = row * tileHeight;
+    const visited = new Uint8Array(tileWidth * tileHeight);
+    const enqueue = (x, y, queue) => {
+      if (x < 0 || y < 0 || x >= tileWidth || y >= tileHeight) return;
+      const index = y * tileWidth + x;
+      if (visited[index]) return;
+      const offset = ((top + y) * info.width + left + x) * 4;
+      if (!isBackgroundWhite(offset)) return;
+      visited[index] = 1;
+      queue.push([x, y]);
+    };
+    for (let startY = 0; startY < tileHeight; startY += 1) {
+      for (let startX = 0; startX < tileWidth; startX += 1) {
+        const startIndex = startY * tileWidth + startX;
+        if (visited[startIndex]) continue;
+        const startOffset = ((top + startY) * info.width + left + startX) * 4;
+        if (!isBackgroundWhite(startOffset)) continue;
+        const queue = [];
+        enqueue(startX, startY, queue);
+        for (let index = 0; index < queue.length; index += 1) {
+          const [x, y] = queue[index];
+          enqueue(x + 1, y, queue);
+          enqueue(x - 1, y, queue);
+          enqueue(x, y + 1, queue);
+          enqueue(x, y - 1, queue);
+        }
+        // Les grands composants sont les cartons de fond; un petit composant
+        // reste intact afin de préserver les lettres/blancs du logo.
+        if (queue.length >= 180) {
+          for (const [x, y] of queue) {
+            const offset = ((top + y) * info.width + left + x) * 4;
+            data[offset + 3] = 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+const cleaned = await sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } })
+  .webp({ lossless: true, effort: 6 })
+  .toBuffer();
+fs.writeFileSync(output, cleaned);
+console.log(`[Sponsors 2026] Planche officielle générée sans fonds blancs : ${cleaned.length} octets · source ${sha256.slice(0, 12)}…`);
