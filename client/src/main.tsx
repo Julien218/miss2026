@@ -28,6 +28,7 @@ import "./legal-2027.css";
 import "./cookie-2027.css";
 import "./immersive-2027.css";
 import "./gallery-mobile-2027.css";
+import "./visual-tuning-2027.css";
 
 const queryClient = new QueryClient();
 const redirectToLoginIfUnauthorized = (error: unknown) => {
