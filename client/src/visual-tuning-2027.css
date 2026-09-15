@@ -1,6 +1,7 @@
 /* Miss & Mister Dour 2027 — réglages visuels ciblés.
  * 1) Améliore la lisibilité de l'orbite partenaires sans perdre l'ambiance premium.
  * 2) Réduit légèrement la scène d'arrière-plan du hero pour laisser respirer le contenu.
+ * 3) Refonte l'aperçu partenaires de la homepage avec cartes adaptatives et interactions UI.
  */
 
 /* Partenaires : conserver le fond sombre, mais rendre les cartes et logos lisibles. */
@@ -49,6 +50,166 @@
   filter: brightness(1.05) contrast(1.04) saturate(1.03);
 }
 
+/* Homepage — aperçu partenaires premium, formats adaptés au visuel réel. */
+.mmd-home-sponsor-preview {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.65fr)
+    minmax(170px, 0.92fr)
+    minmax(160px, 0.84fr)
+    minmax(210px, 1.15fr)
+    minmax(195px, 1.05fr)
+    minmax(150px, 0.78fr);
+  align-items: end;
+  gap: 12px;
+  perspective: 1200px;
+}
+
+.mmd-home-sponsor-preview > div {
+  --partner-radius: 22px;
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  min-height: 176px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid rgba(234, 211, 165, 0.38);
+  border-radius: var(--partner-radius);
+  background:
+    radial-gradient(circle at 50% 16%, rgba(255, 230, 184, 0.16), transparent 38%),
+    linear-gradient(148deg, rgba(51, 39, 27, 0.94), rgba(15, 12, 10, 0.98) 72%);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 0 26px rgba(215, 174, 105, 0.045);
+  transform: translateZ(0);
+  transform-origin: center bottom;
+  transition:
+    transform 0.48s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.35s ease,
+    box-shadow 0.45s ease,
+    background 0.45s ease;
+  will-change: transform;
+}
+
+.mmd-home-sponsor-preview > div::before {
+  content: "";
+  position: absolute;
+  inset: -28%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 42%, rgba(238, 197, 124, 0.26), transparent 48%);
+  transition: opacity 0.4s ease;
+}
+
+.mmd-home-sponsor-preview > div::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: -28%;
+  bottom: -28%;
+  left: -42%;
+  width: 28%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 242, 211, 0.24), transparent);
+  transform: translateX(-180%) skewX(-18deg);
+  transition:
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease;
+}
+
+.mmd-home-sponsor-preview > div:hover {
+  z-index: 6;
+  transform: translateY(-11px) translateZ(24px) scale(1.025);
+  border-color: rgba(244, 207, 139, 0.78);
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255, 231, 185, 0.24), transparent 40%),
+    linear-gradient(148deg, rgba(61, 45, 30, 0.98), rgba(17, 13, 10, 0.99) 74%);
+  box-shadow:
+    0 34px 72px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 244, 217, 0.05) inset,
+    0 0 42px rgba(215, 174, 105, 0.18),
+    0 14px 35px rgba(215, 174, 105, 0.08);
+}
+
+.mmd-home-sponsor-preview > div:hover::before {
+  opacity: 1;
+}
+
+.mmd-home-sponsor-preview > div:hover::after {
+  opacity: 1;
+  transform: translateX(520%) skewX(-18deg);
+}
+
+.mmd-home-sponsor-preview .mmd-sponsor-sprite {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 220px);
+  min-height: 0;
+  aspect-ratio: 140 / 95;
+  border-radius: 12px;
+  background-color: #f5f1e9;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.32) inset;
+  transform: translateZ(12px) scale(1);
+  transition:
+    transform 0.48s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.35s ease,
+    box-shadow 0.4s ease;
+  filter: brightness(1.02) contrast(1.03) saturate(1.02);
+}
+
+.mmd-home-sponsor-preview > div:hover .mmd-sponsor-sprite {
+  transform: translateZ(38px) scale(1.035);
+  filter: brightness(1.07) contrast(1.04) saturate(1.05);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.34),
+    0 0 26px rgba(235, 196, 128, 0.11),
+    0 0 0 1px rgba(255, 255, 255, 0.38) inset;
+}
+
+/* La première carte devient la carte principale, large et non comprimée. */
+.mmd-home-sponsor-preview > div:nth-child(1) {
+  min-height: 232px;
+  padding: 22px;
+  border-color: rgba(239, 202, 134, 0.64);
+  border-radius: 26px;
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.42),
+    0 0 34px rgba(215, 174, 105, 0.11),
+    0 0 0 1px rgba(255, 247, 227, 0.035) inset;
+}
+
+.mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-sprite {
+  width: 100%;
+  max-width: 340px;
+}
+
+.mmd-home-sponsor-preview > div:nth-child(1):hover {
+  transform: translateY(-13px) translateZ(30px) scale(1.02);
+  box-shadow:
+    0 38px 88px rgba(0, 0, 0, 0.52),
+    0 0 52px rgba(215, 174, 105, 0.24),
+    0 18px 44px rgba(215, 174, 105, 0.11);
+}
+
+/* Ajustements fins par format pour ne jamais écraser ou étirer le visuel. */
+.mmd-home-sponsor-preview > div:nth-child(2) { min-height: 188px; }
+.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-sprite { width: min(100%, 190px); }
+.mmd-home-sponsor-preview > div:nth-child(3) { min-height: 180px; }
+.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-sprite { width: min(100%, 180px); }
+.mmd-home-sponsor-preview > div:nth-child(4) { min-height: 194px; }
+.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-sprite { width: min(100%, 226px); }
+.mmd-home-sponsor-preview > div:nth-child(5) { min-height: 190px; }
+.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-sprite { width: min(100%, 214px); }
+.mmd-home-sponsor-preview > div:nth-child(6) { min-height: 202px; }
+.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-sprite { width: min(100%, 176px); }
+
 /* Hero d'accueil : la caméra était volontairement agrandie (inset négatif).
  * On la réduit d'environ 15 % afin que le visuel central reste en arrière-plan
  * et n'entre plus en concurrence avec le titre et les CTA.
@@ -57,8 +218,91 @@
   inset: 4% 4.5%;
 }
 
+@media (max-width: 1180px) {
+  .mmd-home-sponsor-preview {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 14px 4px 24px;
+    margin-inline: -4px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(234, 211, 165, 0.28) transparent;
+  }
+
+  .mmd-home-sponsor-preview > div {
+    flex: 0 0 218px;
+    scroll-snap-align: center;
+  }
+
+  .mmd-home-sponsor-preview > div:nth-child(1) {
+    flex-basis: 310px;
+  }
+
+  .mmd-home-sponsor-preview > div:nth-child(4),
+  .mmd-home-sponsor-preview > div:nth-child(5) {
+    flex-basis: 242px;
+  }
+
+  .mmd-home-sponsor-preview > div:nth-child(6) {
+    flex-basis: 190px;
+  }
+}
+
 @media (max-width: 720px) {
   .mmd-immersive-hero .mmd-depth-camera {
     inset: 1.5%;
+  }
+
+  .mmd-home-sponsor-preview {
+    gap: 10px;
+    padding-bottom: 20px;
+  }
+
+  .mmd-home-sponsor-preview > div {
+    flex-basis: min(66vw, 238px);
+    min-height: 172px;
+    padding: 15px;
+    border-radius: 19px;
+  }
+
+  .mmd-home-sponsor-preview > div:nth-child(1) {
+    flex-basis: min(82vw, 322px);
+    min-height: 222px;
+    padding: 20px;
+  }
+
+  .mmd-home-sponsor-preview > div:nth-child(4),
+  .mmd-home-sponsor-preview > div:nth-child(5) {
+    flex-basis: min(72vw, 258px);
+  }
+
+  .mmd-home-sponsor-preview > div:nth-child(6) {
+    flex-basis: min(58vw, 208px);
+  }
+
+  .mmd-home-sponsor-preview > div:hover,
+  .mmd-home-sponsor-preview > div:nth-child(1):hover {
+    transform: translateY(-6px) scale(1.012);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mmd-home-sponsor-preview > div,
+  .mmd-home-sponsor-preview .mmd-sponsor-sprite,
+  .mmd-home-sponsor-preview > div::after {
+    transition: none !important;
+  }
+
+  .mmd-home-sponsor-preview > div:hover,
+  .mmd-home-sponsor-preview > div:nth-child(1):hover,
+  .mmd-home-sponsor-preview > div:hover .mmd-sponsor-sprite {
+    transform: none;
+  }
+
+  .mmd-home-sponsor-preview > div::after {
+    display: none;
   }
 }
