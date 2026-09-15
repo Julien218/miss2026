@@ -1,0 +1,64 @@
+/* Miss & Mister Dour 2027 — réglages visuels ciblés.
+ * 1) Améliore la lisibilité de l'orbite partenaires sans perdre l'ambiance premium.
+ * 2) Réduit légèrement la scène d'arrière-plan du hero pour laisser respirer le contenu.
+ */
+
+/* Partenaires : conserver le fond sombre, mais rendre les cartes et logos lisibles. */
+.mmd-sponsor-orbit-card {
+  border-color: rgba(234, 211, 165, 0.38);
+  background:
+    radial-gradient(circle at 50% 36%, rgba(215, 174, 105, 0.22), transparent 50%),
+    linear-gradient(155deg, #2a2018, #110d0a 72%);
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.42),
+    0 0 30px rgba(215, 174, 105, 0.05),
+    inset 0 1px rgba(255, 255, 255, 0.055);
+}
+
+.mmd-sponsor-orbit-card-media {
+  background: linear-gradient(
+    145deg,
+    rgba(248, 240, 227, 0.98),
+    rgba(232, 220, 200, 0.94)
+  );
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.26),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+}
+
+.mmd-sponsor-orbit-card-media .mmd-sponsor-sprite {
+  mix-blend-mode: normal;
+  filter: brightness(1.05) contrast(1.04) saturate(1.03);
+}
+
+.mmd-sponsor-orbit-hero {
+  border-color: rgba(215, 174, 105, 0.6);
+  background: #21170f;
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.52),
+    0 0 0 8px rgba(234, 211, 165, 0.14),
+    0 0 42px rgba(215, 174, 105, 0.08);
+}
+
+.mmd-sponsor-orbit-hero-inner {
+  background: linear-gradient(145deg, #f8f0e3, #eadcc5);
+}
+
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-sprite {
+  mix-blend-mode: normal;
+  filter: brightness(1.05) contrast(1.04) saturate(1.03);
+}
+
+/* Hero d'accueil : la caméra était volontairement agrandie (inset négatif).
+ * On la réduit d'environ 15 % afin que le visuel central reste en arrière-plan
+ * et n'entre plus en concurrence avec le titre et les CTA.
+ */
+.mmd-immersive-hero .mmd-depth-camera {
+  inset: 4% 4.5%;
+}
+
+@media (max-width: 720px) {
+  .mmd-immersive-hero .mmd-depth-camera {
+    inset: 1.5%;
+  }
+}
