@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 type Priority = "low" | "normal" | "high" | "urgent";
 type Category = "admin" | "candidate" | "both";
 type Status = "pending" | "sent" | "failed" | "read";
+type ManualRecipient = "admin" | "candidate" | "super_admin" | "staff" | "staff_candidates";
 
 const PRIORITY_COLORS: Record<Priority, string> = {
   low: "text-gray-400 bg-gray-400/10 border-gray-400/30",
@@ -74,7 +75,7 @@ export default function AdminNotifications() {
   const [manualBody, setManualBody] = useState("");
   const [manualEmail, setManualEmail] = useState("");
   const [manualPriority, setManualPriority] = useState<Priority>("normal");
-  const [manualRecipient, setManualRecipient] = useState<"admin" | "candidate" | "super_admin">("admin");
+  const [manualRecipient, setManualRecipient] = useState<ManualRecipient>("admin");
 
   // ─── Queries ───────────────────────────────────────────────────────────────
   const { data: settings, refetch: refetchSettings, isLoading: loadingSettings } =
@@ -105,9 +106,15 @@ export default function AdminNotifications() {
       setSendModalOpen(false);
       setManualTitle(""); setManualBody(""); setManualEmail("");
       refetchLog(); refetchUnread();
-      toast.success(data.emailSent ? "Notification envoyée (email + dashboard)" : "Notification ajoutée au dashboard");
+      const dashboardCount = data.dashboardRecipients ?? 0;
+      const emailCount = data.emailSentCount ?? 0;
+      toast.success(
+        emailCount > 0
+          ? `Notification envoyée : ${dashboardCount} dashboard(s) + ${emailCount} email(s)`
+          : `Notification envoyée à ${dashboardCount} dashboard(s)`
+      );
     },
-    onError: () => toast.error("Erreur lors de l'envoi"),
+    onError: (error) => toast.error(error.message || "Erreur lors de l'envoi"),
   });
 
   // ─── Grouper les settings par catégorie ───────────────────────────────────
@@ -181,14 +188,16 @@ export default function AdminNotifications() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-gray-300">Destinataire</Label>
-                    <Select value={manualRecipient} onValueChange={(v) => setManualRecipient(v as typeof manualRecipient)}>
+                    <Select value={manualRecipient} onValueChange={(v) => setManualRecipient(v as ManualRecipient)}>
                       <SelectTrigger className="bg-[#1a1a1a] border-gray-700 text-white mt-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-[#1a1a1a] border-gray-700">
                         <SelectItem value="admin">Admin</SelectItem>
                         <SelectItem value="super_admin">Super Admin</SelectItem>
-                        <SelectItem value="candidate">Candidat</SelectItem>
+                        <SelectItem value="staff">Staff</SelectItem>
+                        <SelectItem value="candidate">Candidats</SelectItem>
+                        <SelectItem value="staff_candidates">Staff + candidats</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -208,14 +217,15 @@ export default function AdminNotifications() {
                   </div>
                 </div>
                 <div>
-                  <Label className="text-gray-300">Email destinataire (optionnel)</Label>
+                  <Label className="text-gray-300">Email(s) destinataire(s) (optionnel)</Label>
                   <Input
                     value={manualEmail}
                     onChange={e => setManualEmail(e.target.value)}
-                    placeholder="email@exemple.com"
-                    type="email"
+                    placeholder="email1@exemple.com, email2@exemple.com"
+                    type="text"
                     className="bg-[#1a1a1a] border-gray-700 text-white mt-1"
                   />
+                  <p className="text-[11px] text-gray-500 mt-1">Plusieurs adresses peuvent être séparées par une virgule ou un point-virgule.</p>
                 </div>
                 <div className="flex gap-3 pt-2">
                   <Button
