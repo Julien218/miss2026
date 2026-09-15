@@ -5,7 +5,7 @@
 
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { eq, desc, and, isNull } from "drizzle-orm";
+import { eq, desc, and, isNull, inArray } from "drizzle-orm";
 import { router, protectedProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { notificationSettings, notificationsLog, users } from "../../drizzle/schema";
@@ -145,6 +145,34 @@ function buildNotificationEmail(title: string, body: string, priority: string): 
 </html>`;
 }
 
+const manualRecipientSchema = z.enum(["admin", "candidate", "super_admin", "staff", "staff_candidates"]);
+type ManualRecipient = z.infer<typeof manualRecipientSchema>;
+
+function storedRecipientTypeForRole(role: string): "admin" | "candidate" | "super_admin" {
+  if (role === "candidate") return "candidate";
+  if (role === "super_admin") return "super_admin";
+  return "admin";
+}
+
+function storedRecipientTypeForAudience(audience: ManualRecipient): "admin" | "candidate" | "super_admin" {
+  if (audience === "candidate") return "candidate";
+  if (audience === "super_admin") return "super_admin";
+  return "admin";
+}
+
+function splitAndValidateEmails(value?: string): string[] {
+  if (!value) return [];
+  const emails = [...new Set(value.split(/[;,]/).map((email) => email.trim()).filter(Boolean))];
+  const invalid = emails.filter((email) => !z.string().email().safeParse(email).success);
+  if (invalid.length) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: `Adresse email invalide : ${invalid.join(", ")}`,
+    });
+  }
+  return emails;
+}
+
 // ─── Router ───────────────────────────────────────────────────────────────────
 export const notificationsRouter = router({
 
@@ -223,6 +251,7 @@ export const notificationsRouter = router({
       .where(
         and(
           eq(notificationsLog.status, "sent"),
+          eq(notificationsLog.dashboardSent, 1),
           isNull(notificationsLog.readAt)
         )
       );
@@ -253,7 +282,7 @@ export const notificationsRouter = router({
     await db
       .update(notificationsLog)
       .set({ status: "read", readAt: new Date() })
-      .where(eq(notificationsLog.status, "sent"));
+      .where(and(eq(notificationsLog.status, "sent"), eq(notificationsLog.dashboardSent, 1)));
 
     return { success: true };
   }),
@@ -263,41 +292,97 @@ export const notificationsRouter = router({
     .input(z.object({
       title: z.string().min(1).max(200),
       body: z.string().min(1),
-      recipientType: z.enum(["admin", "candidate", "super_admin"]),
-      recipientEmail: z.string().email().optional(),
+      recipientType: manualRecipientSchema,
+      // Champ conservé pour compatibilité avec le client existant. Il accepte désormais
+      // plusieurs adresses séparées par une virgule ou un point-virgule.
+      recipientEmail: z.string().optional(),
+      recipientEmails: z.array(z.string().email()).max(50).optional(),
       priority: z.enum(["low", "normal", "high", "urgent"]).default("normal"),
     }))
     .mutation(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
-      // Insérer dans le journal
-      await db.insert(notificationsLog).values({
-        eventType: "manual",
-        recipientType: input.recipientType,
-        recipientUserId: ctx.user.id,
-        recipientEmail: input.recipientEmail ?? null,
-        title: input.title,
-        body: input.body,
-        emailSent: 0,
-        dashboardSent: 1,
-        status: "sent",
-        priority: input.priority,
-        context: JSON.stringify({ sentBy: ctx.user.id, manual: true }),
-      });
+      const legacyEmails = splitAndValidateEmails(input.recipientEmail);
+      const explicitEmails = [...new Set([...(input.recipientEmails ?? []), ...legacyEmails])];
 
-      // Envoyer email si fourni
-      let emailSent = false;
-      if (input.recipientEmail) {
-        const html = buildNotificationEmail(input.title, input.body, input.priority);
-        emailSent = await sendEmailViaForge(
-          input.recipientEmail,
-          `👑 Miss & Mister Dour 2026 — ${input.title}`,
-          html
+      const targetRoles =
+        input.recipientType === "staff_candidates"
+          ? (["staff", "candidate"] as const)
+          : input.recipientType === "staff"
+            ? (["staff"] as const)
+            : ([input.recipientType] as const);
+
+      const dashboardRecipients = await db
+        .select({ id: users.id, role: users.role })
+        .from(users)
+        .where(inArray(users.role, [...targetRoles]));
+
+      if (dashboardRecipients.length) {
+        await db.insert(notificationsLog).values(
+          dashboardRecipients.map((recipient) => ({
+            eventType: "manual",
+            recipientType: storedRecipientTypeForRole(recipient.role),
+            recipientUserId: recipient.id,
+            recipientEmail: null,
+            title: input.title,
+            body: input.body,
+            emailSent: 0,
+            dashboardSent: 1,
+            status: "sent" as const,
+            priority: input.priority,
+            context: JSON.stringify({
+              sentBy: ctx.user.id,
+              manual: true,
+              requestedAudience: input.recipientType,
+              actualRole: recipient.role,
+            }),
+          }))
         );
       }
 
-      return { success: true, emailSent };
+      let emailSentCount = 0;
+      const html = buildNotificationEmail(input.title, input.body, input.priority);
+      const subject = `👑 Miss & Mister Dour 2026 — ${input.title}`;
+
+      for (const email of explicitEmails) {
+        const sent = await sendEmailViaForge(email, subject, html);
+        if (sent) emailSentCount += 1;
+
+        await db.insert(notificationsLog).values({
+          eventType: "manual_email",
+          recipientType: storedRecipientTypeForAudience(input.recipientType),
+          recipientUserId: null,
+          recipientEmail: email,
+          title: input.title,
+          body: input.body,
+          emailSent: sent ? 1 : 0,
+          dashboardSent: 0,
+          status: sent ? "sent" : "failed",
+          priority: input.priority,
+          context: JSON.stringify({
+            sentBy: ctx.user.id,
+            manual: true,
+            requestedAudience: input.recipientType,
+            emailOnly: true,
+          }),
+        });
+      }
+
+      if (!dashboardRecipients.length && !explicitEmails.length) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Aucun utilisateur ne correspond à ce groupe de destinataires.",
+        });
+      }
+
+      return {
+        success: true,
+        emailSent: emailSentCount > 0,
+        emailSentCount,
+        emailRequestedCount: explicitEmails.length,
+        dashboardRecipients: dashboardRecipients.length,
+      };
     }),
 
   // ─── ADMIN : Récupérer les notifications pour l'utilisateur connecté ──────
