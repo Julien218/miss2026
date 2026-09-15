@@ -1,7 +1,7 @@
 /* Miss & Mister Dour 2027 — réglages visuels ciblés.
  * 1) Améliore la lisibilité de l'orbite partenaires sans perdre l'ambiance premium.
  * 2) Réduit légèrement la scène d'arrière-plan du hero pour laisser respirer le contenu.
- * 3) Refonte l'aperçu partenaires de la homepage avec cartes adaptatives et interactions UI.
+ * 3) Aligne l'aperçu partenaires de la homepage sur la référence premium validée.
  */
 
 /* Partenaires : conserver le fond sombre, mais rendre les cartes et logos lisibles. */
@@ -24,7 +24,7 @@
   );
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.26),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+    inset 0 1px rgba(255, 255, 255, 0.42);
 }
 
 .mmd-sponsor-orbit-card-media .mmd-sponsor-sprite {
@@ -50,90 +50,140 @@
   filter: brightness(1.05) contrast(1.04) saturate(1.03);
 }
 
-/* Homepage — aperçu partenaires premium, formats adaptés au visuel réel. */
+/* --------------------------------------------------------------------------
+   Homepage — partenaires : rendu premium proche de la référence validée.
+   -------------------------------------------------------------------------- */
+.mmd-home-partners {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(234, 211, 165, 0.12);
+  background:
+    radial-gradient(circle at 18% 34%, rgba(214, 163, 83, 0.075), transparent 26%),
+    radial-gradient(circle at 54% 66%, rgba(214, 163, 83, 0.065), transparent 27%),
+    radial-gradient(circle at 86% 32%, rgba(214, 163, 83, 0.055), transparent 24%);
+}
+
+.mmd-home-partners::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 55%, rgba(215, 174, 105, 0.02) 76%, transparent),
+    radial-gradient(ellipse at 50% 82%, rgba(215, 174, 105, 0.055), transparent 58%);
+  z-index: 0;
+}
+
+.mmd-home-partners .mmd-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Plus d'air entre le repère 08 et le grand titre, comme sur la référence. */
+.mmd-home-partners .mmd-section-heading {
+  margin-top: clamp(34px, 4.2vw, 62px);
+  margin-bottom: clamp(22px, 2.4vw, 34px);
+  align-items: end;
+}
+
+.mmd-home-partners .mmd-section-heading h2 {
+  line-height: 0.92;
+}
+
+.mmd-home-partners .mmd-text-link {
+  margin-bottom: 8px;
+  letter-spacing: 0.12em;
+}
+
 .mmd-home-sponsor-preview {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns:
-    minmax(260px, 1.65fr)
-    minmax(170px, 0.92fr)
-    minmax(160px, 0.84fr)
-    minmax(210px, 1.15fr)
-    minmax(195px, 1.05fr)
-    minmax(150px, 0.78fr);
+    minmax(290px, 1.82fr)
+    minmax(175px, 0.98fr)
+    minmax(165px, 0.9fr)
+    minmax(215px, 1.18fr)
+    minmax(205px, 1.1fr)
+    minmax(155px, 0.82fr);
   align-items: end;
-  gap: 12px;
-  perspective: 1200px;
+  gap: 13px;
+  perspective: 1300px;
+  transform-style: preserve-3d;
 }
 
 .mmd-home-sponsor-preview > div {
-  --partner-radius: 22px;
+  --partner-radius: 23px;
   position: relative;
   isolation: isolate;
   min-width: 0;
-  min-height: 176px;
+  min-height: 205px;
   display: grid;
   place-items: center;
   overflow: hidden;
   padding: 18px;
-  border: 1px solid rgba(234, 211, 165, 0.38);
+  border: 1.35px solid rgba(238, 201, 129, 0.52);
   border-radius: var(--partner-radius);
   background:
-    radial-gradient(circle at 50% 16%, rgba(255, 230, 184, 0.16), transparent 38%),
-    linear-gradient(148deg, rgba(51, 39, 27, 0.94), rgba(15, 12, 10, 0.98) 72%);
+    radial-gradient(circle at 50% 12%, rgba(255, 230, 184, 0.19), transparent 38%),
+    linear-gradient(148deg, rgba(58, 43, 29, 0.96), rgba(16, 12, 9, 0.99) 74%);
   box-shadow:
-    0 22px 48px rgba(0, 0, 0, 0.34),
-    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
-    0 0 26px rgba(215, 174, 105, 0.045);
+    0 24px 54px rgba(0, 0, 0, 0.39),
+    0 0 0 1px rgba(255, 255, 255, 0.025) inset,
+    0 0 28px rgba(215, 174, 105, 0.075);
   transform: translateZ(0);
   transform-origin: center bottom;
   transition:
-    transform 0.48s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.46s cubic-bezier(0.2, 0.8, 0.2, 1),
     border-color 0.35s ease,
-    box-shadow 0.45s ease,
-    background 0.45s ease;
+    box-shadow 0.44s ease,
+    background 0.44s ease;
   will-change: transform;
 }
 
+/* Halo ambiant interne. */
 .mmd-home-sponsor-preview > div::before {
   content: "";
   position: absolute;
-  inset: -28%;
+  inset: -24%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(circle at 50% 42%, rgba(238, 197, 124, 0.26), transparent 48%);
+  opacity: 0.55;
+  background: radial-gradient(circle at 50% 46%, rgba(238, 197, 124, 0.18), transparent 49%);
+  filter: blur(8px);
   transition: opacity 0.4s ease;
 }
 
+/* Reflet UI qui traverse la carte au survol. */
 .mmd-home-sponsor-preview > div::after {
   content: "";
   position: absolute;
-  z-index: 3;
-  top: -28%;
-  bottom: -28%;
-  left: -42%;
-  width: 28%;
+  z-index: 4;
+  top: -30%;
+  bottom: -30%;
+  left: -46%;
+  width: 26%;
   pointer-events: none;
   opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 242, 211, 0.24), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 242, 211, 0.30), transparent);
   transform: translateX(-180%) skewX(-18deg);
   transition:
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.25s ease;
+    transform 0.78s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.22s ease;
 }
 
 .mmd-home-sponsor-preview > div:hover {
-  z-index: 6;
-  transform: translateY(-11px) translateZ(24px) scale(1.025);
-  border-color: rgba(244, 207, 139, 0.78);
+  z-index: 7;
+  transform: translateY(-10px) translateZ(26px) scale(1.02);
+  border-color: rgba(255, 220, 155, 0.92);
   background:
-    radial-gradient(circle at 50% 14%, rgba(255, 231, 185, 0.24), transparent 40%),
-    linear-gradient(148deg, rgba(61, 45, 30, 0.98), rgba(17, 13, 10, 0.99) 74%);
+    radial-gradient(circle at 50% 12%, rgba(255, 231, 185, 0.28), transparent 42%),
+    linear-gradient(148deg, rgba(67, 49, 32, 0.99), rgba(17, 13, 10, 0.995) 76%);
   box-shadow:
-    0 34px 72px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 244, 217, 0.05) inset,
-    0 0 42px rgba(215, 174, 105, 0.18),
-    0 14px 35px rgba(215, 174, 105, 0.08);
+    0 36px 78px rgba(0, 0, 0, 0.52),
+    0 0 0 1px rgba(255, 244, 217, 0.065) inset,
+    0 0 44px rgba(215, 174, 105, 0.23),
+    0 18px 38px rgba(215, 174, 105, 0.10);
 }
 
 .mmd-home-sponsor-preview > div:hover::before {
@@ -142,73 +192,95 @@
 
 .mmd-home-sponsor-preview > div:hover::after {
   opacity: 1;
-  transform: translateX(520%) skewX(-18deg);
+  transform: translateX(560%) skewX(-18deg);
 }
 
+/*
+ * Le sprite source contient lui-même des fonds clairs. Le blend interne les
+ * transforme en ivoire/champagne pour éviter le rectangle blanc agressif.
+ */
 .mmd-home-sponsor-preview .mmd-sponsor-sprite {
   position: relative;
   z-index: 2;
-  width: min(100%, 220px);
+  width: min(100%, 238px);
   min-height: 0;
   aspect-ratio: 140 / 95;
-  border-radius: 12px;
-  background-color: #f5f1e9;
+  border-radius: 15px;
+  background-color: #efe1ca;
+  background-blend-mode: multiply;
   box-shadow:
-    0 14px 34px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(255, 255, 255, 0.32) inset;
-  transform: translateZ(12px) scale(1);
+    0 16px 36px rgba(0, 0, 0, 0.29),
+    0 0 28px rgba(255, 233, 193, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.30) inset;
+  transform: translateZ(14px) scale(1);
   transition:
-    transform 0.48s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.46s cubic-bezier(0.2, 0.8, 0.2, 1),
     filter 0.35s ease,
     box-shadow 0.4s ease;
-  filter: brightness(1.02) contrast(1.03) saturate(1.02);
+  filter: sepia(0.07) brightness(0.96) contrast(1.06) saturate(1.04);
 }
 
 .mmd-home-sponsor-preview > div:hover .mmd-sponsor-sprite {
-  transform: translateZ(38px) scale(1.035);
-  filter: brightness(1.07) contrast(1.04) saturate(1.05);
+  transform: translateZ(40px) scale(1.025);
+  filter: sepia(0.04) brightness(1.02) contrast(1.07) saturate(1.06);
   box-shadow:
-    0 20px 44px rgba(0, 0, 0, 0.34),
-    0 0 26px rgba(235, 196, 128, 0.11),
-    0 0 0 1px rgba(255, 255, 255, 0.38) inset;
+    0 22px 48px rgba(0, 0, 0, 0.35),
+    0 0 36px rgba(235, 196, 128, 0.19),
+    0 0 0 1px rgba(255, 255, 255, 0.40) inset;
 }
 
-/* La première carte devient la carte principale, large et non comprimée. */
+/* Carte principale : plus large, plus haute, plus lumineuse et jamais comprimée. */
 .mmd-home-sponsor-preview > div:nth-child(1) {
-  min-height: 232px;
-  padding: 22px;
-  border-color: rgba(239, 202, 134, 0.64);
-  border-radius: 26px;
+  min-height: 258px;
+  padding: 23px;
+  border-width: 1.8px;
+  border-color: rgba(255, 215, 138, 0.88);
+  border-radius: 27px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 226, 167, 0.24), transparent 44%),
+    linear-gradient(148deg, rgba(70, 51, 33, 0.98), rgba(18, 13, 9, 0.995) 78%);
   box-shadow:
-    0 28px 64px rgba(0, 0, 0, 0.42),
-    0 0 34px rgba(215, 174, 105, 0.11),
-    0 0 0 1px rgba(255, 247, 227, 0.035) inset;
+    0 32px 74px rgba(0, 0, 0, 0.48),
+    0 0 44px rgba(239, 193, 103, 0.22),
+    0 0 0 1px rgba(255, 247, 227, 0.055) inset;
 }
 
 .mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-sprite {
   width: 100%;
-  max-width: 340px;
+  max-width: 360px;
+  border-radius: 17px;
+  box-shadow:
+    0 20px 42px rgba(0, 0, 0, 0.31),
+    0 0 40px rgba(255, 231, 190, 0.20),
+    0 0 0 1px rgba(255, 255, 255, 0.38) inset;
 }
 
 .mmd-home-sponsor-preview > div:nth-child(1):hover {
-  transform: translateY(-13px) translateZ(30px) scale(1.02);
+  transform: translateY(-12px) translateZ(32px) scale(1.018);
   box-shadow:
-    0 38px 88px rgba(0, 0, 0, 0.52),
-    0 0 52px rgba(215, 174, 105, 0.24),
-    0 18px 44px rgba(215, 174, 105, 0.11);
+    0 42px 94px rgba(0, 0, 0, 0.56),
+    0 0 58px rgba(215, 174, 105, 0.31),
+    0 20px 48px rgba(215, 174, 105, 0.13);
 }
 
-/* Ajustements fins par format pour ne jamais écraser ou étirer le visuel. */
-.mmd-home-sponsor-preview > div:nth-child(2) { min-height: 188px; }
-.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-sprite { width: min(100%, 190px); }
-.mmd-home-sponsor-preview > div:nth-child(3) { min-height: 180px; }
-.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-sprite { width: min(100%, 180px); }
-.mmd-home-sponsor-preview > div:nth-child(4) { min-height: 194px; }
-.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-sprite { width: min(100%, 226px); }
-.mmd-home-sponsor-preview > div:nth-child(5) { min-height: 190px; }
-.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-sprite { width: min(100%, 214px); }
-.mmd-home-sponsor-preview > div:nth-child(6) { min-height: 202px; }
-.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-sprite { width: min(100%, 176px); }
+/* Ajustements par format : on donne de l'espace au visuel au lieu de le rétrécir. */
+.mmd-home-sponsor-preview > div:nth-child(2) { min-height: 208px; }
+.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-sprite { width: min(100%, 205px); }
+.mmd-home-sponsor-preview > div:nth-child(3) { min-height: 198px; }
+.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-sprite { width: min(100%, 188px); }
+.mmd-home-sponsor-preview > div:nth-child(4) { min-height: 220px; }
+.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-sprite { width: min(100%, 238px); }
+.mmd-home-sponsor-preview > div:nth-child(5) { min-height: 216px; }
+.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-sprite { width: min(100%, 230px); }
+.mmd-home-sponsor-preview > div:nth-child(6) { min-height: 238px; }
+.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-sprite { width: min(100%, 166px); }
+
+.mmd-home-partner-note {
+  position: relative;
+  z-index: 1;
+  margin-top: 17px;
+  color: rgba(247, 239, 225, 0.42);
+}
 
 /* Hero d'accueil : la caméra était volontairement agrandie (inset négatif).
  * On la réduit d'environ 15 % afin que le visuel central reste en arrière-plan
@@ -222,10 +294,10 @@
   .mmd-home-sponsor-preview {
     display: flex;
     align-items: end;
-    gap: 12px;
+    gap: 13px;
     overflow-x: auto;
     overflow-y: visible;
-    padding: 14px 4px 24px;
+    padding: 14px 4px 26px;
     margin-inline: -4px;
     scroll-snap-type: x proximity;
     scrollbar-width: thin;
@@ -233,21 +305,21 @@
   }
 
   .mmd-home-sponsor-preview > div {
-    flex: 0 0 218px;
+    flex: 0 0 226px;
     scroll-snap-align: center;
   }
 
   .mmd-home-sponsor-preview > div:nth-child(1) {
-    flex-basis: 310px;
+    flex-basis: 330px;
   }
 
   .mmd-home-sponsor-preview > div:nth-child(4),
   .mmd-home-sponsor-preview > div:nth-child(5) {
-    flex-basis: 242px;
+    flex-basis: 252px;
   }
 
   .mmd-home-sponsor-preview > div:nth-child(6) {
-    flex-basis: 190px;
+    flex-basis: 196px;
   }
 }
 
@@ -256,36 +328,41 @@
     inset: 1.5%;
   }
 
+  .mmd-home-partners .mmd-section-heading {
+    margin-top: 28px;
+    margin-bottom: 20px;
+  }
+
   .mmd-home-sponsor-preview {
     gap: 10px;
     padding-bottom: 20px;
   }
 
   .mmd-home-sponsor-preview > div {
-    flex-basis: min(66vw, 238px);
-    min-height: 172px;
+    flex-basis: min(68vw, 244px);
+    min-height: 180px;
     padding: 15px;
-    border-radius: 19px;
+    border-radius: 20px;
   }
 
   .mmd-home-sponsor-preview > div:nth-child(1) {
-    flex-basis: min(82vw, 322px);
-    min-height: 222px;
+    flex-basis: min(84vw, 326px);
+    min-height: 224px;
     padding: 20px;
   }
 
   .mmd-home-sponsor-preview > div:nth-child(4),
   .mmd-home-sponsor-preview > div:nth-child(5) {
-    flex-basis: min(72vw, 258px);
+    flex-basis: min(74vw, 264px);
   }
 
   .mmd-home-sponsor-preview > div:nth-child(6) {
-    flex-basis: min(58vw, 208px);
+    flex-basis: min(60vw, 212px);
   }
 
   .mmd-home-sponsor-preview > div:hover,
   .mmd-home-sponsor-preview > div:nth-child(1):hover {
-    transform: translateY(-6px) scale(1.012);
+    transform: translateY(-5px) scale(1.01);
   }
 }
 
