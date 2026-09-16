@@ -1,0 +1,214 @@
+/* Miss & Mister Dour 2027 — couche finale chargée en dernier. */
+
+/* ===== ORBITE PARTENAIRES : surfaces champagne fumé, moins blanches ===== */
+.mmd-sponsor-orbit-card {
+  border-color: rgba(227, 192, 126, 0.34) !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(195, 145, 73, 0.13), transparent 52%),
+    linear-gradient(155deg, rgba(34, 25, 18, 0.96), rgba(13, 10, 8, 0.99) 72%) !important;
+  box-shadow:
+    0 18px 48px rgba(0,0,0,.42),
+    0 0 20px rgba(214,170,94,.05),
+    inset 0 1px rgba(255,255,255,.04) !important;
+}
+
+.mmd-sponsor-orbit-card-media {
+  background: linear-gradient(145deg, rgba(222,211,192,.94), rgba(196,179,154,.90)) !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.16) !important;
+}
+
+.mmd-sponsor-orbit-card-media .mmd-sponsor-sprite {
+  mix-blend-mode: normal !important;
+  filter: brightness(.95) contrast(1.035) saturate(1.02) !important;
+}
+
+.mmd-sponsor-orbit-hero {
+  border-color: rgba(226,188,116,.56) !important;
+  background: linear-gradient(155deg, rgba(39,29,20,.98), rgba(19,14,10,.99)) !important;
+  box-shadow:
+    0 28px 72px rgba(0,0,0,.50),
+    0 0 0 6px rgba(226,188,116,.09),
+    0 0 34px rgba(226,188,116,.09) !important;
+}
+
+.mmd-sponsor-orbit-hero-inner {
+  background: linear-gradient(145deg, rgba(225,214,195,.96), rgba(198,181,156,.93)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 14px 30px rgba(0,0,0,.24);
+}
+
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-sprite {
+  mix-blend-mode: normal !important;
+  filter: brightness(.95) contrast(1.04) saturate(1.02) !important;
+}
+
+.mmd-sponsor-orbit-card:hover,
+.mmd-sponsor-orbit-hero:hover {
+  border-color: rgba(241,205,142,.66) !important;
+}
+
+/* ===== ARCHIVES 2025/2026 : images + reveal premium ===== */
+.mmd-archive-card-2027 {
+  opacity: 0;
+  transform: translate3d(0, 34px, -70px) scale(.975);
+  filter: blur(6px);
+  transition:
+    opacity .85s ease var(--archive-delay, 0ms),
+    transform 1s cubic-bezier(.18,.88,.24,1) var(--archive-delay, 0ms),
+    filter .9s ease var(--archive-delay, 0ms),
+    border-color .35s ease,
+    box-shadow .45s ease;
+}
+
+.mmd-depth-booted .mmd-home-archives.is-depth-visible .mmd-archive-card-2027,
+.mmd-home-archives:not(.mmd-depth-booted) .mmd-archive-card-2027 {
+  opacity: 1;
+  transform: translate3d(0,0,0) scale(1);
+  filter: blur(0);
+}
+
+.mmd-archive-card-2027:hover {
+  border-color: rgba(234,211,165,.27) !important;
+  box-shadow: 0 30px 78px rgba(0,0,0,.34), 0 0 42px rgba(215,174,105,.07);
+}
+
+.mmd-archive-media-2027 {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.45fr .72fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  min-height: 190px;
+  margin-top: 48px;
+}
+
+.mmd-archive-media-2027 > div {
+  overflow: hidden;
+  min-height: 88px;
+  border: 1px solid rgba(234,211,165,.12);
+  border-radius: 14px;
+  background: #0c0907;
+}
+
+.mmd-archive-media-2027 > div.is-main {
+  grid-row: 1 / span 2;
+}
+
+.mmd-archive-media-2027 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.88) contrast(1.02);
+  transform: scale(1.035);
+  transition: transform 1.1s cubic-bezier(.22,1,.36,1), filter .4s ease;
+}
+
+.mmd-archive-card-2027:hover .mmd-archive-media-2027 img {
+  transform: scale(1.075);
+  filter: saturate(1) contrast(1.03);
+}
+
+.mmd-archive-palmares {
+  margin-top: 22px !important;
+}
+
+.mmd-archive-palmares ul {
+  display: grid;
+  gap: 5px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mmd-archive-palmares li {
+  color: rgba(247,239,225,.48);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.mmd-archive-palmares li::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 1px;
+  margin: 0 7px 3px 0;
+  background: rgba(215,174,105,.52);
+}
+
+/* ===== CONTRAT INSCRIPTION : dock cohérent avec le site ===== */
+.mmd-contract-dock {
+  position: fixed;
+  z-index: 70;
+  right: 18px;
+  bottom: 18px;
+  width: min(390px, calc(100vw - 36px));
+  padding: 15px;
+  border: 1px solid rgba(234,211,165,.28);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(25,18,13,.95), rgba(7,6,5,.96));
+  color: #f7efe1;
+  box-shadow: 0 24px 70px rgba(0,0,0,.55), 0 0 34px rgba(215,174,105,.07);
+  backdrop-filter: blur(22px) saturate(130%);
+}
+
+.mmd-contract-dock > span {
+  display: block;
+  color: #b76e4d;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.mmd-contract-dock strong {
+  display: block;
+  margin-top: 6px;
+  color: #fffaf1;
+  font: 500 20px/1.05 "Playfair Display", Georgia, serif;
+}
+
+.mmd-contract-dock p {
+  margin: 7px 0 12px;
+  color: rgba(247,239,225,.55);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.mmd-contract-dock nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.mmd-contract-dock a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid rgba(234,211,165,.19);
+  border-radius: 999px;
+  color: #ead3a5;
+  background: rgba(255,255,255,.025);
+  font-size: 10px;
+  transition: transform .22s ease, border-color .22s ease, background .22s ease;
+}
+
+.mmd-contract-dock a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(234,211,165,.45);
+  background: rgba(234,211,165,.07);
+}
+
+@media (max-width: 760px) {
+  .mmd-archive-media-2027 { grid-template-columns: 1fr 1fr; min-height: 165px; margin-top: 32px; }
+  .mmd-archive-media-2027 > div.is-main { grid-column: 1 / -1; grid-row: auto; min-height: 180px; }
+  .mmd-archive-palmares { grid-template-columns: 1fr !important; }
+  .mmd-contract-dock { right: 12px; bottom: 12px; width: calc(100vw - 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mmd-archive-card-2027,
+  .mmd-archive-media-2027 img,
+  .mmd-contract-dock a { transition: none !important; transform: none !important; filter: none !important; opacity: 1 !important; }
+}
