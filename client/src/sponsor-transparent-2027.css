@@ -1,0 +1,127 @@
+/* Miss & Mister Dour 2027 — sponsors détourés sur fond réellement transparent.
+ * Le détourage est calculé dans SponsorVisual2026 depuis les zones de fond
+ * reliées aux bords du visuel. On préserve ainsi les blancs internes des logos
+ * au lieu d'appliquer un simple chroma-key blanc.
+ */
+
+.mmd-sponsor-transparent,
+canvas.mmd-sponsor-sprite {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 140 / 95;
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  background-blend-mode: normal !important;
+  mix-blend-mode: normal !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.34))
+    drop-shadow(0 0 10px rgba(215, 174, 105, 0.08));
+}
+
+/* Orbite : plus aucun petit panneau beige/blanc derrière le logo. */
+.mmd-sponsor-orbit-card-media,
+.mmd-sponsor-orbit-hero-inner {
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.mmd-sponsor-orbit-card-media .mmd-sponsor-transparent,
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-transparent {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: 100%;
+  background: transparent !important;
+  mix-blend-mode: normal !important;
+  filter:
+    drop-shadow(0 8px 13px rgba(0, 0, 0, 0.46))
+    drop-shadow(0 0 8px rgba(234, 211, 165, 0.08)) !important;
+}
+
+.mmd-sponsor-orbit-card:hover .mmd-sponsor-transparent,
+.mmd-sponsor-orbit-hero:hover .mmd-sponsor-transparent {
+  filter:
+    drop-shadow(0 13px 21px rgba(0, 0, 0, 0.52))
+    drop-shadow(0 0 13px rgba(234, 211, 165, 0.18)) !important;
+}
+
+/* La carte reste dark-glass : c'est le logo qui flotte réellement dedans. */
+.mmd-sponsor-orbit-card {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(215, 174, 105, 0.105), transparent 47%),
+    linear-gradient(155deg, rgba(29, 22, 17, 0.91), rgba(8, 6, 5, 0.96) 74%) !important;
+  backdrop-filter: blur(9px);
+}
+
+.mmd-sponsor-orbit-hero {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(215, 174, 105, 0.14), transparent 52%),
+    linear-gradient(155deg, rgba(33, 24, 17, 0.95), rgba(12, 9, 7, 0.98)) !important;
+}
+
+/* Homepage partenaires : supprime aussi l'ancienne plaque ivoire interne. */
+.mmd-home-sponsor-preview .mmd-sponsor-transparent {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 246px);
+  min-height: 0;
+  aspect-ratio: 140 / 95;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: translateZ(14px) scale(1);
+  transition:
+    transform 0.46s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.35s ease;
+  filter:
+    drop-shadow(0 14px 24px rgba(0, 0, 0, 0.43))
+    drop-shadow(0 0 11px rgba(234, 211, 165, 0.09)) !important;
+}
+
+.mmd-home-sponsor-preview > div:hover .mmd-sponsor-transparent {
+  transform: translateZ(40px) scale(1.04);
+  filter:
+    drop-shadow(0 20px 31px rgba(0, 0, 0, 0.52))
+    drop-shadow(0 0 17px rgba(234, 211, 165, 0.20)) !important;
+}
+
+.mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-transparent {
+  width: 100%;
+  max-width: 372px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Certaines créations étaient verticales ou très larges : on laisse le canvas
+ * contenir le logo sans le forcer dans un rectangle uniforme. */
+.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-transparent { width: min(100%, 214px); }
+.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-transparent { width: min(100%, 198px); }
+.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-transparent { width: min(100%, 246px); }
+.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-transparent { width: min(100%, 238px); }
+.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-transparent { width: min(100%, 174px); }
+
+@media (max-width: 720px) {
+  .mmd-sponsor-orbit-card-media .mmd-sponsor-transparent,
+  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-transparent {
+    filter:
+      drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45))
+      drop-shadow(0 0 6px rgba(234, 211, 165, 0.07)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mmd-home-sponsor-preview .mmd-sponsor-transparent {
+    transition: none !important;
+  }
+
+  .mmd-home-sponsor-preview > div:hover .mmd-sponsor-transparent {
+    transform: none;
+  }
+}
