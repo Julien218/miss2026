@@ -8,6 +8,7 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import { PublicSiteChrome } from "./components/PublicSiteChrome";
 import { InstallPWA } from "./components/InstallPWA";
+import { RegistrationContractDock } from "./components/RegistrationContractDock";
 import Login from "./pages/Login";
 import "./index.css";
 import "./editorial-2027.css";
@@ -29,6 +30,7 @@ import "./cookie-2027.css";
 import "./immersive-2027.css";
 import "./gallery-mobile-2027.css";
 import "./visual-tuning-2027.css";
+import "./final-polish-2027.css";
 
 const queryClient = new QueryClient();
 const redirectToLoginIfUnauthorized = (error: unknown) => {
@@ -44,7 +46,7 @@ function RootExperience() {
   const path = window.location.pathname;
   if (path === "/login") return <Login />;
   const usePublicChrome = path !== "/" && PUBLIC_CHROME_PREFIXES.some(prefix => path.startsWith(prefix));
-  return <>{usePublicChrome ? <PublicSiteChrome><App /></PublicSiteChrome> : <App />}<InstallPWA /></>;
+  return <>{usePublicChrome ? <PublicSiteChrome><App /></PublicSiteChrome> : <App />}<InstallPWA /><RegistrationContractDock /></>;
 }
 createRoot(document.getElementById("root")!).render(<trpc.Provider client={trpcClient} queryClient={queryClient}><QueryClientProvider client={queryClient}><RootExperience /></QueryClientProvider></trpc.Provider>);
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(error => console.warn('[PWA] Service worker non enregistré', error)));
