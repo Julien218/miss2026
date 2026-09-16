@@ -2,7 +2,7 @@
  * transparent  : vrai logo, détourage conservateur.
  * framed-light : logo fin/sombre conservé intact sur verre champagne.
  * poster       : publicité / carte commerciale / flyer intact.
- * hero         : la carte active de l'orbite reçoit un traitement premium dédié.
+ * hero         : la carte active s'adapte au ratio réel et se retourne en 3D.
  */
 
 canvas.mmd-sponsor-render {
@@ -99,8 +99,7 @@ canvas.mmd-sponsor-render {
   box-shadow: none !important;
 }
 
-.mmd-sponsor-orbit-card-media .mmd-sponsor-render,
-.mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
+.mmd-sponsor-orbit-card-media .mmd-sponsor-render {
   width: 100% !important;
   height: auto !important;
   max-width: 100%;
@@ -127,23 +126,94 @@ canvas.mmd-sponsor-render {
 }
 
 /* --------------------------------------------------------------------------
-   MODE 4 — HERO : sponsor actif au centre
+   HERO — carte centrale adaptative + flip 3D
    -------------------------------------------------------------------------- */
 .mmd-sponsor-orbit-hero {
+  width: var(--mmd-hero-width, 224px) !important;
+  height: calc(var(--mmd-hero-media-height, 190px) + 58px) !important;
+  aspect-ratio: auto !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  perspective: 1250px;
+  transition:
+    width 0.52s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.52s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.mmd-sponsor-orbit-hero:hover {
+  transform: translate(-50%, -50%) scale(1.022) !important;
+}
+
+.mmd-sponsor-orbit-hero-flipper {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform 0.76s cubic-bezier(0.22, 0.72, 0.18, 1);
+}
+
+.mmd-sponsor-orbit-hero.is-flipping .mmd-sponsor-orbit-hero-flipper {
+  transform: rotateY(180deg);
+}
+
+.mmd-sponsor-orbit-hero-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 11px;
+  overflow: hidden;
+  border: 1px solid rgba(241, 202, 132, 0.74);
+  border-radius: 13px;
   background:
     radial-gradient(circle at 50% 34%, rgba(255, 224, 164, 0.23), transparent 52%),
-    linear-gradient(155deg, rgba(57, 40, 27, 0.98), rgba(16, 11, 8, 0.99)) !important;
-  border-color: rgba(241, 202, 132, 0.74) !important;
+    linear-gradient(155deg, rgba(57, 40, 27, 0.98), rgba(16, 11, 8, 0.99));
   box-shadow:
     0 34px 92px rgba(0, 0, 0, 0.50),
     0 0 0 6px rgba(234, 211, 165, 0.10),
-    0 0 40px rgba(222, 177, 95, 0.16) !important;
+    0 0 40px rgba(222, 177, 95, 0.16);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
+.mmd-sponsor-orbit-hero-face--back {
+  transform: rotateY(180deg);
+}
+
+.mmd-sponsor-orbit-hero.is-flipping .mmd-sponsor-orbit-hero-face {
+  box-shadow:
+    0 38px 100px rgba(0, 0, 0, 0.54),
+    0 0 0 6px rgba(234, 211, 165, 0.12),
+    0 0 58px rgba(232, 188, 106, 0.28);
+}
+
+.mmd-sponsor-orbit-hero-inner {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  display: grid !important;
+  place-items: center;
+  overflow: visible !important;
+}
+
+/* Le canvas conserve son propre ratio : aucune déformation du logo ou du poster. */
 .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
-  width: 112% !important;
-  max-width: 112% !important;
-  transform: scale(1.055);
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: auto;
+  transform: scale(1.02);
+  transform-origin: center;
 }
 
 .mmd-sponsor-orbit-hero-inner .mmd-sponsor-mode-framed-light {
@@ -154,7 +224,20 @@ canvas.mmd-sponsor-render {
 }
 
 .mmd-sponsor-orbit-hero small {
+  display: block;
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 11px 7px 2px !important;
+  overflow: hidden;
   color: #f6dfad !important;
+  font:
+    600 11px/1.25 "Playfair Display",
+    Georgia,
+    serif !important;
+  letter-spacing: 0.035em;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
 }
 
@@ -244,22 +327,33 @@ canvas.mmd-sponsor-render {
 }
 
 @media (max-width: 720px) {
-  .mmd-sponsor-orbit-card-media .mmd-sponsor-render,
-  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
+  .mmd-sponsor-orbit-card-media .mmd-sponsor-render {
     max-width: 100%;
   }
 
   .mmd-sponsor-mode-framed-light { padding: 6px; }
   .mmd-sponsor-mode-poster { padding: 4px; }
 
-  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
-    width: 106% !important;
-    max-width: 106% !important;
+  .mmd-sponsor-orbit-hero {
+    width: min(var(--mmd-hero-width, 208px), 43vw) !important;
+    height: min(calc(var(--mmd-hero-media-height, 180px) + 54px), 42vh) !important;
+  }
+
+  .mmd-sponsor-orbit-hero-face {
+    padding: 8px;
+  }
+
+  .mmd-sponsor-orbit-hero small {
+    min-height: 32px;
+    padding-top: 8px !important;
+    font-size: 9px !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mmd-sponsor-render {
+  .mmd-sponsor-render,
+  .mmd-sponsor-orbit-hero,
+  .mmd-sponsor-orbit-hero-flipper {
     transition: none !important;
   }
 
