@@ -51,14 +51,28 @@ const ARCHIVES = [
     label: "Édition 2025",
     miss: "Shanice Lambert",
     mister: "Archive à confirmer",
-    note: "Miss Dour 2025 vérifiée · identité Mister en cours de récupération",
+    missAwards: ["Miss Dour 2025 — Shanice Lambert"],
+    misterAwards: ["Palmarès Mister 2025 en cours de récupération"],
+    note: "Miss Dour 2025 vérifiée · le palmarès complet 2025 sera publié après récupération des archives.",
   },
   {
     year: "2026",
     label: "Édition 2026",
-    miss: "Palmarès à relier",
-    mister: "Palmarès à relier",
-    note: "Les données historiques seront affichées dès validation du palmarès officiel",
+    miss: "Aliya Ammour",
+    mister: "Hugo Puma",
+    missAwards: [
+      "Miss Dour 2026 — Aliya Ammour",
+      "1ère dauphine — Manon Vaillant",
+      "2ème dauphine — Giulia Leonetti",
+      "Prix de l’espoir — Alessia Jouffin",
+    ],
+    misterAwards: [
+      "Mister Dour 2026 — Hugo Puma",
+      "1er dauphin — Lylian Paternottre",
+      "2ème dauphin — Noé Cauderlier",
+      "Prix de l’espoir — Dawson Ostrowki",
+    ],
+    note: "Palmarès 2026 intégré à l’archive officielle de l’édition.",
   },
 ];
 
@@ -89,6 +103,13 @@ function Marquee() {
   </div></div>;
 }
 
+function normalizeArchiveText(value?: string | null) {
+  return (value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("fr-BE");
+}
+
 export default function Homepage() {
   const { isAuthenticated, user } = useAuth();
   const [mobileMenuOpen,setMobileMenuOpen]=useMenuState(false);
@@ -101,6 +122,22 @@ export default function Homepage() {
     return (selected.length ? selected : all).slice(0,4);
   }, [photos]);
   const galleryPreview = useMemo(() => (photos ?? []).slice(0,6), [photos]);
+  const archiveMedia = useMemo(() => {
+    const all = photos ?? [];
+    const findBy = (...terms: string[]) => all.find((photo) => {
+      const haystack = normalizeArchiveText(`${photo.candidateName || ""} ${photo.title || ""} ${photo.category || ""}`);
+      return terms.some((term) => haystack.includes(normalizeArchiveText(term)));
+    });
+    return {
+      "2025": [findBy("shanice lambert", "shanice"), ...all].filter(Boolean).slice(0,3),
+      "2026": [
+        findBy("aliya ammour", "aliya"),
+        findBy("hugo puma", "hugo"),
+        findBy("miss mister dour 2026", "photo officielle", "2026"),
+        ...all,
+      ].filter((photo, index, array) => photo && array.findIndex((item) => item?.id === photo.id) === index).slice(0,3),
+    } as const;
+  }, [photos]);
 
   const getDashboardUrl=()=>{
     if(!user)return "/dashboard";
@@ -165,7 +202,10 @@ export default function Homepage() {
       <section className="mmd-section mmd-home-participate" data-depth-reveal><div className="mmd-container"><SectionLabel index="06">Participer</SectionLabel><div className="mmd-home-participate-card"><div><span>ÉDITION 2027</span><h2>Votre candidature.<br/><em>Votre histoire.</em></h2><p>Le formulaire accompagne chaque candidat étape par étape et permet ensuite de compléter son profil officiel.</p></div><div className="mmd-home-participate-actions"><Link href="/inscription" className="mmd-primary-button mmd-large-button">Commencer ma candidature <ArrowRight/></Link><small>Date de clôture communiquée prochainement</small></div></div></div></section>
 
       {/* 07 — ARCHIVES */}
-      <section className="mmd-section mmd-home-archives" data-depth-reveal><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map(edition=><article key={edition.year}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span><div className="mmd-archive-titles"><div><small>MISS DOUR</small><strong className={edition.miss.includes("relier")?"is-pending":""}>{edition.miss}</strong></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("Archive")||edition.mister.includes("relier")?"is-pending":""}>{edition.mister}</strong></div></div><p>{edition.note}</p></article>)}</div><p className="mmd-archive-disclaimer">Aucun nom n’est publié comme lauréat sans source vérifiée. Le palmarès historique sera complété au fur et à mesure de sa récupération.</p></div></section>
+      <section className="mmd-section mmd-home-archives" data-depth-reveal><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map((edition, editionIndex)=>{
+        const media = archiveMedia[edition.year as keyof typeof archiveMedia] || [];
+        return <article key={edition.year} className="mmd-archive-card-2027" style={{"--archive-delay": `${editionIndex * 120}ms`} as React.CSSProperties}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span>{media.length>0&&<div className="mmd-archive-media-2027">{media.map((photo,index)=><div key={`${edition.year}-${photo?.id}-${index}`} className={index===0?"is-main":""}>{photo&&<img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||`Archive ${edition.year}`} loading="lazy"/>}</div>)}</div>}<div className="mmd-archive-titles mmd-archive-palmares"><div><small>MISS DOUR</small><strong>{edition.miss}</strong><ul>{edition.missAwards.map(item=><li key={item}>{item}</li>)}</ul></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("confirmer")?"is-pending":""}>{edition.mister}</strong><ul>{edition.misterAwards.map(item=><li key={item}>{item}</li>)}</ul></div></div><p>{edition.note}</p></article>;
+      })}</div><p className="mmd-archive-disclaimer">Le palmarès 2026 est intégré. Pour 2025, seuls les éléments vérifiés sont affichés et les archives restantes seront complétées après confirmation.</p></div></section>
 
       {/* 08 — PARTENAIRES */}
       <section className="mmd-section mmd-home-partners" data-depth-reveal><div className="mmd-container"><SectionLabel index="08">Partenaires</SectionLabel><div className="mmd-section-heading"><h2>Ils ont accompagné <em>l’aventure.</em></h2><Link href="/sponsors" className="mmd-text-link">Tous les partenaires <ArrowRight/></Link></div><div className="mmd-home-sponsor-preview">{SPONSOR_PREVIEW.map((sponsor)=><div key={sponsor.index}><SponsorVisual2026 index={sponsor.index} label={sponsor.name}/></div>)}</div><p className="mmd-home-partner-note">Aperçu des partenaires de l’édition 2026. Les partenaires 2027 seront identifiés séparément.</p></div></section>
