@@ -12,7 +12,7 @@ export type Sponsor2026 = {
   name: string;
 };
 
-export type SponsorRenderMode = "transparent" | "framed" | "poster";
+export type SponsorRenderMode = "transparent" | "framed-light" | "poster";
 
 // Ordre exact des 43 visuels du ZIP officiel 2026 fourni par l'organisation.
 export const SPONSORS_2026: Sponsor2026[] = [
@@ -62,26 +62,25 @@ export const SPONSORS_2026: Sponsor2026[] = [
 ];
 
 /*
- * Trois traitements différents :
- * - transparent : vrais logos simples, détourage conservateur ;
- * - framed      : logo/identité avec son cartouche de marque préservé ;
- * - poster      : carte de visite, flyer ou publicité, jamais détouré.
+ * Rendu volontairement hybride :
+ * - transparent   : vrais logos simples, détourage très conservateur ;
+ * - framed-light  : logos fins/sombres conservés intacts sur verre champagne ;
+ * - poster        : publicité, carte commerciale ou flyer, jamais détouré.
  *
- * Cette classification évite d'endommager les textes fins et les éléments
- * blancs qui faisaient partie du visuel d'origine.
+ * La carte active de l'orbite reçoit en plus un traitement hero via CSS.
  */
-const TRANSPARENT_SPONSORS = new Set([
-  0, 3, 4, 6, 9, 10, 12, 13, 14, 15, 16, 17, 19, 20, 22, 23, 29, 33, 34, 35, 41, 42,
+const FRAMED_LIGHT_SPONSORS = new Set([
+  0, 2, 3, 6, 8, 9, 10, 11, 12, 14, 18, 19, 20, 23, 28,
 ]);
 
 const POSTER_SPONSORS = new Set([
-  1, 5, 21, 24, 25, 28, 30, 31, 32, 36, 37, 38, 39,
+  1, 5, 7, 21, 24, 25, 26, 27, 30, 31, 32, 33, 36, 37, 38, 39, 40,
 ]);
 
 export function sponsorRenderMode(index: number): SponsorRenderMode {
-  if (TRANSPARENT_SPONSORS.has(index)) return "transparent";
   if (POSTER_SPONSORS.has(index)) return "poster";
-  return "framed";
+  if (FRAMED_LIGHT_SPONSORS.has(index)) return "framed-light";
+  return "transparent";
 }
 
 type RGB = [number, number, number];
@@ -164,7 +163,7 @@ function getBackgroundClusters(data: Uint8ClampedArray, width: number, height: n
   const clusters: ColorCluster[] = [];
 
   samples.forEach((sample) => {
-    const target = clusters.find((cluster) => colorDistance(cluster.color, sample) < 34);
+    const target = clusters.find((cluster) => colorDistance(cluster.color, sample) < 30);
     if (!target) {
       clusters.push({ color: sample, count: 1 });
       return;
@@ -184,7 +183,7 @@ function getBackgroundClusters(data: Uint8ClampedArray, width: number, height: n
     .slice(0, 2);
 }
 
-function distanceToClusters(data: Uint8ClampedArray, index: number, clusters: ColorCluster[]): number {
+function distanceToClusters(data: Uint8ClampedArray, index: number, clusters: ColorCluster[]) {
   const offset = index * 4;
   const pixel: RGB = [data[offset], data[offset + 1], data[offset + 2]];
   let distance = Number.POSITIVE_INFINITY;
@@ -206,7 +205,8 @@ function conservativeTransparentBackground(imageData: ImageData, width: number, 
 
   const pushSeed = (index: number) => {
     if (visited[index]) return;
-    if (distanceToClusters(data, index, clusters) > 28) return;
+    // Très strict : ne retire que le fond réellement proche de la couleur du bord.
+    if (distanceToClusters(data, index, clusters) > 20) return;
     visited[index] = 1;
     queue[tail++] = index;
   };
@@ -231,7 +231,7 @@ function conservativeTransparentBackground(imageData: ImageData, width: number, 
       const nx = next % width;
       const ny = Math.floor(next / width);
       if (Math.abs(nx - x) + Math.abs(ny - y) !== 1) continue;
-      if (distanceToClusters(data, next, clusters) > 40) continue;
+      if (distanceToClusters(data, next, clusters) > 31) continue;
       visited[next] = 1;
       queue[tail++] = next;
     }
@@ -241,7 +241,7 @@ function conservativeTransparentBackground(imageData: ImageData, width: number, 
     if (visited[index]) data[index * 4 + 3] = 0;
   }
 
-  // Une seule couronne d'anti-aliasing, beaucoup moins agressive que l'ancienne.
+  // Une lisière très fine, afin de conserver les lettres blanches et les traits fins.
   for (let y = 1; y < height - 1; y += 1) {
     for (let x = 1; x < width - 1; x += 1) {
       const index = y * width + x;
@@ -250,8 +250,8 @@ function conservativeTransparentBackground(imageData: ImageData, width: number, 
         visited[index - 1] || visited[index + 1] || visited[index - width] || visited[index + width];
       if (!touchesTransparent) continue;
       const distance = distanceToClusters(data, index, clusters);
-      if (distance < 50) {
-        const alpha = Math.max(80, Math.min(255, Math.round(((distance - 40) / 10) * 255)));
+      if (distance < 39) {
+        const alpha = Math.max(130, Math.min(255, Math.round(((distance - 31) / 8) * 255)));
         data[index * 4 + 3] = Math.min(data[index * 4 + 3], alpha);
       }
     }
@@ -293,7 +293,7 @@ function contentBounds(data: Uint8ClampedArray, width: number, height: number): 
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const index = y * width + x;
-      if (distanceToClusters(data, index, clusters) < 38) continue;
+      if (distanceToClusters(data, index, clusters) < 34) continue;
       left = Math.min(left, x);
       top = Math.min(top, y);
       right = Math.max(right, x);
@@ -303,8 +303,8 @@ function contentBounds(data: Uint8ClampedArray, width: number, height: number): 
 
   if (right < left || bottom < top) return { left: 0, top: 0, width, height };
 
-  const padX = Math.max(3, Math.round((right - left + 1) * 0.055));
-  const padY = Math.max(3, Math.round((bottom - top + 1) * 0.075));
+  const padX = Math.max(4, Math.round((right - left + 1) * 0.07));
+  const padY = Math.max(4, Math.round((bottom - top + 1) * 0.09));
   left = Math.max(0, left - padX);
   top = Math.max(0, top - padY);
   right = Math.min(width - 1, right + padX);
@@ -371,8 +371,7 @@ function renderSponsor(
       height: sourceHeight,
     };
   } else {
-    // Pour les cartes/flyers, aucun pixel n'est supprimé : on recadre seulement
-    // le visuel dans son ensemble afin de préserver texte, fonds et identités.
+    // Framed-light et poster conservent tous les pixels de la création d'origine.
     bounds = contentBounds(originalData.data, sourceWidth, sourceHeight);
   }
 
@@ -386,8 +385,8 @@ function renderSponsor(
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
 
-  const widthRatio = mode === "poster" ? 0.91 : mode === "framed" ? 0.84 : 0.88;
-  const heightRatio = mode === "poster" ? 0.88 : mode === "framed" ? 0.80 : 0.82;
+  const widthRatio = mode === "poster" ? 0.93 : mode === "framed-light" ? 0.89 : 0.92;
+  const heightRatio = mode === "poster" ? 0.90 : mode === "framed-light" ? 0.86 : 0.87;
   const maxWidth = outputWidth * widthRatio;
   const maxHeight = outputHeight * heightRatio;
   const scale = Math.min(maxWidth / bounds.width, maxHeight / bounds.height);
