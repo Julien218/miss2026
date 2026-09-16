@@ -1,30 +1,72 @@
-/* Miss & Mister Dour 2027 — sponsors détourés sur fond réellement transparent.
- * Le détourage est calculé dans SponsorVisual2026 depuis les zones de fond
- * reliées aux bords du visuel. On préserve ainsi les blancs internes des logos
- * au lieu d'appliquer un simple chroma-key blanc.
+/* Miss & Mister Dour 2027 — rendu partenaires à 3 modes.
+ * transparent : vrais logos détourés de façon conservatrice.
+ * framed      : logo + cartouche préservés dans une plaque chic.
+ * poster      : carte de visite / flyer / publicité, visuel intact.
  */
 
-.mmd-sponsor-transparent,
-canvas.mmd-sponsor-sprite {
+canvas.mmd-sponsor-render {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 140 / 95;
-  background: transparent !important;
+  box-sizing: border-box;
+  object-fit: contain;
   background-image: none !important;
-  background-color: transparent !important;
   background-blend-mode: normal !important;
   mix-blend-mode: normal !important;
+  transition:
+    transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.34s ease,
+    box-shadow 0.34s ease,
+    border-color 0.34s ease,
+    background 0.34s ease;
+}
+
+/* --------------------------------------------------------------------------
+   MODE 1 — logo réellement transparent
+   -------------------------------------------------------------------------- */
+.mmd-sponsor-mode-transparent {
+  background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  object-fit: contain;
   filter:
-    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.34))
-    drop-shadow(0 0 10px rgba(215, 174, 105, 0.08));
+    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 0 9px rgba(215, 174, 105, 0.10)) !important;
 }
 
-/* Orbite : plus aucun petit panneau beige/blanc derrière le logo. */
+/* --------------------------------------------------------------------------
+   MODE 2 — logo/cartouche : on garde l'identité d'origine au lieu de la ronger
+   -------------------------------------------------------------------------- */
+.mmd-sponsor-mode-framed {
+  padding: 7px;
+  border: 1px solid rgba(234, 211, 165, 0.22) !important;
+  border-radius: 12px !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(246, 230, 199, 0.11), transparent 52%),
+    linear-gradient(150deg, rgba(46, 35, 26, 0.78), rgba(15, 11, 8, 0.88)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+    0 12px 26px rgba(0, 0, 0, 0.28) !important;
+  filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   MODE 3 — pub / flyer / carte commerciale : aucun détourage
+   -------------------------------------------------------------------------- */
+.mmd-sponsor-mode-poster {
+  padding: 5px;
+  border: 1px solid rgba(234, 211, 165, 0.28) !important;
+  border-radius: 11px !important;
+  background:
+    linear-gradient(145deg, rgba(31, 24, 18, 0.92), rgba(9, 7, 6, 0.96)) !important;
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025) !important;
+  filter: none !important;
+}
+
+/* Les conteneurs restent dark-glass. C'est le canvas qui choisit son traitement. */
 .mmd-sponsor-orbit-card-media,
 .mmd-sponsor-orbit-hero-inner {
   overflow: visible !important;
@@ -32,27 +74,38 @@ canvas.mmd-sponsor-sprite {
   box-shadow: none !important;
 }
 
-.mmd-sponsor-orbit-card-media .mmd-sponsor-transparent,
-.mmd-sponsor-orbit-hero-inner .mmd-sponsor-transparent {
+.mmd-sponsor-orbit-card-media .mmd-sponsor-render,
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
   width: 100% !important;
   height: auto !important;
   max-width: 100%;
   max-height: 100%;
-  background: transparent !important;
-  mix-blend-mode: normal !important;
-  filter:
-    drop-shadow(0 8px 13px rgba(0, 0, 0, 0.46))
-    drop-shadow(0 0 8px rgba(234, 211, 165, 0.08)) !important;
 }
 
-.mmd-sponsor-orbit-card:hover .mmd-sponsor-transparent,
-.mmd-sponsor-orbit-hero:hover .mmd-sponsor-transparent {
-  filter:
-    drop-shadow(0 13px 21px rgba(0, 0, 0, 0.52))
-    drop-shadow(0 0 13px rgba(234, 211, 165, 0.18)) !important;
+/* Les affiches sont légèrement plus présentes afin de rester lisibles. */
+.mmd-sponsor-orbit-card-media .mmd-sponsor-mode-poster,
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-mode-poster {
+  width: 106% !important;
+  max-width: 106%;
 }
 
-/* La carte reste dark-glass : c'est le logo qui flotte réellement dedans. */
+.mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-transparent,
+.mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-transparent {
+  filter:
+    drop-shadow(0 13px 22px rgba(0, 0, 0, 0.50))
+    drop-shadow(0 0 14px rgba(234, 211, 165, 0.19)) !important;
+}
+
+.mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-framed,
+.mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-framed,
+.mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-poster,
+.mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-poster {
+  border-color: rgba(242, 211, 150, 0.46) !important;
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(215, 174, 105, 0.10) !important;
+}
+
 .mmd-sponsor-orbit-card {
   background:
     radial-gradient(circle at 50% 42%, rgba(215, 174, 105, 0.105), transparent 47%),
@@ -66,62 +119,54 @@ canvas.mmd-sponsor-sprite {
     linear-gradient(155deg, rgba(33, 24, 17, 0.95), rgba(12, 9, 7, 0.98)) !important;
 }
 
-/* Homepage partenaires : supprime aussi l'ancienne plaque ivoire interne. */
-.mmd-home-sponsor-preview .mmd-sponsor-transparent {
+/* --------------------------------------------------------------------------
+   Homepage partenaires
+   -------------------------------------------------------------------------- */
+.mmd-home-sponsor-preview .mmd-sponsor-render {
   position: relative;
   z-index: 2;
   width: min(100%, 246px);
   min-height: 0;
   aspect-ratio: 140 / 95;
-  background: transparent !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
   transform: translateZ(14px) scale(1);
-  transition:
-    transform 0.46s cubic-bezier(0.2, 0.8, 0.2, 1),
-    filter 0.35s ease;
-  filter:
-    drop-shadow(0 14px 24px rgba(0, 0, 0, 0.43))
-    drop-shadow(0 0 11px rgba(234, 211, 165, 0.09)) !important;
 }
 
-.mmd-home-sponsor-preview > div:hover .mmd-sponsor-transparent {
-  transform: translateZ(40px) scale(1.04);
-  filter:
-    drop-shadow(0 20px 31px rgba(0, 0, 0, 0.52))
-    drop-shadow(0 0 17px rgba(234, 211, 165, 0.20)) !important;
+.mmd-home-sponsor-preview > div:hover .mmd-sponsor-render {
+  transform: translateZ(40px) scale(1.035);
 }
 
-.mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-transparent {
+.mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-render {
   width: 100%;
   max-width: 372px;
-  background: transparent !important;
-  box-shadow: none !important;
 }
 
-/* Certaines créations étaient verticales ou très larges : on laisse le canvas
- * contenir le logo sans le forcer dans un rectangle uniforme. */
-.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-transparent { width: min(100%, 214px); }
-.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-transparent { width: min(100%, 198px); }
-.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-transparent { width: min(100%, 246px); }
-.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-transparent { width: min(100%, 238px); }
-.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-transparent { width: min(100%, 174px); }
+.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-render { width: min(100%, 214px); }
+.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-render { width: min(100%, 198px); }
+.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-render { width: min(100%, 246px); }
+.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-render { width: min(100%, 238px); }
+.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-render { width: min(100%, 174px); }
+
+/* Sur la homepage, une affiche garde son format plutôt que d'être étirée. */
+.mmd-home-sponsor-preview .mmd-sponsor-mode-poster {
+  width: min(100%, 258px);
+}
 
 @media (max-width: 720px) {
-  .mmd-sponsor-orbit-card-media .mmd-sponsor-transparent,
-  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-transparent {
-    filter:
-      drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45))
-      drop-shadow(0 0 6px rgba(234, 211, 165, 0.07)) !important;
+  .mmd-sponsor-orbit-card-media .mmd-sponsor-render,
+  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
+    max-width: 100%;
   }
+
+  .mmd-sponsor-mode-framed { padding: 5px; }
+  .mmd-sponsor-mode-poster { padding: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mmd-home-sponsor-preview .mmd-sponsor-transparent {
+  .mmd-sponsor-render {
     transition: none !important;
   }
 
-  .mmd-home-sponsor-preview > div:hover .mmd-sponsor-transparent {
+  .mmd-home-sponsor-preview > div:hover .mmd-sponsor-render {
     transform: none;
   }
 }
