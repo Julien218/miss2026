@@ -1,7 +1,8 @@
-/* Miss & Mister Dour 2027 — rendu partenaires à 3 modes.
- * transparent : vrais logos détourés de façon conservatrice.
- * framed      : logo + cartouche préservés dans une plaque chic.
- * poster      : carte de visite / flyer / publicité, visuel intact.
+/* Miss & Mister Dour 2027 — sponsors : équilibre lisibilité / transparence.
+ * transparent  : vrai logo, détourage conservateur.
+ * framed-light : logo fin/sombre conservé intact sur verre champagne.
+ * poster       : publicité / carte commerciale / flyer intact.
+ * hero         : la carte active de l'orbite reçoit un traitement premium dédié.
  */
 
 canvas.mmd-sponsor-render {
@@ -23,7 +24,7 @@ canvas.mmd-sponsor-render {
 }
 
 /* --------------------------------------------------------------------------
-   MODE 1 — logo réellement transparent
+   MODE 1 — transparence réelle
    -------------------------------------------------------------------------- */
 .mmd-sponsor-mode-transparent {
   background: transparent !important;
@@ -31,42 +32,66 @@ canvas.mmd-sponsor-render {
   border-radius: 0 !important;
   box-shadow: none !important;
   filter:
+    brightness(1.07)
+    contrast(1.06)
+    saturate(1.04)
     drop-shadow(0 10px 18px rgba(0, 0, 0, 0.42))
-    drop-shadow(0 0 9px rgba(215, 174, 105, 0.10)) !important;
+    drop-shadow(0 0 9px rgba(232, 197, 133, 0.14)) !important;
 }
 
 /* --------------------------------------------------------------------------
-   MODE 2 — logo/cartouche : on garde l'identité d'origine au lieu de la ronger
+   MODE 2 — verre champagne clair pour logos fins / sombres
    -------------------------------------------------------------------------- */
-.mmd-sponsor-mode-framed {
-  padding: 7px;
-  border: 1px solid rgba(234, 211, 165, 0.22) !important;
-  border-radius: 12px !important;
+.mmd-sponsor-mode-framed-light {
+  padding: 8px;
+  border: 1px solid rgba(238, 205, 145, 0.34) !important;
+  border-radius: 13px !important;
   background:
-    radial-gradient(circle at 50% 35%, rgba(246, 230, 199, 0.11), transparent 52%),
-    linear-gradient(150deg, rgba(46, 35, 26, 0.78), rgba(15, 11, 8, 0.88)) !important;
+    radial-gradient(circle at 50% 30%, rgba(255, 244, 218, 0.26), transparent 54%),
+    linear-gradient(150deg, rgba(104, 82, 58, 0.34), rgba(47, 35, 25, 0.44)) !important;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
-    0 12px 26px rgba(0, 0, 0, 0.28) !important;
-  filter: none !important;
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 10px 28px rgba(0, 0, 0, 0.24),
+    0 0 18px rgba(224, 180, 104, 0.08) !important;
+  backdrop-filter: blur(5px);
+  filter:
+    brightness(1.14)
+    contrast(1.08)
+    saturate(1.03) !important;
+}
+
+/* Belfius, Beobank, P&V, La Perla et FerrBatir : encore un cran de lisibilité. */
+.mmd-sponsor-render[data-sponsor-index="0"],
+.mmd-sponsor-render[data-sponsor-index="3"],
+.mmd-sponsor-render[data-sponsor-index="6"],
+.mmd-sponsor-render[data-sponsor-index="12"],
+.mmd-sponsor-render[data-sponsor-index="28"] {
+  filter:
+    brightness(1.18)
+    contrast(1.10)
+    saturate(1.04)
+    drop-shadow(0 0 8px rgba(255, 226, 168, 0.08)) !important;
 }
 
 /* --------------------------------------------------------------------------
-   MODE 3 — pub / flyer / carte commerciale : aucun détourage
+   MODE 3 — mini-affiche / publicité intacte
    -------------------------------------------------------------------------- */
 .mmd-sponsor-mode-poster {
   padding: 5px;
-  border: 1px solid rgba(234, 211, 165, 0.28) !important;
+  border: 1px solid rgba(234, 211, 165, 0.30) !important;
   border-radius: 11px !important;
   background:
-    linear-gradient(145deg, rgba(31, 24, 18, 0.92), rgba(9, 7, 6, 0.96)) !important;
+    radial-gradient(circle at 50% 28%, rgba(255, 239, 207, 0.10), transparent 48%),
+    linear-gradient(145deg, rgba(43, 32, 23, 0.94), rgba(13, 9, 7, 0.97)) !important;
   box-shadow:
-    0 14px 30px rgba(0, 0, 0, 0.34),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.025) !important;
-  filter: none !important;
+    0 14px 30px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035) !important;
+  filter: brightness(1.06) contrast(1.04) !important;
 }
 
-/* Les conteneurs restent dark-glass. C'est le canvas qui choisit son traitement. */
+/* --------------------------------------------------------------------------
+   ORBITE — cartes plus lumineuses et meilleure hiérarchie
+   -------------------------------------------------------------------------- */
 .mmd-sponsor-orbit-card-media,
 .mmd-sponsor-orbit-hero-inner {
   overflow: visible !important;
@@ -82,73 +107,140 @@ canvas.mmd-sponsor-render {
   max-height: 100%;
 }
 
-/* Les affiches sont légèrement plus présentes afin de rester lisibles. */
-.mmd-sponsor-orbit-card-media .mmd-sponsor-mode-poster,
-.mmd-sponsor-orbit-hero-inner .mmd-sponsor-mode-poster {
-  width: 106% !important;
-  max-width: 106%;
+.mmd-sponsor-orbit-card {
+  background:
+    radial-gradient(circle at 50% 39%, rgba(235, 194, 122, 0.16), transparent 50%),
+    linear-gradient(155deg, rgba(49, 37, 27, 0.93), rgba(13, 9, 7, 0.97) 76%) !important;
+  border-color: rgba(237, 201, 136, 0.34) !important;
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.43),
+    inset 0 1px rgba(255, 255, 255, 0.045),
+    0 0 20px rgba(215, 174, 105, 0.055) !important;
+  backdrop-filter: blur(9px);
+}
+
+.mmd-sponsor-orbit-card:hover {
+  border-color: rgba(247, 215, 155, 0.58) !important;
+  box-shadow:
+    0 26px 66px rgba(0, 0, 0, 0.48),
+    0 0 28px rgba(222, 181, 106, 0.12) !important;
+}
+
+/* --------------------------------------------------------------------------
+   MODE 4 — HERO : sponsor actif au centre
+   -------------------------------------------------------------------------- */
+.mmd-sponsor-orbit-hero {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(255, 224, 164, 0.23), transparent 52%),
+    linear-gradient(155deg, rgba(57, 40, 27, 0.98), rgba(16, 11, 8, 0.99)) !important;
+  border-color: rgba(241, 202, 132, 0.74) !important;
+  box-shadow:
+    0 34px 92px rgba(0, 0, 0, 0.50),
+    0 0 0 6px rgba(234, 211, 165, 0.10),
+    0 0 40px rgba(222, 177, 95, 0.16) !important;
+}
+
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
+  width: 112% !important;
+  max-width: 112% !important;
+  transform: scale(1.055);
+}
+
+.mmd-sponsor-orbit-hero-inner .mmd-sponsor-mode-framed-light {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 246, 224, 0.34), transparent 56%),
+    linear-gradient(150deg, rgba(112, 87, 61, 0.42), rgba(55, 40, 28, 0.52)) !important;
+  border-color: rgba(249, 218, 160, 0.50) !important;
+}
+
+.mmd-sponsor-orbit-hero small {
+  color: #f6dfad !important;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
 }
 
 .mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-transparent,
 .mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-transparent {
   filter:
-    drop-shadow(0 13px 22px rgba(0, 0, 0, 0.50))
-    drop-shadow(0 0 14px rgba(234, 211, 165, 0.19)) !important;
+    brightness(1.12)
+    contrast(1.08)
+    saturate(1.05)
+    drop-shadow(0 13px 22px rgba(0, 0, 0, 0.48))
+    drop-shadow(0 0 15px rgba(241, 208, 145, 0.22)) !important;
 }
 
-.mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-framed,
-.mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-framed,
+.mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-framed-light,
+.mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-framed-light,
 .mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-poster,
 .mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-poster {
-  border-color: rgba(242, 211, 150, 0.46) !important;
+  border-color: rgba(246, 216, 159, 0.54) !important;
   box-shadow:
-    0 18px 38px rgba(0, 0, 0, 0.42),
-    0 0 18px rgba(215, 174, 105, 0.10) !important;
-}
-
-.mmd-sponsor-orbit-card {
-  background:
-    radial-gradient(circle at 50% 42%, rgba(215, 174, 105, 0.105), transparent 47%),
-    linear-gradient(155deg, rgba(29, 22, 17, 0.91), rgba(8, 6, 5, 0.96) 74%) !important;
-  backdrop-filter: blur(9px);
-}
-
-.mmd-sponsor-orbit-hero {
-  background:
-    radial-gradient(circle at 50% 38%, rgba(215, 174, 105, 0.14), transparent 52%),
-    linear-gradient(155deg, rgba(33, 24, 17, 0.95), rgba(12, 9, 7, 0.98)) !important;
+    0 18px 38px rgba(0, 0, 0, 0.39),
+    0 0 22px rgba(224, 182, 105, 0.14) !important;
 }
 
 /* --------------------------------------------------------------------------
-   Homepage partenaires
+   HOMEPAGE — logos plus grands et équilibrés
    -------------------------------------------------------------------------- */
 .mmd-home-sponsor-preview .mmd-sponsor-render {
   position: relative;
   z-index: 2;
-  width: min(100%, 246px);
+  width: min(100%, 260px);
   min-height: 0;
   aspect-ratio: 140 / 95;
   transform: translateZ(14px) scale(1);
 }
 
 .mmd-home-sponsor-preview > div:hover .mmd-sponsor-render {
-  transform: translateZ(40px) scale(1.035);
+  transform: translateZ(40px) scale(1.04);
 }
 
+/* Carte principale Belfius */
 .mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-render {
   width: 100%;
-  max-width: 372px;
+  max-width: 390px;
 }
 
-.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-render { width: min(100%, 214px); }
-.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-render { width: min(100%, 198px); }
-.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-render { width: min(100%, 246px); }
-.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-render { width: min(100%, 238px); }
-.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-render { width: min(100%, 174px); }
+/* Beobank */
+.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-render {
+  width: min(100%, 232px);
+}
 
-/* Sur la homepage, une affiche garde son format plutôt que d'être étirée. */
-.mmd-home-sponsor-preview .mmd-sponsor-mode-poster {
+/* Fun Zone */
+.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-render {
+  width: min(100%, 208px);
+}
+
+/* Dour Matériaux */
+.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-render {
   width: min(100%, 258px);
+}
+
+/* La Perla */
+.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-render {
+  width: min(100%, 254px);
+}
+
+/* PubliDesign / carte verte */
+.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-render {
+  width: min(100%, 208px);
+}
+
+.mmd-home-sponsor-preview .mmd-sponsor-mode-poster {
+  width: min(100%, 270px);
+}
+
+/* Les cartes de homepage gagnent un peu de lumière sans redevenir blanches. */
+.mmd-home-sponsor-preview > div {
+  background:
+    radial-gradient(circle at 50% 16%, rgba(255, 225, 169, 0.24), transparent 44%),
+    linear-gradient(148deg, rgba(70, 51, 34, 0.96), rgba(19, 13, 9, 0.99) 78%) !important;
+  border-color: rgba(240, 202, 134, 0.58) !important;
+}
+
+.mmd-home-sponsor-preview > div:hover {
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255, 232, 184, 0.31), transparent 46%),
+    linear-gradient(148deg, rgba(80, 58, 38, 0.99), rgba(20, 14, 10, 0.995) 78%) !important;
 }
 
 @media (max-width: 720px) {
@@ -157,8 +249,13 @@ canvas.mmd-sponsor-render {
     max-width: 100%;
   }
 
-  .mmd-sponsor-mode-framed { padding: 5px; }
+  .mmd-sponsor-mode-framed-light { padding: 6px; }
   .mmd-sponsor-mode-poster { padding: 4px; }
+
+  .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
+    width: 106% !important;
+    max-width: 106% !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
