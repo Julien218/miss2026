@@ -290,6 +290,69 @@
   inset: 4% 4.5%;
 }
 
+/* --------------------------------------------------------------------------
+   Archives 2025/2026 — états vérifiés + signature JS-Innov.IA.
+   -------------------------------------------------------------------------- */
+.mmd-archive-media-pending {
+  position: relative;
+  z-index: 2;
+  min-height: 230px;
+  margin: 18px 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 26px;
+  border-radius: 22px;
+  border: 1px dashed rgba(234, 211, 165, 0.28);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(215, 174, 105, 0.10), transparent 42%),
+    linear-gradient(155deg, rgba(28, 21, 16, 0.96), rgba(10, 8, 7, 0.99));
+  color: rgba(247, 239, 225, 0.74);
+  text-align: left;
+}
+
+.mmd-archive-media-pending > svg {
+  width: 34px;
+  height: 34px;
+  color: rgba(234, 211, 165, 0.72);
+  flex: 0 0 auto;
+}
+
+.mmd-archive-media-pending > div {
+  display: grid;
+  gap: 6px;
+}
+
+.mmd-archive-media-pending strong {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  color: rgba(255, 247, 231, 0.95);
+}
+
+.mmd-archive-media-pending span {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: rgba(247, 239, 225, 0.48);
+}
+
+.mmd-archive-digital-credit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: rgba(234, 211, 165, 0.68);
+  font-size: 0.78rem;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.mmd-archive-digital-credit svg {
+  width: 14px;
+  height: 14px;
+  color: rgba(215, 174, 105, 0.9);
+}
+
 @media (max-width: 1180px) {
   .mmd-home-sponsor-preview {
     display: flex;
@@ -363,6 +426,16 @@
   .mmd-home-sponsor-preview > div:hover,
   .mmd-home-sponsor-preview > div:nth-child(1):hover {
     transform: translateY(-5px) scale(1.01);
+  }
+
+  .mmd-archive-media-pending {
+    min-height: 180px;
+    padding: 20px;
+  }
+
+  .mmd-archive-digital-credit {
+    font-size: 0.68rem;
+    letter-spacing: 0.075em;
   }
 }
 
