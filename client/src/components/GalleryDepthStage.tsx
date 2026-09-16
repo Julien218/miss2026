@@ -19,7 +19,7 @@ type GalleryDepthStageProps = {
 };
 
 const MAX_DEPTH_PHOTOS = 42;
-const AUTO_DRIFT_ACCELERATION = 0.075;
+const AUTO_DRIFT_ACCELERATION = 0.13;
 
 function wrap(value: number, length: number) {
   return ((value % length) + length) % length;
@@ -76,7 +76,7 @@ export function GalleryDepthStage({
 
     const onWheel = (event: WheelEvent) => {
       event.preventDefault();
-      velocityRef.current += Math.sign(event.deltaY) * Math.min(Math.abs(event.deltaY) / 260, 0.55);
+      velocityRef.current += Math.sign(event.deltaY) * Math.min(Math.abs(event.deltaY) / 220, 0.7);
     };
 
     stage.addEventListener("wheel", onWheel, { passive: false });
@@ -90,7 +90,7 @@ export function GalleryDepthStage({
           velocityRef.current += delta * AUTO_DRIFT_ACCELERATION;
         }
         velocityRef.current *= Math.pow(0.9, delta * 60);
-        positionRef.current += velocityRef.current * delta * 5.2;
+        positionRef.current += velocityRef.current * delta * 6.4;
 
         const count = depthPhotos.length;
         const focus = wrap(Math.round(positionRef.current), count);
@@ -143,7 +143,7 @@ export function GalleryDepthStage({
     (direction: number) => {
       if (!depthPhotos.length) return;
       positionRef.current += direction;
-      velocityRef.current = direction * 0.08;
+      velocityRef.current = direction * 0.11;
     },
     [depthPhotos.length]
   );
