@@ -12,8 +12,9 @@ export type Sponsor2026 = {
   name: string;
 };
 
+export type SponsorRenderMode = "transparent" | "framed" | "poster";
+
 // Ordre exact des 43 visuels du ZIP officiel 2026 fourni par l'organisation.
-// Chaque intitulé correspond au visuel réellement présent dans la planche source.
 export const SPONSORS_2026: Sponsor2026[] = [
   { index: 0, name: "La Perla del Sol Immobilier" },
   { index: 1, name: "JV Sport — Julien Van Melkebeke" },
@@ -60,8 +61,32 @@ export const SPONSORS_2026: Sponsor2026[] = [
   { index: 42, name: "Danse Dour" },
 ];
 
+/*
+ * Trois traitements différents :
+ * - transparent : vrais logos simples, détourage conservateur ;
+ * - framed      : logo/identité avec son cartouche de marque préservé ;
+ * - poster      : carte de visite, flyer ou publicité, jamais détouré.
+ *
+ * Cette classification évite d'endommager les textes fins et les éléments
+ * blancs qui faisaient partie du visuel d'origine.
+ */
+const TRANSPARENT_SPONSORS = new Set([
+  0, 3, 4, 6, 9, 10, 12, 13, 14, 15, 16, 17, 19, 20, 22, 23, 29, 33, 34, 35, 41, 42,
+]);
+
+const POSTER_SPONSORS = new Set([
+  1, 5, 21, 24, 25, 28, 30, 31, 32, 36, 37, 38, 39,
+]);
+
+export function sponsorRenderMode(index: number): SponsorRenderMode {
+  if (TRANSPARENT_SPONSORS.has(index)) return "transparent";
+  if (POSTER_SPONSORS.has(index)) return "poster";
+  return "framed";
+}
+
 type RGB = [number, number, number];
 type ColorCluster = { color: RGB; count: number };
+type Bounds = { left: number; top: number; width: number; height: number };
 
 let spritePromise: Promise<HTMLImageElement> | null = null;
 
@@ -77,13 +102,11 @@ function loadSprite() {
 
   spritePromise = new Promise<HTMLImageElement>((resolve, reject) => {
     let sourceIndex = 0;
-
     const tryNext = () => {
       if (sourceIndex >= SPRITE_SOURCES.length) {
         reject(new Error("Planche partenaires 2026 introuvable"));
         return;
       }
-
       const image = new Image();
       image.decoding = "async";
       image.onload = () => resolve(image);
@@ -93,7 +116,6 @@ function loadSprite() {
       };
       image.src = SPRITE_SOURCES[sourceIndex];
     };
-
     tryNext();
   });
 
@@ -142,12 +164,11 @@ function getBackgroundClusters(data: Uint8ClampedArray, width: number, height: n
   const clusters: ColorCluster[] = [];
 
   samples.forEach((sample) => {
-    const target = clusters.find((cluster) => colorDistance(cluster.color, sample) < 42);
+    const target = clusters.find((cluster) => colorDistance(cluster.color, sample) < 34);
     if (!target) {
       clusters.push({ color: sample, count: 1 });
       return;
     }
-
     const nextCount = target.count + 1;
     target.color = [
       (target.color[0] * target.count + sample[0]) / nextCount,
@@ -160,10 +181,20 @@ function getBackgroundClusters(data: Uint8ClampedArray, width: number, height: n
   return clusters
     .filter((cluster) => cluster.count >= 2)
     .sort((a, b) => b.count - a.count)
-    .slice(0, 3);
+    .slice(0, 2);
 }
 
-function removeConnectedBackground(imageData: ImageData, width: number, height: number) {
+function distanceToClusters(data: Uint8ClampedArray, index: number, clusters: ColorCluster[]): number {
+  const offset = index * 4;
+  const pixel: RGB = [data[offset], data[offset + 1], data[offset + 2]];
+  let distance = Number.POSITIVE_INFINITY;
+  clusters.forEach((cluster) => {
+    distance = Math.min(distance, colorDistance(pixel, cluster.color));
+  });
+  return distance;
+}
+
+function conservativeTransparentBackground(imageData: ImageData, width: number, height: number) {
   const { data } = imageData;
   const clusters = getBackgroundClusters(data, width, height);
   if (!clusters.length) return imageData;
@@ -173,22 +204,11 @@ function removeConnectedBackground(imageData: ImageData, width: number, height: 
   let head = 0;
   let tail = 0;
 
-  const distanceToBackground = (index: number) => {
-    const offset = index * 4;
-    const pixel: RGB = [data[offset], data[offset + 1], data[offset + 2]];
-    let distance = Number.POSITIVE_INFINITY;
-    clusters.forEach((cluster) => {
-      distance = Math.min(distance, colorDistance(pixel, cluster.color));
-    });
-    return distance;
-  };
-
   const pushSeed = (index: number) => {
     if (visited[index]) return;
-    if (distanceToBackground(index) > 48) return;
+    if (distanceToClusters(data, index, clusters) > 28) return;
     visited[index] = 1;
-    queue[tail] = index;
-    tail += 1;
+    queue[tail++] = index;
   };
 
   for (let x = 0; x < width; x += 1) {
@@ -201,8 +221,7 @@ function removeConnectedBackground(imageData: ImageData, width: number, height: 
   }
 
   while (head < tail) {
-    const index = queue[head];
-    head += 1;
+    const index = queue[head++];
     const x = index % width;
     const y = Math.floor(index / width);
     const neighbors = [index - 1, index + 1, index - width, index + width];
@@ -212,20 +231,17 @@ function removeConnectedBackground(imageData: ImageData, width: number, height: 
       const nx = next % width;
       const ny = Math.floor(next / width);
       if (Math.abs(nx - x) + Math.abs(ny - y) !== 1) continue;
-      if (distanceToBackground(next) > 58) continue;
+      if (distanceToClusters(data, next, clusters) > 40) continue;
       visited[next] = 1;
-      queue[tail] = next;
-      tail += 1;
+      queue[tail++] = next;
     }
   }
 
   for (let index = 0; index < visited.length; index += 1) {
-    if (!visited[index]) continue;
-    data[index * 4 + 3] = 0;
+    if (visited[index]) data[index * 4 + 3] = 0;
   }
 
-  // Adoucit uniquement la lisière de la zone réellement détachée. Les blancs
-  // internes du logo restent intacts car ils ne sont jamais reliés au bord.
+  // Une seule couronne d'anti-aliasing, beaucoup moins agressive que l'ancienne.
   for (let y = 1; y < height - 1; y += 1) {
     for (let x = 1; x < width - 1; x += 1) {
       const index = y * width + x;
@@ -233,9 +249,9 @@ function removeConnectedBackground(imageData: ImageData, width: number, height: 
       const touchesTransparent =
         visited[index - 1] || visited[index + 1] || visited[index - width] || visited[index + width];
       if (!touchesTransparent) continue;
-      const distance = distanceToBackground(index);
-      if (distance < 74) {
-        const alpha = Math.max(0, Math.min(255, Math.round(((distance - 48) / 26) * 255)));
+      const distance = distanceToClusters(data, index, clusters);
+      if (distance < 50) {
+        const alpha = Math.max(80, Math.min(255, Math.round(((distance - 40) / 10) * 255)));
         data[index * 4 + 3] = Math.min(data[index * 4 + 3], alpha);
       }
     }
@@ -244,7 +260,7 @@ function removeConnectedBackground(imageData: ImageData, width: number, height: 
   return imageData;
 }
 
-function visibleBounds(data: Uint8ClampedArray, width: number, height: number) {
+function visibleBounds(data: Uint8ClampedArray, width: number, height: number): Bounds | null {
   let left = width;
   let top = height;
   let right = -1;
@@ -265,6 +281,38 @@ function visibleBounds(data: Uint8ClampedArray, width: number, height: number) {
   return { left, top, width: right - left + 1, height: bottom - top + 1 };
 }
 
+function contentBounds(data: Uint8ClampedArray, width: number, height: number): Bounds {
+  const clusters = getBackgroundClusters(data, width, height);
+  if (!clusters.length) return { left: 0, top: 0, width, height };
+
+  let left = width;
+  let top = height;
+  let right = -1;
+  let bottom = -1;
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const index = y * width + x;
+      if (distanceToClusters(data, index, clusters) < 38) continue;
+      left = Math.min(left, x);
+      top = Math.min(top, y);
+      right = Math.max(right, x);
+      bottom = Math.max(bottom, y);
+    }
+  }
+
+  if (right < left || bottom < top) return { left: 0, top: 0, width, height };
+
+  const padX = Math.max(3, Math.round((right - left + 1) * 0.055));
+  const padY = Math.max(3, Math.round((bottom - top + 1) * 0.075));
+  left = Math.max(0, left - padX);
+  top = Math.max(0, top - padY);
+  right = Math.min(width - 1, right + padX);
+  bottom = Math.min(height - 1, bottom + padY);
+
+  return { left, top, width: right - left + 1, height: bottom - top + 1 };
+}
+
 function drawFallback(canvas: HTMLCanvasElement, label: string) {
   const width = 560;
   const height = 380;
@@ -280,7 +328,12 @@ function drawFallback(canvas: HTMLCanvasElement, label: string) {
   context.fillText(label, width / 2, height / 2, width * 0.82);
 }
 
-function renderSponsor(canvas: HTMLCanvasElement, image: HTMLImageElement, index: number) {
+function renderSponsor(
+  canvas: HTMLCanvasElement,
+  image: HTMLImageElement,
+  index: number,
+  mode: SponsorRenderMode,
+) {
   const sourceWidth = Math.floor(image.naturalWidth / SPRITE_COLUMNS);
   const sourceHeight = Math.floor(image.naturalHeight / SPRITE_ROWS);
   const sourceX = (index % SPRITE_COLUMNS) * sourceWidth;
@@ -305,16 +358,23 @@ function renderSponsor(canvas: HTMLCanvasElement, image: HTMLImageElement, index
     sourceHeight,
   );
 
-  const imageData = workingContext.getImageData(0, 0, sourceWidth, sourceHeight);
-  const cleaned = removeConnectedBackground(imageData, sourceWidth, sourceHeight);
-  workingContext.putImageData(cleaned, 0, 0);
+  const originalData = workingContext.getImageData(0, 0, sourceWidth, sourceHeight);
+  let bounds: Bounds;
 
-  const bounds = visibleBounds(cleaned.data, sourceWidth, sourceHeight) || {
-    left: 0,
-    top: 0,
-    width: sourceWidth,
-    height: sourceHeight,
-  };
+  if (mode === "transparent") {
+    const cleaned = conservativeTransparentBackground(originalData, sourceWidth, sourceHeight);
+    workingContext.putImageData(cleaned, 0, 0);
+    bounds = visibleBounds(cleaned.data, sourceWidth, sourceHeight) || {
+      left: 0,
+      top: 0,
+      width: sourceWidth,
+      height: sourceHeight,
+    };
+  } else {
+    // Pour les cartes/flyers, aucun pixel n'est supprimé : on recadre seulement
+    // le visuel dans son ensemble afin de préserver texte, fonds et identités.
+    bounds = contentBounds(originalData.data, sourceWidth, sourceHeight);
+  }
 
   const outputWidth = 560;
   const outputHeight = 380;
@@ -326,8 +386,10 @@ function renderSponsor(canvas: HTMLCanvasElement, image: HTMLImageElement, index
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
 
-  const maxWidth = outputWidth * 0.88;
-  const maxHeight = outputHeight * 0.82;
+  const widthRatio = mode === "poster" ? 0.91 : mode === "framed" ? 0.84 : 0.88;
+  const heightRatio = mode === "poster" ? 0.88 : mode === "framed" ? 0.80 : 0.82;
+  const maxWidth = outputWidth * widthRatio;
+  const maxHeight = outputHeight * heightRatio;
   const scale = Math.min(maxWidth / bounds.width, maxHeight / bounds.height);
   const drawWidth = bounds.width * scale;
   const drawHeight = bounds.height * scale;
@@ -358,6 +420,7 @@ export function SponsorVisual2026({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const accessibleLabel = label || SPONSORS_2026[index]?.name || "Partenaire Miss & Mister Dour 2026";
+  const mode = sponsorRenderMode(index);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -366,7 +429,7 @@ export function SponsorVisual2026({
 
     loadSprite()
       .then((image) => {
-        if (!cancelled && canvasRef.current) renderSponsor(canvasRef.current, image, index);
+        if (!cancelled && canvasRef.current) renderSponsor(canvasRef.current, image, index, mode);
       })
       .catch(() => {
         if (!cancelled && canvasRef.current) drawFallback(canvasRef.current, accessibleLabel);
@@ -375,13 +438,14 @@ export function SponsorVisual2026({
     return () => {
       cancelled = true;
     };
-  }, [index, accessibleLabel]);
+  }, [index, accessibleLabel, mode]);
 
   return (
     <canvas
       ref={canvasRef}
-      className={`mmd-sponsor-sprite mmd-sponsor-transparent ${className}`.trim()}
+      className={`mmd-sponsor-sprite mmd-sponsor-render mmd-sponsor-mode-${mode} ${className}`.trim()}
       data-sponsor-index={index}
+      data-sponsor-mode={mode}
       role="img"
       aria-label={accessibleLabel}
     />
