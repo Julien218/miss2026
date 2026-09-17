@@ -1,0 +1,310 @@
+/* Miss & Mister Dour — galerie partenaires premium 2027
+ * Direction validée : noir / brun / or, galerie 3D aérée et logos intacts.
+ * Ce fichier est chargé en dernier afin de neutraliser les anciens traitements
+ * visuels susceptibles d'altérer les blancs, couleurs ou proportions des logos.
+ */
+
+.mmd-sponsor-orbit-premium {
+  min-height: min(920px, calc(100svh - 82px));
+  background:
+    radial-gradient(circle at 50% 58%, rgba(213, 163, 80, 0.18), transparent 29%),
+    radial-gradient(circle at 50% 100%, rgba(177, 117, 49, 0.12), transparent 38%),
+    linear-gradient(180deg, #080604 0%, #070504 54%, #050403 100%);
+}
+
+.mmd-sponsor-orbit-premium::before {
+  opacity: 0.88;
+  background:
+    radial-gradient(circle at 50% 53%, rgba(225, 179, 100, 0.17), transparent 32%),
+    linear-gradient(90deg, rgba(234, 211, 165, 0.045) 1px, transparent 1px),
+    linear-gradient(rgba(234, 211, 165, 0.045) 1px, transparent 1px);
+  background-size: auto, 82px 82px, 82px 82px;
+}
+
+.mmd-sponsor-orbit-premium::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  bottom: -18%;
+  width: min(1050px, 92vw);
+  height: 42%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(207, 153, 70, 0.15), transparent 67%);
+  transform: translateX(-50%) perspective(700px) rotateX(62deg);
+  pointer-events: none;
+}
+
+/* Titre centré comme sur la direction visuelle validée. */
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy {
+  top: clamp(22px, 4.2vh, 48px);
+  left: 50%;
+  right: auto;
+  width: min(920px, calc(100vw - 190px));
+  max-width: none;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy::before {
+  inset: -24px -56px -30px;
+  border-radius: 36px;
+  background: radial-gradient(ellipse at center, rgba(8, 6, 5, 0.94) 0%, rgba(8, 6, 5, 0.72) 54%, transparent 78%);
+  backdrop-filter: blur(3px);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1 {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  color: #f3d99f;
+  font: 500 clamp(34px, 4.2vw, 64px)/1.02 "Playfair Display", Georgia, serif;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  text-shadow: 0 0 28px rgba(222, 176, 91, 0.16);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1::before,
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1::after {
+  content: "";
+  position: absolute;
+  top: 55%;
+  width: clamp(34px, 5vw, 82px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d6b15e);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1::before {
+  right: calc(100% + 24px);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1::after {
+  left: calc(100% + 24px);
+  transform: scaleX(-1);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy > span {
+  margin-top: 9px;
+  color: #d8bb78;
+  font-size: clamp(8px, 0.82vw, 11px);
+  font-weight: 650;
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-actions {
+  top: clamp(22px, 4vh, 46px);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-viewport {
+  perspective: 1280px;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-scene,
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero {
+  top: 57%;
+}
+
+/* Cartes secondaires plus horizontales, régulières et moins encombrées. */
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-card {
+  left: -94px;
+  top: -76px;
+  width: 188px;
+  height: 152px;
+  padding: 10px;
+  border: 1px solid rgba(236, 196, 122, 0.42) !important;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(229, 183, 105, 0.16), transparent 50%),
+    linear-gradient(145deg, rgba(49, 35, 24, 0.94), rgba(12, 8, 6, 0.985) 78%) !important;
+  box-shadow:
+    0 22px 58px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 0 20px rgba(220, 174, 90, 0.07) !important;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-card-media {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  display: grid !important;
+  place-items: center;
+  border: 1px solid rgba(236, 198, 129, 0.20);
+  border-radius: 10px;
+  background: rgba(9, 7, 5, 0.38) !important;
+  box-shadow: inset 0 0 28px rgba(235, 195, 120, 0.035) !important;
+}
+
+/* IMPORTANT : aucun blend mode / filtre colorimétrique sur les visuels. */
+.mmd-sponsor-orbit-premium .mmd-sponsor-render,
+.mmd-sponsor-orbit-premium .mmd-sponsor-sprite,
+.mmd-sponsor-orbit-premium .mmd-sponsor-master-verified {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background-color: transparent;
+  background-blend-mode: normal !important;
+  mix-blend-mode: normal !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Carte centrale mise en valeur, sans tronquer le nom. */
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero {
+  width: clamp(310px, 29vw, 430px) !important;
+  height: clamp(250px, 25vw, 332px) !important;
+  aspect-ratio: auto !important;
+  border-radius: 20px !important;
+  perspective: 1500px;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero-face {
+  padding: 14px;
+  border: 1px solid rgba(245, 207, 137, 0.86);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255, 226, 168, 0.21), transparent 48%),
+    linear-gradient(145deg, rgba(58, 41, 28, 0.99), rgba(14, 10, 7, 0.998) 82%);
+  box-shadow:
+    0 36px 100px rgba(0, 0, 0, 0.58),
+    0 0 0 6px rgba(234, 211, 165, 0.08),
+    0 0 48px rgba(224, 178, 94, 0.20);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero-inner {
+  min-height: 0;
+  padding: 5px;
+  border: 1px solid rgba(241, 204, 135, 0.22);
+  border-radius: 12px;
+  background: rgba(7, 5, 4, 0.42) !important;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 11px 10px 3px !important;
+  overflow: visible !important;
+  color: #f1d99f !important;
+  font: 600 clamp(12px, 1vw, 16px)/1.25 "Playfair Display", Georgia, serif !important;
+  letter-spacing: 0.025em;
+  text-align: center;
+  text-overflow: clip !important;
+  white-space: normal !important;
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hint {
+  bottom: 22px;
+  color: #e4c57e;
+  font-size: 8px;
+  letter-spacing: 0.31em;
+  text-shadow: 0 0 18px rgba(230, 190, 112, 0.22);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hint i {
+  width: 48px;
+  background: linear-gradient(90deg, transparent, currentColor);
+}
+
+.mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hint i:last-child {
+  transform: scaleX(-1);
+}
+
+@media (max-width: 760px) {
+  .mmd-sponsor-orbit-premium {
+    min-height: calc(100svh - 83px);
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy {
+    top: 18px;
+    left: 50%;
+    right: auto;
+    width: calc(100vw - 112px);
+    transform: translateX(-50%);
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1 {
+    font-size: clamp(24px, 7.2vw, 34px);
+    letter-spacing: 0.035em;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1::before,
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy h1::after {
+    display: none;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy > span {
+    margin-top: 6px;
+    font-size: 7px;
+    letter-spacing: 0.38em;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-actions {
+    top: 15px;
+    right: 10px;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-scene,
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero {
+    top: 57%;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-card {
+    left: -73px;
+    top: -60px;
+    width: 146px;
+    height: 120px;
+    padding: 7px;
+    border-radius: 11px;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero {
+    width: min(78vw, 318px) !important;
+    height: min(54vw, 246px) !important;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero-face {
+    padding: 9px;
+    border-radius: 15px;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero small {
+    min-height: 38px;
+    padding-top: 8px !important;
+    font-size: 10px !important;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hint {
+    bottom: max(14px, env(safe-area-inset-bottom));
+    gap: 8px;
+    font-size: 7px;
+    letter-spacing: 0.20em;
+  }
+
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hint i {
+    width: 22px;
+  }
+}
+
+@media (max-width: 430px) {
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-copy {
+    width: calc(100vw - 96px);
+  }
+  .mmd-sponsor-orbit-premium .mmd-sponsor-orbit-hero {
+    width: min(82vw, 300px) !important;
+    height: min(64vw, 238px) !important;
+  }
+}
