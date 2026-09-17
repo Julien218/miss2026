@@ -10,6 +10,8 @@ import { PublicSiteChrome } from "./components/PublicSiteChrome";
 import { InstallPWA } from "./components/InstallPWA";
 import { RegistrationContractDock } from "./components/RegistrationContractDock";
 import Login from "./pages/Login";
+import SponsorShowcase from "./pages/SponsorShowcase";
+import ContractShowcase from "./pages/ContractShowcase";
 import "./index.css";
 import "./editorial-2027.css";
 import "./editorial-2027-refinements.css";
@@ -32,6 +34,7 @@ import "./gallery-mobile-2027.css";
 import "./visual-tuning-2027.css";
 import "./final-polish-2027.css";
 import "./sponsor-transparent-2027.css";
+import "./showcase-2027.css";
 
 const queryClient = new QueryClient();
 const redirectToLoginIfUnauthorized = (error: unknown) => {
@@ -43,11 +46,23 @@ queryClient.getQueryCache().subscribe(event => { if (event.type === "updated" &&
 queryClient.getMutationCache().subscribe(event => { if (event.type === "updated" && event.action.type === "error") redirectToLoginIfUnauthorized(event.mutation.state.error); });
 const trpcClient = trpc.createClient({ links: [httpBatchLink({ url: "/api/trpc", transformer: superjson, fetch(input, init) { return globalThis.fetch(input, { ...(init ?? {}), credentials: "include" }); } })] });
 const PUBLIC_CHROME_PREFIXES = ["/about","/press","/sponsors","/contact","/legal/","/mentions-legales","/ranking","/gallery","/candidates","/candidat/","/public","/article/","/inscription","/inscription-candidat","/inscription-merci","/onboarding/candidate/","/invite/","/invitation/","/verify/","/profile/edit/"];
+
 function RootExperience() {
   const path = window.location.pathname;
+  const host = window.location.hostname.toLowerCase();
+
+  // Présentations autonomes destinées aux clients/partenaires.
+  if (host === "sponsors.missetmisterdour.be" || path === "/showcase/sponsors") {
+    return <><SponsorShowcase /><InstallPWA /></>;
+  }
+  if (host === "contrat.missetmisterdour.be" || path === "/showcase/contrat") {
+    return <><ContractShowcase /><InstallPWA /></>;
+  }
+
   if (path === "/login") return <Login />;
   const usePublicChrome = path !== "/" && PUBLIC_CHROME_PREFIXES.some(prefix => path.startsWith(prefix));
   return <>{usePublicChrome ? <PublicSiteChrome><App /></PublicSiteChrome> : <App />}<InstallPWA /><RegistrationContractDock /></>;
 }
+
 createRoot(document.getElementById("root")!).render(<trpc.Provider client={trpcClient} queryClient={queryClient}><QueryClientProvider client={queryClient}><RootExperience /></QueryClientProvider></trpc.Provider>);
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(error => console.warn('[PWA] Service worker non enregistré', error)));
