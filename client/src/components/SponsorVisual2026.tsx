@@ -66,8 +66,6 @@ export const SPONSORS_2026: Sponsor2026[] = [
  * - transparent   : vrais logos simples, détourage très conservateur ;
  * - framed-light  : logos fins/sombres conservés intacts sur verre champagne ;
  * - poster        : publicité, carte commerciale ou flyer, jamais détouré.
- *
- * La carte active de l'orbite reçoit en plus un traitement hero via CSS.
  */
 const FRAMED_LIGHT_SPONSORS = new Set([
   0, 2, 3, 6, 8, 9, 10, 11, 12, 14, 18, 19, 20, 23, 28,
@@ -205,7 +203,6 @@ function conservativeTransparentBackground(imageData: ImageData, width: number, 
 
   const pushSeed = (index: number) => {
     if (visited[index]) return;
-    // Très strict : ne retire que le fond réellement proche de la couleur du bord.
     if (distanceToClusters(data, index, clusters) > 20) return;
     visited[index] = 1;
     queue[tail++] = index;
@@ -241,13 +238,12 @@ function conservativeTransparentBackground(imageData: ImageData, width: number, 
     if (visited[index]) data[index * 4 + 3] = 0;
   }
 
-  // Une lisière très fine, afin de conserver les lettres blanches et les traits fins.
+  // Lisière très fine : on protège les lettres blanches et les traits fins.
   for (let y = 1; y < height - 1; y += 1) {
     for (let x = 1; x < width - 1; x += 1) {
       const index = y * width + x;
       if (visited[index]) continue;
-      const touchesTransparent =
-        visited[index - 1] || visited[index + 1] || visited[index - width] || visited[index + width];
+      const touchesTransparent = visited[index - 1] || visited[index + 1] || visited[index - width] || visited[index + width];
       if (!touchesTransparent) continue;
       const distance = distanceToClusters(data, index, clusters);
       if (distance < 39) {
@@ -313,27 +309,38 @@ function contentBounds(data: Uint8ClampedArray, width: number, height: number): 
   return { left, top, width: right - left + 1, height: bottom - top + 1 };
 }
 
+function outputSize(bounds: Bounds) {
+  const aspect = Math.max(0.55, Math.min(2.5, bounds.width / Math.max(1, bounds.height)));
+
+  if (aspect > 1.12) {
+    const width = 560;
+    const height = Math.max(250, Math.round(width / aspect));
+    return { width, height };
+  }
+
+  if (aspect < 0.88) {
+    const height = 520;
+    const width = Math.max(270, Math.round(height * aspect));
+    return { width, height };
+  }
+
+  return { width: 470, height: 470 };
+}
+
 function drawFallback(canvas: HTMLCanvasElement, label: string) {
-  const width = 560;
-  const height = 380;
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = 470;
+  canvas.height = 330;
   const context = canvas.getContext("2d");
   if (!context) return;
-  context.clearRect(0, 0, width, height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   context.textAlign = "center";
   context.textBaseline = "middle";
   context.fillStyle = "#ead3a5";
   context.font = "600 26px Georgia, serif";
-  context.fillText(label, width / 2, height / 2, width * 0.82);
+  context.fillText(label, canvas.width / 2, canvas.height / 2, canvas.width * 0.82);
 }
 
-function renderSponsor(
-  canvas: HTMLCanvasElement,
-  image: HTMLImageElement,
-  index: number,
-  mode: SponsorRenderMode,
-) {
+function renderSponsor(canvas: HTMLCanvasElement, image: HTMLImageElement, index: number, mode: SponsorRenderMode) {
   const sourceWidth = Math.floor(image.naturalWidth / SPRITE_COLUMNS);
   const sourceHeight = Math.floor(image.naturalHeight / SPRITE_ROWS);
   const sourceX = (index % SPRITE_COLUMNS) * sourceWidth;
@@ -346,17 +353,7 @@ function renderSponsor(
   if (!workingContext) return;
 
   workingContext.clearRect(0, 0, sourceWidth, sourceHeight);
-  workingContext.drawImage(
-    image,
-    sourceX,
-    sourceY,
-    sourceWidth,
-    sourceHeight,
-    0,
-    0,
-    sourceWidth,
-    sourceHeight,
-  );
+  workingContext.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
 
   const originalData = workingContext.getImageData(0, 0, sourceWidth, sourceHeight);
   let bounds: Bounds;
@@ -364,59 +361,37 @@ function renderSponsor(
   if (mode === "transparent") {
     const cleaned = conservativeTransparentBackground(originalData, sourceWidth, sourceHeight);
     workingContext.putImageData(cleaned, 0, 0);
-    bounds = visibleBounds(cleaned.data, sourceWidth, sourceHeight) || {
-      left: 0,
-      top: 0,
-      width: sourceWidth,
-      height: sourceHeight,
-    };
+    bounds = visibleBounds(cleaned.data, sourceWidth, sourceHeight) || { left: 0, top: 0, width: sourceWidth, height: sourceHeight };
   } else {
-    // Framed-light et poster conservent tous les pixels de la création d'origine.
+    // On garde tous les pixels du visuel. Seule la marge uniforme du sprite est recadrée.
     bounds = contentBounds(originalData.data, sourceWidth, sourceHeight);
   }
 
-  const outputWidth = 560;
-  const outputHeight = 380;
-  canvas.width = outputWidth;
-  canvas.height = outputHeight;
+  const size = outputSize(bounds);
+  canvas.width = size.width;
+  canvas.height = size.height;
+  canvas.dataset.sponsorAspect = String(bounds.width / Math.max(1, bounds.height));
+
   const context = canvas.getContext("2d");
   if (!context) return;
-  context.clearRect(0, 0, outputWidth, outputHeight);
+  context.clearRect(0, 0, size.width, size.height);
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
 
-  const widthRatio = mode === "poster" ? 0.93 : mode === "framed-light" ? 0.89 : 0.92;
-  const heightRatio = mode === "poster" ? 0.90 : mode === "framed-light" ? 0.86 : 0.87;
-  const maxWidth = outputWidth * widthRatio;
-  const maxHeight = outputHeight * heightRatio;
+  const widthRatio = mode === "poster" ? 0.96 : mode === "framed-light" ? 0.92 : 0.94;
+  const heightRatio = mode === "poster" ? 0.95 : mode === "framed-light" ? 0.91 : 0.92;
+  const maxWidth = size.width * widthRatio;
+  const maxHeight = size.height * heightRatio;
   const scale = Math.min(maxWidth / bounds.width, maxHeight / bounds.height);
   const drawWidth = bounds.width * scale;
   const drawHeight = bounds.height * scale;
-  const drawX = (outputWidth - drawWidth) / 2;
-  const drawY = (outputHeight - drawHeight) / 2;
+  const drawX = (size.width - drawWidth) / 2;
+  const drawY = (size.height - drawHeight) / 2;
 
-  context.drawImage(
-    working,
-    bounds.left,
-    bounds.top,
-    bounds.width,
-    bounds.height,
-    drawX,
-    drawY,
-    drawWidth,
-    drawHeight,
-  );
+  context.drawImage(working, bounds.left, bounds.top, bounds.width, bounds.height, drawX, drawY, drawWidth, drawHeight);
 }
 
-export function SponsorVisual2026({
-  index,
-  label,
-  className = "",
-}: {
-  index: number;
-  label?: string;
-  className?: string;
-}) {
+export function SponsorVisual2026({ index, label, className = "" }: { index: number; label?: string; className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const accessibleLabel = label || SPONSORS_2026[index]?.name || "Partenaire Miss & Mister Dour 2026";
   const mode = sponsorRenderMode(index);
