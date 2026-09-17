@@ -1,17 +1,18 @@
-/* Miss & Mister Dour 2027 — sponsors : équilibre lisibilité / transparence.
+/* Miss & Mister Dour 2027 — rendu sponsors final.
+ * Les canvases suivent désormais le ratio réel du contenu recadré.
  * transparent  : vrai logo, détourage conservateur.
- * framed-light : logo fin/sombre conservé intact sur verre champagne.
+ * framed-light : logo sombre/fin intact sur verre champagne.
  * poster       : publicité / carte commerciale / flyer intact.
- * hero         : la carte active s'adapte au ratio réel et se retourne en 3D.
  */
 
 canvas.mmd-sponsor-render {
   display: block;
-  width: 100%;
+  width: auto;
   height: auto;
-  aspect-ratio: 140 / 95;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: auto !important;
   box-sizing: border-box;
-  object-fit: contain;
   background-image: none !important;
   background-blend-mode: normal !important;
   mix-blend-mode: normal !important;
@@ -23,9 +24,7 @@ canvas.mmd-sponsor-render {
     background 0.34s ease;
 }
 
-/* --------------------------------------------------------------------------
-   MODE 1 — transparence réelle
-   -------------------------------------------------------------------------- */
+/* MODE 1 — transparence réelle */
 .mmd-sponsor-mode-transparent {
   background: transparent !important;
   border: 0 !important;
@@ -39,9 +38,7 @@ canvas.mmd-sponsor-render {
     drop-shadow(0 0 9px rgba(232, 197, 133, 0.14)) !important;
 }
 
-/* --------------------------------------------------------------------------
-   MODE 2 — verre champagne clair pour logos fins / sombres
-   -------------------------------------------------------------------------- */
+/* MODE 2 — verre champagne clair pour logos fins / sombres */
 .mmd-sponsor-mode-framed-light {
   padding: 8px;
   border: 1px solid rgba(238, 205, 145, 0.34) !important;
@@ -60,7 +57,7 @@ canvas.mmd-sponsor-render {
     saturate(1.03) !important;
 }
 
-/* Belfius, Beobank, P&V, La Perla et FerrBatir : encore un cran de lisibilité. */
+/* Belfius, Beobank, P&V, La Perla et FerrBatir : lisibilité renforcée. */
 .mmd-sponsor-render[data-sponsor-index="0"],
 .mmd-sponsor-render[data-sponsor-index="3"],
 .mmd-sponsor-render[data-sponsor-index="6"],
@@ -73,9 +70,7 @@ canvas.mmd-sponsor-render {
     drop-shadow(0 0 8px rgba(255, 226, 168, 0.08)) !important;
 }
 
-/* --------------------------------------------------------------------------
-   MODE 3 — mini-affiche / publicité intacte
-   -------------------------------------------------------------------------- */
+/* MODE 3 — mini-affiche / publicité intacte */
 .mmd-sponsor-mode-poster {
   padding: 5px;
   border: 1px solid rgba(234, 211, 165, 0.30) !important;
@@ -89,48 +84,46 @@ canvas.mmd-sponsor-render {
   filter: brightness(1.06) contrast(1.04) !important;
 }
 
-/* --------------------------------------------------------------------------
-   ORBITE — cartes plus lumineuses et meilleure hiérarchie
-   -------------------------------------------------------------------------- */
+/* ORBITE */
 .mmd-sponsor-orbit-card-media,
 .mmd-sponsor-orbit-hero-inner {
-  overflow: visible !important;
+  display: grid !important;
+  place-items: center;
+  overflow: hidden !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
 .mmd-sponsor-orbit-card-media .mmd-sponsor-render {
-  width: 100% !important;
+  width: auto !important;
   height: auto !important;
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 100% !important;
+  max-height: 100% !important;
 }
 
 .mmd-sponsor-orbit-card {
   background:
-    radial-gradient(circle at 50% 39%, rgba(235, 194, 122, 0.16), transparent 50%),
-    linear-gradient(155deg, rgba(49, 37, 27, 0.93), rgba(13, 9, 7, 0.97) 76%) !important;
-  border-color: rgba(237, 201, 136, 0.34) !important;
+    radial-gradient(circle at 50% 39%, rgba(235, 194, 122, 0.18), transparent 50%),
+    linear-gradient(155deg, rgba(52, 39, 28, 0.94), rgba(13, 9, 7, 0.97) 76%) !important;
+  border-color: rgba(237, 201, 136, 0.37) !important;
   box-shadow:
     0 20px 56px rgba(0, 0, 0, 0.43),
-    inset 0 1px rgba(255, 255, 255, 0.045),
-    0 0 20px rgba(215, 174, 105, 0.055) !important;
+    inset 0 1px rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(215, 174, 105, 0.07) !important;
   backdrop-filter: blur(9px);
 }
 
 .mmd-sponsor-orbit-card:hover {
-  border-color: rgba(247, 215, 155, 0.58) !important;
+  border-color: rgba(247, 215, 155, 0.62) !important;
   box-shadow:
     0 26px 66px rgba(0, 0, 0, 0.48),
-    0 0 28px rgba(222, 181, 106, 0.12) !important;
+    0 0 30px rgba(222, 181, 106, 0.14) !important;
 }
 
-/* --------------------------------------------------------------------------
-   HERO — carte centrale adaptative + flip 3D
-   -------------------------------------------------------------------------- */
+/* HERO — géométrie réellement adaptative */
 .mmd-sponsor-orbit-hero {
-  width: var(--mmd-hero-width, 224px) !important;
-  height: calc(var(--mmd-hero-media-height, 190px) + 58px) !important;
+  width: var(--mmd-hero-width, 230px) !important;
+  height: calc(var(--mmd-hero-media-height, 205px) + 58px) !important;
   aspect-ratio: auto !important;
   display: block !important;
   padding: 0 !important;
@@ -138,15 +131,15 @@ canvas.mmd-sponsor-render {
   border-radius: 16px !important;
   background: transparent !important;
   box-shadow: none !important;
-  perspective: 1250px;
+  perspective: 1400px;
   transition:
-    width 0.52s cubic-bezier(0.2, 0.8, 0.2, 1),
-    height 0.52s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.46s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.46s cubic-bezier(0.2, 0.8, 0.2, 1),
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 .mmd-sponsor-orbit-hero:hover {
-  transform: translate(-50%, -50%) scale(1.022) !important;
+  transform: translate(-50%, -50%) scale(1.025) !important;
 }
 
 .mmd-sponsor-orbit-hero-flipper {
@@ -155,12 +148,20 @@ canvas.mmd-sponsor-render {
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transform: rotateY(0deg);
-  transition: transform 0.76s cubic-bezier(0.22, 0.72, 0.18, 1);
+  transform-origin: center;
 }
 
 .mmd-sponsor-orbit-hero.is-flipping .mmd-sponsor-orbit-hero-flipper {
-  transform: rotateY(180deg);
+  animation: mmdSponsorHeroFlip 0.84s cubic-bezier(0.22, 0.72, 0.18, 1) both;
+}
+
+@keyframes mmdSponsorHeroFlip {
+  0% { transform: rotateY(0deg) scale(1); }
+  45% { transform: rotateY(88deg) scale(0.965); }
+  50% { transform: rotateY(90deg) scale(0.96); }
+  51% { transform: rotateY(-90deg) scale(0.96); }
+  56% { transform: rotateY(-82deg) scale(0.968); }
+  100% { transform: rotateY(0deg) scale(1); }
 }
 
 .mmd-sponsor-orbit-hero-face {
@@ -172,28 +173,24 @@ canvas.mmd-sponsor-render {
   justify-content: space-between;
   padding: 11px;
   overflow: hidden;
-  border: 1px solid rgba(241, 202, 132, 0.74);
+  border: 1px solid rgba(241, 202, 132, 0.76);
   border-radius: 13px;
   background:
-    radial-gradient(circle at 50% 34%, rgba(255, 224, 164, 0.23), transparent 52%),
-    linear-gradient(155deg, rgba(57, 40, 27, 0.98), rgba(16, 11, 8, 0.99));
+    radial-gradient(circle at 50% 32%, rgba(255, 229, 176, 0.28), transparent 54%),
+    linear-gradient(155deg, rgba(62, 44, 29, 0.985), rgba(16, 11, 8, 0.995));
   box-shadow:
     0 34px 92px rgba(0, 0, 0, 0.50),
     0 0 0 6px rgba(234, 211, 165, 0.10),
-    0 0 40px rgba(222, 177, 95, 0.16);
+    0 0 44px rgba(222, 177, 95, 0.18);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-}
-
-.mmd-sponsor-orbit-hero-face--back {
-  transform: rotateY(180deg);
 }
 
 .mmd-sponsor-orbit-hero.is-flipping .mmd-sponsor-orbit-hero-face {
   box-shadow:
     0 38px 100px rgba(0, 0, 0, 0.54),
-    0 0 0 6px rgba(234, 211, 165, 0.12),
-    0 0 58px rgba(232, 188, 106, 0.28);
+    0 0 0 7px rgba(234, 211, 165, 0.13),
+    0 0 64px rgba(232, 188, 106, 0.34);
 }
 
 .mmd-sponsor-orbit-hero-inner {
@@ -202,25 +199,24 @@ canvas.mmd-sponsor-render {
   flex: 1;
   display: grid !important;
   place-items: center;
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
-/* Le canvas conserve son propre ratio : aucune déformation du logo ou du poster. */
+/* Le canvas conserve exactement le ratio du logo / poster rendu. */
 .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
   width: auto !important;
   height: auto !important;
   max-width: 100% !important;
   max-height: 100% !important;
   margin: auto;
-  transform: scale(1.02);
-  transform-origin: center;
+  transform: none !important;
 }
 
 .mmd-sponsor-orbit-hero-inner .mmd-sponsor-mode-framed-light {
   background:
-    radial-gradient(circle at 50% 30%, rgba(255, 246, 224, 0.34), transparent 56%),
-    linear-gradient(150deg, rgba(112, 87, 61, 0.42), rgba(55, 40, 28, 0.52)) !important;
-  border-color: rgba(249, 218, 160, 0.50) !important;
+    radial-gradient(circle at 50% 30%, rgba(255, 246, 224, 0.39), transparent 56%),
+    linear-gradient(150deg, rgba(118, 91, 62, 0.46), rgba(55, 40, 28, 0.56)) !important;
+  border-color: rgba(249, 218, 160, 0.54) !important;
 }
 
 .mmd-sponsor-orbit-hero small {
@@ -230,10 +226,7 @@ canvas.mmd-sponsor-render {
   padding: 11px 7px 2px !important;
   overflow: hidden;
   color: #f6dfad !important;
-  font:
-    600 11px/1.25 "Playfair Display",
-    Georgia,
-    serif !important;
+  font: 600 11px/1.25 "Playfair Display", Georgia, serif !important;
   letter-spacing: 0.035em;
   text-align: center;
   text-overflow: ellipsis;
@@ -255,21 +248,21 @@ canvas.mmd-sponsor-render {
 .mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-framed-light,
 .mmd-sponsor-orbit-card:hover .mmd-sponsor-mode-poster,
 .mmd-sponsor-orbit-hero:hover .mmd-sponsor-mode-poster {
-  border-color: rgba(246, 216, 159, 0.54) !important;
+  border-color: rgba(246, 216, 159, 0.56) !important;
   box-shadow:
     0 18px 38px rgba(0, 0, 0, 0.39),
-    0 0 22px rgba(224, 182, 105, 0.14) !important;
+    0 0 22px rgba(224, 182, 105, 0.16) !important;
 }
 
-/* --------------------------------------------------------------------------
-   HOMEPAGE — logos plus grands et équilibrés
-   -------------------------------------------------------------------------- */
+/* HOMEPAGE */
 .mmd-home-sponsor-preview .mmd-sponsor-render {
   position: relative;
   z-index: 2;
-  width: min(100%, 260px);
-  min-height: 0;
-  aspect-ratio: 140 / 95;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 260px);
+  max-height: 78%;
+  aspect-ratio: auto !important;
   transform: translateZ(14px) scale(1);
 }
 
@@ -277,71 +270,37 @@ canvas.mmd-sponsor-render {
   transform: translateZ(40px) scale(1.04);
 }
 
-/* Carte principale Belfius */
-.mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-render {
-  width: 100%;
-  max-width: 390px;
-}
+.mmd-home-sponsor-preview > div:nth-child(1) .mmd-sponsor-render { max-width: 390px; }
+.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-render { max-width: 232px; }
+.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-render { max-width: 208px; }
+.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-render { max-width: 258px; }
+.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-render { max-width: 254px; }
+.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-render { max-width: 208px; }
+.mmd-home-sponsor-preview .mmd-sponsor-mode-poster { max-width: 270px; }
 
-/* Beobank */
-.mmd-home-sponsor-preview > div:nth-child(2) .mmd-sponsor-render {
-  width: min(100%, 232px);
-}
-
-/* Fun Zone */
-.mmd-home-sponsor-preview > div:nth-child(3) .mmd-sponsor-render {
-  width: min(100%, 208px);
-}
-
-/* Dour Matériaux */
-.mmd-home-sponsor-preview > div:nth-child(4) .mmd-sponsor-render {
-  width: min(100%, 258px);
-}
-
-/* La Perla */
-.mmd-home-sponsor-preview > div:nth-child(5) .mmd-sponsor-render {
-  width: min(100%, 254px);
-}
-
-/* PubliDesign / carte verte */
-.mmd-home-sponsor-preview > div:nth-child(6) .mmd-sponsor-render {
-  width: min(100%, 208px);
-}
-
-.mmd-home-sponsor-preview .mmd-sponsor-mode-poster {
-  width: min(100%, 270px);
-}
-
-/* Les cartes de homepage gagnent un peu de lumière sans redevenir blanches. */
 .mmd-home-sponsor-preview > div {
   background:
-    radial-gradient(circle at 50% 16%, rgba(255, 225, 169, 0.24), transparent 44%),
-    linear-gradient(148deg, rgba(70, 51, 34, 0.96), rgba(19, 13, 9, 0.99) 78%) !important;
-  border-color: rgba(240, 202, 134, 0.58) !important;
+    radial-gradient(circle at 50% 16%, rgba(255, 225, 169, 0.26), transparent 44%),
+    linear-gradient(148deg, rgba(72, 53, 36, 0.97), rgba(19, 13, 9, 0.99) 78%) !important;
+  border-color: rgba(240, 202, 134, 0.60) !important;
 }
 
 .mmd-home-sponsor-preview > div:hover {
   background:
-    radial-gradient(circle at 50% 14%, rgba(255, 232, 184, 0.31), transparent 46%),
-    linear-gradient(148deg, rgba(80, 58, 38, 0.99), rgba(20, 14, 10, 0.995) 78%) !important;
+    radial-gradient(circle at 50% 14%, rgba(255, 232, 184, 0.33), transparent 46%),
+    linear-gradient(148deg, rgba(82, 60, 39, 0.99), rgba(20, 14, 10, 0.995) 78%) !important;
 }
 
 @media (max-width: 720px) {
-  .mmd-sponsor-orbit-card-media .mmd-sponsor-render {
-    max-width: 100%;
-  }
-
   .mmd-sponsor-mode-framed-light { padding: 6px; }
   .mmd-sponsor-mode-poster { padding: 4px; }
 
   .mmd-sponsor-orbit-hero {
-    width: min(var(--mmd-hero-width, 208px), 43vw) !important;
-    height: min(calc(var(--mmd-hero-media-height, 180px) + 54px), 42vh) !important;
+    width: min(var(--mmd-hero-width, 208px), 58vw) !important;
+    height: min(calc(var(--mmd-hero-media-height, 180px) + 54px), 48vh) !important;
   }
 
-  .mmd-sponsor-orbit-hero-face {
-    padding: 8px;
-  }
+  .mmd-sponsor-orbit-hero-face { padding: 8px; }
 
   .mmd-sponsor-orbit-hero small {
     min-height: 32px;
@@ -352,9 +311,12 @@ canvas.mmd-sponsor-render {
 
 @media (prefers-reduced-motion: reduce) {
   .mmd-sponsor-render,
-  .mmd-sponsor-orbit-hero,
-  .mmd-sponsor-orbit-hero-flipper {
+  .mmd-sponsor-orbit-hero {
     transition: none !important;
+  }
+
+  .mmd-sponsor-orbit-hero.is-flipping .mmd-sponsor-orbit-hero-flipper {
+    animation: none !important;
   }
 
   .mmd-home-sponsor-preview > div:hover .mmd-sponsor-render {
