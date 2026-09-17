@@ -2,54 +2,25 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Poin
 import { Info, Pause, Play, X } from "lucide-react";
 import { SPONSORS_2026, SponsorVisual2026 } from "@/components/SponsorVisual2026";
 
-type HeroPhase = "idle" | "preparing" | "flipping";
 type HeroMetrics = { width: number; mediaHeight: number };
-
 type HeroStyle = CSSProperties & {
   "--mmd-hero-width": string;
   "--mmd-hero-media-height": string;
 };
 
-const DEFAULT_HERO_METRICS: HeroMetrics = { width: 224, mediaHeight: 190 };
+const DEFAULT_HERO_METRICS: HeroMetrics = { width: 230, mediaHeight: 205 };
 
 function measureSponsorCanvas(container: HTMLSpanElement | null): HeroMetrics {
   const canvas = container?.querySelector("canvas");
   if (!canvas || !canvas.width || !canvas.height) return DEFAULT_HERO_METRICS;
 
-  try {
-    const context = canvas.getContext("2d", { willReadFrequently: true });
-    if (!context) return DEFAULT_HERO_METRICS;
-    const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
-    let left = canvas.width;
-    let right = -1;
-    let top = canvas.height;
-    let bottom = -1;
-
-    for (let y = 0; y < canvas.height; y += 2) {
-      for (let x = 0; x < canvas.width; x += 2) {
-        const alpha = data[(y * canvas.width + x) * 4 + 3];
-        if (alpha < 18) continue;
-        left = Math.min(left, x);
-        right = Math.max(right, x);
-        top = Math.min(top, y);
-        bottom = Math.max(bottom, y);
-      }
-    }
-
-    if (right <= left || bottom <= top) return DEFAULT_HERO_METRICS;
-
-    const contentWidth = right - left + 1;
-    const contentHeight = bottom - top + 1;
-    const aspect = contentWidth / contentHeight;
-
-    if (aspect >= 1.75) return { width: 286, mediaHeight: 174 };
-    if (aspect >= 1.25) return { width: 258, mediaHeight: 188 };
-    if (aspect <= 0.72) return { width: 190, mediaHeight: 268 };
-    if (aspect <= 0.95) return { width: 208, mediaHeight: 244 };
-    return { width: 228, mediaHeight: 216 };
-  } catch {
-    return DEFAULT_HERO_METRICS;
-  }
+  const ratio = canvas.width / canvas.height;
+  if (ratio >= 1.9) return { width: 318, mediaHeight: 168 };
+  if (ratio >= 1.45) return { width: 286, mediaHeight: 188 };
+  if (ratio >= 1.12) return { width: 258, mediaHeight: 206 };
+  if (ratio <= 0.72) return { width: 188, mediaHeight: 286 };
+  if (ratio <= 0.9) return { width: 208, mediaHeight: 258 };
+  return { width: 238, mediaHeight: 230 };
 }
 
 export function SponsorOrbit2027() {
@@ -58,16 +29,27 @@ export function SponsorOrbit2027() {
   const angleRef = useRef(0);
   const dropRef = useRef(0);
   const velocityRef = useRef(0.018);
-  const backMediaRef = useRef<HTMLSpanElement | null>(null);
-  const frontMediaRef = useRef<HTMLSpanElement | null>(null);
-  const flipTimerRef = useRef<number | null>(null);
-  const prepareRafRef = useRef<number | null>(null);
+  const heroMediaRef = useRef<HTMLSpanElement | null>(null);
+  const swapTimerRef = useRef<number | null>(null);
+  const finishTimerRef = useRef<number | null>(null);
+  const measureRafRef = useRef<number | null>(null);
+
   const [paused, setPaused] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [incomingIndex, setIncomingIndex] = useState(1);
-  const [heroPhase, setHeroPhase] = useState<HeroPhase>("idle");
+  const [isFlipping, setIsFlipping] = useState(false);
   const [heroMetrics, setHeroMetrics] = useState<HeroMetrics>(DEFAULT_HERO_METRICS);
+
+  const measureHero = useCallback(() => {
+    if (measureRafRef.current) window.cancelAnimationFrame(measureRafRef.current);
+    const first = window.requestAnimationFrame(() => {
+      const second = window.requestAnimationFrame(() => {
+        setHeroMetrics(measureSponsorCanvas(heroMediaRef.current));
+      });
+      measureRafRef.current = second;
+    });
+    measureRafRef.current = first;
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -111,6 +93,7 @@ export function SponsorOrbit2027() {
         card.style.opacity = `${Math.max(0, Math.min(1, opacity))}`;
         card.style.visibility = opacity <= 0 ? "hidden" : "visible";
       });
+
       frame = requestAnimationFrame(animate);
     };
 
@@ -119,73 +102,43 @@ export function SponsorOrbit2027() {
   }, [paused]);
 
   useEffect(() => {
-    const first = window.requestAnimationFrame(() => {
-      const second = window.requestAnimationFrame(() => {
-        setHeroMetrics(measureSponsorCanvas(frontMediaRef.current));
-      });
-      prepareRafRef.current = second;
-    });
-    prepareRafRef.current = first;
-    return () => {
-      if (prepareRafRef.current) window.cancelAnimationFrame(prepareRafRef.current);
-    };
-  }, []);
+    measureHero();
+  }, [focusedIndex, measureHero]);
 
   const requestNextSponsor = useCallback(() => {
-    if (heroPhase !== "idle") return;
+    if (isFlipping) return;
     const next = (focusedIndex + 1) % SPONSORS_2026.length;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduceMotion) {
       setFocusedIndex(next);
-      setIncomingIndex((next + 1) % SPONSORS_2026.length);
-      window.requestAnimationFrame(() => {
-        setHeroMetrics(measureSponsorCanvas(frontMediaRef.current));
-      });
       return;
     }
 
-    setIncomingIndex(next);
-    setHeroPhase("preparing");
-  }, [focusedIndex, heroPhase]);
+    setIsFlipping(true);
+    if (swapTimerRef.current) window.clearTimeout(swapTimerRef.current);
+    if (finishTimerRef.current) window.clearTimeout(finishTimerRef.current);
+
+    // À mi-rotation la carte est de profil : on remplace le contenu sans flash.
+    swapTimerRef.current = window.setTimeout(() => {
+      setFocusedIndex(next);
+    }, 410);
+
+    finishTimerRef.current = window.setTimeout(() => {
+      setIsFlipping(false);
+    }, 840);
+  }, [focusedIndex, isFlipping]);
 
   useEffect(() => {
-    if (heroPhase !== "preparing") return;
-
-    const first = window.requestAnimationFrame(() => {
-      const second = window.requestAnimationFrame(() => {
-        setHeroMetrics(measureSponsorCanvas(backMediaRef.current));
-        setHeroPhase("flipping");
-
-        if (flipTimerRef.current) window.clearTimeout(flipTimerRef.current);
-        flipTimerRef.current = window.setTimeout(() => {
-          setFocusedIndex(incomingIndex);
-          setHeroPhase("idle");
-        }, 760);
-      });
-      prepareRafRef.current = second;
-    });
-    prepareRafRef.current = first;
-
-    return () => {
-      if (prepareRafRef.current) window.cancelAnimationFrame(prepareRafRef.current);
-    };
-  }, [heroPhase, incomingIndex]);
-
-  useEffect(() => {
-    if (heroPhase !== "idle") return;
-    setIncomingIndex((focusedIndex + 1) % SPONSORS_2026.length);
-  }, [focusedIndex, heroPhase]);
-
-  useEffect(() => {
-    if (paused || heroPhase !== "idle") return;
-    const timer = window.setInterval(requestNextSponsor, 2800);
+    if (paused || isFlipping) return;
+    const timer = window.setInterval(requestNextSponsor, 3300);
     return () => window.clearInterval(timer);
-  }, [paused, heroPhase, requestNextSponsor]);
+  }, [paused, isFlipping, requestNextSponsor]);
 
   useEffect(() => () => {
-    if (flipTimerRef.current) window.clearTimeout(flipTimerRef.current);
-    if (prepareRafRef.current) window.cancelAnimationFrame(prepareRafRef.current);
+    if (swapTimerRef.current) window.clearTimeout(swapTimerRef.current);
+    if (finishTimerRef.current) window.clearTimeout(finishTimerRef.current);
+    if (measureRafRef.current) window.cancelAnimationFrame(measureRafRef.current);
   }, []);
 
   const startDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -208,7 +161,6 @@ export function SponsorOrbit2027() {
   };
 
   const focusedSponsor = SPONSORS_2026[focusedIndex];
-  const incomingSponsor = SPONSORS_2026[incomingIndex];
   const heroStyle: HeroStyle = {
     "--mmd-hero-width": `${heroMetrics.width}px`,
     "--mmd-hero-media-height": `${heroMetrics.mediaHeight}px`,
@@ -254,25 +206,18 @@ export function SponsorOrbit2027() {
         </div>
 
         <button
-          className={`mmd-sponsor-orbit-hero ${heroPhase === "flipping" ? "is-flipping" : ""}`}
+          className={`mmd-sponsor-orbit-hero${isFlipping ? " is-flipping" : ""}`}
           style={heroStyle}
           type="button"
           onClick={requestNextSponsor}
           aria-label={`${focusedSponsor.name}. Afficher le partenaire suivant.`}
         >
           <span className="mmd-sponsor-orbit-hero-flipper">
-            <span className="mmd-sponsor-orbit-hero-face mmd-sponsor-orbit-hero-face--front">
-              <span className="mmd-sponsor-orbit-hero-inner" ref={frontMediaRef}>
-                <SponsorVisual2026 key={`front-${focusedSponsor.index}`} index={focusedSponsor.index} label={focusedSponsor.name} />
+            <span className="mmd-sponsor-orbit-hero-face">
+              <span className="mmd-sponsor-orbit-hero-inner" ref={heroMediaRef}>
+                <SponsorVisual2026 key={focusedSponsor.index} index={focusedSponsor.index} label={focusedSponsor.name} />
               </span>
               <small>{focusedSponsor.name}</small>
-            </span>
-
-            <span className="mmd-sponsor-orbit-hero-face mmd-sponsor-orbit-hero-face--back" aria-hidden={heroPhase === "idle"}>
-              <span className="mmd-sponsor-orbit-hero-inner" ref={backMediaRef}>
-                <SponsorVisual2026 key={`back-${incomingSponsor.index}`} index={incomingSponsor.index} label={incomingSponsor.name} />
-              </span>
-              <small>{incomingSponsor.name}</small>
             </span>
           </span>
         </button>
