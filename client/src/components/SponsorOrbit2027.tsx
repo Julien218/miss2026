@@ -145,7 +145,8 @@ export function SponsorOrbit2027() {
     }
   };
 
-  const focusedSponsor = SPONSORS_2026[focusedIndex];\n  const heroStyle = heroGeometry(focusedSponsor.aspect);
+  const focusedSponsor = SPONSORS_2026[focusedIndex];
+  const heroStyle = heroGeometry(focusedSponsor.aspect);
 
   return (
     <section className="mmd-sponsor-orbit mmd-sponsor-orbit-premium" aria-labelledby="sponsor-orbit-title">
