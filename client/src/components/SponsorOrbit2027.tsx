@@ -128,7 +128,7 @@ export function SponsorOrbit2027() {
     <section className="mmd-sponsor-orbit mmd-sponsor-orbit-premium" aria-labelledby="sponsor-orbit-title">
       <div className="mmd-sponsor-orbit-copy">
         <h1 id="sponsor-orbit-title">NOS PARTENAIRES</h1>
-        <span>ENSEMBLE PLUS LOIN</span>
+        <span>ÉDITIONS 2025–2026 · ENSEMBLE PLUS LOIN</span>
       </div>
 
       <div className="mmd-sponsor-orbit-actions">
@@ -192,9 +192,10 @@ export function SponsorOrbit2027() {
         <div className="mmd-sponsor-orbit-panel" role="dialog" aria-modal="true" aria-labelledby="sponsor-info-title">
           <div>
             <button type="button" onClick={() => setInfoOpen(false)} aria-label="Fermer"><X /></button>
-            <span>MISS & MISTER DOUR</span>
+            <span>ÉDITIONS 2025–2026</span>
             <h2 id="sponsor-info-title">Nos partenaires</h2>
-            <p>Cette galerie immersive présente les partenaires enregistrés de Miss & Mister Dour. Les visuels sont affichés depuis leurs créations officielles, sans redessin automatique des logos.</p>
+            <p>Cette galerie immersive présente les partenaires des éditions 2025–2026 de Miss & Mister Dour. Les visuels sont affichés depuis leurs créations officielles, sans redessin automatique des logos.</p>
+            <p>Les partenaires de l’édition 2027 seront dévoilés prochainement.</p>
           </div>
         </div>
       )}
