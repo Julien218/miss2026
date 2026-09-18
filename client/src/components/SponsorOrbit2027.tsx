@@ -1,6 +1,29 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { Info, Pause, Play, X } from "lucide-react";
 import { SPONSORS_2026, SponsorVisual2026 } from "@/components/SponsorVisual2026";
+
+type HeroStyle = CSSProperties & {
+  "--mmd-hero-width": string;
+  "--mmd-hero-media-height": string;
+};
+
+function heroGeometry(aspect: number): HeroStyle {
+  const safeAspect = Math.max(0.58, Math.min(2.75, aspect || 1));
+  let width: number;
+
+  if (safeAspect >= 2.15) width = 330;
+  else if (safeAspect >= 1.65) width = 315;
+  else if (safeAspect >= 1.30) width = 292;
+  else if (safeAspect >= 0.90) width = 246;
+  else if (safeAspect >= 0.72) width = 210;
+  else width = 192;
+
+  const mediaHeight = Math.max(145, Math.min(300, Math.round(width / safeAspect)));
+  return {
+    "--mmd-hero-width": `${width}px`,
+    "--mmd-hero-media-height": `${mediaHeight}px`,
+  };
+}
 
 export function SponsorOrbit2027() {
   const cardsRef = useRef<Array<HTMLSpanElement | null>>([]);
@@ -122,7 +145,7 @@ export function SponsorOrbit2027() {
     }
   };
 
-  const focusedSponsor = SPONSORS_2026[focusedIndex];
+  const focusedSponsor = SPONSORS_2026[focusedIndex];\n  const heroStyle = heroGeometry(focusedSponsor.aspect);
 
   return (
     <section className="mmd-sponsor-orbit mmd-sponsor-orbit-premium" aria-labelledby="sponsor-orbit-title">
