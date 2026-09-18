@@ -51,12 +51,14 @@ const PUBLIC_CHROME_PREFIXES = ["/about","/press","/sponsors","/contact","/legal
 function RootExperience() {
   const path = window.location.pathname;
   const host = window.location.hostname.toLowerCase();
+  const showcase = new URLSearchParams(window.location.search).get("showcase");
 
   // Présentations autonomes destinées aux clients/partenaires.
-  if (host === "sponsors.missetmisterdour.be" || path === "/showcase/sponsors") {
+  // Le paramètre ?showcase=... donne aussi un lien Railway direct qui ne dépend pas du DNS IONOS.
+  if (host === "sponsors.missetmisterdour.be" || path === "/showcase/sponsors" || showcase === "sponsors") {
     return <><SponsorShowcase /><InstallPWA /></>;
   }
-  if (host === "contrat.missetmisterdour.be" || path === "/showcase/contrat") {
+  if (host === "contrat.missetmisterdour.be" || path === "/showcase/contrat" || showcase === "contrat") {
     return <><ContractShowcase /><InstallPWA /></>;
   }
 
