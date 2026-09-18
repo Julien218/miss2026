@@ -76,25 +76,6 @@ const ARCHIVES = [
   },
 ];
 
-const SHANICE_ARCHIVE_PHOTOS = [
-  {
-    src: "https://www.dropbox.com/scl/fi/qof5lblh61xaa2eole3xj/miss-hainaut-dour-34.jpg?rlkey=vuzz7fvejrva4bhunwyki0zv7&raw=1",
-    label: "Archive · visite Miss Hainaut Dour · 08/02/2026",
-  },
-  {
-    src: "https://www.dropbox.com/scl/fi/4vuvj25j4rrmkii109ujs/miss-hainaut-dour-110.jpg?rlkey=8qh7w6jpfos5owccd8hrh93fo&raw=1",
-    label: "Archive · visite Miss Hainaut Dour · 08/02/2026",
-  },
-  {
-    src: "https://www.dropbox.com/scl/fi/8l540gejwremodb3h8ygh/miss-hainaut-dour-119.jpg?rlkey=3hd7lga7j7olq7nwylm1p4tj7&raw=1",
-    label: "Archive · visite Miss Hainaut Dour · 08/02/2026",
-  },
-  {
-    src: "https://www.dropbox.com/scl/fi/74u69nsm9blt7hpd6kcgb/miss-hainaut-dour-156.jpg?rlkey=tq5kd10civvhbpvpy83bqvts5&raw=1",
-    label: "Archive · visite Miss Hainaut Dour · 08/02/2026",
-  },
-] as const;
-
 const SHANICE_ARCHIVE_MEDIA = [
   {
     src: "https://www.dropbox.com/scl/fi/8dtkhrwaxrbrdkfsw34t8/MMD2026-shanice-Dour-HT.mp4?rlkey=gzpilj2431uvoolvwd0kbhqyu&raw=1",
@@ -240,7 +221,7 @@ export default function Homepage() {
       {/* 07 — ARCHIVES */}
       <section className="mmd-section mmd-home-archives" data-depth-reveal><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map((edition, editionIndex)=>{
         const media = archiveMedia[edition.year as keyof typeof archiveMedia] || [];
-        return <article key={edition.year} className="mmd-archive-card-2027" style={{"--archive-delay": `${editionIndex * 120}ms`} as React.CSSProperties}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span>{media.length>0?<div className="mmd-archive-media-2027">{media.map((photo,index)=><div key={`${edition.year}-${photo?.id}-${index}`} className={index===0?"is-main":""}>{photo&&<img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||`Archive ${edition.year}`} loading="lazy"/>}</div>)}</div>:edition.year!=="2025"?<div className="mmd-archive-media-pending"><Camera/><div><strong>Médias officiels en cours de liaison</strong><span>Seuls les médias nominativement identifiés sont publiés ici.</span></div></div>:null}{edition.year==="2025"&&<div className="mmd-shanice-archive-wrap"><div className="mmd-shanice-photo-grid" aria-label="Archives photo de l’édition 2025">{SHANICE_ARCHIVE_PHOTOS.map((item,index)=><figure key={item.src} className={index===0?"is-main":""}><img src={item.src} alt={item.label} loading="lazy"/><figcaption><Camera/>{item.label}</figcaption></figure>)}</div><div className="mmd-shanice-archive-media" aria-label="Médias vidéo de l’archive 2025">{SHANICE_ARCHIVE_MEDIA.map((item)=><figure key={item.src}><video src={item.src} controls playsInline preload="metadata" aria-label={item.label}/><figcaption><PlayCircle/>{item.label}</figcaption></figure>)}</div></div>}<div className="mmd-archive-titles mmd-archive-palmares"><div><small>MISS DOUR</small><strong>{edition.miss}</strong><ul>{edition.missAwards.map(item=><li key={item}>{item}</li>)}</ul></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("confirmer")?"is-pending":""}>{edition.mister}</strong><ul>{edition.misterAwards.map(item=><li key={item}>{item}</li>)}</ul></div></div><p>{edition.note}</p></article>;
+        return <article key={edition.year} className="mmd-archive-card-2027" style={{"--archive-delay": `${editionIndex * 120}ms`} as React.CSSProperties}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span>{media.length>0?<div className="mmd-archive-media-2027">{media.map((photo,index)=><div key={`${edition.year}-${photo?.id}-${index}`} className={index===0?"is-main":""}>{photo&&<img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||`Archive ${edition.year}`} loading="lazy"/>}</div>)}</div>:edition.year!=="2025"?<div className="mmd-archive-media-pending"><Camera/><div><strong>Médias officiels en cours de liaison</strong><span>Seuls les médias nominativement identifiés sont publiés ici.</span></div></div>:null}{edition.year==="2025"&&<div className="mmd-shanice-archive-media" aria-label="Médias vidéo validés de Shanice Lambert">{SHANICE_ARCHIVE_MEDIA.map((item)=><figure key={item.src}><video src={item.src} controls playsInline preload="metadata" aria-label={item.label}/><figcaption><PlayCircle/>{item.label}</figcaption></figure>)}</div>}<div className="mmd-archive-titles mmd-archive-palmares"><div><small>MISS DOUR</small><strong>{edition.miss}</strong><ul>{edition.missAwards.map(item=><li key={item}>{item}</li>)}</ul></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("confirmer")?"is-pending":""}>{edition.mister}</strong><ul>{edition.misterAwards.map(item=><li key={item}>{item}</li>)}</ul></div></div><p>{edition.note}</p></article>;
       })}</div><p className="mmd-archive-disclaimer">Le palmarès 2026 est intégré. Pour 2025, seuls les éléments vérifiés et les médias identifiés sont affichés.</p><p className="mmd-archive-digital-credit"><Sparkles/>Direction digitale & mise en scène visuelle par JS-Innov.IA®</p></div></section>
 
       {/* 08 — PARTENAIRES */}
