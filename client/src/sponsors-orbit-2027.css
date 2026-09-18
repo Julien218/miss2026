@@ -167,7 +167,7 @@
   aspect-ratio: 140 / 95;
   background-color: transparent;
   /* Neutralise les éventuels pixels blancs résiduels sans déformer le logo. */
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 .mmd-sponsor-orbit-hero {
   position: absolute;
@@ -214,7 +214,7 @@
   aspect-ratio: 140 / 95;
   flex: none;
   background-color: transparent;
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
   background-origin: border-box;
   animation: mmd-sponsor-focus-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
