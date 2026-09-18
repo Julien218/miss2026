@@ -5,7 +5,7 @@
  * poster       : publicité / carte commerciale / flyer intact.
  */
 
-canvas.mmd-sponsor-render {
+.mmd-sponsor-render {
   display: block;
   width: auto;
   height: auto;
@@ -13,7 +13,6 @@ canvas.mmd-sponsor-render {
   max-height: 100%;
   aspect-ratio: auto !important;
   box-sizing: border-box;
-  background-image: none !important;
   background-blend-mode: normal !important;
   mix-blend-mode: normal !important;
   transition:
@@ -26,7 +25,7 @@ canvas.mmd-sponsor-render {
 
 /* MODE 1 — transparence réelle */
 .mmd-sponsor-mode-transparent {
-  background: transparent !important;
+  background-color: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
@@ -43,9 +42,7 @@ canvas.mmd-sponsor-render {
   padding: 8px;
   border: 1px solid rgba(238, 205, 145, 0.34) !important;
   border-radius: 13px !important;
-  background:
-    radial-gradient(circle at 50% 30%, rgba(255, 244, 218, 0.26), transparent 54%),
-    linear-gradient(150deg, rgba(104, 82, 58, 0.34), rgba(47, 35, 25, 0.44)) !important;
+  background-color: rgba(72, 54, 38, 0.58) !important;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.07),
     0 10px 28px rgba(0, 0, 0, 0.24),
@@ -75,9 +72,7 @@ canvas.mmd-sponsor-render {
   padding: 5px;
   border: 1px solid rgba(234, 211, 165, 0.30) !important;
   border-radius: 11px !important;
-  background:
-    radial-gradient(circle at 50% 28%, rgba(255, 239, 207, 0.10), transparent 48%),
-    linear-gradient(145deg, rgba(43, 32, 23, 0.94), rgba(13, 9, 7, 0.97)) !important;
+  background-color: rgba(22, 16, 12, 0.92) !important;
   box-shadow:
     0 14px 30px rgba(0, 0, 0, 0.32),
     inset 0 0 0 1px rgba(255, 255, 255, 0.035) !important;
@@ -95,10 +90,11 @@ canvas.mmd-sponsor-render {
 }
 
 .mmd-sponsor-orbit-card-media .mmd-sponsor-render {
-  width: auto !important;
-  height: auto !important;
+  width: 100% !important;
+  height: 100% !important;
   max-width: 100% !important;
   max-height: 100% !important;
+  aspect-ratio: 140 / 95 !important;
 }
 
 .mmd-sponsor-orbit-card {
@@ -202,20 +198,19 @@ canvas.mmd-sponsor-render {
   overflow: hidden !important;
 }
 
-/* Le canvas conserve exactement le ratio du logo / poster rendu. */
+/* Le visuel conserve le ratio de la tuile source et reste toujours visible. */
 .mmd-sponsor-orbit-hero-inner .mmd-sponsor-render {
-  width: auto !important;
+  width: 100% !important;
   height: auto !important;
   max-width: 100% !important;
   max-height: 100% !important;
+  aspect-ratio: 140 / 95 !important;
   margin: auto;
   transform: none !important;
 }
 
 .mmd-sponsor-orbit-hero-inner .mmd-sponsor-mode-framed-light {
-  background:
-    radial-gradient(circle at 50% 30%, rgba(255, 246, 224, 0.39), transparent 56%),
-    linear-gradient(150deg, rgba(118, 91, 62, 0.46), rgba(55, 40, 28, 0.56)) !important;
+  background-color: rgba(88, 66, 45, 0.62) !important;
   border-color: rgba(249, 218, 160, 0.54) !important;
 }
 
@@ -258,11 +253,11 @@ canvas.mmd-sponsor-render {
 .mmd-home-sponsor-preview .mmd-sponsor-render {
   position: relative;
   z-index: 2;
-  width: auto;
-  height: auto;
-  max-width: min(100%, 260px);
-  max-height: 78%;
-  aspect-ratio: auto !important;
+  width: min(100%, 260px) !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: none;
+  aspect-ratio: 140 / 95 !important;
   transform: translateZ(14px) scale(1);
 }
 
