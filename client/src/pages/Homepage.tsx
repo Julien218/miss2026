@@ -53,7 +53,7 @@ const ARCHIVES = [
     mister: "Archive à confirmer",
     missAwards: ["Miss Dour 2025 — Shanice Lambert"],
     misterAwards: ["Palmarès Mister 2025 en cours de récupération"],
-    note: "Shanice Lambert confirmée Miss Dour 2025 · les photos officielles de l’édition 2025 sont en cours de récupération.",
+    note: "Shanice Lambert confirmée Miss Dour 2025 · les photos de remise des titres et du couronnement 2025 sont désormais prioritaires dans cette archive.",
   },
   {
     year: "2026",
@@ -133,10 +133,14 @@ export default function Homepage() {
     const unique = (items: Array<(typeof all)[number] | undefined>) => items.filter((photo, index, array): photo is (typeof all)[number] => Boolean(photo) && array.findIndex((item) => item?.id === photo?.id) === index);
 
     return {
-      // Important : aucun fallback vers une photo générique. Si Shanice n'est pas
-      // identifiée dans les métadonnées publiques, on préfère afficher le bloc
-      // « média en cours de liaison » plutôt qu'un mauvais visage.
-      "2025": unique(photosMatching("shanice lambert", "shanice")).slice(0,3),
+      // 2025 : on privilégie les photos de remise des titres/couronnement identifiées
+      // dans les archives, puis les médias déjà reliés nominativement à Shanice.
+      "2025": unique([
+        firstMatching("resultat-70", "résultat-70"),
+        firstMatching("resultat-85", "résultat-85"),
+        firstMatching("resultat-91", "résultat-91"),
+        ...photosMatching("shanice lambert", "shanice"),
+      ]).slice(0,3),
       "2026": unique([
         firstMatching("aliya ammour", "aliya"),
         firstMatching("hugo puma", "hugo"),
@@ -210,7 +214,7 @@ export default function Homepage() {
       {/* 07 — ARCHIVES */}
       <section className="mmd-section mmd-home-archives" data-depth-reveal><div className="mmd-container"><SectionLabel index="07">Archives</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui ont marqué <em>les éditions précédentes.</em></h2><Link href="/about" className="mmd-text-link">Notre histoire <History/></Link></div><div className="mmd-archive-grid">{ARCHIVES.map((edition, editionIndex)=>{
         const media = archiveMedia[edition.year as keyof typeof archiveMedia] || [];
-        return <article key={edition.year} className="mmd-archive-card-2027" style={{"--archive-delay": `${editionIndex * 120}ms`} as React.CSSProperties}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span>{media.length>0?<div className="mmd-archive-media-2027">{media.map((photo,index)=><div key={`${edition.year}-${photo?.id}-${index}`} className={index===0?"is-main":""}>{photo&&<img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||`Archive ${edition.year}`} loading="lazy"/>}</div>)}</div>:<div className="mmd-archive-media-pending"><Camera/><div><strong>{edition.year==="2025"?"Photos officielles 2025 de Shanice en cours de récupération":"Médias officiels en cours de liaison"}</strong><span>Seuls les médias de la bonne édition et nominativement identifiés sont publiés ici.</span></div></div>}<div className="mmd-archive-titles mmd-archive-palmares"><div><small>MISS DOUR</small><strong>{edition.miss}</strong><ul>{edition.missAwards.map(item=><li key={item}>{item}</li>)}</ul></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("confirmer")?"is-pending":""}>{edition.mister}</strong><ul>{edition.misterAwards.map(item=><li key={item}>{item}</li>)}</ul></div></div><p>{edition.note}</p></article>;
+        return <article key={edition.year} className="mmd-archive-card-2027" style={{"--archive-delay": `${editionIndex * 120}ms`} as React.CSSProperties}><div className="mmd-archive-year">{edition.year}</div><span>{edition.label}</span>{media.length>0?<div className="mmd-archive-media-2027">{media.map((photo,index)=><div key={`${edition.year}-${photo?.id}-${index}`} className={index===0?"is-main":""}>{photo&&<img src={photo.thumbnail||photo.url} alt={photo.candidateName||photo.title||`Archive ${edition.year}`} loading="lazy"/>}</div>)}</div>:<div className="mmd-archive-media-pending"><Camera/><div><strong>{edition.year==="2025"?"Photos de couronnement 2025 en cours de liaison":"Médias officiels en cours de liaison"}</strong><span>Seuls les médias de la bonne édition et nominativement identifiés sont publiés ici.</span></div></div>}<div className="mmd-archive-titles mmd-archive-palmares"><div><small>MISS DOUR</small><strong>{edition.miss}</strong><ul>{edition.missAwards.map(item=><li key={item}>{item}</li>)}</ul></div><div><small>MISTER DOUR</small><strong className={edition.mister.includes("confirmer")?"is-pending":""}>{edition.mister}</strong><ul>{edition.misterAwards.map(item=><li key={item}>{item}</li>)}</ul></div></div><p>{edition.note}</p></article>;
       })}</div><p className="mmd-archive-disclaimer">Le palmarès 2026 est intégré. Pour 2025, seuls les éléments vérifiés et les médias identifiés sont affichés.</p><p className="mmd-archive-digital-credit"><Sparkles/>Direction digitale & mise en scène visuelle par JS-Innov.IA®</p></div></section>
 
       {/* 08 — PARTENAIRES */}
