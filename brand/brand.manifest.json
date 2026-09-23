@@ -20,6 +20,15 @@
     "organizer": "STARLIGHT asbl",
     "digitalDirection": "JS-Innov.IA"
   },
+  "campaignMotifs": {
+    "feather": {
+      "status": "canonical",
+      "scope": "miss-mister-dour-2027-only",
+      "role": "discreet-thread-and-transition-motif",
+      "neverLogo": true,
+      "crossBrandReuse": false
+    }
+  },
   "palette": {
     "gold": "#D7AE69",
     "goldLight": "#EAD3A5",
@@ -65,13 +74,15 @@
       "redraw-logo",
       "recolor-logo",
       "mix-other-brand-adn",
-      "invent-annual-theme"
+      "invent-annual-theme",
+      "export-feather-motif-to-other-brands"
     ],
     "qualityGate": [
       "edition-2027-confirmed",
       "official-logo-used",
       "canonical-palette-used",
       "theme-from-current-brief-only",
+      "feather-scope-respected",
       "no-cross-brand-contamination",
       "mobile-and-contrast-checked"
     ]
