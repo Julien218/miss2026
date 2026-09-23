@@ -42,6 +42,17 @@ Issue de `client/src/config/branding.ts` :
 - Titres : **Playfair Display**, Georgia, serif
 - Les effets premium doivent rester subtils et lisibles.
 
+## Motif de campagne 2027 — plume
+La **plume fine et élégante** est le fil conducteur visuel réservé à la campagne **Miss & Mister Dour 2027**.
+
+Règles :
+- elle peut apparaître discrètement dans les intros, transitions, cartes candidats, contenus recrutement et supports de campagne 2027 ;
+- elle doit rester légère, raffinée et secondaire par rapport au logo, aux candidats et aux informations ;
+- elle peut être utilisée comme particules, tracé lumineux ou élément de transition lorsque le brief le demande ;
+- elle ne devient jamais un logo ;
+- elle ne doit pas être reprise comme élément d'identité JS-Innov.IA, du Cockpit, de Synergie Dour, Fashionist'ART, Le Tour de Dour ou d'une autre marque ;
+- aucun agent ne doit généraliser ce motif hors du scope `miss-mister-dour / edition 2027`.
+
 ## Nettoyage sémantique 2026 → 2027
 `client/src/index.css` contient encore des noms/commentaires historiques comme « Miss & Mister Dour 2026 », « Lady Gaga Gala Night » et `--gaga-pink`. Ces noms sont des **restes d'implémentation** et ne doivent plus être interprétés par un agent comme brief créatif 2027.
 
@@ -49,10 +60,11 @@ La source visuelle marketing 2027 est `branding.ts` + `visual-tuning-2027.css`. 
 
 ## Règles campagne / génération
 - Toute image doit être générée sans redessiner le logo ; le logo est composé ensuite depuis l'asset officiel.
-- Ne pas créer une couronne, une plume, une tenue, un décor ou un thème spécifique uniquement parce qu'un ancien fichier l'évoque ; ces éléments doivent venir du brief de campagne courant.
+- Ne pas créer une couronne, une tenue, un décor ou un thème spécifique uniquement parce qu'un ancien fichier l'évoque ; ces éléments doivent venir du brief de campagne courant.
+- La plume est l'exception explicitement canonique pour la campagne 2027, selon les règles ci-dessus.
 - Ne jamais importer l'ADN Synergie Dour, Fashionist'ART ou JS-Innov.IA comme palette principale.
 - Le crédit JS-Innov.IA reste secondaire.
 - Si un thème événementiel annuel est requis mais non défini dans les sources courantes, le demander au brief au lieu de reprendre un ancien thème.
 
 ## Qualité
-Avant publication : logo officiel, palette 2027, contraste, mobile, orthographe, année/édition, faits et liens sociaux doivent être vérifiés.
+Avant publication : logo officiel, palette 2027, contraste, mobile, orthographe, année/édition, faits, liens sociaux et respect du scope de la plume doivent être vérifiés.
