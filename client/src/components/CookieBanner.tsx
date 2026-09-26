@@ -56,6 +56,11 @@ export default function CookieBanner() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("mmd-cookie-open", visible);
+    return () => document.body.classList.remove("mmd-cookie-open");
+  }, [visible]);
+
   if (!visible) return null;
 
   const close = () => {
