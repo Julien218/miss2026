@@ -15,7 +15,7 @@ import { BRANDING } from "@/config/branding";
 import { useAuth } from "@/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { SEOHead } from "@/components/SEOHead";
-import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
+import { MysteryCandidates2027 } from "@/components/home/MysteryCandidates2027";
 import { SponsorVisual2026 } from "@/components/SponsorVisual2026";
 import { trpc } from "@/lib/trpc";
 import { ImmersiveHero2027, useDepthReveals } from "@/components/ImmersiveHero2027";
@@ -198,7 +198,7 @@ export default function Homepage() {
       </div></section>
 
       {/* 03 — CANDIDATS */}
-      <section className="mmd-section mmd-candidates-section" data-depth-reveal><div className="mmd-container"><SectionLabel index="03">Les candidats</SectionLabel><div className="mmd-section-heading"><h2>Les visages qui donnent vie à <em>l’édition 2027.</em></h2><Link href="/candidates" className="mmd-text-link">Tous les profils <ArrowRight/></Link></div></div><div className="mmd-candidate-stage"><FloatingCandidateCards/></div><div className="mmd-container mmd-candidate-cta"><Link href="/inscription" className="mmd-primary-button">Rejoindre l’édition 2027 <ArrowRight className="h-4 w-4"/></Link></div></section>
+      <section className="mmd-section mmd-candidates-section" data-depth-reveal><div className="mmd-container"><SectionLabel index="03">Les personnalités</SectionLabel><div className="mmd-section-heading"><h2>Les personnalités de <em>l’édition 2027.</em></h2><Link href="/candidates" className="mmd-text-link">Tous les profils <ArrowRight/></Link></div></div><div className="mmd-candidate-stage"><MysteryCandidates2027/></div><div className="mmd-container mmd-candidate-cta"><Link href="/inscription" className="mmd-primary-button">Rejoindre l’édition 2027 <ArrowRight className="h-4 w-4"/></Link></div></section>
 
       {/* 04 — JOURNEY */}
       <section className="mmd-section mmd-journey-section" data-depth-reveal><div className="mmd-container"><SectionLabel index="04">The Journey</SectionLabel><div className="mmd-section-heading mmd-journey-heading"><h2>De la première candidature aux <em>lumières du gala.</em></h2></div><div className="mmd-journey-grid">{JOURNEY.map(step=><article key={step.phase}><span>{step.phase}</span><h3>{step.title}</h3><p>{step.text}</p></article>)}</div></div></section>
