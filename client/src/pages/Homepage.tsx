@@ -4,7 +4,7 @@ import { Crown, ArrowRight, LogIn, Menu, X } from "lucide-react";
 import { BRANDING } from "@/config/branding";
 import { useAuth } from "@/hooks/useAuth";
 import { SEOHead } from "@/components/SEOHead";
-import { FloatingCandidateCards } from "@/components/FloatingCandidateCards";
+import { MysteryCandidates2027 } from "@/components/home/MysteryCandidates2027";
 
 /* ────────────────────────────────────────────────────────────
    Page d'accueil — Direction artistique « Affiche éditoriale »
@@ -250,7 +250,7 @@ export default function Homepage() {
           <SectionLabel index="01">La scène</SectionLabel>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="font-serif text-4xl leading-tight text-white md:text-6xl">
-              Les visages de <span className="italic text-copper-light">l'édition</span>
+              Les personnalités de <span className="italic text-copper-light">l’édition 2027.</span>
             </h2>
             <Link href="/candidates" className="group mb-2 flex items-center gap-2 font-grotesk text-sm uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white">
               Tous les profils
@@ -259,7 +259,7 @@ export default function Homepage() {
           </div>
         </div>
         <div className="relative mt-10">
-          <FloatingCandidateCards />
+          <MysteryCandidates2027 />
         </div>
         <div className="mx-auto mt-10 flex max-w-7xl flex-wrap gap-4 px-4">
           <Link href="/inscription-candidat" className="group flex items-center gap-3 bg-copper px-7 py-3.5 font-grotesk font-semibold text-black transition-transform hover:-translate-y-0.5">
@@ -302,7 +302,7 @@ export default function Homepage() {
               href="/candidates"
               className="group relative flex min-h-[380px] flex-col justify-end overflow-hidden border border-white/10 bg-gradient-to-br from-[#3a1a12] via-[#1c0e08] to-black p-8 transition-all duration-500 hover:border-copper/60 md:min-h-[460px] md:p-10"
             >
-              <span className="absolute right-6 top-6 font-grotesk text-xs uppercase tracking-[0.3em] text-white/35">13 Miss · 6 Mister</span>
+              <span className="absolute right-6 top-6 font-grotesk text-xs uppercase tracking-[0.3em] text-white/35">6 Miss · 6 Mister</span>
               <span className="pointer-events-none absolute -bottom-8 -left-4 font-serif text-[10rem] italic leading-none text-white/[0.06] transition-colors duration-500 group-hover:text-copper/15">01</span>
               <h3 className="font-serif text-4xl text-white md:text-5xl">Les candidats</h3>
               <p className="mt-3 max-w-sm text-white/55">
