@@ -36,6 +36,7 @@ import "./final-polish-2027.css";
 import "./sponsor-transparent-2027.css";
 import "./showcase-2027.css";
 import "./sponsors-orbit-official-2027.css";
+import "./mobile-homepage-2027.css";
 
 const queryClient = new QueryClient();
 const redirectToLoginIfUnauthorized = (error: unknown) => {
