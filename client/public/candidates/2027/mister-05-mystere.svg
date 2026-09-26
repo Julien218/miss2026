@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="t d">
+<title id="t">Mister mystère 5 — Édition 2027</title>
+<desc id="d">Silhouette mystère Miss &amp; Mister Dour 2027, bleu nuit, or et plume lumineuse.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#020713"/><stop offset=".52" stop-color="#071a3d"/><stop offset="1" stop-color="#02040a"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff2bf"/><stop offset=".35" stop-color="#e5b74d"/><stop offset=".7" stop-color="#b97819"/><stop offset="1" stop-color="#fff0ad"/></linearGradient>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8fd3ff"/><stop offset=".25" stop-color="#1d79ff"/><stop offset=".65" stop-color="#073aa8"/><stop offset="1" stop-color="#79b8ff"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <radialGradient id="halo"><stop stop-color="#e8b84f" stop-opacity=".35"/><stop offset="1" stop-color="#e8b84f" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="800" height="1000" fill="url(#bg)"/>
+<rect x="22" y="22" width="756" height="956" rx="26" fill="none" stroke="url(#gold)" stroke-width="5"/>
+<ellipse cx="400" cy="480" rx="310" ry="390" fill="url(#halo)"/>
+<g opacity=".9" filter="url(#glow)">
+ <path d="M125 780 C190 610 160 420 330 190 C250 430 330 610 250 805 Z" fill="url(#blue)"/>
+ <path d="M170 820 C245 640 240 470 395 245 C335 470 395 645 315 835 Z" fill="url(#gold)"/>
+ <path d="M220 850 C305 690 335 520 470 325 C420 555 455 700 390 865 Z" fill="url(#blue)"/>
+</g>
+<g fill="#01040a" stroke="#e9bd57" stroke-opacity=".35" stroke-width="4">
+ <circle cx="438" cy="318" r="88"/><path d="M315 480 C333 397 375 376 438 376 C510 376 551 408 568 490 L610 850 L270 850 Z"/><path d="M370 245 C405 208 470 207 505 248 C454 226 412 228 370 245 Z"/>
+</g>
+<path d="M300 870 Q400 905 500 870" fill="none" stroke="url(#gold)" stroke-width="3" opacity=".75"/>
+<text x="400" y="610" text-anchor="middle" font-family="Georgia,serif" font-size="250" font-weight="700" fill="url(#gold)" filter="url(#glow)">?</text>
+<text x="400" y="925" text-anchor="middle" font-family="Arial,sans-serif" font-size="31" letter-spacing="9" fill="#f1d58a">MISTER 05</text>
+</svg>
