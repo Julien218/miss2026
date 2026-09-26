@@ -1,0 +1,515 @@
+/* Miss & Mister Dour 2027 — optimisation mobile de la page publique.
+   Chargé en dernier : aucune incidence sur le rendu desktop. */
+
+@media (max-width: 720px) {
+  html {
+    scroll-padding-top: 70px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body,
+  #root,
+  .editorial-home {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    overscroll-behavior-x: none;
+  }
+
+  .editorial-home {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Navigation : un seul bandeau compact sur mobile. */
+  .mmd-topline {
+    display: none;
+  }
+
+  .mmd-nav-shell {
+    top: 0;
+    padding: 6px 8px 0;
+    background: linear-gradient(180deg, rgba(3,2,7,.88), rgba(3,2,7,.45), transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .mmd-nav {
+    min-height: 54px;
+    padding: 5px 6px 5px 10px;
+    gap: 7px;
+    border-radius: 18px;
+    background: rgba(8,6,8,.82);
+    box-shadow: 0 10px 30px rgba(0,0,0,.26);
+  }
+
+  .mmd-brand img {
+    height: 34px;
+    max-width: 72px;
+  }
+
+  .mmd-menu-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .mmd-mobile-menu {
+    top: 64px;
+    left: 8px;
+    right: 8px;
+    max-height: calc(100svh - 76px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 18px;
+  }
+
+  .mmd-mobile-menu > a {
+    font-size: 14px;
+  }
+
+  .mmd-container {
+    width: calc(100% - 24px);
+  }
+
+  /* Hero : tout le message principal tient dans le premier écran. */
+  .mmd-immersive-hero {
+    height: calc(100svh - 60px);
+    min-height: 610px;
+    max-height: 720px;
+    overflow: hidden;
+  }
+
+  .mmd-depth-camera {
+    inset: 0;
+    transform: scale(1.01);
+  }
+
+  .mmd-depth-stage-video,
+  .mmd-depth-stage-image {
+    object-position: 64% center;
+    filter: saturate(.9) contrast(1.04) brightness(.82);
+  }
+
+  .mmd-depth-stage-image--mobile {
+    object-position: center;
+  }
+
+  .mmd-depth-shade {
+    background:
+      linear-gradient(180deg, rgba(2,2,7,.20) 0%, rgba(2,2,7,.08) 32%, rgba(2,2,7,.58) 58%, rgba(2,2,7,.94) 100%),
+      linear-gradient(90deg, rgba(2,2,7,.52) 0%, rgba(2,2,7,.10) 68%, rgba(2,2,7,.22) 100%);
+  }
+
+  .mmd-depth-stage-light {
+    opacity: .82;
+  }
+
+  .mmd-depth-floor,
+  .mmd-depth-orbit {
+    opacity: .34;
+  }
+
+  .mmd-depth-particles i:nth-child(n+8) {
+    display: none;
+  }
+
+  .mmd-immersive-content {
+    height: 100%;
+    min-height: 0;
+    align-items: flex-end;
+    padding: 66px 0 78px;
+  }
+
+  .mmd-immersive-copy {
+    width: 100%;
+    max-width: 440px;
+    padding: 14px 2px 0;
+    background: linear-gradient(90deg, rgba(2,2,7,.56), rgba(2,2,7,.18) 72%, transparent);
+    border-radius: 14px;
+  }
+
+  .mmd-hero-kicker {
+    gap: 7px;
+    font-size: 7px;
+    letter-spacing: .18em;
+  }
+
+  .mmd-hero-kicker i {
+    width: 22px;
+  }
+
+  .mmd-immersive-logo {
+    width: 68px;
+    margin-top: 10px;
+  }
+
+  .mmd-immersive-title {
+    margin-top: 8px;
+    line-height: .91;
+    text-shadow: 0 4px 22px rgba(0,0,0,.55);
+  }
+
+  .mmd-immersive-title span {
+    font-size: clamp(32px, 9.6vw, 42px);
+  }
+
+  .mmd-immersive-title strong {
+    font-size: clamp(49px, 14.5vw, 66px);
+    text-shadow: 0 12px 42px rgba(215,174,105,.16), 0 4px 22px rgba(0,0,0,.5);
+  }
+
+  .mmd-immersive-question {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .mmd-immersive-intro {
+    max-width: 98%;
+    margin-top: 6px;
+    color: rgba(247,239,225,.76);
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .mmd-immersive-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 7px;
+    margin-top: 15px;
+  }
+
+  .mmd-immersive-actions a {
+    width: 100%;
+    min-height: 47px;
+    padding-inline: 16px;
+    font-size: 12px;
+  }
+
+  .mmd-immersive-actions .mmd-secondary-button {
+    min-height: 42px;
+    background: rgba(7,5,8,.58);
+    backdrop-filter: blur(10px);
+  }
+
+  .mmd-immersive-signature,
+  .mmd-scroll-cue,
+  .mmd-avatar-guide {
+    display: none;
+  }
+
+  /* Sections : rythme plus court et typographie réellement lisible. */
+  .mmd-section {
+    padding-block: 52px;
+  }
+
+  .mmd-section-label {
+    margin-bottom: 22px;
+  }
+
+  .mmd-section-heading {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  .mmd-section-heading h2,
+  .mmd-home-intro-grid h2,
+  .mmd-home-participate-card h2 {
+    font-size: clamp(35px, 10.5vw, 46px);
+    line-height: 1.01;
+  }
+
+  .mmd-home-intro-grid {
+    gap: 18px;
+  }
+
+  .mmd-home-intro-grid p {
+    color: rgba(247,239,225,.68);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .mmd-text-link {
+    min-height: 44px;
+    width: max-content;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .mmd-experience-portals {
+    margin-top: 30px;
+    gap: 8px;
+  }
+
+  .mmd-experience-portal {
+    min-height: 142px;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .mmd-experience-portal > svg {
+    width: 24px;
+    height: 24px;
+    margin-top: 18px;
+  }
+
+  .mmd-experience-portal strong {
+    font-size: 22px;
+  }
+
+  .mmd-home-participate-card {
+    gap: 22px;
+    padding: 24px 18px;
+    border-radius: 22px;
+  }
+
+  .mmd-home-participate-card p {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .mmd-home-participate-actions,
+  .mmd-home-participate-actions a {
+    width: 100%;
+  }
+
+  .mmd-home-participate-actions a,
+  .mmd-final-actions a,
+  .mmd-candidate-cta a {
+    min-height: 48px;
+  }
+
+  .mmd-home-media-strip {
+    gap: 8px;
+    margin-right: -12px;
+    padding-right: 12px;
+  }
+
+  .mmd-home-media-strip a {
+    flex-basis: 74vw;
+    border-radius: 20px;
+  }
+
+  .mmd-archive-grid {
+    gap: 10px;
+  }
+
+  .mmd-archive-grid article {
+    min-height: 0;
+    padding: 20px 17px;
+    border-radius: 22px;
+  }
+
+  .mmd-archive-media-2027 {
+    min-height: 150px;
+    margin-top: 26px;
+    gap: 6px;
+  }
+
+  .mmd-archive-media-2027 > div.is-main {
+    min-height: 160px;
+  }
+
+  .mmd-archive-titles {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .mmd-archive-titles strong {
+    font-size: 25px;
+  }
+
+  .mmd-home-sponsor-preview {
+    gap: 7px;
+  }
+
+  .mmd-home-sponsor-preview > div {
+    min-height: 92px;
+    padding: 8px;
+    border-radius: 15px;
+  }
+
+  .mmd-home-sponsor-preview img {
+    height: 58px;
+  }
+
+  .mmd-home-gallery-grid {
+    gap: 6px;
+    grid-auto-rows: 138px;
+  }
+
+  .mmd-home-gallery-grid a {
+    border-radius: 14px;
+  }
+
+  .mmd-final-content {
+    padding-bottom: max(48px, env(safe-area-inset-bottom));
+  }
+
+  .mmd-final-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* Confidentialité : compacte et prioritaire. */
+  .mmd-cookie-open .mmd-install-app {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+  }
+
+  .mmd-cookie-sheet {
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: calc(100% - 16px);
+    padding: 11px 12px 10px;
+    border-radius: 16px;
+    box-shadow: 0 18px 56px rgba(0,0,0,.56);
+  }
+
+  .mmd-cookie-close {
+    right: 7px;
+    top: 7px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .mmd-cookie-main {
+    grid-template-columns: 29px 1fr;
+    gap: 8px;
+    padding-right: 24px;
+  }
+
+  .mmd-cookie-icon {
+    width: 29px;
+    height: 29px;
+    border-radius: 9px;
+  }
+
+  .mmd-cookie-icon svg {
+    width: 14px;
+  }
+
+  .mmd-cookie-main strong {
+    font-size: 15px;
+  }
+
+  .mmd-cookie-main p {
+    margin-top: 2px;
+    font-size: 9.5px;
+    line-height: 1.35;
+  }
+
+  .mmd-cookie-details {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .mmd-cookie-actions {
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+  .mmd-cookie-actions button {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 9px;
+  }
+
+  /* Installation PWA : discrète une fois le consentement fermé. */
+  .mmd-install-app {
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    min-height: 42px;
+    padding: 0 13px;
+    font-size: 10.5px;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+
+  .mmd-install-app svg {
+    width: 15px;
+  }
+
+  .mmd-ios-install {
+    left: 8px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    padding: 20px 18px;
+    border-radius: 20px;
+  }
+
+  .mmd-ios-install strong {
+    font-size: 21px;
+  }
+
+  .mmd-ios-install p {
+    font-size: 13px;
+  }
+
+  /* Pied de page : éviter les lignes trop serrées. */
+  .mmd-footer-main,
+  .mmd-footer-bottom {
+    gap: 18px;
+  }
+
+  .mmd-footer-bottom {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 390px) {
+  .mmd-container {
+    width: calc(100% - 20px);
+  }
+
+  .mmd-immersive-hero {
+    min-height: 590px;
+  }
+
+  .mmd-immersive-content {
+    padding-bottom: 68px;
+  }
+
+  .mmd-immersive-logo {
+    width: 60px;
+  }
+
+  .mmd-immersive-title span {
+    font-size: 31px;
+  }
+
+  .mmd-immersive-title strong {
+    font-size: 49px;
+  }
+
+  .mmd-immersive-question {
+    font-size: 14px;
+  }
+
+  .mmd-immersive-intro {
+    font-size: 12px;
+  }
+
+  .mmd-section {
+    padding-block: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mmd-cookie-open .mmd-install-app {
+    transition: none;
+  }
+}
