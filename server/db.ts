@@ -117,6 +117,14 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const normalizedEmail = email.toLowerCase().trim();
+  const result = await db.select().from(users).where(eq(users.email, normalizedEmail)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
 // ========== CONTESTS ==========
 
 export async function getAllContests() {
