@@ -21,6 +21,8 @@ import { whatsappRouter } from "./routers/whatsapp";
 import { videoGeneratorRouter } from "./routers/videoGenerator";
 import { validationRouter } from "./routers/validation";
 import { checkRateLimit, rateLimitConfigs } from "./_core/rateLimit";
+import { registerUser } from "./_core/auth-password";
+import { sdk } from "./_core/sdk";
 
 // Admin-only procedure (admin + super_admin)
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -1378,6 +1380,66 @@ export const appRouter = router({
 
   // ========== INVITATIONS ==========
   invitations: router({
+    createAccount: publicProcedure
+      .input(z.object({
+        token: z.string().min(1),
+        name: z.string().trim().min(2).max(120),
+        password: z.string().min(10).max(512),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const invitation = await db.getInvitationByToken(input.token);
+        if (!invitation) throw new TRPCError({ code: "NOT_FOUND", message: "Invitation non trouvée" });
+        if (!invitation.isActive) throw new TRPCError({ code: "BAD_REQUEST", message: "Cette invitation a déjà été utilisée ou désactivée" });
+        if (invitation.expiresAt && new Date(invitation.expiresAt) < new Date()) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Cette invitation a expiré" });
+        }
+        if (invitation.maxUses && (invitation.usedCount || 0) >= invitation.maxUses) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Cette invitation a déjà été utilisée" });
+        }
+
+        const existing = await db.getUserByEmail(invitation.email);
+        if (existing) {
+          throw new TRPCError({ code: "CONFLICT", message: "Un compte existe déjà pour cette adresse. Connectez-vous pour accepter l’invitation." });
+        }
+
+        const roleMap: Record<string, "user" | "candidate" | "press" | "photographer" | "staff" | "marketing" | "organizer" | "admin" | "super_admin"> = {
+          admin: "admin",
+          directeur: "organizer",
+          manager: "staff",
+          photographe: "photographer",
+          candidat: "candidate",
+          jury: "user",
+          viewer: "user",
+        };
+        const userRole = roleMap[invitation.role] || "user";
+        const created = await registerUser({
+          email: invitation.email,
+          password: input.password,
+          role: userRole,
+          organizationId: 1,
+          name: input.name,
+        });
+
+        await db.updateUserPermissionOverrides(created.id, {
+          permissionOverrides: invitation.permissionOverrides || null,
+        });
+        await db.incrementInvitationUsedCount(invitation.id);
+        if (invitation.maxUses && (invitation.usedCount || 0) + 1 >= invitation.maxUses) {
+          await db.deactivateInvitation(invitation.id);
+        }
+
+        const sessionMs = 1000 * 60 * 60 * 24 * 30;
+        const sessionToken = await sdk.createSessionToken(created.openId, {
+          name: input.name,
+          expiresInMs: sessionMs,
+        });
+        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+          ...getSessionCookieOptions(ctx.req),
+          maxAge: sessionMs,
+        });
+
+        return { success: true, role: userRole };
+      }),
     validateToken: publicProcedure
       .input(z.object({ token: z.string() }))
       .query(async ({ input }) => {
@@ -1528,9 +1590,18 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Cette invitation est réservée à un autre email' });
         }
 
-        // Update user role and permission overrides
+        // Map invitation labels to actual persisted user roles.
+        const roleMap: Record<string, string> = {
+          admin: "admin",
+          directeur: "organizer",
+          manager: "staff",
+          photographe: "photographer",
+          candidat: "candidate",
+          jury: "jury",
+          viewer: "user",
+        };
         await db.updateUserPermissionOverrides(ctx.user.id, {
-          role: invitation.role,
+          role: roleMap[invitation.role] || "user",
           permissionOverrides: invitation.permissionOverrides || null,
         });
 
