@@ -1,305 +1,167 @@
-/**
- * Page d'acceptation d'invitation
- * 
- * Permet aux utilisateurs d'accepter une invitation via un lien sécurisé /invite/:token
- * Valide le token, affiche les informations, gère l'auth OAuth, et applique le rôle + overrides
- */
-
-import { useEffect, useState } from "react";
-import { useRoute, useLocation } from "wouter";
+import { FormEvent, useMemo, useState } from "react";
+import { useLocation, useRoute } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Loader2, CheckCircle2, XCircle, Shield, Users, Clock, Mail } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, Loader2, LockKeyhole, Mail, Shield, UserRound, XCircle } from "lucide-react";
 
+const roleLabels: Record<string, string> = {
+  admin: "Administrateur",
+  directeur: "Directeur",
+  manager: "Manager",
+  photographe: "Photographe",
+  candidat: "Candidat",
+  jury: "Jury",
+  viewer: "Observateur",
+};
 
-import { getLoginUrl } from "@/const";
+function destinationForRole(role?: string) {
+  switch (role) {
+    case "admin":
+    case "super_admin": return "/admin";
+    case "organizer":
+    case "staff": return "/choreographer";
+    case "photographer": return "/photographer";
+    case "candidate": return "/dashboard";
+    case "press": return "/press";
+    default: return "/";
+  }
+}
 
 export default function AcceptInvitation() {
   const [, inviteParams] = useRoute("/invite/:token");
   const [, invitationParams] = useRoute("/invitation/:token");
   const [, setLocation] = useLocation();
-
-  const { data: user, isLoading: authLoading } = trpc.auth.me.useQuery();
   const token = inviteParams?.token || invitationParams?.token || "";
 
-  const [validationState, setValidationState] = useState<"loading" | "valid" | "invalid" | "accepted">("loading");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [formError, setFormError] = useState("");
 
-  // Valider le token
-  const { data: validation, isLoading: validating, error: validationError } = trpc.invitations.validateToken.useQuery(
+  const validation = trpc.invitations.validateToken.useQuery(
     { token },
-    { 
-      enabled: !!token,
-      retry: false,
-    }
+    { enabled: !!token, retry: false }
   );
 
-  // Mutation pour accepter l'invitation
-  const acceptMutation = trpc.invitations.acceptInvitation.useMutation({
-    onSuccess: () => {
-      setValidationState("accepted");
-      // Success - will redirect
-      setTimeout(() => {
-        setLocation("/");
-      }, 2000);
-    },
-    onError: (error: any) => {
-      alert(`Erreur: ${error.message}`);
-    },
-  });
+  const createAccount = trpc.invitations.createAccount.useMutation();
 
-  // Gérer la validation du token
-  useEffect(() => {
-    if (validating || authLoading) return;
+  const invitation = validation.data?.invitation;
+  const loginUrl = useMemo(
+    () => `/login?returnTo=${encodeURIComponent(`/invitation/${token}`)}`,
+    [token]
+  );
 
-    if (validationError) {
-      setValidationState("invalid");
-      setErrorMessage(validationError.message);
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setFormError("");
+    if (password.length < 10) {
+      setFormError("Le mot de passe doit contenir au moins 10 caractères.");
       return;
     }
-
-    if (validation) {
-      if (validation.valid) {
-        setValidationState("valid");
-      } else {
-        setValidationState("invalid");
-        setErrorMessage("Token invalide");
-      }
-    }
-  }, [validation, validating, validationError, authLoading]);
-
-  // Rediriger vers OAuth si non connecté
-  useEffect(() => {
-    if (!authLoading && !user && validationState === "valid") {
-      const returnPath = `/invite/${token}`;
-      window.location.href = getLoginUrl(returnPath);
-    }
-  }, [user, authLoading, validationState, token]);
-
-  const handleAccept = async () => {
-    if (!user) {
-      window.location.href = getLoginUrl(`/invite/${token}`);
+    if (password !== confirmation) {
+      setFormError("Les deux mots de passe ne correspondent pas.");
       return;
     }
-
-    await acceptMutation.mutateAsync({ token });
-  };
-
-  // Loading state
-  if (validating || authLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 bg-slate-900/50 backdrop-blur-xl border-slate-800">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-12 h-12 text-yellow-500 animate-spin" />
-            <h2 className="text-xl font-semibold text-white">Validation de l'invitation...</h2>
-            <p className="text-slate-400 text-center">Veuillez patienter pendant que nous vérifions votre invitation.</p>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  // Invalid token
-  if (validationState === "invalid") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 bg-slate-900/50 backdrop-blur-xl border-slate-800">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center">
-              <XCircle className="w-10 h-10 text-red-500" />
-            </div>
-            <h2 className="text-2xl font-bold text-white">Invitation invalide</h2>
-            <p className="text-slate-400 text-center">{errorMessage}</p>
-            <Button
-              onClick={() => setLocation("/")}
-              className="mt-4 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400"
-            >
-              Retour à l'accueil
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  // Accepted state
-  if (validationState === "accepted") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 bg-slate-900/50 backdrop-blur-xl border-slate-800">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
-              <CheckCircle2 className="w-10 h-10 text-green-500" />
-            </div>
-            <h2 className="text-2xl font-bold text-white">Invitation acceptée !</h2>
-            <p className="text-slate-400 text-center">Votre compte a été créé avec succès. Redirection en cours...</p>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  // Valid invitation - show details
-  if (validationState === "valid" && validation) {
-    const invitation = validation.invitation;
-    if (!invitation) return null;
-
-    // Parse permission overrides
-    let overrides: { add?: string[]; remove?: string[] } = {};
     try {
-      if (invitation.permissionOverrides) {
-        overrides = JSON.parse(invitation.permissionOverrides);
-      }
-    } catch (e) {
-      console.error("Failed to parse permission overrides:", e);
+      const result = await createAccount.mutateAsync({ token, name: name.trim(), password });
+      window.location.assign(destinationForRole(result.role));
+    } catch (error: any) {
+      setFormError(error?.message || "Impossible de créer le compte.");
     }
+  }
 
-    const hasOverrides = (overrides.add && overrides.add.length > 0) || (overrides.remove && overrides.remove.length > 0);
-
+  if (!token || validation.error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-2xl w-full p-8 bg-slate-900/50 backdrop-blur-xl border-slate-800">
-          <div className="flex flex-col gap-6">
-            {/* Header */}
-            <div className="flex flex-col items-center gap-4 pb-6 border-b border-slate-800">
-              <div className="w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center">
-                <Mail className="w-10 h-10 text-yellow-500" />
-              </div>
-              <h1 className="text-3xl font-bold text-white text-center">Vous avez été invité !</h1>
-              <p className="text-slate-400 text-center">
-                Vous avez reçu une invitation pour rejoindre <span className="text-yellow-500 font-semibold">Miss & Mister Dour 2026</span>
-              </p>
-            </div>
-
-            {/* Invitation details */}
-            <div className="space-y-4">
-              {/* Email */}
-              <div className="flex items-center gap-3 p-4 bg-slate-800/30 rounded-lg border border-slate-700">
-                <Mail className="w-5 h-5 text-slate-400" />
-                <div>
-                  <p className="text-xs text-slate-500">Email</p>
-                  <p className="text-white font-medium">{invitation.email}</p>
-                </div>
-              </div>
-
-              {/* Role */}
-              <div className="flex items-center gap-3 p-4 bg-slate-800/30 rounded-lg border border-slate-700">
-                <Shield className="w-5 h-5 text-yellow-500" />
-                <div>
-                  <p className="text-xs text-slate-500">Rôle assigné</p>
-                  <p className="text-white font-medium capitalize">{invitation.role}</p>
-                </div>
-              </div>
-
-              {/* Expiration */}
-              <div className="flex items-center gap-3 p-4 bg-slate-800/30 rounded-lg border border-slate-700">
-                <Clock className="w-5 h-5 text-slate-400" />
-                <div>
-                  <p className="text-xs text-slate-500">Expire le</p>
-                  <p className="text-white font-medium">
-                    {invitation.expiresAt ? new Date(invitation.expiresAt).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }) : 'N/A'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Usage */}
-              {invitation.maxUses && invitation.maxUses > 1 && (
-                <div className="flex items-center gap-3 p-4 bg-slate-800/30 rounded-lg border border-slate-700">
-                  <Users className="w-5 h-5 text-slate-400" />
-                  <div>
-                    <p className="text-xs text-slate-500">Utilisations</p>
-                    <p className="text-white font-medium">
-                      {invitation.usedCount} / {invitation.maxUses}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Permission overrides */}
-              {hasOverrides && (
-                <div className="p-4 bg-slate-800/30 rounded-lg border border-slate-700">
-                  <p className="text-xs text-slate-500 mb-3">Permissions personnalisées</p>
-                  <div className="space-y-2">
-                    {overrides.add && overrides.add.length > 0 && (
-                      <div>
-                        <p className="text-xs text-green-400 mb-1">✓ Permissions ajoutées :</p>
-                        <div className="flex flex-wrap gap-1">
-                          {overrides.add.map((perm) => (
-                            <span
-                              key={perm}
-                              className="text-xs px-2 py-1 bg-green-500/10 text-green-400 rounded border border-green-500/20"
-                            >
-                              {perm}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {overrides.remove && overrides.remove.length > 0 && (
-                      <div>
-                        <p className="text-xs text-red-400 mb-1">✗ Permissions retirées :</p>
-                        <div className="flex flex-wrap gap-1">
-                          {overrides.remove.map((perm) => (
-                            <span
-                              key={perm}
-                              className="text-xs px-2 py-1 bg-red-500/10 text-red-400 rounded border border-red-500/20"
-                            >
-                              {perm}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col gap-3 pt-6 border-t border-slate-800">
-              <Button
-                onClick={handleAccept}
-                disabled={acceptMutation.isPending}
-                className="w-full bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white font-semibold py-6 text-lg"
-              >
-                {acceptMutation.isPending ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Acceptation en cours...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-5 h-5 mr-2" />
-                    Accepter l'invitation
-                  </>
-                )}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setLocation("/")}
-                className="w-full border-slate-700 text-slate-300 hover:bg-slate-800"
-              >
-                Refuser
-              </Button>
-            </div>
-
-            {/* Info */}
-            <p className="text-xs text-slate-500 text-center">
-              En acceptant cette invitation, vous confirmez avoir lu et accepté les conditions d'utilisation de la plateforme.
-            </p>
-          </div>
-        </Card>
-      </div>
+      <InvitationShell>
+        <Status icon={<XCircle className="w-10 h-10 text-red-400" />} title="Invitation invalide">
+          {validation.error?.message || "Le lien d’invitation est incomplet ou invalide."}
+        </Status>
+      </InvitationShell>
     );
   }
 
-  return null;
+  if (validation.isLoading || !invitation) {
+    return (
+      <InvitationShell>
+        <Status icon={<Loader2 className="w-10 h-10 text-amber-300 animate-spin" />} title="Vérification de l’invitation">
+          Nous vérifions votre lien sécurisé…
+        </Status>
+      </InvitationShell>
+    );
+  }
+
+  return (
+    <InvitationShell>
+      <div className="text-center mb-7">
+        <div className="mx-auto mb-4 w-14 h-14 rounded-full border border-amber-300/40 bg-amber-300/10 flex items-center justify-center">
+          <CheckCircle2 className="w-7 h-7 text-amber-300" />
+        </div>
+        <p className="text-amber-300 tracking-[0.25em] text-xs font-semibold mb-2">MISS &amp; MISTER DOUR · ÉDITION 2027</p>
+        <h1 className="text-3xl font-semibold text-white">Créer mes identifiants</h1>
+        <p className="text-slate-400 mt-2">Votre invitation est valide. Choisissez maintenant votre mot de passe personnel.</p>
+      </div>
+
+      <div className="grid gap-3 mb-6">
+        <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+          <Mail className="w-5 h-5 text-amber-300" />
+          <div><div className="text-xs text-slate-500">Adresse de connexion</div><div className="text-white">{invitation.email}</div></div>
+        </div>
+        <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+          <Shield className="w-5 h-5 text-amber-300" />
+          <div><div className="text-xs text-slate-500">Accès attribué</div><div className="text-white">{roleLabels[invitation.role] || invitation.role}</div></div>
+        </div>
+      </div>
+
+      <form onSubmit={submit} className="space-y-4">
+        <label className="block">
+          <span className="text-sm text-slate-300">Nom affiché</span>
+          <div className="mt-1 flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3">
+            <UserRound className="w-5 h-5 text-slate-500" />
+            <input className="w-full bg-transparent py-3 text-white outline-none" value={name} onChange={e => setName(e.target.value)} minLength={2} maxLength={120} autoComplete="name" required autoFocus />
+          </div>
+        </label>
+
+        <PasswordField label="Créer mon mot de passe" value={password} setValue={setPassword} visible={showPassword} toggle={() => setShowPassword(v => !v)} autoComplete="new-password" />
+        <PasswordField label="Confirmer mon mot de passe" value={confirmation} setValue={setConfirmation} visible={showPassword} toggle={() => setShowPassword(v => !v)} autoComplete="new-password" />
+
+        <p className="text-xs text-slate-500">Minimum 10 caractères. Votre mot de passe n’est jamais envoyé par e-mail et est enregistré sous forme de hash sécurisé.</p>
+        {formError && <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">{formError}</div>}
+
+        <button type="submit" disabled={createAccount.isPending} className="w-full rounded-xl bg-amber-300 px-5 py-3.5 font-semibold text-slate-950 disabled:opacity-60">
+          {createAccount.isPending ? "Création du compte…" : "Créer mon compte"}
+        </button>
+      </form>
+
+      <div className="mt-6 border-t border-white/10 pt-5 text-center text-sm text-slate-500">
+        Vous avez déjà créé votre compte ?{" "}
+        <button type="button" className="text-amber-300 hover:underline" onClick={() => setLocation(loginUrl)}>Se connecter</button>
+      </div>
+    </InvitationShell>
+  );
+}
+
+function PasswordField({ label, value, setValue, visible, toggle, autoComplete }: { label: string; value: string; setValue: (v: string) => void; visible: boolean; toggle: () => void; autoComplete: string }) {
+  return (
+    <label className="block">
+      <span className="text-sm text-slate-300">{label}</span>
+      <div className="mt-1 flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3">
+        <LockKeyhole className="w-5 h-5 text-slate-500" />
+        <input className="w-full bg-transparent py-3 text-white outline-none" type={visible ? "text" : "password"} value={value} onChange={e => setValue(e.target.value)} minLength={10} maxLength={512} autoComplete={autoComplete} required />
+        <button type="button" onClick={toggle} className="text-slate-500" aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}>{visible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}</button>
+      </div>
+    </label>
+  );
+}
+
+function InvitationShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#080706] via-[#17100b] to-[#080706] flex items-center justify-center p-4">
+      <Card className="w-full max-w-xl border-amber-300/20 bg-[#11100f]/95 p-6 sm:p-8 shadow-2xl">{children}</Card>
+    </div>
+  );
+}
+
+function Status({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return <div className="py-8 text-center"><div className="flex justify-center mb-4">{icon}</div><h1 className="text-2xl font-semibold text-white">{title}</h1><p className="mt-2 text-slate-400">{children}</p></div>;
 }
