@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { eq, sql } from "drizzle-orm";
+import crypto from "crypto";
 import { getDb } from "../db";
 import { users } from "../../drizzle/schema";
 
@@ -158,4 +159,70 @@ export async function verifyPasswordUser(email: string, password: string) {
   const valid = await bcrypt.compare(password, passwordHash);
   if (!valid) return null;
   return user;
+}
+
+
+let resetStorageReady: Promise<void> | null = null;
+
+async function ensurePasswordResetStorage() {
+  if (resetStorageReady) return resetStorageReady;
+  resetStorageReady = (async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Base de données non disponible");
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS passwordResetTokens (
+        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        userId INT NOT NULL,
+        tokenHash CHAR(64) NOT NULL UNIQUE,
+        expiresAt TIMESTAMP NOT NULL,
+        usedAt TIMESTAMP NULL,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_passwordResetTokens_userId (userId),
+        INDEX idx_passwordResetTokens_expiresAt (expiresAt)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+  })().catch(error => { resetStorageReady = null; throw error; });
+  return resetStorageReady;
+}
+
+export async function createPasswordResetToken(email: string): Promise<{ token: string; email: string } | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Base de données non disponible");
+  await ensureLocalCredentialsStorage();
+  await ensurePasswordResetStorage();
+  const normalizedEmail = email.toLowerCase().trim();
+  const openId = buildLocalOpenId(normalizedEmail);
+  const rows = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.openId, openId)).limit(1);
+  if (!rows.length) return null;
+  const user = rows[0];
+  const token = crypto.randomBytes(32).toString("hex");
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  await db.execute(sql`UPDATE passwordResetTokens SET usedAt = CURRENT_TIMESTAMP WHERE userId = ${user.id} AND usedAt IS NULL`);
+  await db.execute(sql`INSERT INTO passwordResetTokens (userId, tokenHash, expiresAt) VALUES (${user.id}, ${tokenHash}, ${expiresAt})`);
+  return { token, email: user.email || normalizedEmail };
+}
+
+export async function resetPasswordWithToken(token: string, password: string): Promise<boolean> {
+  if (!token || password.length < 10 || password.length > 512) return false;
+  const db = await getDb();
+  if (!db) throw new Error("Base de données non disponible");
+  await ensureLocalCredentialsStorage();
+  await ensurePasswordResetStorage();
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const [rows] = await db.execute(sql`
+    SELECT id, userId FROM passwordResetTokens
+    WHERE tokenHash = ${tokenHash} AND usedAt IS NULL AND expiresAt > CURRENT_TIMESTAMP
+    LIMIT 1
+  `) as any;
+  const reset = (rows as any[])?.[0];
+  if (!reset) return false;
+  const passwordHash = await bcrypt.hash(password, BCRYPT_COST);
+  await db.execute(sql`
+    INSERT INTO localCredentials (userId, passwordHash)
+    VALUES (${reset.userId}, ${passwordHash})
+    ON DUPLICATE KEY UPDATE passwordHash = VALUES(passwordHash), updatedAt = CURRENT_TIMESTAMP
+  `);
+  await db.execute(sql`UPDATE passwordResetTokens SET usedAt = CURRENT_TIMESTAMP WHERE id = ${reset.id}`);
+  return true;
 }
