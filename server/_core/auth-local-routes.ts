@@ -2,8 +2,9 @@ import type { Express, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./cookies";
-import { verifyPasswordUser } from "./auth-password";
+import { createPasswordResetToken, resetPasswordWithToken, verifyPasswordUser } from "./auth-password";
 import { sdk } from "./sdk";
+import { sendPasswordResetEmail } from "./password-reset-email";
 
 const LOCAL_SESSION_MS = 1000 * 60 * 60 * 24 * 30; // 30 jours
 
@@ -17,6 +18,45 @@ const loginLimiter = rateLimit({
 });
 
 export function registerLocalAuthRoutes(app: Express) {
+
+  app.post("/api/auth/forgot-password", loginLimiter, async (req: Request, res: Response) => {
+    try {
+      const email = String(req.body?.email ?? "").toLowerCase().trim();
+      if (email && email.length <= 320) {
+        const reset = await createPasswordResetToken(email);
+        if (reset) {
+          const baseUrl = String(process.env.PUBLIC_BASE_URL || "https://missetmisterdour.be").replace(/\/$/, "");
+          await sendPasswordResetEmail(reset.email, `${baseUrl}/reset-password?token=${encodeURIComponent(reset.token)}`);
+        }
+      }
+      // Réponse identique qu'un compte existe ou non : anti-enumération.
+      res.json({ success: true, message: "Si cette adresse possède un compte, un lien de réinitialisation vient d’être envoyé." });
+    } catch (error) {
+      console.error("[Auth] Password reset request failed:", error);
+      res.status(500).json({ error: "Réinitialisation momentanément indisponible." });
+    }
+  });
+
+  app.post("/api/auth/reset-password", loginLimiter, async (req: Request, res: Response) => {
+    try {
+      const token = String(req.body?.token ?? "");
+      const password = String(req.body?.password ?? "");
+      if (!token || password.length < 10 || password.length > 512) {
+        res.status(400).json({ error: "Lien invalide ou mot de passe trop court." });
+        return;
+      }
+      const success = await resetPasswordWithToken(token, password);
+      if (!success) {
+        res.status(400).json({ error: "Ce lien est invalide, expiré ou a déjà été utilisé." });
+        return;
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("[Auth] Password reset failed:", error);
+      res.status(500).json({ error: "Réinitialisation momentanément indisponible." });
+    }
+  });
+
   app.post("/api/auth/login", loginLimiter, async (req: Request, res: Response) => {
     try {
       const email = String(req.body?.email ?? "").toLowerCase().trim();
