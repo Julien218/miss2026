@@ -37,6 +37,8 @@ import VideoFactory2026 from "./pages/VideoFactory2026";
 import InternalDashboard from "./pages/InternalDashboard";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import AdminInvitations from "./pages/admin/AdminInvitations";
 import AdminUsers from "./pages/AdminUsers";
 import CandidateOnboarding from "./pages/admin/CandidateOnboarding";
@@ -79,6 +81,8 @@ function Router() {
       {/* ========== PAGES PUBLIQUES ========== */}
       <Route path="/" component={Homepage} />
       <Route path="/login" component={Login} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route path="/about" component={About} />
       <Route path="/press" component={Press} />
       <Route path="/sponsors" component={Sponsors} />
