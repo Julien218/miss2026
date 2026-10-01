@@ -16,11 +16,12 @@ import { Loader2, CheckCircle2, XCircle, Shield, Users, Clock, Mail } from "luci
 import { getLoginUrl } from "@/const";
 
 export default function AcceptInvitation() {
-  const [, params] = useRoute("/invite/:token");
+  const [, inviteParams] = useRoute("/invite/:token");
+  const [, invitationParams] = useRoute("/invitation/:token");
   const [, setLocation] = useLocation();
 
   const { data: user, isLoading: authLoading } = trpc.auth.me.useQuery();
-  const token = params?.token || "";
+  const token = inviteParams?.token || invitationParams?.token || "";
 
   const [validationState, setValidationState] = useState<"loading" | "valid" | "invalid" | "accepted">("loading");
   const [errorMessage, setErrorMessage] = useState<string>("");
