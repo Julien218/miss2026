@@ -104,7 +104,7 @@ export default function Login() {
             {error && <div className="mmd-login-error" role="alert">{error}</div>}
 
             <button type="submit" className="mmd-login-submit" disabled={busy}>{busy ? "Connexion…" : <>Se connecter <LogIn /></>}</button>
-            <p className="mmd-login-help">Vous n’avez plus accès à votre mot de passe ? <Link href="/contact">Contactez l’organisation</Link>.</p>
+            <p className="mmd-login-help">Vous n’avez plus accès à votre mot de passe ? <Link href="/forgot-password">Réinitialiser mon mot de passe</Link>.</p>
           </form>
         </section>
       </main>
