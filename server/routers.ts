@@ -22,7 +22,8 @@ import { videoGeneratorRouter } from "./routers/videoGenerator";
 import { validationRouter } from "./routers/validation";
 import { checkRateLimit, rateLimitConfigs } from "./_core/rateLimit";
 import { registerUser } from "./_core/auth-password";
-import { sdk } from "./_core/sdk";\nimport { sendInvitationEmail } from "./_core/invitation-email";
+import { sdk } from "./_core/sdk";
+import { sendInvitationEmail } from "./_core/invitation-email";
 
 // Admin-only procedure (admin + super_admin)
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
