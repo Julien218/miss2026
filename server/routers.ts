@@ -1627,18 +1627,21 @@ export const appRouter = router({
           permissionOverrides: input.permissionOverrides,
         });
 
-        // Envoyer l'email d'invitation si demandé
+        const publicBaseUrl = (
+          process.env.PUBLIC_BASE_URL || "https://www.missetmisterdour.be"
+        ).replace(/\/$/, "");
+        const inviteUrl = `${publicBaseUrl}/invitation/${invitation.token}`;
+
+        // Envoyer l'email d'invitation si demandé.
+        // Le lien est toujours construit côté serveur à partir du domaine officiel.
         if (input.sendEmail && invitation.token) {
-          const baseUrl = input.origin || 'https://missdourweb-fqsyubas.manus.space';
-          const inviteUrl = `${baseUrl}/invitation/${invitation.token}`;
-          const inviterName = ctx.user.name || 'L\'équipe Miss & Mister Dour';
-          // Non bloquant
+          const inviterName = ctx.user.name || "L'équipe Miss & Mister Dour";
           sendInvitationEmail(input.email, inviteUrl, input.role, inviterName).catch(() => {});
         }
 
         return {
           ...invitation,
-          inviteUrl: `${input.origin || 'https://missdourweb-fqsyubas.manus.space'}/invitation/${invitation.token}`,
+          inviteUrl,
         };
       }),
 
