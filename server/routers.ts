@@ -41,50 +41,162 @@ const superAdminProcedure = protectedProcedure.use(({ ctx, next }) => {
 });
 
 // Helper email invitation
-async function sendInvitationEmail(to: string, inviteUrl: string, role: string, inviterName: string): Promise<boolean> {
-  const { ENV } = await import('./_core/env');
-  if (!ENV.forgeApiUrl || !ENV.forgeApiKey) return false;
+function escapeEmailHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+async function sendInvitationEmail(
+  to: string,
+  inviteUrl: string,
+  role: string,
+  inviterName: string
+): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error("[Email] RESEND_API_KEY manquante pour l'invitation");
+    return false;
+  }
+
   const roleLabels: Record<string, string> = {
-    admin: 'Administrateur', super_admin: 'Super Administrateur',
-    photographe: 'Photographe', jury: 'Jury', manager: 'Manager',
-    directeur: 'Directeur', candidat: 'Candidat', viewer: 'Observateur',
+    admin: "Administrateur",
+    super_admin: "Super Administrateur",
+    photographe: "Photographe",
+    jury: "Jury",
+    manager: "Manager",
+    directeur: "Directeur",
+    candidat: "Candidat",
+    viewer: "Observateur",
   };
   const roleLabel = roleLabels[role] || role;
-  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#0A0A0F;font-family:'Segoe UI',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#0A0A0F;padding:40px 20px;">
-<tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="background:#111;border-radius:16px;border:1px solid #C87941;overflow:hidden;max-width:600px;">
-<tr><td style="background:linear-gradient(135deg,#1a0f08,#2a1a0a);padding:40px;text-align:center;border-bottom:2px solid #C87941;">
-<p style="color:#C87941;font-size:12px;letter-spacing:4px;text-transform:uppercase;margin:0 0 8px;">MISS &amp; MISTER DOUR 2026</p>
-<h1 style="color:#E8D5B7;font-size:24px;margin:0;">Vous êtes invité(e)</h1>
-<p style="color:#aaa;font-size:13px;margin:10px 0 0;">Rôle : <strong style="color:#C87941;">${roleLabel}</strong></p>
-</td></tr>
-<tr><td style="padding:40px;">
-<p style="color:#E8D5B7;font-size:16px;margin:0 0 16px;">Bonjour,</p>
-<p style="color:#ccc;font-size:15px;line-height:1.7;margin:0 0 24px;">
-<strong style="color:#C87941;">${inviterName}</strong> vous invite à rejoindre la plateforme
-<strong>Miss &amp; Mister Dour 2026</strong> en tant que <strong style="color:#C87941;">${roleLabel}</strong>.
-</p>
-<table cellpadding="0" cellspacing="0" style="margin:0 auto 32px;">
-<tr><td style="background:linear-gradient(135deg,#C87941,#D4956A);border-radius:12px;">
-<a href="${inviteUrl}" style="display:block;padding:16px 40px;color:#0A0A0F;font-weight:700;font-size:16px;text-decoration:none;">✨ Accepter l'invitation</a>
-</td></tr></table>
-<p style="color:#888;font-size:12px;text-align:center;">Ou copiez ce lien : <a href="${inviteUrl}" style="color:#C87941;">${inviteUrl}</a></p>
-</td></tr>
-<tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #222;">
-<p style="color:#444;font-size:11px;margin:0;">STARLIGHT ASBL · Grand'Place 9, 7370 Dour · © 2026 Miss &amp; Mister Dour</p>
-</td></tr></table></td></tr></table></body></html>`;
+  const from =
+    process.env.RESEND_FROM_EMAIL ||
+    "Miss & Mister Dour <invitations@missetmisterdour.be>";
+  const siteUrl = (
+    process.env.PUBLIC_BASE_URL || "https://www.missetmisterdour.be"
+  ).replace(/\/$/, "");
+
+  const safeInviteUrl = escapeEmailHtml(inviteUrl);
+  const safeRoleLabel = escapeEmailHtml(roleLabel);
+  const safeInviterName = escapeEmailHtml(inviterName);
+  const safeSiteUrl = escapeEmailHtml(siteUrl);
+
+  const subject = "Miss & Mister Dour — Votre invitation";
+  const text = [
+    "Miss & Mister Dour — Invitation",
+    "",
+    `${inviterName} vous invite à rejoindre l’espace Miss & Mister Dour 2027 en tant que ${roleLabel}.`,
+    "",
+    "Pour créer votre accès personnel, ouvrez ce lien :",
+    inviteUrl,
+    "",
+    "Ce lien est personnel. Ne le transférez pas.",
+    "",
+    "Miss & Mister Dour",
+    siteUrl,
+    "STARLIGHT ASBL · Grand’Place 9 · 7370 Dour · Belgique",
+  ].join("\n");
+
+  const html = `<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Votre invitation Miss &amp; Mister Dour</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f1ec;color:#24211d;font-family:Arial,Helvetica,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+    Votre invitation personnelle pour rejoindre l’espace Miss &amp; Mister Dour 2027.
+  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:#f4f1ec;">
+    <tr>
+      <td align="center" style="padding:36px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e4ddd3;">
+          <tr>
+            <td style="padding:30px 34px 20px;border-bottom:3px solid #b58a50;">
+              <p style="margin:0 0 8px;font-size:11px;line-height:18px;letter-spacing:1.8px;color:#8b6b42;font-weight:700;">MISS &amp; MISTER DOUR · ÉDITION 2027</p>
+              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:36px;font-weight:400;color:#1f1c18;">Votre invitation</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:30px 34px;">
+              <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#3f3932;">Bonjour,</p>
+              <p style="margin:0 0 18px;font-size:15px;line-height:25px;color:#5c554d;"><strong>${safeInviterName}</strong> vous invite à rejoindre l’espace Miss &amp; Mister Dour 2027.</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;background:#faf8f5;border:1px solid #eee8df;">
+                <tr>
+                  <td style="padding:14px 16px;">
+                    <p style="margin:0;font-size:12px;line-height:19px;color:#8a837b;">Rôle attribué</p>
+                    <p style="margin:3px 0 0;font-size:15px;line-height:22px;color:#312c27;font-weight:700;">${safeRoleLabel}</p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 22px;font-size:15px;line-height:25px;color:#5c554d;">Utilisez votre lien personnel pour créer votre mot de passe et activer votre accès.</p>
+
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 26px;">
+                <tr>
+                  <td bgcolor="#b58a50" style="background:#b58a50;border-radius:4px;">
+                    <a href="${safeInviteUrl}" style="display:inline-block;padding:14px 22px;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;">Créer mon accès</a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 20px;font-size:13px;line-height:21px;color:#766e65;">Ce lien est personnel. Pour des raisons de sécurité, ne le transférez pas.</p>
+
+              <div style="height:1px;background:#eee8df;margin:24px 0;"></div>
+
+              <p style="margin:0 0 8px;font-size:12px;line-height:19px;color:#8a837b;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :</p>
+              <p style="margin:0;font-size:12px;line-height:19px;word-break:break-all;"><a href="${safeInviteUrl}" style="color:#7c5d36;text-decoration:underline;">${safeInviteUrl}</a></p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:22px 34px;background:#faf8f5;border-top:1px solid #eee8df;">
+              <p style="margin:0 0 6px;font-size:12px;line-height:19px;color:#6f675f;"><strong>Miss &amp; Mister Dour</strong> · STARLIGHT ASBL</p>
+              <p style="margin:0 0 6px;font-size:12px;line-height:19px;color:#8a837b;">Grand’Place 9 · 7370 Dour · Belgique</p>
+              <p style="margin:0;font-size:12px;line-height:19px;"><a href="${safeSiteUrl}" style="color:#7c5d36;text-decoration:none;">${safeSiteUrl}</a></p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
   try {
-    const baseUrl = ENV.forgeApiUrl.endsWith('/') ? ENV.forgeApiUrl : `${ENV.forgeApiUrl}/`;
-    const endpoint = new URL('webdevtoken.v1.WebDevService/SendEmail', baseUrl).toString();
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { accept: 'application/json', authorization: `Bearer ${ENV.forgeApiKey}`, 'content-type': 'application/json', 'connect-protocol-version': '1' },
-      body: JSON.stringify({ to, subject: `Invitation Miss & Mister Dour 2026 - Rôle : ${roleLabel}`, html }),
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: [to],
+        reply_to: "olivier.trevis@outlook.be",
+        subject,
+        text,
+        html,
+      }),
     });
-    return res.ok;
-  } catch { return false; }
+
+    if (!response.ok) {
+      const details = await response.text().catch(() => "");
+      console.error(
+        `[Email] Invitation Resend ${response.status}: ${details || response.statusText}`
+      );
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("[Email] Erreur d’envoi de l’invitation:", error);
+    return false;
+  }
 }
 
 export const appRouter = router({
