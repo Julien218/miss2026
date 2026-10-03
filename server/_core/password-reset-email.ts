@@ -14,93 +14,75 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string) {
   const from =
     process.env.RESEND_FROM_EMAIL ||
     "Miss & Mister Dour <invitations@missetmisterdour.be>";
-  const siteUrl = (
-    process.env.PUBLIC_BASE_URL || "https://www.missetmisterdour.be"
-  ).replace(/\/$/, "");
+
   const safeResetUrl = escapeHtml(resetUrl);
-  const safeSiteUrl = escapeHtml(siteUrl);
-
-  const subject = "Miss & Mister Dour — Réinitialisation du mot de passe";
-  const text = [
-    "Miss & Mister Dour — Réinitialisation du mot de passe",
-    "",
-    "Vous avez demandé à modifier le mot de passe de votre espace.",
-    "Le lien ci-dessous est valable pendant 1 heure et ne peut être utilisé qu’une seule fois :",
-    "",
-    resetUrl,
-    "",
-    "Si vous n’êtes pas à l’origine de cette demande, vous pouvez ignorer cet e-mail. Votre mot de passe actuel restera inchangé.",
-    "",
-    "Miss & Mister Dour",
-    siteUrl,
-    "STARLIGHT ASBL · Grand’Place 9 · 7370 Dour · Belgique",
-  ].join("\n");
-
-  const html = `<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>Réinitialisation du mot de passe</title>
-</head>
-<body style="margin:0;padding:0;background:#f4f1ec;color:#24211d;font-family:Arial,Helvetica,sans-serif;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
-    Lien sécurisé valable 1 heure pour modifier votre mot de passe Miss &amp; Mister Dour.
-  </div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:#f4f1ec;">
-    <tr>
-      <td align="center" style="padding:36px 16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e4ddd3;">
-          <tr>
-            <td style="padding:30px 34px 20px;border-bottom:3px solid #b58a50;">
-              <p style="margin:0 0 8px;font-size:11px;line-height:18px;letter-spacing:1.8px;color:#8b6b42;font-weight:700;">MISS &amp; MISTER DOUR · ÉDITION 2027</p>
-              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:36px;font-weight:400;color:#1f1c18;">Réinitialiser votre mot de passe</h1>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:30px 34px;">
-              <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#3f3932;">Bonjour,</p>
-              <p style="margin:0 0 24px;font-size:15px;line-height:25px;color:#5c554d;">Une demande de modification du mot de passe a été enregistrée pour votre espace sécurisé Miss &amp; Mister Dour.</p>
-
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 26px;">
-                <tr>
-                  <td bgcolor="#b58a50" style="background:#b58a50;border-radius:4px;">
-                    <a href="${safeResetUrl}" style="display:inline-block;padding:14px 22px;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;">Choisir un nouveau mot de passe</a>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="margin:0 0 12px;font-size:13px;line-height:21px;color:#766e65;">Ce lien est valable <strong>1 heure</strong> et ne peut être utilisé qu’une seule fois.</p>
-              <p style="margin:0 0 24px;font-size:13px;line-height:21px;color:#766e65;">Si vous n’avez pas demandé cette modification, ignorez simplement cet e-mail. Votre mot de passe actuel restera inchangé.</p>
-
-              <div style="height:1px;background:#eee8df;margin:24px 0;"></div>
-
-              <p style="margin:0 0 8px;font-size:12px;line-height:19px;color:#8a837b;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :</p>
-              <p style="margin:0;font-size:12px;line-height:19px;word-break:break-all;"><a href="${safeResetUrl}" style="color:#7c5d36;text-decoration:underline;">${safeResetUrl}</a></p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:22px 34px;background:#faf8f5;border-top:1px solid #eee8df;">
-              <p style="margin:0 0 6px;font-size:12px;line-height:19px;color:#6f675f;"><strong>Miss &amp; Mister Dour</strong> · STARLIGHT ASBL</p>
-              <p style="margin:0 0 6px;font-size:12px;line-height:19px;color:#8a837b;">Grand’Place 9 · 7370 Dour · Belgique</p>
-              <p style="margin:0;font-size:12px;line-height:19px;"><a href="${safeSiteUrl}" style="color:#7c5d36;text-decoration:none;">${safeSiteUrl}</a></p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
 
   const payload = {
     from,
     to: [email],
     reply_to: "olivier.trevis@outlook.be",
-    subject,
-    text,
-    html,
+    subject: "Réinitialisation de votre mot de passe — Miss & Mister Dour",
+    text: [
+      "Miss & Mister Dour 2027",
+      "",
+      "Une demande de réinitialisation de votre mot de passe a été reçue.",
+      "Pour choisir un nouveau mot de passe, ouvrez ce lien :",
+      resetUrl,
+      "",
+      "Ce lien est valable 1 heure et ne peut être utilisé qu’une seule fois.",
+      "Si vous n’êtes pas à l’origine de cette demande, vous pouvez ignorer cet e-mail.",
+      "",
+      "STARLIGHT ASBL · Grand’Place 9 · 7370 Dour · Belgique",
+    ].join("\n"),
+    html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Réinitialisation de votre mot de passe</title>
+</head>
+<body style="margin:0;background-color:#f5f3ef;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f3ef;">
+    <tr>
+      <td align="center" style="padding-top:32px;padding-right:16px;padding-bottom:32px;padding-left:16px;">
+        <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background-color:#ffffff;border:1px solid #e7e1d8;">
+          <tr>
+            <td bgcolor="#17130f" style="background-color:#17130f;padding-top:24px;padding-right:28px;padding-bottom:24px;padding-left:28px;">
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:18px;color:#d7b77a;letter-spacing:1.5px;margin-top:0;margin-right:0;margin-bottom:7px;margin-left:0;">MISS &amp; MISTER DOUR · ÉDITION 2027</p>
+              <p style="font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:31px;color:#fffaf2;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;">Réinitialisation du mot de passe</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-top:30px;padding-right:28px;padding-bottom:28px;padding-left:28px;">
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#2b2722;margin-top:0;margin-right:0;margin-bottom:16px;margin-left:0;">Bonjour,</p>
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#4f4942;margin-top:0;margin-right:0;margin-bottom:22px;margin-left:0;">Une demande de réinitialisation a été reçue pour votre espace Miss &amp; Mister Dour.</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                <tr>
+                  <td bgcolor="#d5b06c" align="center" style="background-color:#d5b06c;border-radius:4px;">
+                    <a href="${safeResetUrl}" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;font-weight:700;color:#17130f;text-decoration:none;padding-top:13px;padding-right:24px;padding-bottom:13px;padding-left:24px;">Choisir un nouveau mot de passe</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:21px;color:#756d64;margin-top:24px;margin-right:0;margin-bottom:8px;margin-left:0;">Ce lien est valable 1 heure et ne peut être utilisé qu’une seule fois.</p>
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:21px;color:#756d64;margin-top:0;margin-right:0;margin-bottom:20px;margin-left:0;">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :</p>
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:20px;color:#5e554d;word-break:break-all;margin-top:0;margin-right:0;margin-bottom:24px;margin-left:0;"><a href="${safeResetUrl}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:20px;color:#72562a;text-decoration:underline;">${safeResetUrl}</a></p>
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:21px;color:#756d64;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;">Si vous n’êtes pas à l’origine de cette demande, aucune action n’est nécessaire.</p>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#f7f4ef" style="background-color:#f7f4ef;border-top:1px solid #e7e1d8;padding-top:18px;padding-right:28px;padding-bottom:18px;padding-left:28px;">
+              <p style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#7b736b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-align:center;">STARLIGHT ASBL · Grand’Place 9 · 7370 Dour · Belgique</p>
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
   };
 
   const response = await fetch("https://api.resend.com/emails", {
