@@ -5,6 +5,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { registerCockpitSso } from "./cockpit-sso";
+import { registerCockpitOnlyAuth, spaceForRole } from "./cockpit-auth-policy";
 import { getDb } from "../db";
 import { users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -53,7 +54,7 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
   registerCockpitSso(app, {
-    siteId: "miss-mister-dour", dashboard: "/admin",
+    siteId: "miss-mister-dour", dashboard: user => spaceForRole(user.role),
     siteOrigins: ["https://missetmisterdour.be", "https://www.missetmisterdour.be"],
     findUser: async email => {
       const database = await getDb();
@@ -63,6 +64,7 @@ async function startServer() {
     },
     sessionCookies: async user => ({ [COOKIE_NAME]: await sdk.createSessionToken(user.openId, { name: user.name || user.email || "Utilisateur", expiresInMs: 60_000 }) }),
   });
+  registerCockpitOnlyAuth(app);
   registerLocalAuthRoutes(app);
   if (process.env.OAUTH_SERVER_URL) registerOAuthRoutes(app);
 
