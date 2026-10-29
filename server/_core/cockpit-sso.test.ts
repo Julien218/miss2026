@@ -48,8 +48,11 @@ describe("Cockpit embedded dashboard bridge", () => {
   it("uses a partitioned private cookie and preserves the site's original dashboard route and CSP", async () => {
     const s = await setup();
     const response = await s.boot();
-    expect(response.status).toBe(303);
-    expect(response.headers.get("location")).toBe("/admin");
+    expect(response.status).toBe(200);
+    const document = await response.text();
+    expect(document).toContain('location.replace("/admin")');
+    expect(document).not.toContain(ticket);
+    expect(document).not.toContain(grant);
     const cookie = response.headers.get("set-cookie")!;
     for (const value of ["HttpOnly", "Secure", "SameSite=None", "Partitioned", "Path=/"]) expect(cookie).toContain(value);
     expect(cookie).not.toContain("app_session_id");

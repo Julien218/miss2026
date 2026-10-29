@@ -76,8 +76,8 @@ describe("Cockpit-only access", () => {
     app.get("/api/private", (req, res) => res.json({ cookie: req.headers.cookie, verified: (req as CockpitRequest)[COCKPIT_VERIFIED] }));
     const base = await listen(app);
     const response = await fetch(base + "/api/integrations/cockpit/session", { method: "POST", redirect: "manual", headers: { Origin: "https://cockpit.jsinnovia.com", "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ ticket: "t".repeat(43), role: "admin" }) });
-    expect(response.status).toBe(303);
-    expect(response.headers.get("location")).toBe(destination);
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain(`location.replace(${JSON.stringify(destination)})`);
     const read = () => fetch(base + "/api/private", { headers: { Cookie: `__Host-cockpit-module=${"g".repeat(43)}` } });
     expect(await (await read()).json()).toEqual({ cookie: expect.stringContaining(`${COOKIE_NAME}=${role}`), verified: true });
     currentRole = "revoked";
