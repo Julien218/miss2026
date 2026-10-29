@@ -1,5 +1,39 @@
 # Connexion du tableau de bord existant au Cockpit
 
+## Connexion centralisée et nouvelle campagne — 29 octobre 2026
+
+`COCKPIT_ONLY_AUTH=true` impose une délégation Cockpit vérifiée pour toute identité
+authentifiée. Les anciens cookies directs, même valides, sont refusés. Login,
+réinitialisation locale, OAuth et création de compte par ancienne invitation sont
+bloqués. Les formulaires publics de candidature et toutes les données existantes
+restent en place. Aucune migration ni suppression de données.
+
+La route `/login` rejoint le module Cockpit. La navigation interne affiche aussi
+un lien vers ce point d'entrée. `/api/auth/config` fournit uniquement cette
+configuration publique, jamais une clé ou un jeton.
+
+Le rôle vient du compte local unique de même adresse, relu à chaque requête :
+administration → `/admin`, candidat → `/my-profile`, photographe → `/photographer`,
+presse/partenaire → `/press`, équipe → `/choreographer`, utilisateur → `/`.
+Un rôle inconnu ou sans espace compatible (jury historique) est refusé.
+Les contrôles métier, permissions fines et restrictions aux données du candidat
+continuent de s'appliquer ; aucun rôle Cockpit ne devient un rôle administrateur
+du site. Aucun compte local n'est créé automatiquement par une connexion.
+
+Chaque utilisateur doit avoir un compte Cockpit actif, la permission `dashboard`
+et le rattachement explicite `miss-mister-dour`. Le rattachement Cockpit ne crée
+aucun accès aux autres sites. Le photographe historique sans compte Cockpit reste
+bloqué jusqu'à attribution de son nouvel accès. La campagne ne justifie aucune
+suppression des candidatures déjà reçues.
+
+Déployer d'abord le code, puis activer `COCKPIT_ONLY_AUTH` avec une clé SSO déjà
+configurée sur les deux serveurs. Sans clé, ce mode refuse de démarrer. Une seule
+instance de l'API Cockpit reste nécessaire. Pour un retour arrière, retirer ce
+mode et redéployer la version précédente ; cela réautorise les connexions locales
+et doit être une décision explicite. Ne pas enlever la clé seule en mode central.
+
+## Protocole initial et mode de compatibilité
+
 Adaptateur de revue, désactivé sans `COCKPIT_SSO_SECRET`. Le tableau de bord et ses composants restent inchangés. Aucun utilisateur, rôle ou mot de passe n'est créé ou modifié.
 
 Le serveur reçoit un ticket opaque de trente secondes envoyé en POST depuis l'origine HTTPS exacte du Cockpit (`COCKPIT_SSO_ORIGIN`, défaut https://cockpit.jsinnovia.com). L'échange serveur exige une clé aléatoire de 32 octets en base64url (43 caractères), distincte pour chaque site, identique à celle configurée pour ce site dans `CLIENT_SITE_SSO_KEYS_JSON` côté Cockpit.

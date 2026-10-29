@@ -7,6 +7,7 @@ import { SignJWT, jwtVerify } from "jose";
 import type { User } from "../../drizzle/schema";
 import * as db from "../db";
 import { ENV } from "./env";
+import { cockpitOnly, COCKPIT_VERIFIED, type CockpitRequest } from "./cockpit-auth-policy";
 import type {
   ExchangeTokenRequest,
   ExchangeTokenResponse,
@@ -252,6 +253,9 @@ class SDKServer {
   }
 
   async authenticateRequest(req: Request): Promise<User> {
+    if (cockpitOnly() && !(req as CockpitRequest)[COCKPIT_VERIFIED]) {
+      throw ForbiddenError("Connectez-vous avec votre compte Cockpit.");
+    }
     const cookies = this.parseCookies(req.headers.cookie);
     const sessionCookie = cookies.get(COOKIE_NAME);
     const session = await this.verifySession(sessionCookie);

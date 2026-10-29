@@ -1,12 +1,13 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { parse, serialize } from "cookie";
+import { COCKPIT_VERIFIED, type CockpitRequest } from "./cockpit-auth-policy";
 
 const BRIDGE_COOKIE = "__Host-cockpit-module";
 const opaque = (value: unknown): value is string => typeof value === "string" && /^[A-Za-z0-9_-]{43}$/.test(value);
 type Identity = { id: number; email: string | null; role: string };
 type Options<T extends Identity> = {
   siteId: string;
-  dashboard: string;
+  dashboard: string | ((user: T) => string | null);
   siteOrigins: string[];
   findUser: (email: string) => Promise<T | null | undefined>;
   sessionCookies: (user: T) => Promise<Record<string, string>>;
@@ -37,7 +38,10 @@ export function registerCockpitSso<T extends Identity>(app: Express, options: Op
     if (!result.active || typeof result.email !== "string") throw new Error("Invalid identity");
     const email = result.email.trim().toLowerCase();
     const user = await options.findUser(email);
-    if (!user || user.email?.trim().toLowerCase() !== email || !["admin", "super_admin", "owner"].includes(user.role)) throw new Error("No existing administrator");
+    if (!user || user.email?.trim().toLowerCase() !== email) throw new Error("No existing account");
+    // Existing callers with a static admin destination retain their restriction.
+    const destination = typeof options.dashboard === "function" ? options.dashboard(user) : ["admin", "super_admin", "owner"].includes(user.role) ? options.dashboard : null;
+    if (!destination || !destination.startsWith("/") || destination.startsWith("//")) throw new Error("No authorized space");
     return user;
   }
   const clear = (res: Response) => res.append("Set-Cookie", serialize(BRIDGE_COOKIE, "", { ...cookieOptions, maxAge: 0 }));
@@ -58,10 +62,11 @@ export function registerCockpitSso<T extends Identity>(app: Express, options: Op
     }
     try {
       const result = await call("exchange", { ticket: req.body.ticket });
-      await userFor(result);
+      const user = await userFor(result);
       if (!opaque(result.grant)) throw new Error("Invalid delegation");
       res.append("Set-Cookie", serialize(BRIDGE_COOKIE, result.grant, { ...cookieOptions, maxAge: 8 * 60 * 60 }));
-      res.redirect(303, options.dashboard);
+      const destination = typeof options.dashboard === "function" ? options.dashboard(user)! : options.dashboard;
+      res.redirect(303, destination);
     } catch {
       clear(res);
       res.status(401).send("Ce module n’est pas accessible avec votre compte Cockpit. Reconnectez-le depuis Mes sites ou contactez JS-Innov.IA.");
@@ -86,6 +91,7 @@ export function registerCockpitSso<T extends Identity>(app: Express, options: Op
       // Existing guards keep resolving the real local user and its current rights.
       // Local JWTs remain server-side and are valid only for this request.
       const localCookies = await options.sessionCookies(user);
+      (req as CockpitRequest)[COCKPIT_VERIFIED] = true;
       for (const [name, token] of Object.entries(localCookies)) cookies[name] = token;
       req.headers.cookie = Object.entries(cookies).map(([name, value]) => serialize(name, value || "")).join("; ");
       if (req.method === "POST" && /(?:^|[/.])logout(?:[?,/]|$)/.test(req.originalUrl)) {

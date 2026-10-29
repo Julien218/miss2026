@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Eye, EyeOff, LockKeyhole, LogIn, Mail, ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
 import { BRANDING } from "@/config/branding";
@@ -40,6 +40,38 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [cockpitUrl, setCockpitUrl] = useState<string | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/auth/config", { signal: controller.signal, credentials: "same-origin" })
+      .then(response => response.ok ? response.json() : null)
+      .then(config => {
+        if (config?.cockpitOnly && typeof config.loginUrl === "string") {
+          const destination = new URL(config.loginUrl);
+          if (destination.protocol === "https:" && destination.pathname === "/mes-sites/miss-mister-dour") setCockpitUrl(destination.href);
+        }
+      }).catch(() => {});
+    return () => controller.abort();
+  }, []);
+
+  if (cockpitUrl) return (
+    <div className="mmd-login-page">
+      <main className="mmd-login-layout">
+        <section className="mmd-login-brand-panel">
+          <img src={BRANDING.logoIdentity} alt="Miss & Mister Dour" />
+          <h1>Votre espace.<br /><em>Un seul compte.</em></h1>
+          <p>Utilisez votre compte Cockpit. Votre espace dépend des autorisations qui vous ont été attribuées pour ce site.</p>
+        </section>
+        <section className="mmd-login-form-panel">
+          <div className="mmd-login-card">
+            <h2>Connexion par le Cockpit</h2>
+            <p>Les anciennes connexions directes sont désactivées. Vos inscriptions et vos données sont conservées.</p>
+            <a href={cockpitUrl} target="_top" className="inline-block mt-6 underline">Se connecter avec mon compte Cockpit</a>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 
   async function submit(event: FormEvent) {
     event.preventDefault();
