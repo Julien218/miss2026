@@ -41,7 +41,7 @@ export function registerCockpitSso<T extends Identity>(app: Express, options: Op
     if (!user || user.email?.trim().toLowerCase() !== email) throw new Error("No existing account");
     // Existing callers with a static admin destination retain their restriction.
     const destination = typeof options.dashboard === "function" ? options.dashboard(user) : ["admin", "super_admin", "owner"].includes(user.role) ? options.dashboard : null;
-    if (!destination || !destination.startsWith("/") || destination.startsWith("//")) throw new Error("No authorized space");
+    if (!destination || !/^\/[a-zA-Z0-9/_-]*$/.test(destination) || destination.startsWith("//")) throw new Error("No authorized space");
     return user;
   }
   const clear = (res: Response) => res.append("Set-Cookie", serialize(BRIDGE_COOKIE, "", { ...cookieOptions, maxAge: 0 }));
@@ -66,7 +66,10 @@ export function registerCockpitSso<T extends Identity>(app: Express, options: Op
       if (!opaque(result.grant)) throw new Error("Invalid delegation");
       res.append("Set-Cookie", serialize(BRIDGE_COOKIE, result.grant, { ...cookieOptions, maxAge: 8 * 60 * 60 }));
       const destination = typeof options.dashboard === "function" ? options.dashboard(user)! : options.dashboard;
-      res.redirect(303, destination);
+      // Finish the cross-site POST in the embedded site's own document before
+      // navigating. Chromium can cancel the cross-site 303 inside a named frame.
+      // No ticket, grant or identity is placed in the document or its URL.
+      res.type("html").send(`<!doctype html><html lang="fr"><meta charset="utf-8"><title>Ouverture de votre espace</title><p>Ouverture de votre espace…</p><script>location.replace(${JSON.stringify(destination)})</script><a href="${destination}">Ouvrir mon espace</a></html>`);
     } catch {
       clear(res);
       res.status(401).send("Ce module n’est pas accessible avec votre compte Cockpit. Reconnectez-le depuis Mes sites ou contactez JS-Innov.IA.");
