@@ -7,7 +7,7 @@ import { registerLocalAuthRoutes } from "./auth-local-routes";
 import { registerCockpitSso } from "./cockpit-sso";
 import { registerCockpitOnlyAuth, spaceForRole } from "./cockpit-auth-policy";
 import { getDb } from "../db";
-import { users } from "../../drizzle/schema";
+import { users, type User } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { COOKIE_NAME } from "@shared/const";
@@ -53,7 +53,7 @@ async function startServer() {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-  registerCockpitSso(app, {
+  registerCockpitSso<User>(app, {
     siteId: "miss-mister-dour", dashboard: user => spaceForRole(user.role),
     siteOrigins: ["https://missetmisterdour.be", "https://www.missetmisterdour.be"],
     findUser: async email => {
