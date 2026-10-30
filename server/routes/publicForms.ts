@@ -7,7 +7,8 @@ import { z } from "zod";
 import { candidateApplications, contests } from "../../drizzle/schema";
 import * as db from "../db";
 import { CANDIDATE_CONTRACT_VERSION, generateCandidateContract2027 } from "../helpers/candidateContract2027";
-import { sendEmail } from "../helpers/email";
+import { sendEmail, emailProvider } from "../helpers/email";
+import { escapeEmailHtml } from "../helpers/email-brand";
 import { storagePut, storagePutPrivate } from "../storage";
 import { archiveTick } from "../archive/candidate-archive";
 
@@ -157,7 +158,7 @@ export function registerPublicFormRoutes(app: Express) {
       const contest = await findContest2027();
       const admins = await db.getAllAdmins();
       const r2Configured = Boolean(process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID && process.env.R2_SECRET_ACCESS_KEY && process.env.R2_BUCKET);
-      const emailConfigured = Boolean(process.env.BUILT_IN_FORGE_API_URL && process.env.BUILT_IN_FORGE_API_KEY);
+      const emailConfigured = Boolean(emailProvider());
       const ok = admins.length > 0 && r2Configured && emailConfigured;
       return res.status(ok ? 200 : 503).json({ ok, database: true, contest2027: Boolean(contest), adminsAvailable: admins.length > 0, storageConfigured: r2Configured, emailConfigured, storage: "r2" });
     } catch (error) {
@@ -296,15 +297,17 @@ export function registerPublicFormRoutes(app: Express) {
       const emailResults = await Promise.all([
         sendEmail({
           to: normalizedEmail,
+          idempotencyKey: `candidate-application-${application.id}-confirmation`,
           subject: "Préinscription reçue — Miss & Mister Dour 2027",
-          html: `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#17120e"><h1 style="color:#9b6b32">Préinscription reçue</h1><p>Bonjour ${input.firstName},</p><p>Nous avons bien reçu ta préinscription à Miss &amp; Mister Dour 2027.</p><p>Ton dossier est <strong>en attente de validation par l’organisation</strong>. Tu recevras un nouvel email après examen.</p>${contractReady ? "<p>Le contrat candidat signé est joint à cet email au format PDF.</p>" : "<p>Le contrat PDF sera régénéré par l’organisation.</p>"}${legalLinks}<p>Référence du dossier : <strong>${application.id}</strong></p><p>STARLIGHT ASBL · Miss &amp; Mister Dour</p></div>`,
+          html: `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#17120e"><h1 style="color:#9b6b32">Préinscription reçue</h1><p>Bonjour ${escapeEmailHtml(input.firstName)},</p><p>Nous avons bien reçu ta préinscription à Miss &amp; Mister Dour 2027.</p><p>Ton dossier est <strong>en attente de validation par l’organisation</strong>. Tu recevras un nouvel email après examen.</p>${contractReady ? "<p>Le contrat candidat signé est joint à cet email au format PDF.</p>" : "<p>Le contrat PDF sera régénéré par l’organisation.</p>"}${legalLinks}<p>Référence du dossier : <strong>${application.id}</strong></p><p>STARLIGHT ASBL · Miss &amp; Mister Dour</p></div>`,
           text: `Préinscription reçue pour Miss & Mister Dour 2027. Dossier en attente de validation. Référence : ${application.id}. Mentions : https://www.missetmisterdour.be/mentions-legales`,
           attachments,
         }),
         sendEmail({
           to: adminEmail,
+          idempotencyKey: `candidate-application-${application.id}-admin`,
           subject: `Nouvelle préinscription à valider — ${input.firstName} ${input.lastName}`,
-          html: `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#17120e"><h1 style="color:#9b6b32">Nouvelle préinscription 2027</h1><p>Une nouvelle candidature attend votre validation dans le dashboard Miss &amp; Mister Dour.</p><p><strong>${input.firstName} ${input.lastName}</strong><br>${normalizedEmail}<br>${input.phone}<br>${input.city}<br>Catégorie : ${input.category}</p><p>Statut actuel : <strong>En attente</strong></p><p><a href="https://www.missetmisterdour.be/admin/applications">Ouvrir le dashboard des candidatures</a></p>${contractReady ? "<p>Le contrat candidat signé est joint au format PDF.</p>" : "<p>Le contrat PDF doit être régénéré depuis le dashboard.</p>"}${legalLinks}</div>`,
+          html: `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#17120e"><h1 style="color:#9b6b32">Nouvelle préinscription 2027</h1><p>Une nouvelle candidature attend votre validation dans le dashboard Miss &amp; Mister Dour.</p><p><strong>${escapeEmailHtml(input.firstName)} ${escapeEmailHtml(input.lastName)}</strong><br>${escapeEmailHtml(normalizedEmail)}<br>${escapeEmailHtml(input.phone)}<br>${escapeEmailHtml(input.city)}<br>Catégorie : ${escapeEmailHtml(input.category)}</p><p>Statut actuel : <strong>En attente</strong></p><p><a href="https://www.missetmisterdour.be/admin/applications">Ouvrir le dashboard des candidatures</a></p>${contractReady ? "<p>Le contrat candidat signé est joint au format PDF.</p>" : "<p>Le contrat PDF doit être régénéré depuis le dashboard.</p>"}${legalLinks}</div>`,
           text: `Nouvelle préinscription à valider : ${input.firstName} ${input.lastName} (${normalizedEmail}). Statut : pending. Dashboard : https://www.missetmisterdour.be/admin/applications`,
           attachments,
         }),
