@@ -163,7 +163,9 @@ export function registerCandidateArchiveRoutes(app: Express) {
       const token = await exchangeDropboxToken(new URLSearchParams({ grant_type: "authorization_code", code: req.body.code.trim(), code_verifier: pending.verifier, client_id: process.env.DROPBOX_OLIVIER_APP_KEY || "", client_secret: process.env.DROPBOX_OLIVIER_APP_SECRET || "" }));
       const api = new DropboxArchiveClient(token.access_token); const account = await api.identity(expectedEmail());
       if (!token.refresh_token) throw new ArchiveError("authorization_required");
-      await storagePutPrivate(CREDENTIAL_KEY, jsonBytes({ refreshToken: token.refresh_token, account }), "application/json");
+      const credentialBytes = jsonBytes({ refreshToken: token.refresh_token, account });
+      await storagePutPrivate(CREDENTIAL_KEY, credentialBytes, "application/json");
+      if (sha256((await storageGetPrivate(CREDENTIAL_KEY)).data) !== sha256(credentialBytes)) throw new ArchiveError("credential_storage_unconfirmed");
       tokenCache = { token: token.access_token, until: Date.now() + Math.max(30, Number(token.expires_in || 3600) - 120) * 1000, account };
       serviceError = null; await archiveRepository.retry(); void archiveTick();
       res.json({ connected: true, account: account.email });
