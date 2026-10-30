@@ -9,6 +9,7 @@ import * as db from "../db";
 import { CANDIDATE_CONTRACT_VERSION, generateCandidateContract2027 } from "../helpers/candidateContract2027";
 import { sendEmail } from "../helpers/email";
 import { storagePut, storagePutPrivate } from "../storage";
+import { archiveTick } from "../archive/candidate-archive";
 
 const candidateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -308,9 +309,11 @@ export function registerPublicFormRoutes(app: Express) {
           attachments,
         }),
       ]);
+      // The worker also reconciles saved rows after restarts or notification errors.
+      void archiveTick();
       const emailsSent = emailResults.every(Boolean);
       if (!emailsSent) console.error("[Public candidate application] candidature enregistrée mais un ou plusieurs emails n’ont pas été envoyés");
-      return res.status(201).json({ success: true, applicationId: application.id, contestId, contractReady, emailsSent });
+      return res.status(201).json({ success: true, applicationId: application.id, contestId, contractReady, emailsSent, archiveState: process.env.DROPBOX_ARCHIVE_ENABLED === "true" ? "queued" : "disabled" });
     } catch (error) {
       console.error("[Public candidate application]", error);
       const message = error instanceof Error ? error.message : "Impossible d’enregistrer la candidature.";
