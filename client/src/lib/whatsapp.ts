@@ -1,5 +1,5 @@
 /**
- * Module WhatsApp officiel — Miss & Mister Dour 2026
+ * Module WhatsApp officiel — Miss & Mister Dour
  * Centralise la génération de liens wa.me, les templates de messages
  * et les utilitaires de communication WhatsApp.
  *
@@ -7,6 +7,7 @@
  */
 
 import { BRANDING } from "@/config/branding";
+import { CURRENT_EDITION } from "@shared/const";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -56,7 +57,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     emoji: "🎉",
     description: "Accueillir un nouveau candidat inscrit",
     generate: (c) =>
-      `🎉 *Bienvenue dans l'aventure Miss & Mister Dour 2026 !*\n\nBonjour ${c.firstName},\n\nNous sommes ravis de vous compter parmi les candidat(e)s de cette édition exceptionnelle.\n\n📋 *Votre prochaine étape :* Complétez votre profil pour être visible par le jury et le public.\n${c.profileUrl ? `\n🔗 Votre espace personnel :\n${c.profileUrl}\n` : ""}\nN'hésitez pas à nous contacter pour toute question.${SIGNATURE}`,
+      `🎉 *Bienvenue dans l'aventure Miss & Mister Dour ${CURRENT_EDITION} !*\n\nBonjour ${c.firstName},\n\nNous sommes ravis de vous compter parmi les candidat(e)s de cette édition exceptionnelle.\n\n📋 *Votre prochaine étape :* Complétez votre profil pour être visible par le jury et le public.\n${c.profileUrl ? `\n🔗 Votre espace personnel :\n${c.profileUrl}\n` : ""}\nN'hésitez pas à nous contacter pour toute question.${SIGNATURE}`,
   },
   {
     type: "profil_incomplet",
@@ -66,7 +67,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     generate: (c) => {
       const score = c.completionScore ?? 0;
       const missing = c.missingFields?.slice(0, 3).join(", ") ?? "plusieurs champs";
-      return `📋 *Rappel — Profil Miss & Mister Dour 2026*\n\nBonjour ${c.firstName},\n\nVotre profil est actuellement complété à *${score}%*. Pour maximiser vos chances auprès du jury, nous vous invitons à compléter les informations manquantes : _${missing}_.\n${c.profileUrl ? `\n🔗 Accéder à votre profil :\n${c.profileUrl}\n` : ""}\n⏰ Plus votre profil est complet, plus vous avez de chances d'être sélectionné(e) !${SIGNATURE}`;
+      return `📋 *Rappel — Profil Miss & Mister Dour ${CURRENT_EDITION}*\n\nBonjour ${c.firstName},\n\nVotre profil est actuellement complété à *${score}%*. Pour maximiser vos chances auprès du jury, nous vous invitons à compléter les informations manquantes : _${missing}_.\n${c.profileUrl ? `\n🔗 Accéder à votre profil :\n${c.profileUrl}\n` : ""}\n⏰ Plus votre profil est complet, plus vous avez de chances d'être sélectionné(e) !${SIGNATURE}`;
     },
   },
   {
@@ -75,7 +76,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     emoji: "🗳️",
     description: "Encourager le candidat à mobiliser ses proches pour voter",
     generate: (c) =>
-      `🗳️ *Mobilisez vos proches — Votes Miss & Mister Dour 2026*\n\nBonjour ${c.firstName},\n\nLes votes du public sont ouverts ! Partagez votre profil à votre entourage pour maximiser vos chances.\n${c.profileUrl ? `\n🔗 Lien de vote pour ${c.firstName} :\n${c.profileUrl}\n` : ""}\n💡 *Rappel :* Le vote public représente 30% de la note finale. Chaque voix compte !\n\nBonne chance ! 🌟${SIGNATURE}`,
+      `🗳️ *Mobilisez vos proches — Votes Miss & Mister Dour ${CURRENT_EDITION}*\n\nBonjour ${c.firstName},\n\nLes votes du public sont ouverts ! Partagez votre profil à votre entourage pour maximiser vos chances.\n${c.profileUrl ? `\n🔗 Lien de vote pour ${c.firstName} :\n${c.profileUrl}\n` : ""}\n💡 *Rappel :* Le vote public représente 30% de la note finale. Chaque voix compte !\n\nBonne chance ! 🌟${SIGNATURE}`,
   },
   {
     type: "invitation_evenement",
@@ -83,7 +84,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     emoji: "📅",
     description: "Inviter le candidat à un événement du concours",
     generate: (c) =>
-      `📅 *Invitation officielle — Miss & Mister Dour 2026*\n\nBonjour ${c.firstName},\n\nNous avons le plaisir de vous convier à un événement officiel du concours.\n\nMerci de confirmer votre présence en répondant à ce message ou en contactant l'organisation.\n\nÀ très bientôt ! 🎭${SIGNATURE}`,
+      `📅 *Invitation officielle — Miss & Mister Dour ${CURRENT_EDITION}*\n\nBonjour ${c.firstName},\n\nNous avons le plaisir de vous convier à un événement officiel du concours.\n\nMerci de confirmer votre présence en répondant à ce message ou en contactant l'organisation.\n\nÀ très bientôt ! 🎭${SIGNATURE}`,
   },
   {
     type: "rappel_soiree",
@@ -99,7 +100,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     emoji: "🏆",
     description: "Féliciter un candidat pour ses résultats ou sa sélection",
     generate: (c) =>
-      `🏆 *Félicitations ${c.firstName} !*\n\nNous avons le grand plaisir de vous informer d'une excellente nouvelle concernant votre participation au concours *Miss & Mister Dour 2026*.\n\nVotre engagement et votre talent ont été remarqués. Nous vous contacterons très prochainement pour vous communiquer tous les détails.\n\nBravo et continuez ainsi ! 🌟✨${SIGNATURE}`,
+      `🏆 *Félicitations ${c.firstName} !*\n\nNous avons le grand plaisir de vous informer d'une excellente nouvelle concernant votre participation au concours *Miss & Mister Dour ${CURRENT_EDITION}*.\n\nVotre engagement et votre talent ont été remarqués. Nous vous contacterons très prochainement pour vous communiquer tous les détails.\n\nBravo et continuez ainsi ! 🌟✨${SIGNATURE}`,
   },
   {
     type: "urgence_document",
@@ -107,7 +108,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     emoji: "⚠️",
     description: "Demander en urgence un document manquant au dossier",
     generate: (c) =>
-      `⚠️ *Action requise — Dossier Miss & Mister Dour 2026*\n\nBonjour ${c.firstName},\n\nNous avons constaté qu'il manque un ou plusieurs documents à votre dossier de candidature.\n\n🔴 *Votre dossier ne pourra pas être traité sans ces éléments.*\n\nMerci de nous transmettre les pièces manquantes dans les plus brefs délais en répondant à ce message ou via votre espace personnel.${c.profileUrl ? `\n\n🔗 ${c.profileUrl}` : ""}${SIGNATURE}`,
+      `⚠️ *Action requise — Dossier Miss & Mister Dour ${CURRENT_EDITION}*\n\nBonjour ${c.firstName},\n\nNous avons constaté qu'il manque un ou plusieurs documents à votre dossier de candidature.\n\n🔴 *Votre dossier ne pourra pas être traité sans ces éléments.*\n\nMerci de nous transmettre les pièces manquantes dans les plus brefs délais en répondant à ce message ou via votre espace personnel.${c.profileUrl ? `\n\n🔗 ${c.profileUrl}` : ""}${SIGNATURE}`,
   },
   {
     type: "info_generale",
@@ -115,7 +116,7 @@ export const WHATSAPP_TEMPLATES: WhatsAppMessage[] = [
     emoji: "ℹ️",
     description: "Envoyer une information générale à un candidat",
     generate: (c) =>
-      `ℹ️ *Information officielle — Miss & Mister Dour 2026*\n\nBonjour ${c.firstName},\n\nNous souhaitons vous informer d'une mise à jour importante concernant le concours.\n\nMerci de prendre connaissance de ce message et de nous contacter si vous avez des questions.\n\nCordialement,${SIGNATURE}`,
+      `ℹ️ *Information officielle — Miss & Mister Dour ${CURRENT_EDITION}*\n\nBonjour ${c.firstName},\n\nNous souhaitons vous informer d'une mise à jour importante concernant le concours.\n\nMerci de prendre connaissance de ce message et de nous contacter si vous avez des questions.\n\nCordialement,${SIGNATURE}`,
   },
   {
     type: "personnalise",

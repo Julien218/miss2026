@@ -1,8 +1,9 @@
 /**
  * AdminPartners.tsx — Gestion des partenaires & sponsors
- * Interface CRUD pour les partenaires du concours Miss & Mister Dour 2026
+ * Interface CRUD pour les partenaires du concours Miss & Mister Dour
  */
 import { useState } from "react";
+import { CURRENT_EDITION } from "@shared/const";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -127,7 +128,7 @@ export default function AdminPartners() {
               <Briefcase className="w-6 h-6 text-yellow-400" />
               Gestion des Partenaires
             </h1>
-            <p className="text-gray-400 text-sm mt-1">Sponsors et partenaires du concours 2026</p>
+            <p className="text-gray-400 text-sm mt-1">Sponsors et partenaires du concours {CURRENT_EDITION}</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -235,16 +236,16 @@ export default function AdminPartners() {
                     <Briefcase className="w-5 h-5 text-black" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                       <p className="font-semibold text-white">{p.name}</p>
                       <Badge className={`text-xs border ${TYPE_COLORS[p.type]}`}>{TYPE_LABELS[p.type]}</Badge>
                       {!p.active && <Badge className="text-xs bg-gray-700 text-gray-400 border-gray-600">Inactif</Badge>}
                     </div>
                     {p.description && <p className="text-xs text-gray-400 mb-2 line-clamp-1">{p.description}</p>}
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
                       {p.website && <a href={p.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-400 transition-colors"><Globe className="w-3 h-3" />{p.website.replace("https://", "")}</a>}
-                      {p.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{p.email}</span>}
-                      {p.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{p.phone}</span>}
+                      {p.email && <span className="flex min-w-0 items-center gap-1 break-all"><Mail className="w-3 h-3" />{p.email}</span>}
+                      {p.phone && <span className="flex items-center gap-1 whitespace-nowrap"><Phone className="w-3 h-3" />{p.phone}</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
