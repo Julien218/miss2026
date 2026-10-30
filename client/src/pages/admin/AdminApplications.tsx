@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { ArrowLeft, Check, Clock3, ExternalLink, FileSignature, Mail, MapPin, Phone, RefreshCw, Ruler, ShieldCheck, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DropboxArchivePanel } from "@/components/DropboxArchivePanel";
 
 type CandidateApplication = {
   id: number;
@@ -195,6 +196,7 @@ export default function AdminApplications() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+        <DropboxArchivePanel />
         <div className="mb-6 rounded-3xl border border-[#d7ae69]/25 bg-[#d7ae69]/5 p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>

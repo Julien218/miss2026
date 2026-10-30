@@ -22,6 +22,7 @@ import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { registerCandidateApplicationAdminRoutes } from "../routes/candidateApplicationsAdmin";
 import { registerPublicFormRoutes } from "../routes/publicForms";
+import { registerCandidateArchiveRoutes, startCandidateArchiveWorker } from "../archive/candidate-archive";
 import { apiLimiter } from "./rateLimit";
 import {
   securityHeaders,
@@ -69,6 +70,7 @@ async function startServer() {
   if (process.env.OAUTH_SERVER_URL) registerOAuthRoutes(app);
 
   registerPublicFormRoutes(app);
+  registerCandidateArchiveRoutes(app);
   registerCandidateApplicationAdminRoutes(app);
   registerCockpitRegistrationRoutes(app);
 
@@ -107,7 +109,10 @@ async function startServer() {
   else serveStatic(app);
 
   const port = parseInt(process.env.PORT || "3000", 10);
-  server.listen(port, "0.0.0.0", () => console.log(`✅ Server running on port ${port}`));
+  server.listen(port, "0.0.0.0", () => {
+    console.log(`✅ Server running on port ${port}`);
+    startCandidateArchiveWorker();
+  });
 }
 
 startServer().catch((error) => {
