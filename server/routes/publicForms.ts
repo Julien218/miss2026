@@ -6,11 +6,13 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { candidateApplications, contests } from "../../drizzle/schema";
 import * as db from "../db";
-import { CANDIDATE_CONTRACT_VERSION, generateCandidateContract2027 } from "../helpers/candidateContract2027";
+import { generateCandidateContract2027 } from "../helpers/candidateContract2027";
 import { sendEmail, emailProvider } from "../helpers/email";
 import { escapeEmailHtml } from "../helpers/email-brand";
 import { storagePut, storagePutPrivate } from "../storage";
 import { archiveTick } from "../archive/candidate-archive";
+import { ELECTION_DATE, ageAt, type ContractSnapshot } from "../../shared/candidate-contract";
+import { getPublishedContract } from "../helpers/contractStore";
 
 const candidateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -37,8 +39,8 @@ const candidateSchema = z.object({
   houseNumber: z.string().trim().min(1).max(20),
   postalCode: z.string().regex(/^\d{4}$/),
   city: z.string().trim().min(2).max(100),
-  heightCm: z.number().int().min(120).max(230),
-  weightKg: z.number().int().min(35).max(250),
+  heightCm: z.number().int().min(120).max(230).optional(),
+  weightKg: z.number().int().min(35).max(250).optional(),
   category: z.enum(["miss", "mister"]),
   photoBase64: z.string().min(32).max(7_200_000),
   photoFilename: z.string().trim().min(1).max(255),
@@ -57,10 +59,13 @@ const candidateSchema = z.object({
   guardianSignatureName: z.string().trim().min(3).max(200).optional(),
   acceptEligibility: z.literal(true),
   acceptRules: z.literal(true),
-  acceptMedia: z.literal(true),
+  acceptMedia: z.boolean().default(false),
+  mediaChoices: z.object({capture:z.boolean(),profile:z.boolean(),print:z.boolean(),social:z.boolean(),live:z.boolean(),advertising:z.boolean(),partners:z.boolean(),archives:z.boolean()}),
+  guardianDeclaration: z.boolean().default(false),
   acceptNewsletter: z.boolean().default(false),
   acceptCGU: z.literal(true),
-  consentVersion: z.string().trim().max(40).default(CANDIDATE_CONTRACT_VERSION),
+  consentVersion: z.string().trim().min(1).max(40),
+  templateSha256: z.string().regex(/^[a-f0-9]{64}$/),
 });
 
 const contactSchema = z.object({
@@ -74,16 +79,6 @@ function hashClientIp(req: Request) {
   const ip = req.ip || req.socket.remoteAddress || "unknown";
   const secret = process.env.COMMENT_HASH_SECRET || process.env.JWT_SECRET || "mmd-runtime";
   return crypto.createHmac("sha256", secret).update(ip).digest("hex").slice(0, 64);
-}
-
-function calculateAge(dateText: string) {
-  const birth = new Date(`${dateText}T00:00:00`);
-  const today = new Date();
-  if (Number.isNaN(birth.getTime()) || birth > today) return -1;
-  let age = today.getFullYear() - birth.getFullYear();
-  const month = today.getMonth() - birth.getMonth();
-  if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
 }
 
 function normalizeSignedName(value: string) {
@@ -173,14 +168,19 @@ export function registerPublicFormRoutes(app: Express) {
 
     try {
       const input = parsed.data;
-      const age = calculateAge(input.birthDate);
-      if (age < 16 || age > 26) return res.status(400).json({ error: "Le contrat 2027 prévoit un âge de 16 à 26 ans à la date de l’inscription." });
+      const today=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Brussels",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+      const age = ageAt(input.birthDate, today);
+      const electionAge=ageAt(input.birthDate,ELECTION_DATE);
+      if (age < 0 || electionAge < 16 || electionAge > 26) return res.status(400).json({ error: "Le contrat prévoit un âge de 16 à 26 ans au 22 mai 2027." });
+      const template=await getPublishedContract();
+      if(!template)return res.status(409).json({error:"Le modèle contractuel doit encore être complété et validé par Olivier dans le Cockpit."});
+      if(input.consentVersion!==template.version || input.templateSha256!==template.sha256)return res.status(409).json({error:"Le contrat a changé. Relisez la nouvelle version avant de renouveler vos accords."});
       if (!signatureMatches(input.candidateSignatureName, input.firstName, input.lastName)) {
         return res.status(400).json({ error: "La signature du candidat doit correspondre à son nom complet." });
       }
       const isMinor = age < 18;
       if (isMinor) {
-        if (!input.guardianFullName || !input.guardianEmail || !input.guardianPhone || !input.guardianSignatureName) {
+        if (!input.guardianFullName || !input.guardianEmail || !input.guardianPhone || !input.guardianSignatureName || !input.guardianDeclaration) {
           return res.status(400).json({ error: "La signature et les coordonnées du représentant légal sont obligatoires pour un candidat mineur." });
         }
         if (normalizeSignedName(input.guardianSignatureName) !== normalizeSignedName(input.guardianFullName)) {
@@ -199,8 +199,9 @@ export function registerPublicFormRoutes(app: Express) {
       const decoded = decodeImageDataUrl(input.photoBase64);
       const normalized = await normalizeCandidateImage(decoded);
       const key = `candidate-applications/2027/${Date.now()}-${crypto.randomUUID()}.webp`;
-      const uploaded = await storagePut(key, normalized, "image/webp");
+      await storagePutPrivate(key, normalized, "image/webp");
       const signedAt = new Date();
+      const snapshot:ContractSnapshot={acceptedAt:signedAt.toISOString(),template,media:input.mediaChoices,newsletter:input.acceptNewsletter,guardianDeclaration:isMinor && input.guardianDeclaration,publicName:`${input.firstName} ${input.lastName}`};
 
       const application = await db.createCandidateApplication({
         email: normalizedEmail,
@@ -216,7 +217,7 @@ export function registerPublicFormRoutes(app: Express) {
         weight: input.weightKg,
         country: "Belgique",
         category: input.category,
-        photoProfile: uploaded.url,
+        photoProfile: `private:${key}`,
         bio: input.bio,
         motivation: input.motivation,
         interests: JSON.stringify(input.interests),
@@ -226,11 +227,12 @@ export function registerPublicFormRoutes(app: Express) {
         tiktok: input.tiktok || undefined,
         linkedin: input.linkedin || undefined,
         acceptedTerms: input.acceptRules && input.acceptCGU,
-        acceptedMedia: input.acceptMedia,
+        acceptedMedia: input.mediaChoices.profile,
         acceptedNewsletter: input.acceptNewsletter,
         acceptedEligibility: input.acceptEligibility,
         acceptedCGU: input.acceptCGU,
-        consentVersion: CANDIDATE_CONTRACT_VERSION,
+        consentVersion: template.version,
+        contractSnapshot: JSON.stringify(snapshot),
         consentedAt: signedAt,
         candidateSignatureName: input.candidateSignatureName,
         candidateSignedAt: signedAt,
@@ -239,7 +241,7 @@ export function registerPublicFormRoutes(app: Express) {
         guardianPhone: isMinor ? input.guardianPhone : undefined,
         guardianSignatureName: isMinor ? input.guardianSignatureName : undefined,
         guardianSignedAt: isMinor ? signedAt : undefined,
-        contractVersion: CANDIDATE_CONTRACT_VERSION,
+        contractVersion: template.version,
         contractStatus: isMinor ? "guardian_signed" : "candidate_signed",
         ipAddress: hashClientIp(req),
         contestId,
@@ -259,8 +261,8 @@ export function registerPublicFormRoutes(app: Express) {
           houseNumber: input.houseNumber,
           postalCode: input.postalCode,
           city: input.city,
-          height: input.heightCm,
-          weight: input.weightKg,
+          height: input.heightCm || 0,
+          weight: input.weightKg || 0,
           email: normalizedEmail,
           phone: input.phone,
           category: input.category,
@@ -271,6 +273,7 @@ export function registerPublicFormRoutes(app: Express) {
           guardianPhone: isMinor ? input.guardianPhone : null,
           guardianSignatureName: isMinor ? input.guardianSignatureName : null,
           guardianSignedAt: isMinor ? signedAt : null,
+          snapshot,
         });
         contractPdf = contract;
         const contractKey = `candidate-contracts/2027/${application.id}-${crypto.randomUUID()}.pdf`;
@@ -279,12 +282,12 @@ export function registerPublicFormRoutes(app: Express) {
           contractPdfKey: contractKey,
           contractPdfSha256: crypto.createHash("sha256").update(contract).digest("hex"),
           contractStatus: isMinor ? "guardian_signed" : "candidate_signed",
-        });
+        }, JSON.stringify(snapshot));
         contractReady = true;
       } catch (contractError) {
         console.error("[Public candidate application] contract generation failed", contractError);
         try {
-          await db.updateCandidateApplicationContract(application.id, { contractStatus: "generation_failed" });
+          await db.updateCandidateApplicationContract(application.id, { contractStatus: "generation_failed" }, JSON.stringify(snapshot));
         } catch (statusError) {
           console.error("[Public candidate application] contract status update failed", statusError);
         }

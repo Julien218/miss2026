@@ -1,4 +1,4 @@
-import { eq, desc, asc, and, gte, lte, lt, inArray, sql, or, like, ne } from "drizzle-orm";
+import { eq, desc, asc, and, gte, lte, lt, inArray, sql, or, like, ne, isNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users,
@@ -3066,6 +3066,7 @@ export async function createCandidateApplication(data: {
   contractStatus?: "not_started" | "candidate_signed" | "guardian_signed" | "completed" | "generation_failed";
   contractPdfKey?: string;
   contractPdfSha256?: string;
+  contractSnapshot?: string;
   ipAddress?: string;
   contestId?: number;
   organizationId?: number;
@@ -3113,6 +3114,7 @@ export async function createCandidateApplication(data: {
     acceptedEligibility: data.acceptedEligibility ? 1 : 0,
     acceptedCGU: data.acceptedCGU ? 1 : 0,
     consentVersion: data.consentVersion || "v1.0",
+    contractSnapshot: data.contractSnapshot,
     consentedAt: data.consentedAt,
     candidateSignatureName: data.candidateSignatureName,
     candidateSignedAt: data.candidateSignedAt,
@@ -3198,16 +3200,51 @@ export async function updateCandidateApplicationContract(
     contractPdfSha256?: string | null;
     organizationSignatureName?: string | null;
     organizationSignedAt?: Date | null;
-  }
+    organizationSignedBy?: number | null;
+  },
+  expectedSnapshot: string,
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  await db
+  const result = await db
     .update(candidateApplications)
     .set(data)
-    .where(eq(candidateApplications.id, id));
+    .where(and(eq(candidateApplications.id, id), eq(candidateApplications.status, "pending"), isNull(candidateApplications.organizationSignedAt), eq(candidateApplications.contractSnapshot, expectedSnapshot)));
+  if (!result[0].affectedRows) throw new Error("Le dossier a changé. Actualisez avant de régénérer le contrat.");
 
+  return getCandidateApplicationById(id);
+}
+
+export async function finalizeCandidateContract(
+  id: number,
+  expectedSha256: string,
+  data: {
+    contractPdfKey: string;
+    contractPdfSha256: string;
+    contractStatus: "completed";
+    organizationSignatureName: string;
+    organizationSignedAt: Date;
+    organizationSignedBy: number;
+  }
+) {
+  const database = await getDb();
+  if (!database) throw new Error("Database not available");
+  const result = await database
+    .update(candidateApplications)
+    .set(data)
+    .where(
+      and(
+        eq(candidateApplications.id, id),
+        eq(candidateApplications.status, "pending"),
+        eq(candidateApplications.contractPdfSha256, expectedSha256),
+        isNull(candidateApplications.organizationSignedAt)
+      )
+    );
+  if (!result[0].affectedRows)
+    throw new Error(
+      "Le dossier a changé ou est déjà validé. Actualisez avant de continuer."
+    );
   return getCandidateApplicationById(id);
 }
 
@@ -3228,7 +3265,7 @@ export async function updateCandidateApplicationStatus(
       reviewedAt: new Date(),
       rejectionReason: rejectionReason || null,
     })
-    .where(eq(candidateApplications.id, id));
+    .where(and(eq(candidateApplications.id, id), eq(candidateApplications.status, "pending")));
 
   return { success: true };
 }
@@ -3261,75 +3298,101 @@ export async function linkApplicationToCandidate(applicationId: number, candidat
   return { success: true };
 }
 
-export async function approveCandidateApplication(id: number, reviewedBy: number) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-
-  // Récupérer la candidature
-  const application = await getCandidateApplicationById(id);
-  if (!application) {
-    throw new Error("Candidature non trouvée");
-  }
-  if (application.contractVersion && application.contractStatus !== "completed") {
-    throw new Error("Le contrat doit être signé par Starlight avant la validation de la candidature");
-  }
-
-  // 1. Créer un utilisateur avec rôle candidat
-  // Générer un openId unique basé sur l'email
-  const openId = `candidate_${application.email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
-  
-  await upsertUser({
-    openId,
-    email: application.email,
-    name: `${application.firstName} ${application.lastName}`,
-    role: 'candidate',
-    lastSignedIn: new Date(),
-  });
-
-  // Récupérer l'ID de l'utilisateur créé
-  const user = await getUserByOpenId(openId);
-  if (!user) {
-    throw new Error("Erreur lors de la création de l'utilisateur");
-  }
-
-  // 2. Créer un profil candidat lié à cet utilisateur
-  const result = await createCandidate({
-    userId: user.id,
-    contestId: application.contestId || 1,
-    category: application.category as "miss" | "mister" | "teen_miss" | "teen_mister",
-    firstName: application.firstName,
-    lastName: application.lastName,
-    dateOfBirth: application.dateOfBirth,
-    phone: application.phone,
-    address: [application.street, application.houseNumber].filter(Boolean).join(" ") || undefined,
-    city: application.city,
-    country: application.country,
-    height: application.height,
-    weight: application.weight,
-    profilePhoto: application.profilePhoto,
-    bio: application.bio,
-    instagram: application.instagram,
-    facebook: application.facebook,
-    tiktok: application.tiktok,
-    linkedin: application.linkedin,
-    status: "approved",
-  });
-
-  // @ts-ignore - insertId exists on MySQL result
-  const candidateId = Number(result[0].insertId);
-
-  // 3. Mettre à jour le statut de la candidature
-  await db
-    .update(candidateApplications)
-    .set({
+export async function approveCandidateApplication(
+  id: number,
+  reviewedBy: number
+) {
+  const database = await getDb();
+  if (!database) throw new Error("Database not available");
+  return database.transaction(async tx => {
+    await tx.execute(
+      sql`SELECT id FROM candidateApplications WHERE id = ${id} FOR UPDATE`
+    );
+    const [application] = await tx
+      .select()
+      .from(candidateApplications)
+      .where(eq(candidateApplications.id, id))
+      .limit(1);
+    const [actor] = await tx
+      .select()
+      .from(users)
+      .where(eq(users.id, reviewedBy))
+      .limit(1);
+    if (!application) throw new Error("Candidature non trouvée");
+    if (
+      !actor ||
+      actor.email?.trim().toLowerCase() !== "olivier.trevis@outlook.be" ||
+      actor.organizationId !== application.organizationId ||
+      application.organizationId !== 1 ||
+      !["client", "admin", "super_admin", "owner", "organizer"].includes(
+        actor.role
+      )
+    )
+      throw new Error("Validation réservée à Olivier.");
+    if (application.status === "approved" && application.candidateId)
+      return { success: true, candidateId: application.candidateId };
+    if (application.status !== "pending")
+      throw new Error("Cette candidature a déjà été examinée.");
+    if (
+      !application.contractSnapshot ||
+      application.contractStatus !== "completed" ||
+      !application.organizationSignedBy ||
+      !application.organizationSignedAt ||
+      !application.contractPdfKey ||
+      !application.contractPdfSha256
+    )
+      throw new Error(
+        "Le contrat à jour doit être accepté puis validé par Olivier."
+      );
+    const openId = `candidate_application_${application.id}`;
+    const userResult = await tx
+      .insert(users)
+      .values({
+        openId,
+        organizationId: application.organizationId,
+        email: application.email,
+        name: `${application.firstName} ${application.lastName}`,
+        role: "candidate",
+        lastSignedIn: new Date(),
+      });
+    const userId = Number(userResult[0].insertId);
+    const created = await tx.insert(candidates).values({
+      userId,
+      contestId: application.contestId,
+      category: application.category as "miss" | "mister",
+      firstName: application.firstName,
+      lastName: application.lastName,
+      dateOfBirth: application.dateOfBirth,
+      phone: application.phone,
+      address: [application.street, application.houseNumber]
+        .filter(Boolean)
+        .join(" "),
+      city: application.city,
+      country: application.country,
+      height: application.height,
+      weight: application.weight,
+      // The registration portrait stays private. Publication is a separate action
+      // which must honor the captured profile authorization.
+      profilePhoto: null,
+      bio: application.bio,
+      instagram: application.instagram,
+      facebook: application.facebook,
+      tiktok: application.tiktok,
+      linkedin: application.linkedin,
       status: "approved",
-      reviewedBy,
-      reviewedAt: new Date(),
-      candidateId,
-    })
-    .where(eq(candidateApplications.id, id));
-
-  return { success: true, candidateId };
+    });
+    const candidateId = Number(created[0].insertId);
+    await tx
+      .update(candidateApplications)
+      .set({
+        status: "approved",
+        reviewedBy,
+        reviewedAt: new Date(),
+        candidateId,
+      })
+      .where(eq(candidateApplications.id, id));
+    return { success: true, candidateId };
+  });
 }
 
 export async function rejectCandidateApplication(id: number, reviewedBy: number, rejectionReason: string) {
@@ -3344,7 +3407,7 @@ export async function rejectCandidateApplication(id: number, reviewedBy: number,
       reviewedAt: new Date(),
       rejectionReason,
     })
-    .where(eq(candidateApplications.id, id));
+    .where(and(eq(candidateApplications.id, id), eq(candidateApplications.status, "pending")));
 
   return { success: true };
 }

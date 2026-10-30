@@ -1,4 +1,4 @@
-import { int, bigint, mysqlEnum, mysqlTable, text, timestamp, varchar, index, uniqueIndex, date } from "drizzle-orm/mysql-core";
+import { int, bigint, mysqlEnum, mysqlTable, text, mediumtext, timestamp, varchar, index, uniqueIndex, date } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -1010,6 +1010,11 @@ export const candidateApplications = mysqlTable("candidateApplications", {
   contractPdfSha256: varchar("contractPdfSha256", { length: 64 }),
   organizationSignatureName: varchar("organizationSignatureName", { length: 200 }),
   organizationSignedAt: timestamp("organizationSignedAt"),
+  organizationSignedBy: int("organizationSignedBy"),
+  contractSnapshot: mediumtext("contractSnapshot"),
+  contractHistory: mediumtext("contractHistory"),
+  contractRenewalHash: varchar("contractRenewalHash", {length:64}),
+  contractRenewalExpiresAt: timestamp("contractRenewalExpiresAt"),
   
   // RGPD
   ipAddressHash: varchar("ipAddressHash", { length: 64 }), // SHA256 hash of IP address

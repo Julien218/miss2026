@@ -59,7 +59,7 @@ function RootExperience() {
   if (host === "sponsors.missetmisterdour.be" || path === "/showcase/sponsors" || showcase === "sponsors") {
     return <><SponsorShowcase /><InstallPWA /></>;
   }
-  if (host === "contrat.missetmisterdour.be" || path === "/showcase/contrat" || showcase === "contrat") {
+  if (host === "contrat.missetmisterdour.be" || path === "/contrat" || path === "/showcase/contrat" || showcase === "contrat") {
     return <><ContractShowcase /><InstallPWA /></>;
   }
 
