@@ -5,6 +5,8 @@
  */
 
 import { useState } from "react";
+import { CURRENT_EDITION } from "@shared/const";
+import { BRANDING } from "@/config/branding";
 import { Card } from "@/components/ui/card";
 import {
   Users, Search, Filter, Link2, Copy, Check, Crown,
@@ -117,7 +119,7 @@ function exportRgpdCsv(data: RgpdExportData) {
 
   // En-tête de conformité RGPD
   const header = [
-    `# REGISTRE DES CONSENTEMENTS — MISS & MISTER DOUR 2026`,
+    `# REGISTRE DES CONSENTEMENTS — MISS & MISTER DOUR ${CURRENT_EDITION}`,
     `# Généré le : ${new Date(meta.exportedAt).toLocaleString("fr-BE", { timeZone: "Europe/Brussels" })}`,
     `# Responsable du traitement : ${meta.dataController}`,
     `# Base légale : ${meta.legalBasis}`,
@@ -163,7 +165,7 @@ function exportRgpdCsv(data: RgpdExportData) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `RGPD-Consentements-Miss-Mister-Dour-2026-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `RGPD-Consentements-Miss-Mister-Dour-${CURRENT_EDITION}-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -220,7 +222,7 @@ function exportToExcel(candidates: CandidateRow[], origin: string) {
   ];
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Candidats 2026");
+  XLSX.utils.book_append_sheet(wb, ws, `Candidats ${CURRENT_EDITION}`);
 
   // Feuille de résumé
   const total = candidates.length;
@@ -238,16 +240,16 @@ function exportToExcel(candidates: CandidateRow[], origin: string) {
     { "Indicateur": "Score moyen de complétion", "Valeur": `${avgScore}%` },
     { "Indicateur": "Liens de profil actifs", "Valeur": candidates.filter((c) => c.token).length },
     { "Indicateur": "Date d'export", "Valeur": new Date().toLocaleDateString("fr-BE") },
-    { "Indicateur": "Événement", "Valeur": "Miss & Mister Dour 2026" },
-    { "Indicateur": "Lieu", "Valeur": "Centre Sportif d'Elouges, 7370 Elouges" },
-    { "Indicateur": "Date", "Valeur": "19 Avril 2026" },
+    { "Indicateur": "Événement", "Valeur": `Miss & Mister Dour ${CURRENT_EDITION}` },
+    { "Indicateur": "Lieu", "Valeur": BRANDING.closingNight.venue },
+    { "Indicateur": "Date", "Valeur": BRANDING.closingNight.dateDisplay },
   ];
   const wsSummary = XLSX.utils.json_to_sheet(summaryData);
   wsSummary["!cols"] = [{ wch: 30 }, { wch: 20 }];
   XLSX.utils.book_append_sheet(wb, wsSummary, "Résumé");
 
   const date = new Date().toISOString().slice(0, 10);
-  XLSX.writeFile(wb, `Miss-Mister-Dour-2026-Candidats-${date}.xlsx`);
+  XLSX.writeFile(wb, `Miss-Mister-Dour-${CURRENT_EDITION}-Candidats-${date}.xlsx`);
 }
 
 export default function AdminCandidates() {
@@ -563,7 +565,7 @@ export default function AdminCandidates() {
             <p className="text-gray-400 text-xl">Aucun candidat trouvé</p>
             <p className="text-gray-500 text-sm mt-2">
               {total === 0
-                ? "Aucun candidat n'est encore inscrit pour le concours 2026."
+                ? `Aucun candidat n'est encore inscrit pour le concours ${CURRENT_EDITION}.`
                 : "Modifiez vos filtres pour voir plus de candidats."}
             </p>
           </div>
@@ -831,7 +833,7 @@ export default function AdminCandidates() {
                   <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 mb-6">
                     <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wider">Aperçu de l'email</p>
                     <p className="text-sm text-white font-medium mb-1">
-                      Objet : 👑 Miss & Mister Dour 2026 - Complétez votre profil, {emailModal.candidate.firstName} !
+                      Objet : 👑 Miss & Mister Dour {CURRENT_EDITION} - Complétez votre profil, {emailModal.candidate.firstName} !
                     </p>
                     <p className="text-xs text-gray-400">
                       Contenu : Email HTML premium avec bouton doré, lien de profil sécurisé, et informations STARLIGHT ASBL.

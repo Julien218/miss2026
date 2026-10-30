@@ -15,6 +15,7 @@
 import { router, protectedProcedure } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { CURRENT_EDITION } from "@shared/const";
 import * as db from "../db";
 import { invokeLLM } from "../_core/llm";
 
@@ -22,7 +23,7 @@ import { invokeLLM } from "../_core/llm";
 
 const SIGNATURE = "\n\nJulien P.\nBy Js-Innov.IA";
 
-const ASSISTANT_SYSTEM_PROMPT = `Tu es "Miss & Mister Dour IA", l'assistant officiel du concours Miss & Mister Dour 2026 organisé à Dour, Belgique.
+const ASSISTANT_SYSTEM_PROMPT = `Tu es "Miss & Mister Dour IA", l'assistant officiel du concours Miss & Mister Dour ${CURRENT_EDITION} organisé à Dour, Belgique.
 
 Ton rôle est d'assister l'équipe organisatrice dans la gestion des candidats.
 Tu génères des messages officiels, élégants, humains et personnalisés.
@@ -346,13 +347,13 @@ ${input.channel === "whatsapp" ? "Format WhatsApp : concis, avec emojis appropri
       const { percentage } = computeProfileCompletion(candidate);
 
       const templates: Record<string, string> = {
-        profile_reminder: `Bonjour ${candidate.firstName} 👑\n\nNous sommes l'équipe organisatrice de Miss & Mister Dour 2026.\n\nVotre profil est complété à ${percentage}%. Quelques informations manquantes pourraient réduire vos chances de sélection.\n\n🔗 Complétez votre profil ici :\n${profileUrl}\n\nMerci pour votre engagement !\n\nJulien P.\nBy Js-Innov.IA`,
+        profile_reminder: `Bonjour ${candidate.firstName} 👑\n\nNous sommes l'équipe organisatrice de Miss & Mister Dour ${CURRENT_EDITION}.\n\nVotre profil est complété à ${percentage}%. Quelques informations manquantes pourraient réduire vos chances de sélection.\n\n🔗 Complétez votre profil ici :\n${profileUrl}\n\nMerci pour votre engagement !\n\nJulien P.\nBy Js-Innov.IA`,
 
         vote_call: `Bonjour ${candidate.firstName} 👑\n\nLes votes sont ouverts ! Vous avez actuellement ${candidate.voteCount} vote(s).\n\nPartagez votre lien personnel pour mobiliser vos proches :\n🔗 ${profileUrl}\n\nChaque vote compte ! Bonne chance 🌟\n\nJulien P.\nBy Js-Innov.IA`,
 
         event_info: `Bonjour ${candidate.firstName} 👑\n\nRappel important : la soirée de clôture Born to Dance se déroulera le 19 avril 2026 à Dour, Belgique.\n\nPréparez-vous pour cette soirée exceptionnelle !\n\n🔗 Votre profil : ${profileUrl}\n\nJulien P.\nBy Js-Innov.IA`,
 
-        welcome: `Bienvenue ${candidate.firstName} 👑\n\nNous sommes ravis de vous accueillir parmi les candidats de Miss & Mister Dour 2026 !\n\nCommencez par compléter votre profil :\n🔗 ${profileUrl}\n\nL'équipe organisatrice est à votre disposition.\n\nJulien P.\nBy Js-Innov.IA`,
+        welcome: `Bienvenue ${candidate.firstName} 👑\n\nNous sommes ravis de vous accueillir parmi les candidats de Miss & Mister Dour ${CURRENT_EDITION} !\n\nCommencez par compléter votre profil :\n🔗 ${profileUrl}\n\nL'équipe organisatrice est à votre disposition.\n\nJulien P.\nBy Js-Innov.IA`,
       };
 
       const message = templates[input.messageTemplate];
@@ -508,7 +509,7 @@ ${input.channel === "whatsapp" ? "Format WhatsApp : concis, avec emojis appropri
           let message = "";
           switch (input.messageType) {
             case "profile_reminder":
-              message = `Bonjour ${candidate.firstName} 👑\n\nNous sommes l'équipe organisatrice de Miss & Mister Dour 2026.\n\nVotre profil est actuellement complété à ${percentage}%.${missingLabels ? `\n\n⚠️ Éléments manquants : ${missingLabels}.` : ""}\n\nComplétez votre profil pour maximiser vos chances de sélection :\n🔗 ${profileUrl}\n\nMerci pour votre engagement !\n\nJulien P.\nBy Js-Innov.IA`;
+              message = `Bonjour ${candidate.firstName} 👑\n\nNous sommes l'équipe organisatrice de Miss & Mister Dour ${CURRENT_EDITION}.\n\nVotre profil est actuellement complété à ${percentage}%.${missingLabels ? `\n\n⚠️ Éléments manquants : ${missingLabels}.` : ""}\n\nComplétez votre profil pour maximiser vos chances de sélection :\n🔗 ${profileUrl}\n\nMerci pour votre engagement !\n\nJulien P.\nBy Js-Innov.IA`;
               break;
             case "vote_call":
               message = `Bonjour ${candidate.firstName} 👑\n\nLes votes sont ouverts ! Mobilisez vos proches en partageant votre lien personnel :\n🔗 ${profileUrl}\n\nChaque vote compte pour votre sélection 🌟\n\nJulien P.\nBy Js-Innov.IA`;
@@ -517,7 +518,7 @@ ${input.channel === "whatsapp" ? "Format WhatsApp : concis, avec emojis appropri
               message = `Bonjour ${candidate.firstName} 👑\n\nRappel important : la soirée de clôture Born to Dance se déroulera le 19 avril 2026 à Dour, Belgique.\n\nVotre présence est attendue. Préparez-vous pour cette soirée exceptionnelle !\n\n🔗 Votre profil : ${profileUrl}\n\nJulien P.\nBy Js-Innov.IA`;
               break;
             case "welcome":
-              message = `Bienvenue ${candidate.firstName} 👑\n\nNous sommes ravis de vous accueillir parmi les candidats de Miss & Mister Dour 2026 !\n\nCommencez par compléter votre profil pour être visible :\n🔗 ${profileUrl}\n\nL'équipe organisatrice est à votre disposition.\n\nJulien P.\nBy Js-Innov.IA`;
+              message = `Bienvenue ${candidate.firstName} 👑\n\nNous sommes ravis de vous accueillir parmi les candidats de Miss & Mister Dour ${CURRENT_EDITION} !\n\nCommencez par compléter votre profil pour être visible :\n🔗 ${profileUrl}\n\nL'équipe organisatrice est à votre disposition.\n\nJulien P.\nBy Js-Innov.IA`;
               break;
           }
 

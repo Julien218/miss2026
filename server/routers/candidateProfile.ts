@@ -11,6 +11,7 @@
 import { publicProcedure, protectedProcedure, router } from "../\_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { CURRENT_EDITION } from "@shared/const";
 import { getDb } from "../db";
 import { candidates, profileEditTokens, contests, users } from "../../drizzle/schema";
 import { dispatchNotification } from "./notifications";
@@ -384,7 +385,7 @@ export const candidateProfileRouter = router({
       const profileLink = `${input.origin}/profile/edit/${activeToken}`;
 
       // 5. Envoyer l'email
-      const subject = `👑 Miss & Mister Dour 2026 - Complétez votre profil, ${candidate.firstName} !`;
+      const subject = `👑 Miss & Mister Dour ${CURRENT_EDITION} - Complétez votre profil, ${candidate.firstName} !`;
       const htmlBody = buildProfileEmailHtml(candidate.firstName, candidate.lastName, profileLink);
 
       const emailSent = await sendEmail({ to: recipientEmail, subject, html: htmlBody, text: `Complétez votre profil Miss & Mister Dour : ${profileLink}. Ce lien est personnel.` });
@@ -397,7 +398,7 @@ export const candidateProfileRouter = router({
         // Si l'email n'a pas pu être envoyé via l'API, fournir un lien mailto de secours
         mailtoFallback: emailSent
           ? null
-          : `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Bonjour ${candidate.firstName},\n\nVoici votre lien pour compléter votre profil Miss & Mister Dour 2026 :\n\n${profileLink}\n\nBonne chance !\n\nL'équipe STARLIGHT ASBL`)}`,
+          : `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Bonjour ${candidate.firstName},\n\nVoici votre lien pour compléter votre profil Miss & Mister Dour ${CURRENT_EDITION} :\n\n${profileLink}\n\nBonne chance !\n\nL'équipe STARLIGHT ASBL`)}`,
       };
     }),
 
@@ -538,7 +539,7 @@ export const candidateProfileRouter = router({
         compliantCount: enriched.filter((r) => r.isCompliant).length,
         nonCompliantCount: enriched.filter((r) => !r.isCompliant).length,
         rgpdVersion: "RGPD-2016/679",
-        legalBasis: "Consentement explicite (Art. 6.1.a RGPD) — Miss & Mister Dour 2026",
+        legalBasis: "Consentement explicite (Art. 6.1.a RGPD) — Miss & Mister Dour ${CURRENT_EDITION}",
         dataController: "STARLIGHT ASBL — Grand'Place 9, 7370 Dour, Belgique",
         candidates: result,
       };

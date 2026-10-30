@@ -59,6 +59,7 @@ export default function AdminComments() {
   });
 
   return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
     <div className="p-6 max-w-6xl mx-auto">
       {/* En-tête */}
       <div className="flex items-center justify-between mb-8">
@@ -262,6 +263,7 @@ export default function AdminComments() {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

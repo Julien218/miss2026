@@ -2,6 +2,7 @@
  * Configuration de l'identité visuelle Miss & Mister Dour
  * Direction digitale JS-Innov.IA®
  */
+import { CURRENT_EDITION } from "@shared/const";
 
 export const BRANDING = {
   // Logo officiel local avec transparence réelle pour éviter tout bloc noir
@@ -50,7 +51,7 @@ export const BRANDING = {
 
   event: {
     name: "Miss & Mister Dour",
-    edition: "2027",
+    edition: CURRENT_EDITION,
     date: "Date à confirmer",
     location: "Dour, Belgique",
     description: "Miss & Mister Dour — édition 2027, une expérience humaine, scénique et digitale à Dour.",

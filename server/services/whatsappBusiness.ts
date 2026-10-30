@@ -1,9 +1,11 @@
 /**
  * WhatsApp Business API Service — Meta Cloud API
- * Miss & Mister Dour 2026 — JS-Innov.IA
+ * Miss & Mister Dour — JS-Innov.IA
  *
  * Documentation: https://developers.facebook.com/docs/whatsapp/cloud-api
  */
+
+import { CURRENT_EDITION } from "@shared/const";
 
 const META_API_URL = "https://graph.facebook.com/v19.0";
 
@@ -259,19 +261,19 @@ export async function verifyWhatsAppAccount(
  */
 export const OFFICIAL_MESSAGE_TEMPLATES = {
   profile_reminder: (candidateName: string, completionRate: number, missingFields: string[], profileUrl: string) =>
-    `Bonjour ${candidateName} 👑\n\nNous avons remarqué que votre profil Miss & Mister Dour 2026 est complété à ${completionRate}%.\n\nChamps manquants :\n${missingFields.map((f) => `• ${f}`).join("\n")}\n\nComplétez votre profil ici :\n${profileUrl}\n\nUn profil complet maximise vos chances de sélection. ✨\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
+    `Bonjour ${candidateName} 👑\n\nNous avons remarqué que votre profil Miss & Mister Dour ${CURRENT_EDITION} est complété à ${completionRate}%.\n\nChamps manquants :\n${missingFields.map((f) => `• ${f}`).join("\n")}\n\nComplétez votre profil ici :\n${profileUrl}\n\nUn profil complet maximise vos chances de sélection. ✨\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
 
   vote_reminder: (candidateName: string, voteCount: number, profileUrl: string) =>
-    `Bonjour ${candidateName} 👑\n\nVotre compteur de votes Miss & Mister Dour 2026 est à ${voteCount} vote${voteCount > 1 ? "s" : ""}.\n\nPartagez votre lien personnel pour augmenter vos chances :\n${profileUrl}\n\nChaque vote compte ! 🌟\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
+    `Bonjour ${candidateName} 👑\n\nVotre compteur de votes Miss & Mister Dour ${CURRENT_EDITION} est à ${voteCount} vote${voteCount > 1 ? "s" : ""}.\n\nPartagez votre lien personnel pour augmenter vos chances :\n${profileUrl}\n\nChaque vote compte ! 🌟\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
 
   event_reminder: (candidateName: string, eventName: string, eventDate: string, eventLocation: string) =>
     `Bonjour ${candidateName} 👑\n\nRappel important : ${eventName}\n📅 ${eventDate}\n📍 ${eventLocation}\n\nVotre présence est obligatoire. En cas d'empêchement, contactez-nous immédiatement.\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
 
   welcome: (candidateName: string, profileUrl: string) =>
-    `Bienvenue ${candidateName} 👑\n\nVotre inscription Miss & Mister Dour 2026 a bien été enregistrée !\n\nVotre espace personnel :\n${profileUrl}\n\nComplétez votre profil pour maximiser vos chances de sélection.\n\nNous vous souhaitons la meilleure des chances ! ✨\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
+    `Bienvenue ${candidateName} 👑\n\nVotre inscription Miss & Mister Dour ${CURRENT_EDITION} a bien été enregistrée !\n\nVotre espace personnel :\n${profileUrl}\n\nComplétez votre profil pour maximiser vos chances de sélection.\n\nNous vous souhaitons la meilleure des chances ! ✨\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
 
   congratulations: (candidateName: string, title: string) =>
-    `Félicitations ${candidateName} 🏆\n\nNous avons l'honneur de vous annoncer que vous avez été sélectionné(e) comme ${title} Miss & Mister Dour 2026 !\n\nDes informations complémentaires vous seront communiquées prochainement.\n\nToutes nos félicitations ! 🌟\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
+    `Félicitations ${candidateName} 🏆\n\nNous avons l'honneur de vous annoncer que vous avez été sélectionné(e) comme ${title} Miss & Mister Dour ${CURRENT_EDITION} !\n\nDes informations complémentaires vous seront communiquées prochainement.\n\nToutes nos félicitations ! 🌟\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,
 
   urgent: (candidateName: string, message: string) =>
     `⚠️ URGENT — ${candidateName}\n\n${message}\n\nMerci de nous contacter rapidement.\n\nCordialement,\nJulien P.\nBy Js-Innov.IA`,

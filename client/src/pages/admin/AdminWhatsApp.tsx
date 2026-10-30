@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { CURRENT_EDITION } from "@shared/const";
 import DashboardLayout from "@/components/DashboardLayout";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -225,7 +226,7 @@ export default function AdminWhatsApp() {
               Centre WhatsApp
             </h1>
             <p className="text-gray-400 mt-1 text-sm">
-              Plateforme de communication officielle — Miss &amp; Mister Dour 2026
+              Plateforme de communication officielle — Miss &amp; Mister Dour {CURRENT_EDITION}
             </p>
           </div>
           <div className="flex items-center gap-3">

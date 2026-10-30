@@ -224,7 +224,7 @@ function DashboardLayoutContent({
                   <a href="/" className="flex items-center justify-center">
                     <img
                       src={BRANDING.logoIdentity}
-                      alt="Logo officiel Miss & Mister Dour 2026"
+                      alt={`Logo officiel Miss & Mister Dour ${BRANDING.event.edition}`}
                       className="h-14 max-h-[56px] md:max-h-[56px] max-[640px]:h-10 max-[640px]:max-h-[38px] w-auto object-contain"
                       loading="eager"
                     />
@@ -273,7 +273,7 @@ function DashboardLayoutContent({
             <div className="flex items-center justify-center py-2 group-data-[collapsible=icon]:hidden">
               <img
                 src={BRANDING.logoIdentity}
-                alt="Logo officiel Miss & Mister Dour 2026"
+                alt={`Logo officiel Miss & Mister Dour ${BRANDING.event.edition}`}
                 className="h-10 w-auto object-contain opacity-90"
                 loading="lazy"
               />

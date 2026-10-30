@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Camera, Upload, Trash2, Check, X, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -28,6 +28,9 @@ interface Photo {
   status: "pending" | "approved" | "rejected";
 }
 
+// Affichage par lots : la galerie compte plusieurs milliers de photos
+const PAGE_SIZE = 48;
+
 export default function Photographer() {
   const { user } = useAuth();
   const [viewMode, setViewMode] = useViewMode({ storageKey: "photographer-view" });
@@ -49,6 +52,9 @@ export default function Photographer() {
     category: categoryFilter,
     status: statusFilter,
   });
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  useEffect(() => setVisibleCount(PAGE_SIZE), [categoryFilter, statusFilter]);
+  const visiblePhotos = photos.slice(0, visibleCount);
 
   // Mutations
   const uploadMutation = trpc.photos.upload.useMutation({
@@ -317,12 +323,14 @@ export default function Photographer() {
           />
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {photos.map((photo) => (
+            {visiblePhotos.map((photo) => (
               <DataCard key={photo.id}>
                 <div className="relative h-64">
                   <img
                     src={photo.thumbnail || photo.url}
                     alt={photo.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 right-3">
@@ -385,12 +393,14 @@ export default function Photographer() {
         ) : (
           <DataCard hover={false}>
             <div className="divide-y divide-[#D4AF37]/10">
-              {photos.map((photo) => (
+              {visiblePhotos.map((photo) => (
                 <div key={photo.id} className="p-6 hover:bg-[#FFF8E8]/50 transition-colors">
                   <div className="flex items-start gap-6">
                     <img
                       src={photo.thumbnail || photo.url}
                       alt={photo.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-32 h-32 object-cover rounded-lg"
                     />
 
@@ -452,6 +462,17 @@ export default function Photographer() {
               ))}
             </div>
           </DataCard>
+        )}
+
+        {photos.length > visibleCount && (
+          <div className="flex flex-col items-center gap-2">
+            <Button variant="outline" onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}>
+              Voir plus de photos
+            </Button>
+            <p className="text-sm text-[#8B7355]">
+              {visibleCount} sur {photos.length} photos affichées
+            </p>
+          </div>
         )}
       </div>
     </div>

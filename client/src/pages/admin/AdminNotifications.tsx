@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CURRENT_EDITION } from "@shared/const";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
@@ -140,7 +141,7 @@ export default function AdminNotifications() {
             Gestion des Notifications
           </h1>
           <p className="text-gray-400 mt-1">
-            Configuration et journal des notifications — Miss & Mister Dour 2026
+            Configuration et journal des notifications — Miss & Mister Dour {CURRENT_EDITION}
           </p>
         </div>
         <div className="flex gap-3">

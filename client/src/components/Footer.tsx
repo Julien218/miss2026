@@ -10,9 +10,10 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { BRANDING } from "@/config/branding";
 
-// URLs CDN des logos
-const LOGO_JS_INNOV = "https://d2xsxph8kpxj0f.cloudfront.net/87304619/fqSYuBaSqJ2z2N7q3F6MzD/Logo_JS-Innov.IA_EvoluTion_Autonome_02-26_85ca048d.png";
+// Logo servi localement (l'ancien lien CDN renvoie 403)
+const LOGO_JS_INNOV = "/logo/js-innov-ia.webp";
 
 // Particules dorées flottantes
 function FooterParticles() {
@@ -157,7 +158,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="text-center mb-6">
           <p className="text-gray-600 text-xs">
-            © {currentYear} STARLIGHT ASBL — Miss & Mister Dour {currentYear} — Tous droits réservés
+            © {currentYear} STARLIGHT ASBL — Miss & Mister Dour {BRANDING.event.edition} — Tous droits réservés
           </p>
         </div>
 
