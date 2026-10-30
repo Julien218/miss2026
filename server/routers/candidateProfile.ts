@@ -16,84 +16,11 @@ import { candidates, profileEditTokens, contests, users } from "../../drizzle/sc
 import { dispatchNotification } from "./notifications";
 import { eq, and } from "drizzle-orm";
 import crypto from "crypto";
-import { ENV } from "../\_core/env";
+import { sendEmail } from "../helpers/email";
+import { emailButton, escapeEmailHtml } from "../helpers/email-brand";
 
-// ─── Helper : Envoi email via Forge API ──────────────────────────────────────
-async function sendEmailViaForge(to: string, subject: string, htmlBody: string): Promise<boolean> {
-  if (!ENV.forgeApiUrl || !ENV.forgeApiKey) return false;
-  try {
-    const baseUrl = ENV.forgeApiUrl.endsWith("/") ? ENV.forgeApiUrl : `${ENV.forgeApiUrl}/`;
-    const endpoint = new URL("webdevtoken.v1.WebDevService/SendEmail", baseUrl).toString();
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        authorization: `Bearer ${ENV.forgeApiKey}`,
-        "content-type": "application/json",
-        "connect-protocol-version": "1",
-      },
-      body: JSON.stringify({ to, subject, html: htmlBody }),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
-}
-
-// ─── Helper : Générer le HTML de l'email de profil ───────────────────────────
 function buildProfileEmailHtml(firstName: string, lastName: string, profileLink: string): string {
-  return `
-<!DOCTYPE html>
-<html lang="fr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:'Segoe UI',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:40px 20px;">
-    <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="background:#111;border-radius:16px;border:1px solid #D4AF37;overflow:hidden;max-width:600px;">
-        <!-- Header -->
-        <tr><td style="background:linear-gradient(135deg,#1a1a1a,#2a2a1a);padding:40px;text-align:center;border-bottom:2px solid #D4AF37;">
-          <p style="color:#D4AF37;font-size:14px;letter-spacing:4px;text-transform:uppercase;margin:0 0 8px;">MISS &amp; MISTER DOUR 2026</p>
-          <h1 style="color:#fff;font-size:28px;margin:0;font-weight:700;">Complétez votre profil</h1>
-          <p style="color:#aaa;font-size:14px;margin:12px 0 0;">Centre Sportif d'Elouges · 19 Avril 2026</p>
-        </td></tr>
-        <!-- Body -->
-        <tr><td style="padding:40px;">
-          <p style="color:#e0e0e0;font-size:16px;margin:0 0 16px;">Bonjour <strong style="color:#D4AF37;">${firstName} ${lastName}</strong>,</p>
-          <p style="color:#ccc;font-size:15px;line-height:1.7;margin:0 0 24px;">
-            Félicitations pour votre inscription au concours <strong>Miss &amp; Mister Dour 2026</strong> !
-            Pour maximiser vos chances de victoire, complétez votre profil public en cliquant sur le bouton ci-dessous.
-          </p>
-          <p style="color:#ccc;font-size:15px;line-height:1.7;margin:0 0 32px;">
-            Vous pourrez renseigner votre biographie, vos réseaux sociaux (Instagram, Facebook, TikTok)
-            et vos coordonnées. Ces informations apparaîtront sur votre page publique de vote.
-          </p>
-          <!-- CTA Button -->
-          <table cellpadding="0" cellspacing="0" style="margin:0 auto 32px;">
-            <tr><td style="background:linear-gradient(135deg,#D4AF37,#B8941E);border-radius:12px;">
-              <a href="${profileLink}" style="display:block;padding:16px 40px;color:#000;font-weight:700;font-size:16px;text-decoration:none;letter-spacing:1px;">✨ Compléter mon profil</a>
-            </td></tr>
-          </table>
-          <!-- Link fallback -->
-          <p style="color:#888;font-size:13px;text-align:center;margin:0 0 8px;">Ou copiez ce lien dans votre navigateur :</p>
-          <p style="text-align:center;margin:0 0 32px;">
-            <a href="${profileLink}" style="color:#D4AF37;font-size:12px;word-break:break-all;">${profileLink}</a>
-          </p>
-          <!-- Info box -->
-          <div style="background:#1a1a1a;border-left:3px solid #D4AF37;border-radius:8px;padding:16px;">
-            <p style="color:#D4AF37;font-size:13px;font-weight:700;margin:0 0 8px;">ℹ️ Information importante</p>
-            <p style="color:#aaa;font-size:13px;margin:0;line-height:1.6;">Ce lien est personnel et sécurisé. Ne le partagez pas avec d'autres personnes. Il vous permet de modifier votre profil à tout moment.</p>
-          </div>
-        </td></tr>
-        <!-- Footer -->
-        <tr><td style="background:#0a0a0a;padding:24px;text-align:center;border-top:1px solid #333;">
-          <p style="color:#555;font-size:12px;margin:0 0 4px;">STARLIGHT ASBL · Grand'Place 9, 7370 Dour, Belgique</p>
-          <p style="color:#555;font-size:12px;margin:0;">© 2026 Miss &amp; Mister Dour · Conçu par <a href="#" style="color:#D4AF37;text-decoration:none;">JS-Innov.IA</a></p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
+  return `<h1 style="font-family:Georgia,serif;color:#84512c;">Complétez votre profil</h1><p>Bonjour ${escapeEmailHtml(firstName)} ${escapeEmailHtml(lastName)},</p><p>Complétez votre profil Miss &amp; Mister Dour : présentation, biographie et réseaux sociaux.</p>${emailButton(profileLink, "Compléter mon profil")}<p>Ce lien est personnel et sécurisé. Ne le partagez pas avec d’autres personnes.</p>`;
 }
 
 // Admin-only middleware
@@ -460,7 +387,7 @@ export const candidateProfileRouter = router({
       const subject = `👑 Miss & Mister Dour 2026 - Complétez votre profil, ${candidate.firstName} !`;
       const htmlBody = buildProfileEmailHtml(candidate.firstName, candidate.lastName, profileLink);
 
-      const emailSent = await sendEmailViaForge(recipientEmail, subject, htmlBody);
+      const emailSent = await sendEmail({ to: recipientEmail, subject, html: htmlBody, text: `Complétez votre profil Miss & Mister Dour : ${profileLink}. Ce lien est personnel.` });
 
       return {
         success: true,
