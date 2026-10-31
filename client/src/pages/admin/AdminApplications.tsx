@@ -1,9 +1,34 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Check, Clock3, ExternalLink, FileSignature, Mail, MapPin, Phone, RefreshCw, Ruler, ShieldCheck, UserRound, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Clock3,
+  ExternalLink,
+  FileSignature,
+  Mail,
+  MapPin,
+  Phone,
+  RefreshCw,
+  Ruler,
+  ShieldCheck,
+  UserRound,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { DropboxArchivePanel } from "@/components/DropboxArchivePanel";
+import {
+  ContractTemplateSetup,
+  openPrivatePdf,
+} from "@/components/ContractTemplateSetup";
+import { ORGANIZER_NAME } from "@shared/candidate-contract";
 
 type CandidateApplication = {
   id: number;
@@ -28,11 +53,19 @@ type CandidateApplication = {
   createdAt?: string | Date | null;
   reviewedAt?: string | Date | null;
   contractVersion?: string | null;
-  contractStatus?: "not_started" | "candidate_signed" | "guardian_signed" | "completed" | "generation_failed" | null;
+  contractStatus?:
+    | "not_started"
+    | "candidate_signed"
+    | "guardian_signed"
+    | "completed"
+    | "generation_failed"
+    | null;
   contractPdfKey?: string | null;
   candidateSignatureName?: string | null;
   guardianFullName?: string | null;
   organizationSignatureName?: string | null;
+  contractPdfSha256?: string | null;
+  contractSnapshot?: string | null;
 };
 
 export default function AdminApplications() {
@@ -41,7 +74,13 @@ export default function AdminApplications() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<number | null>(null);
-  const [filter, setFilter] = useState<"pending" | "approved" | "rejected" | "all">("pending");
+  const [filter, setFilter] = useState<
+    "pending" | "approved" | "rejected" | "all"
+  >("pending");
+  const [canValidate, setCanValidate] = useState(false);
+  const [openedContract, setOpenedContract] = useState<Record<number, string>>(
+    {}
+  );
 
   const loadApplications = useCallback(async () => {
     setLoading(true);
@@ -57,8 +96,14 @@ export default function AdminApplications() {
         return;
       }
       const body = await response.json();
-      if (!response.ok) throw new Error(body?.error || "Impossible de charger les candidatures");
-      setApplications(Array.isArray(body.applications) ? body.applications : []);
+      if (!response.ok)
+        throw new Error(
+          body?.error || "Impossible de charger les candidatures"
+        );
+      setApplications(
+        Array.isArray(body.applications) ? body.applications : []
+      );
+      setCanValidate(body.canValidate === true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur de chargement");
     } finally {
@@ -71,23 +116,36 @@ export default function AdminApplications() {
   }, [loadApplications]);
 
   const visible = useMemo(
-    () => (filter === "all" ? applications : applications.filter((item) => item.status === filter)),
+    () =>
+      filter === "all"
+        ? applications
+        : applications.filter(item => item.status === filter),
     [applications, filter]
   );
 
-  const pendingCount = applications.filter((item) => item.status === "pending").length;
+  const pendingCount = applications.filter(
+    item => item.status === "pending"
+  ).length;
 
   async function approve(application: CandidateApplication) {
-    if (!window.confirm(`Valider la candidature de ${application.firstName} ${application.lastName} ?`)) return;
+    if (
+      !window.confirm(
+        `Valider la candidature de ${application.firstName} ${application.lastName} ?`
+      )
+    )
+      return;
     setBusyId(application.id);
     setError("");
     try {
-      const response = await fetch(`/api/admin/candidate-applications/${application.id}/approve`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: "{}",
-      });
+      const response = await fetch(
+        `/api/admin/candidate-applications/${application.id}/approve`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: "{}",
+        }
+      );
       const body = await response.json();
       if (!response.ok) throw new Error(body?.error || "Validation impossible");
       await loadApplications();
@@ -113,12 +171,15 @@ export default function AdminApplications() {
     setBusyId(application.id);
     setError("");
     try {
-      const response = await fetch(`/api/admin/candidate-applications/${application.id}/reject`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: trimmed }),
-      });
+      const response = await fetch(
+        `/api/admin/candidate-applications/${application.id}/reject`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason: trimmed }),
+        }
+      );
       const body = await response.json();
       if (!response.ok) throw new Error(body?.error || "Refus impossible");
       await loadApplications();
@@ -129,24 +190,83 @@ export default function AdminApplications() {
     }
   }
 
-  function openUrl(url: string) {
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.target = "_blank";
-    anchor.rel = "noopener noreferrer";
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
+  async function openContract(application: CandidateApplication) {
+    try {
+      await openPrivatePdf(
+        `/api/admin/candidate-applications/${application.id}/contract`
+      );
+      if (application.contractPdfSha256)
+        setOpenedContract(current => ({
+          ...current,
+          [application.id]: application.contractPdfSha256!,
+        }));
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Ouverture impossible."
+      );
+    }
   }
 
-  async function openContract(application: CandidateApplication) {
-    openUrl(`/api/admin/candidate-applications/${application.id}/contract`);
+  async function regenerateContract(application: CandidateApplication) {
+    setBusyId(application.id);
+    setError("");
+    try {
+      const response = await fetch(
+        `/api/admin/candidate-applications/${application.id}/regenerate-contract`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: "{}",
+        }
+      );
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error);
+      setOpenedContract(current => ({ ...current, [application.id]: "" }));
+      await loadApplications();
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Génération impossible."
+      );
+    } finally {
+      setBusyId(null);
+    }
+  }
+  async function renewAgreement(application: CandidateApplication) {
+    setBusyId(application.id);
+    setError("");
+    try {
+      const response = await fetch(
+        `/api/admin/candidate-applications/${application.id}/renewal`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: "{}",
+        }
+      );
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error);
+      const url = new URL(body.url, window.location.origin).href;
+      window.prompt(
+        "Lien confidentiel à transmettre au candidat et à son représentant légal si nécessaire. Valable sept jours, utilisable une fois. Aucun message n’a été envoyé automatiquement.",
+        url
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Préparation du lien impossible."
+      );
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function signContract(application: CandidateApplication) {
     const signatureName = window.prompt(
       `Signature Starlight pour le contrat de ${application.firstName} ${application.lastName}.\n\nSaisissez le nom complet du signataire :`,
-      application.organizationSignatureName || "Olivier Trevis"
+      ORGANIZER_NAME
     );
     if (signatureName === null) return;
     const trimmed = signatureName.trim();
@@ -154,21 +274,33 @@ export default function AdminApplications() {
       setError("Le nom complet du signataire est requis.");
       return;
     }
-    if (!window.confirm(`Confirmer la signature électronique simple au nom de « ${trimmed} » ?`)) return;
+    if (
+      !window.confirm(
+        `Confirmer la signature électronique simple au nom de « ${trimmed} » ?`
+      )
+    )
+      return;
 
     setBusyId(application.id);
     setError("");
     try {
-      const response = await fetch(`/api/admin/candidate-applications/${application.id}/sign-contract`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ signatureName: trimmed, confirm: true }),
-      });
+      const response = await fetch(
+        `/api/admin/candidate-applications/${application.id}/sign-contract`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            signatureName: trimmed,
+            confirm: true,
+            expectedSha256: openedContract[application.id],
+          }),
+        }
+      );
       const body = await response.json();
       if (!response.ok) throw new Error(body?.error || "Signature impossible");
       await loadApplications();
-      if (body.url) openUrl(body.url);
+      if (body.url) await openPrivatePdf(body.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signature impossible");
     } finally {
@@ -181,109 +313,298 @@ export default function AdminApplications() {
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050403]/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-8">
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => setLocation("/admin")} className="border-white/15 bg-transparent text-white">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setLocation("/admin")}
+              className="border-white/15 bg-transparent text-white"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" /> Cockpit
             </Button>
             <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-[#d7ae69]">Élection 2027</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-[#d7ae69]">
+                Élection 2027
+              </p>
               <h1 className="text-xl font-semibold">Nouvelles candidatures</h1>
             </div>
           </div>
-          <Button variant="outline" onClick={() => void loadApplications()} disabled={loading} className="border-white/15 bg-transparent text-white">
-            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} /> Actualiser
+          <Button
+            variant="outline"
+            onClick={() => void loadApplications()}
+            disabled={loading}
+            className="border-white/15 bg-transparent text-white"
+          >
+            <RefreshCw
+              className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+            />{" "}
+            Actualiser
           </Button>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+        <ContractTemplateSetup />
         <DropboxArchivePanel />
         <div className="mb-6 rounded-3xl border border-[#d7ae69]/25 bg-[#d7ae69]/5 p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div className="text-3xl font-semibold text-[#ead3a5]">{pendingCount}</div>
-              <div className="text-sm text-white/60">candidature{pendingCount === 1 ? "" : "s"} à examiner</div>
+              <div className="text-3xl font-semibold text-[#ead3a5]">
+                {pendingCount}
+              </div>
+              <div className="text-sm text-white/60">
+                candidature{pendingCount === 1 ? "" : "s"} à examiner
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {(["pending", "approved", "rejected", "all"] as const).map((value) => (
-                <button
-                  key={value}
-                  onClick={() => setFilter(value)}
-                  className={`rounded-full border px-4 py-2 text-sm transition ${filter === value ? "border-[#d7ae69] bg-[#d7ae69] text-black" : "border-white/15 text-white/70 hover:border-[#d7ae69]/60"}`}
-                >
-                  {value === "pending" ? "En attente" : value === "approved" ? "Validées" : value === "rejected" ? "Refusées" : "Toutes"}
-                </button>
-              ))}
+              {(["pending", "approved", "rejected", "all"] as const).map(
+                value => (
+                  <button
+                    key={value}
+                    onClick={() => setFilter(value)}
+                    className={`rounded-full border px-4 py-2 text-sm transition ${filter === value ? "border-[#d7ae69] bg-[#d7ae69] text-black" : "border-white/15 text-white/70 hover:border-[#d7ae69]/60"}`}
+                  >
+                    {value === "pending"
+                      ? "En attente"
+                      : value === "approved"
+                        ? "Validées"
+                        : value === "rejected"
+                          ? "Refusées"
+                          : "Toutes"}
+                  </button>
+                )
+              )}
             </div>
           </div>
         </div>
 
-        {error && <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">{error}</div>}
+        {error && (
+          <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+            {error}
+          </div>
+        )}
 
         {loading ? (
-          <div className="py-20 text-center text-white/50">Chargement des candidatures…</div>
+          <div className="py-20 text-center text-white/50">
+            Chargement des candidatures…
+          </div>
         ) : visible.length === 0 ? (
           <div className="rounded-3xl border border-white/10 bg-white/[0.03] py-20 text-center text-white/50">
             Aucune candidature dans cette catégorie.
           </div>
         ) : (
           <div className="grid gap-5 lg:grid-cols-2">
-            {visible.map((application) => (
-              <Card key={application.id} className="overflow-hidden border-white/10 bg-[#100d0b] text-[#f7efe1]">
+            {visible.map(application => (
+              <Card
+                key={application.id}
+                className="overflow-hidden border-white/10 bg-[#100d0b] text-[#f7efe1]"
+              >
                 <CardHeader className="border-b border-white/10">
                   <div className="flex gap-4">
                     <div className="h-24 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/5">
                       {application.profilePhoto ? (
-                        <img src={application.profilePhoto} alt="" className="h-full w-full object-cover" />
+                        <img
+                          src={
+                            application.profilePhoto.startsWith("private:")
+                              ? `/api/admin/candidate-applications/${application.id}/photo`
+                              : application.profilePhoto
+                          }
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
                       ) : (
                         <UserRound className="m-auto h-full w-8 text-white/25" />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="mb-2 flex flex-wrap items-center gap-2">
-                        <span className="rounded-full border border-[#d7ae69]/35 px-2.5 py-1 text-[11px] uppercase tracking-wider text-[#ead3a5]">{application.category}</span>
-                        <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/55">#{application.id}</span>
-                        {application.contestId ? <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/45">Édition #{application.contestId}</span> : null}
-                        {application.contractVersion ? <span className={`rounded-full border px-2.5 py-1 text-[11px] ${application.contractStatus === "completed" ? "border-emerald-400/35 text-emerald-200" : application.contractStatus === "generation_failed" ? "border-red-400/35 text-red-200" : "border-violet-300/35 text-violet-200"}`}>{application.contractStatus === "completed" ? "Contrat signé" : application.contractStatus === "generation_failed" ? "PDF à régénérer" : "Signature Starlight requise"}</span> : null}
+                        <span className="rounded-full border border-[#d7ae69]/35 px-2.5 py-1 text-[11px] uppercase tracking-wider text-[#ead3a5]">
+                          {application.category}
+                        </span>
+                        <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/55">
+                          #{application.id}
+                        </span>
+                        {application.contestId ? (
+                          <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/45">
+                            Édition #{application.contestId}
+                          </span>
+                        ) : null}
+                        {application.contractVersion ? (
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-[11px] ${application.contractStatus === "completed" ? "border-emerald-400/35 text-emerald-200" : application.contractStatus === "generation_failed" ? "border-red-400/35 text-red-200" : "border-violet-300/35 text-violet-200"}`}
+                          >
+                            {application.contractStatus === "completed"
+                              ? "Contrat signé"
+                              : application.contractStatus ===
+                                  "generation_failed"
+                                ? "PDF à régénérer"
+                                : "Signature Starlight requise"}
+                          </span>
+                        ) : null}
                       </div>
-                      <CardTitle className="text-xl text-[#f7efe1]">{application.firstName} {application.lastName}</CardTitle>
-                      <CardDescription className="mt-1 text-white/50">{application.profession || "Profession / études non renseignées"}</CardDescription>
+                      <CardTitle className="text-xl text-[#f7efe1]">
+                        {application.firstName} {application.lastName}
+                      </CardTitle>
+                      <CardDescription className="mt-1 text-white/50">
+                        {application.profession ||
+                          "Profession / études non renseignées"}
+                      </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4 p-5">
                   <div className="grid gap-2 text-sm text-white/65 sm:grid-cols-2">
-                    <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-[#d7ae69]" /> {application.email}</div>
-                    <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-[#d7ae69]" /> {application.phone}</div>
-                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[#d7ae69]" /> {[application.street && `${application.street} ${application.houseNumber || ""}`.trim(), application.postalCode, application.city, application.country].filter(Boolean).join(", ")}</div>
-                    <div className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#d7ae69]" /> {application.createdAt ? new Date(application.createdAt).toLocaleString("fr-BE") : "Date indisponible"}</div>
-                    {application.height && application.weight ? <div className="flex items-center gap-2"><Ruler className="h-4 w-4 text-[#d7ae69]" /> {application.height} cm · {application.weight} kg</div> : null}
-                    {application.guardianFullName ? <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-violet-300" /> Représentant : {application.guardianFullName}</div> : null}
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-[#d7ae69]" />{" "}
+                      {application.email}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-[#d7ae69]" />{" "}
+                      {application.phone}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-[#d7ae69]" />{" "}
+                      {[
+                        application.street &&
+                          `${application.street} ${application.houseNumber || ""}`.trim(),
+                        application.postalCode,
+                        application.city,
+                        application.country,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock3 className="h-4 w-4 text-[#d7ae69]" />{" "}
+                      {application.createdAt
+                        ? new Date(application.createdAt).toLocaleString(
+                            "fr-BE"
+                          )
+                        : "Date indisponible"}
+                    </div>
+                    {application.height && application.weight ? (
+                      <div className="flex items-center gap-2">
+                        <Ruler className="h-4 w-4 text-[#d7ae69]" />{" "}
+                        {application.height} cm · {application.weight} kg
+                      </div>
+                    ) : null}
+                    {application.guardianFullName ? (
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-4 w-4 text-violet-300" />{" "}
+                        Représentant : {application.guardianFullName}
+                      </div>
+                    ) : null}
                   </div>
 
                   {application.motivation && (
                     <div className="rounded-2xl bg-white/[0.035] p-4 text-sm leading-relaxed text-white/65">
-                      <div className="mb-1 text-xs uppercase tracking-wider text-[#d7ae69]">Motivation</div>
+                      <div className="mb-1 text-xs uppercase tracking-wider text-[#d7ae69]">
+                        Motivation
+                      </div>
                       {application.motivation}
                     </div>
                   )}
 
-                  {application.contractVersion ? <div className="flex flex-wrap gap-3 rounded-2xl border border-violet-300/15 bg-violet-300/[0.035] p-3">
-                    {application.contractPdfKey ? <Button variant="outline" onClick={() => void openContract(application)} disabled={busyId === application.id} className="border-violet-300/35 bg-transparent text-violet-100 hover:bg-violet-300/10"><ExternalLink className="mr-2 h-4 w-4" /> Ouvrir le contrat</Button> : <span className="px-2 py-2 text-xs text-red-200">Le PDF contractuel doit être régénéré.</span>}
-                    {application.status === "pending" && application.contractStatus !== "completed" ? <Button variant="outline" onClick={() => void signContract(application)} disabled={busyId === application.id} className="border-[#d7ae69]/45 bg-transparent text-[#ead3a5] hover:bg-[#d7ae69]/10"><FileSignature className="mr-2 h-4 w-4" /> {application.contractStatus === "generation_failed" ? "Régénérer et signer" : "Signer pour Starlight"}</Button> : null}
-                  </div> : null}
+                  {application.contractVersion ||
+                  application.status === "pending" ? (
+                    <div className="flex flex-wrap gap-3 rounded-2xl border border-violet-300/15 bg-violet-300/[0.035] p-3">
+                      {application.contractPdfKey ? (
+                        <Button
+                          variant="outline"
+                          onClick={() => void openContract(application)}
+                          disabled={busyId === application.id}
+                          className="border-violet-300/35 bg-transparent text-violet-100 hover:bg-violet-300/10"
+                        >
+                          <ExternalLink className="mr-2 h-4 w-4" /> Ouvrir le
+                          contrat
+                        </Button>
+                      ) : (
+                        <span className="px-2 py-2 text-xs text-red-200">
+                          Le PDF contractuel doit être régénéré.
+                        </span>
+                      )}
+                      {application.status === "pending" &&
+                      !application.contractPdfKey &&
+                      application.contractSnapshot &&
+                      canValidate ? (
+                        <Button
+                          onClick={() => void regenerateContract(application)}
+                          disabled={busyId === application.id}
+                        >
+                          Générer le PDF
+                        </Button>
+                      ) : null}
+                      {application.status === "pending" &&
+                      application.contractStatus !== "completed" &&
+                      application.contractSnapshot ? (
+                        <Button
+                          variant="outline"
+                          onClick={() => void signContract(application)}
+                          disabled={
+                            !canValidate ||
+                            busyId === application.id ||
+                            !application.contractPdfSha256 ||
+                            openedContract[application.id] !==
+                              application.contractPdfSha256
+                          }
+                          title="Olivier doit ouvrir le PDF à jour avant de le valider."
+                          className="border-[#d7ae69]/45 bg-transparent text-[#ead3a5] hover:bg-[#d7ae69]/10"
+                        >
+                          <FileSignature className="mr-2 h-4 w-4" /> Valider le
+                          contrat — Olivier TREVIS
+                        </Button>
+                      ) : null}
+                      {!application.contractSnapshot &&
+                      application.status === "pending" ? (
+                        <p className="text-sm text-amber-200">
+                          Ancienne version conservée : un nouvel accord du
+                          candidat est requis avant validation.
+                        </p>
+                      ) : null}
+                      {!application.contractSnapshot &&
+                      application.status === "pending" &&
+                      canValidate ? (
+                        <Button
+                          onClick={() => void renewAgreement(application)}
+                          disabled={busyId === application.id}
+                        >
+                          Préparer le lien de nouvel accord
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : null}
 
                   {application.status === "pending" ? (
                     <div className="flex flex-wrap gap-3 pt-1">
-                      <Button onClick={() => void approve(application)} disabled={busyId === application.id || Boolean(application.contractVersion && application.contractStatus !== "completed")} title={application.contractVersion && application.contractStatus !== "completed" ? "Le contrat doit être signé par Starlight avant validation" : undefined} className="bg-[#d7ae69] text-black hover:bg-[#ead3a5]">
-                        <Check className="mr-2 h-4 w-4" /> Valider et créer le candidat
+                      <Button
+                        onClick={() => void approve(application)}
+                        disabled={
+                          !canValidate ||
+                          !application.contractSnapshot ||
+                          busyId === application.id ||
+                          application.contractStatus !== "completed"
+                        }
+                        title="Le contrat doit être validé par Olivier avant la création du candidat."
+                        className="bg-[#d7ae69] text-black hover:bg-[#ead3a5]"
+                      >
+                        <Check className="mr-2 h-4 w-4" /> Valider et créer le
+                        candidat
                       </Button>
-                      <Button variant="outline" onClick={() => void reject(application)} disabled={busyId === application.id} className="border-red-500/35 bg-transparent text-red-200 hover:bg-red-500/10">
+                      <Button
+                        variant="outline"
+                        onClick={() => void reject(application)}
+                        disabled={!canValidate || busyId === application.id}
+                        className="border-red-500/35 bg-transparent text-red-200 hover:bg-red-500/10"
+                      >
                         <X className="mr-2 h-4 w-4" /> Refuser
                       </Button>
                     </div>
                   ) : (
-                    <div className={`rounded-xl px-3 py-2 text-sm ${application.status === "approved" ? "bg-emerald-500/10 text-emerald-200" : "bg-red-500/10 text-red-200"}`}>
-                      {application.status === "approved" ? "Candidature validée — candidat créé." : `Candidature refusée${application.rejectionReason ? ` : ${application.rejectionReason}` : "."}`}
+                    <div
+                      className={`rounded-xl px-3 py-2 text-sm ${application.status === "approved" ? "bg-emerald-500/10 text-emerald-200" : "bg-red-500/10 text-red-200"}`}
+                    >
+                      {application.status === "approved"
+                        ? "Candidature validée — candidat créé."
+                        : `Candidature refusée${application.rejectionReason ? ` : ${application.rejectionReason}` : "."}`}
                     </div>
                   )}
                 </CardContent>

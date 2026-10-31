@@ -5,6 +5,7 @@ import * as db from "../db";
 import { storagePut } from "../storage";
 import crypto from "crypto";
 import { checkRateLimit, rateLimitConfigs } from "../_core/rateLimit";
+import { canReadContracts, canValidateContracts, canAccessApplication } from "../helpers/contractAccess";
 
 /**
  * Router pour l'onboarding des candidats par token d'invitation
@@ -328,7 +329,8 @@ export const candidateOnboardingRouter = router({
         });
       }
 
-      const applications = await db.getAllCandidateApplications(input.contestId);
+      if(!canReadContracts(ctx.user))throw new TRPCError({code:"FORBIDDEN"});
+      const applications = await db.getAllCandidateApplications(input.contestId,ctx.user.organizationId);
       
       // Filtrer par statut si spécifié
       if (input.status) {
@@ -347,6 +349,7 @@ export const candidateOnboardingRouter = router({
       applicationId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
+      if(!canValidateContracts(ctx.user,ctx.req))throw new TRPCError({code:"FORBIDDEN",message:"Validation réservée à Olivier depuis le Cockpit."});
       // Vérifier que l'utilisateur est admin
       if (ctx.user.role !== 'admin') {
         throw new TRPCError({
@@ -372,6 +375,7 @@ export const candidateOnboardingRouter = router({
         });
       }
 
+      if(!canAccessApplication(ctx.user,application))throw new TRPCError({code:"FORBIDDEN"});
       // Utiliser l'unique transition d'approbation afin d'appliquer le verrou
       // contractuel 2027 sur tous les cockpits administratifs.
       const result = await db.approveCandidateApplication(input.applicationId, ctx.user.id);
@@ -392,6 +396,7 @@ export const candidateOnboardingRouter = router({
       reason: z.string().min(10, 'La raison doit contenir au moins 10 caractères'),
     }))
     .mutation(async ({ input, ctx }) => {
+      if(!canValidateContracts(ctx.user,ctx.req))throw new TRPCError({code:"FORBIDDEN"});
       // Vérifier que l'utilisateur est admin
       if (ctx.user.role !== 'admin') {
         throw new TRPCError({
@@ -410,6 +415,7 @@ export const candidateOnboardingRouter = router({
         });
       }
 
+      if(!canAccessApplication(ctx.user,application))throw new TRPCError({code:"FORBIDDEN"});
       // Mettre à jour le statut
       await db.updateCandidateApplicationStatus(
         input.applicationId,

@@ -21,11 +21,14 @@ const columns = [
   ["contractStatus", "`contractStatus` enum('not_started','candidate_signed','guardian_signed','completed','generation_failed') NOT NULL DEFAULT 'not_started'"],
   ["contractPdfKey", "`contractPdfKey` text"], ["contractPdfSha256", "`contractPdfSha256` varchar(64)"],
   ["organizationSignatureName", "`organizationSignatureName` varchar(200)"], ["organizationSignedAt", "`organizationSignedAt` timestamp NULL"],
+  ["organizationSignedBy", "`organizationSignedBy` int NULL"], ["contractSnapshot", "`contractSnapshot` mediumtext NULL"],
+  ["contractHistory", "`contractHistory` mediumtext NULL"], ["contractRenewalHash", "`contractRenewalHash` varchar(64) NULL"], ["contractRenewalExpiresAt", "`contractRenewalExpiresAt` timestamp NULL"],
 ];
 
 let connection;
 try {
   connection = await mysql.createConnection(connectionUrl);
+  await connection.query("CREATE TABLE IF NOT EXISTS candidateContractTemplates (organizationId int PRIMARY KEY, template mediumtext NOT NULL)");
   const [rows] = await connection.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'candidateApplications'");
   const present = new Set(rows.map((row) => row.COLUMN_NAME));
   const missing = columns.filter(([name]) => !present.has(name));

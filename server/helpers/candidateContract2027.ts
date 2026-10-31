@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import PDFDocument from "pdfkit";
+import type { ContractSnapshot } from "../../shared/candidate-contract";
+import { generateCandidateContractV2 } from "./candidateContractV2";
 
 export const CANDIDATE_CONTRACT_VERSION = "contract-2027-v1";
 
@@ -27,6 +29,7 @@ export type CandidateContract2027Data = {
   guardianSignedAt?: Date | null;
   organizationSignatureName?: string | null;
   organizationSignedAt?: Date | null;
+  snapshot?: ContractSnapshot;
 };
 
 const COLOR = {
@@ -149,6 +152,7 @@ function signatureCard(
 }
 
 export async function generateCandidateContract2027(data: CandidateContract2027Data) {
+  if (data.snapshot) return generateCandidateContractV2(data, data.snapshot);
   const doc = new PDFDocument({ size: "A4", margin: 42, autoFirstPage: false, info: {
     Title: `Contrat candidat 2027 — ${data.firstName} ${data.lastName}`,
     Author: "Starlight ASBL — Miss & Mister Dour",

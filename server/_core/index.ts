@@ -22,6 +22,8 @@ import { generateCountdownImage } from "../routes/og-countdown";
 import { profilePhotoUploadRoute } from "../routes/profilePhotoUpload";
 import { registerCandidateApplicationAdminRoutes } from "../routes/candidateApplicationsAdmin";
 import { registerPublicFormRoutes } from "../routes/publicForms";
+import { registerCandidateContractTemplateRoutes } from "../routes/candidateContractTemplate";
+import { registerContractRenewalRoutes } from "../routes/contractRenewal";
 import { registerCandidateArchiveRoutes, startCandidateArchiveWorker } from "../archive/candidate-archive";
 import { apiLimiter } from "./rateLimit";
 import {
@@ -70,6 +72,8 @@ async function startServer() {
   if (process.env.OAUTH_SERVER_URL) registerOAuthRoutes(app);
 
   registerPublicFormRoutes(app);
+  registerCandidateContractTemplateRoutes(app);
+  registerContractRenewalRoutes(app);
   registerCandidateArchiveRoutes(app);
   registerCandidateApplicationAdminRoutes(app);
   registerCockpitRegistrationRoutes(app);

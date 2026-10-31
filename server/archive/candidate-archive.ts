@@ -45,6 +45,10 @@ export function referenceDocument(application: any) {
 }
 
 export async function downloadPhoto(url: string, request: typeof fetch = fetch) {
+  if(url.startsWith("private:candidate-applications/2027/")){
+    const photo=await storageGetPrivate(url.slice(8));
+    return {bytes:photo.data,extension:".webp"};
+  }
   const address = new URL(url);
   const allowed = new URL(process.env.R2_PUBLIC_URL || "https://pub-c511375d0e9444d8bb8dfdb7dbb81b08.r2.dev");
   if (address.protocol !== "https:" || address.origin !== allowed.origin || address.username || address.password) throw new ArchiveError("invalid_media_origin");

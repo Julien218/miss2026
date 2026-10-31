@@ -3,6 +3,7 @@ name: Feature checks
 on:
   pull_request:
     branches:
+      - main
       - rescue/recovered-production-source
   workflow_dispatch:
 
@@ -32,8 +33,8 @@ jobs:
       - name: Type-check
         run: pnpm check
 
-      - name: Contract unit test
-        run: pnpm exec vitest run server/helpers/candidateContract2027.test.ts
+      - name: Contract, Cockpit and archive checks
+        run: pnpm exec vitest run server/helpers/candidateContract2027.test.ts server/helpers/candidateContractTemplate.test.ts server/routes/contractWorkflow.test.ts server/_core/cockpit-sso.test.ts server/_core/cockpit-auth-policy.test.ts server/archive/candidate-archive.test.ts
 
       - name: Production build
         run: pnpm build

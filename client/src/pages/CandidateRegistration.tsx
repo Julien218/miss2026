@@ -21,6 +21,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
+import { ageAt, ELECTION_DATE, MEDIA_CHOICES, NO_MEDIA, type MediaChoices, type ContractTemplate } from "@shared/candidate-contract";
 
 const DRAFT_KEY = "mmd_candidate_2027_draft_v2";
 const TOTAL_STEPS = 4;
@@ -60,6 +61,8 @@ type FormState = {
   acceptMedia: boolean;
   acceptNewsletter: boolean;
   acceptCGU: boolean;
+  mediaChoices: MediaChoices;
+  guardianDeclaration: boolean;
 };
 
 const EMPTY: FormState = {
@@ -69,6 +72,7 @@ const EMPTY: FormState = {
   instagram: "", facebook: "", tiktok: "", linkedin: "",
   candidateSignatureName: "", guardianFullName: "", guardianEmail: "", guardianPhone: "", guardianSignatureName: "",
   acceptEligibility: false, acceptRules: false, acceptMedia: false, acceptNewsletter: false, acceptCGU: false,
+  mediaChoices: {...NO_MEDIA}, guardianDeclaration:false,
 };
 
 const STEP_LABELS = ["Vous", "Votre histoire", "Vos réseaux", "Validation"];
@@ -114,6 +118,9 @@ export default function CandidateRegistration() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [contract,setContract]=useState<ContractTemplate|null>(null);
+  const [contractMessage,setContractMessage]=useState("Chargement du contrat…");
+  useEffect(()=>{fetch("/api/public/candidate-contract").then(async r=>{if(!r.ok)throw new Error("Contrat indisponible. Réessayez plus tard.");return r.json();}).then(body=>{setContract(body.template||null);setContractMessage(body.ready?"":"L’organisation prépare la version du contrat. Vous pouvez compléter le formulaire ; son envoi sera possible après validation du modèle.");}).catch(e=>setContractMessage(e.message));},[]);
 
   useEffect(() => {
     try {
@@ -131,6 +138,7 @@ export default function CandidateRegistration() {
         acceptRules: false,
         acceptMedia: false,
         acceptCGU: false,
+        mediaChoices:{...NO_MEDIA},guardianDeclaration:false,acceptNewsletter:false,
       }));
     } catch {
       localStorage.removeItem(DRAFT_KEY);
@@ -147,6 +155,7 @@ export default function CandidateRegistration() {
       acceptRules: _rules,
       acceptMedia: _media,
       acceptCGU: _cgu,
+      mediaChoices:_choices,guardianDeclaration:_guardianDeclaration,acceptNewsletter:_newsletter,
       ...draft
     } = form;
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
@@ -155,7 +164,7 @@ export default function CandidateRegistration() {
   const progress = `${Math.round((step / TOTAL_STEPS) * 100)}%`;
   const fullName = `${form.firstName} ${form.lastName}`.trim() || "Votre candidature";
   const candidateAge = ageFromDate(form.birthDate);
-  const isMinor = candidateAge >= 16 && candidateAge < 18;
+  const isMinor = candidateAge >= 0 && candidateAge < 18;
   const interests = useMemo(
     () => form.interests.split(",").map((item) => item.trim()).filter(Boolean).slice(0, 20),
     [form.interests]
@@ -198,8 +207,8 @@ export default function CandidateRegistration() {
       if (form.lastName.trim().length < 2) next.lastName = "Nom requis.";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "Adresse email invalide.";
       if (!/^(\+32|0)[0-9]{8,9}$/.test(form.phone.replace(/[\s./-]/g, ""))) next.phone = "Numéro belge invalide.";
-      const age = ageFromDate(form.birthDate);
-      if (age < 16 || age > 26) next.birthDate = "Le contrat 2027 prévoit un âge de 16 à 26 ans.";
+      const age = ageAt(form.birthDate,ELECTION_DATE);
+      if (age < 16 || age > 26 || ageFromDate(form.birthDate)<0) next.birthDate = "Vous devez avoir entre 16 et 26 ans au 22 mai 2027.";
       if (form.street.trim().length < 2) next.street = "Rue requise pour le contrat.";
       if (!form.houseNumber.trim()) next.houseNumber = "Numéro requis.";
       if (!/^\d{4}$/.test(form.postalCode)) next.postalCode = "Code postal belge à 4 chiffres requis.";
@@ -213,18 +222,19 @@ export default function CandidateRegistration() {
       if (form.profession.trim().length < 2) next.profession = "Indiquez votre profession ou vos études.";
       const height = Number(form.heightCm);
       const weight = Number(form.weightKg);
-      if (!Number.isInteger(height) || height < 120 || height > 230) next.heightCm = "Indiquez une taille entre 120 et 230 cm.";
-      if (!Number.isInteger(weight) || weight < 35 || weight > 250) next.weightKg = "Indiquez un poids entre 35 et 250 kg.";
+      if (form.heightCm && (!Number.isInteger(height) || height < 120 || height > 230)) next.heightCm = "Indiquez une taille entre 120 et 230 cm.";
+      if (form.weightKg && (!Number.isInteger(weight) || weight < 35 || weight > 250)) next.weightKg = "Indiquez un poids entre 35 et 250 kg.";
     }
     if (targetStep === 4) {
       if (!form.acceptEligibility) next.acceptEligibility = "Vous devez confirmer les conditions d’éligibilité.";
       if (!form.acceptRules) next.acceptRules = "Le contrat et le règlement doivent être acceptés.";
-      if (!form.acceptMedia) next.acceptMedia = "L’autorisation média est requise pour participer.";
+      if (!contract) next.submit=contractMessage || "Le modèle contractuel n’est pas encore disponible.";
       if (!form.acceptCGU) next.acceptCGU = "Les CGU et la politique de confidentialité doivent être acceptées.";
       if (!signatureMatches(form.candidateSignatureName, form.firstName, form.lastName)) {
         next.candidateSignatureName = `Saisissez votre nom complet : ${fullName}.`;
       }
       if (isMinor) {
+        if(!form.guardianDeclaration)next.guardianDeclaration="Le représentant légal doit confirmer lui-même son autorisation.";
         if (form.guardianFullName.trim().length < 3) next.guardianFullName = "Nom complet du représentant légal requis.";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.guardianEmail)) next.guardianEmail = "Adresse email du représentant légal invalide.";
         if (!/^(\+32|0)[0-9]{8,9}$/.test(form.guardianPhone.replace(/[\s./-]/g, ""))) next.guardianPhone = "Numéro belge du représentant légal invalide.";
@@ -268,8 +278,8 @@ export default function CandidateRegistration() {
           houseNumber: form.houseNumber.trim(),
           postalCode: form.postalCode.trim(),
           city: form.city.trim(),
-          heightCm: Number(form.heightCm),
-          weightKg: Number(form.weightKg),
+          heightCm: form.heightCm ? Number(form.heightCm) : undefined,
+          weightKg: form.weightKg ? Number(form.weightKg) : undefined,
           category: form.category,
           photoBase64,
           photoFilename: form.photo.name || "photo.jpg",
@@ -288,10 +298,13 @@ export default function CandidateRegistration() {
           guardianSignatureName: isMinor ? form.guardianSignatureName.trim() : undefined,
           acceptEligibility: form.acceptEligibility,
           acceptRules: form.acceptRules,
-          acceptMedia: form.acceptMedia,
+          acceptMedia: form.mediaChoices.profile,
+          mediaChoices:form.mediaChoices,
+          guardianDeclaration:isMinor && form.guardianDeclaration,
           acceptNewsletter: form.acceptNewsletter,
           acceptCGU: form.acceptCGU,
-          consentVersion: "contract-2027-v1",
+          consentVersion: contract?.version,
+          templateSha256:contract?.sha256,
         }),
       });
       const body = await response.json().catch(() => ({}));
@@ -357,7 +370,7 @@ export default function CandidateRegistration() {
                   <span className="mmd-photo-action"><Upload /> {form.photoPreview ? "Changer la photo" : "Choisir une photo"}</span>
                   {errors.photo && <small>{errors.photo}</small>}
                 </label>
-                <div className="mmd-form-two"><Field label="Taille" hint="en cm" error={errors.heightCm} icon={<Ruler />}><input type="number" inputMode="numeric" min={120} max={230} placeholder="175" value={form.heightCm} onChange={(e) => update("heightCm", e.target.value)} /></Field><Field label="Poids" hint="en kg" error={errors.weightKg}><input type="number" inputMode="numeric" min={35} max={250} placeholder="65" value={form.weightKg} onChange={(e) => update("weightKg", e.target.value)} /></Field></div>
+                <div className="mmd-form-two"><Field label="Taille" hint="en cm, facultatif" error={errors.heightCm} icon={<Ruler />}><input type="number" inputMode="numeric" min={120} max={230} placeholder="175" value={form.heightCm} onChange={(e) => update("heightCm", e.target.value)} /></Field><Field label="Poids" hint="en kg, facultatif" error={errors.weightKg}><input type="number" inputMode="numeric" min={35} max={250} placeholder="65" value={form.weightKg} onChange={(e) => update("weightKg", e.target.value)} /></Field></div>
                 <Field label="Profession ou études" error={errors.profession}><input value={form.profession} onChange={(e) => update("profession", e.target.value)} /></Field>
                 <Field label="Votre présentation" hint={`${form.bio.length}/500`} error={errors.bio}><textarea rows={5} maxLength={500} placeholder="Qui êtes-vous, ce qui vous anime, ce que vous aimez…" value={form.bio} onChange={(e) => update("bio", e.target.value)} /></Field>
                 <Field label="Pourquoi souhaitez-vous participer ?" error={errors.motivation}><textarea rows={4} value={form.motivation} onChange={(e) => update("motivation", e.target.value)} /></Field>
@@ -379,17 +392,19 @@ export default function CandidateRegistration() {
                 <div className="mmd-contract-summary" id="contract-summary">
                   <div><FileSignature /><span><small>CONTRAT CANDIDAT 2027</small><strong>Conditions essentielles</strong></span></div>
                   <ul>
-                    <li>16 à 26 ans à l’inscription, domicile à Dour ou dans un rayon maximal de 20 km.</li>
-                    <li>Ne pas être marié ou divorcé et ne pas avoir d’antécédents judiciaires.</li>
+                    <li>16 à 26 ans au 22 mai 2027, selon les catégories et le périmètre indiqués dans le contrat.</li>
+                    <li>L’état matrimonial n’est pas un critère ; aucun casier judiciaire n’est demandé systématiquement.</li>
                     <li>Participation aux répétitions, activités officielles et respect du règlement de l’organisation.</li>
-                    <li>Autorisation d’utilisation de l’image, du nom et de la voix dans le cadre de l’élection.</li>
+                    <li>Choix d’image et de voix séparés, facultatifs et révocables selon l’annexe A.</li>
                     <li>Pour un candidat mineur, l’accord du représentant légal est obligatoire.</li>
                   </ul>
                 </div>
+                {contract ? <details className="mmd-contract-summary"><summary>Lire le contrat complet — {contract.version}</summary><a href={`/api/public/candidate-contract/pdf?version=${encodeURIComponent(contract.version)}`} target="_blank" rel="noreferrer">Télécharger le PDF avant de signer</a>{contract.pages.map((page,index)=><section key={index} className="my-5">{page.map((p,i)=>p.style.startsWith("Heading")?<h3 key={i} className="my-3 font-bold">{p.text}</h3>:<p key={i} className="my-2 whitespace-pre-wrap text-sm">{p.text}</p>)}</section>)}</details>:<p className="mmd-form-submit-error" role="status">{contractMessage}</p>}
                 <Consent checked={form.acceptEligibility} onChange={(value) => update("acceptEligibility", value)} error={errors.acceptEligibility}>Je confirme respecter les conditions d’éligibilité indiquées dans le contrat 2027 et certifie l’exactitude des informations transmises.</Consent>
                 <Consent checked={form.acceptRules} onChange={(value) => update("acceptRules", value)} error={errors.acceptRules}>J’ai pris connaissance et j’accepte le contrat et le règlement de participation 2027.</Consent>
-                <Consent checked={form.acceptMedia} onChange={(value) => update("acceptMedia", value)} error={errors.acceptMedia}>J’autorise l’utilisation des photos et vidéos dans le cadre de Miss & Mister Dour, conformément aux conditions indiquées.</Consent>
-                <Consent checked={form.acceptCGU} onChange={(value) => update("acceptCGU", value)} error={errors.acceptCGU}>J’accepte les <Link href="/legal/cgu">CGU</Link> et la <Link href="/legal/privacy">politique de confidentialité</Link>.</Consent>
+                <p className="mmd-signature-note">Chaque autorisation ci-dessous est facultative. Une case non cochée vaut refus, sans pénalité sur votre classement.</p>
+                {Object.entries(MEDIA_CHOICES).map(([key,label])=><Consent key={key} checked={form.mediaChoices[key as keyof MediaChoices]} onChange={value=>update("mediaChoices",{...form.mediaChoices,[key]:value})}>{label}</Consent>)}
+                <Consent checked={form.acceptCGU} onChange={(value) => update("acceptCGU", value)} error={errors.acceptCGU}>J’accepte les <Link href="/legal/cgu">CGU</Link> et j’ai pris connaissance de la notice RGPD du contrat.</Consent>
                 <Consent checked={form.acceptNewsletter} onChange={(value) => update("acceptNewsletter", value)}>Je souhaite recevoir les actualités de l’événement (facultatif).</Consent>
                 <div className="mmd-signature-panel">
                   <div className="mmd-signature-heading"><FileSignature /><span><small>SIGNATURE ÉLECTRONIQUE SIMPLE</small><strong>Candidat</strong></span></div>
@@ -402,6 +417,7 @@ export default function CandidateRegistration() {
                   <Field label="Nom complet du représentant légal" error={errors.guardianFullName}><input autoComplete="name" value={form.guardianFullName} onChange={(e) => update("guardianFullName", e.target.value)} /></Field>
                   <div className="mmd-form-two"><Field label="Email du représentant" error={errors.guardianEmail} icon={<Mail />}><input type="email" inputMode="email" autoComplete="email" value={form.guardianEmail} onChange={(e) => update("guardianEmail", e.target.value)} /></Field><Field label="Téléphone du représentant" error={errors.guardianPhone} icon={<Phone />}><input type="tel" inputMode="tel" autoComplete="tel" value={form.guardianPhone} onChange={(e) => update("guardianPhone", e.target.value)} /></Field></div>
                   <Field label="Signature — nom complet" error={errors.guardianSignatureName}><input autoComplete="off" placeholder={form.guardianFullName || "Nom complet"} value={form.guardianSignatureName} onChange={(e) => update("guardianSignatureName", e.target.value)} /></Field>
+                  <Consent checked={form.guardianDeclaration} onChange={value=>update("guardianDeclaration",value)} error={errors.guardianDeclaration}>Je suis le représentant légal habilité. J’ai lu le contrat et son annexe C, j’autorise la participation et je confirme les seuls choix d’image cochés avec le mineur.</Consent>
                 </div>}
                 <p className="mmd-signature-note"><ShieldCheck /> La date, l’heure et une empreinte technique de la connexion sont conservées avec les consentements pour assurer la traçabilité du dossier.</p>
                 {errors.submit && <div className="mmd-form-submit-error" role="alert">{errors.submit}</div>}
