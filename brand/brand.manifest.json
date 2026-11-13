@@ -4,13 +4,16 @@
   "edition": "2027",
   "status": "production",
   "locale": "fr-BE",
-  "lastAligned": "2026-09-23",
+  "lastAligned": "2026-11-13",
   "repository": {
     "fullName": "Julien218/miss2026",
     "productionBranch": "rescue/recovered-production-source"
   },
   "canonicalSources": {
     "bible": "brand/BRAND_ADN.md",
+    "identityBoard2027": "brand/planches/identite-visuelle-2027.png",
+    "adnBoard2027": "brand/planches/adn-visuel-2027.png",
+    "campaignBoard2027": "brand/planches/planche-campagne-2027.png",
     "branding": "client/src/config/branding.ts",
     "visualTuning": "client/src/visual-tuning-2027.css",
     "runtimeLegacy": "client/src/index.css"
@@ -26,28 +29,37 @@
       "scope": "miss-mister-dour-2027-only",
       "role": "discreet-thread-and-transition-motif",
       "neverLogo": true,
-      "crossBrandReuse": false
+      "crossBrandReuse": false,
+      "colors": "bleu royal et or"
+    },
+    "star": {
+      "status": "canonical",
+      "role": "étoile dorée à quatre branches ✦, séparateurs et scintillements",
+      "neverLogo": true
+    },
+    "crown": {
+      "status": "canonical",
+      "role": "couronne dorée sertie de bleu, détails et lauréats",
+      "neverLogo": true
     }
   },
   "palette": {
-    "gold": "#D7AE69",
-    "goldLight": "#EAD3A5",
-    "goldDark": "#9D6043",
-    "black": "#050403",
-    "blackSoft": "#0D0A08",
-    "anthracite": "#211B17",
-    "ivory": "#FFFAF1",
-    "ivorySoft": "#F7EFE1",
-    "silver": "#C9C3B9",
-    "silverLight": "#E9E4DA",
-    "accent": "#B76E4D"
+    "nightBlue": "#0A0F2B",
+    "royalBlue": "#0F52FF",
+    "royalGold": "#D4AF37",
+    "champagne": "#F9E6C4",
+    "white": "#FFFFFF"
   },
   "typography": {
-    "body": "Inter",
-    "display": "Playfair Display, Georgia, serif"
+    "display": "Playfair Display",
+    "labels": "Montserrat (majuscules espacées)",
+    "script": "script manuscrit doré, accents uniquement (« Et si c'était toi ? »)",
+    "body": "Inter"
   },
   "assets": {
-    "primaryLogo": "client/public/logo/miss-mister-dour-logo-transparent.png"
+    "primaryLogo2027": "brand/assets/logo-2027-principal.png",
+    "legacyLogo": "client/public/logo/miss-mister-dour-logo-transparent.png",
+    "legacyLogoPolicy": "ne plus utiliser pour les créations 2027"
   },
   "legacySemantics": {
     "files": [
@@ -65,8 +77,9 @@
     "readOrder": [
       "brand/brand.manifest.json",
       "brand/BRAND_ADN.md",
-      "client/src/config/branding.ts",
-      "client/src/visual-tuning-2027.css"
+      "brand/planches/identite-visuelle-2027.png",
+      "brand/assets/logo-2027-principal.png",
+      "client/src/config/branding.ts"
     ],
     "forbidden": [
       "use-2026-theme-as-2027-brief",
@@ -75,7 +88,9 @@
       "recolor-logo",
       "mix-other-brand-adn",
       "invent-annual-theme",
-      "export-feather-motif-to-other-brands"
+      "export-feather-motif-to-other-brands",
+      "use-legacy-gold-logo-for-2027",
+      "use-2026-gold-copper-palette-for-2027-creatives"
     ],
     "qualityGate": [
       "edition-2027-confirmed",
@@ -86,5 +101,24 @@
       "no-cross-brand-contamination",
       "mobile-and-contrast-checked"
     ]
+  },
+  "siteRuntimePalette": {
+    "source": "client/src/config/branding.ts",
+    "status": "runtime-legacy-until-site-migrated",
+    "gold": "#D7AE69",
+    "goldLight": "#EAD3A5",
+    "goldDark": "#9D6043",
+    "black": "#050403"
+  },
+  "tagline": {
+    "main": "Élégance · Talent · Engagement",
+    "signature": "Plus qu'un concours, une expérience humaine.",
+    "promise": "Des talents d'aujourd'hui pour un Dour plus rayonnant demain.",
+    "cta": "Et si c'était toi ?"
+  },
+  "decision": {
+    "date": "2026-11-14",
+    "by": "Julien",
+    "rule": "La palette suit le logo 2027 : bleu nuit #0A0F2B et bleu royal #0F52FF (planche Identite visuelle 2027)."
   }
 }
